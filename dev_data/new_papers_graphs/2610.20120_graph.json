@@ -1,0 +1,157 @@
+{
+ "arxiv_id": "2610.20120",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Bregman proximal viewpoint: layer definition, unification, Bregman variant, expressivity and experiments",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Operator learning goal",
+     "description": "Operator learning seeks the unknown ground-truth operator G between separable Banach function spaces A and U from N input-output function pairs, e.g. mapping a PDE initial condition to its solution at a later time."
+    },
+    {
+     "id": "P2",
+     "name": "Classical neural operator form",
+     "description": "A neural operator is a composition of a lifting operator P, T operator layers L_t (each involving a linear operator K_t, bias b_t and a pointwise activation), and a projection operator Q."
+    },
+    {
+     "id": "P3",
+     "name": "Layers as Bregman-regularized minimizers",
+     "description": "Each operator layer can be defined as the minimizer of a Bregman-regularized optimization problem over function spaces, so the activation operator is implicitly defined as a Bregman proximity operator."
+    },
+    {
+     "id": "P4",
+     "name": "Unification of classical operators",
+     "description": "When the Bregman distance is Euclidean and Psi_t is built from a strongly convex Legendre function psi, the layer reduces to the gradient of the conjugate, nabla Psi*_t(M_t v + K_t v + b_t), recovering a broad class of classical neural operator layers (Proposition 3.4)."
+    },
+    {
+     "id": "P5",
+     "name": "Bregman neural operators",
+     "description": "For a general p-uniformly convex Legendre psi (not the squared norm) and g_t=0, the layer takes a Bregman form that includes the inverse activation operator, defining a new family of Bregman neural operators (Proposition 3.5)."
+    },
+    {
+     "id": "P6",
+     "name": "Bregman FNO (BFNO)",
+     "description": "Specializing to Fourier layers with convolutional kernels on the torus gives the Bregman Fourier neural operator, whose update has the form v_{t+1}=sigma(sigma^{-1}(v_t)+K_t v_t) with the linear operator outside the activation."
+    },
+    {
+     "id": "P7",
+     "name": "Universal approximation",
+     "description": "For sigmoidal-type homeomorphic activations, Bregman neural operators are universal approximators of continuous operators on compact sets: for any epsilon there is N_theta with sup error at most epsilon (Theorem 4.1)."
+    },
+    {
+     "id": "P8",
+     "name": "BFNO depth scaling",
+     "description": "On 2D Navier-Stokes (nu=1e-4), BFNO achieves lower error for every depth T; FNO degrades from T=8 and ResFNO from T=16, while F-FNO improves until T=16 and BFNO until T=64."
+    },
+    {
+     "id": "P9",
+     "name": "BFNO competitive across datasets",
+     "description": "With cross-validated depth T in {4,8,16,32}, BFNO is consistently superior or comparable to FNO, ResFNO and F-FNO, with notable gains on 1D Burgers and 2D Navier-Stokes (nu=1e-4); 2D Darcy is the exception."
+    },
+    {
+     "id": "P10",
+     "name": "ODE view explains stability",
+     "description": "Under z_t=sigma^{-1}(v_t), BFNO is a discretization of dz/dt=K(t)sigma(z), whereas residual architectures discretize dv/dt=sigma(K(t)v); placing the linear operator outside the activation mitigates vanishing gradients differently."
+    },
+    {
+     "id": "P11",
+     "name": "BFNO weights cluster at zero",
+     "description": "BFNO's learned weights are sharply peaked at 0 (Laplace-like) while FNO, ResFNO and F-FNO are Gaussian-like, suggesting implicit regularization toward identity and mitigation of vanishing/exploding gradients."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 2.1-2.2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.1, Prop 3.4"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.3, Prop 3.5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4, Thm 4.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.2, Fig 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.2, Fig 6"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.2 Additional insights"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.2, Fig 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P12",
+   "name": "Darcy exception",
+   "description": "On 2D Darcy, which maps a viscosity function to a steady-state solution, F-FNO outperforms BFNO, plausibly due to its extra MLP layers capturing the viscosity-to-solution dependencies."
+  },
+  {
+   "id": "P13",
+   "name": "Frequency-band results",
+   "description": "BFNO consistently outperforms FNO in low and mid frequency bands; in the high band, gains are substantial on simple datasets but marginal on complex ones."
+  },
+  {
+   "id": "P14",
+   "name": "Theory-practice gap",
+   "description": "The universal approximation result covers sigmoidal activations, whereas common practice relies on ReLU-like activations, leaving a theoretical gap."
+  }
+ ],
+ "structural_reasoning": "The paper builds from the layer-as-optimization definition to unification and a new Bregman variant, which supports expressivity and experimental claims. Frequency-band, Darcy and gap remarks are isolated."
+}

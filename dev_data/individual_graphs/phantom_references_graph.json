@@ -1,0 +1,260 @@
+{
+  "arxiv_id": "2607.00738v2",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: LLM hallucination entering the archival record, and why citations specifically are checkable.",
+      "nodes": [
+        {"id": "P1", "name": "LLM hallucination is a recurring production hazard", "description": "LLMs fabricate quotations, invent sources, and produce confident well-formed but ungrounded claims; this has surfaced in legal filings, news, code repositories, and technical documents, often where readers lack time/expertise to verify."},
+        {"id": "P2", "name": "Scientific writing is rapidly absorbing LLM tools", "description": "Researchers increasingly use LLMs to rephrase paragraphs, restructure arguments, summarize related work, and assemble bibliographies, so a rough title or partial memory can become a polished BibTeX entry in seconds."},
+        {"id": "P3", "name": "Surface polish masks a weakened evidence chain", "description": "The resulting manuscript still looks scholarly (claims supported, references alphabetized), but what has changed is the underlying chain of evidence, lowering the cost of placing a fabricated or misattributed reference into the record."},
+        {"id": "P4", "name": "Prose claims are hard to verify at scale (open fact-checking problem)", "description": "Checking an arbitrary technical claim in a paper's body is essentially an open automated fact-checking problem: claims are subtle, context-dependent, and even expert reviewers may disagree."},
+        {"id": "P5", "name": "Citations are binary and checkable", "description": "Citations differ: a reference names a work and authorship record that either exists and matches, or does not, making the bibliography checkable in a way surrounding text is not."},
+        {"id": "P6", "name": "This property motivates measuring hallucination via citations", "description": "This checkability property motivates asking a pointed, tractable question of the published record: how often do accepted papers contain hallucinated citations?"}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["E3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P6", "evidence": ["E4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P6", "evidence": ["E5"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Defining citation hallucination: a conservative, identity-level notion excluding ordinary bibliographic drift.",
+      "nodes": [
+        {"id": "P7", "name": "Two roles of a citation: social gesture and auditable pointer", "description": "A citation is both a social gesture (crediting prior work) and a pointer giving readers enough information to recover the cited artifact from the public record; LLM-assisted authoring can quietly destabilize the pointer role."},
+        {"id": "P8", "name": "Fabrication defined", "description": "Fabrication: the cited work does not exist at all — no indexed artifact matches the title, and the listed authors never produced anything matching it."},
+        {"id": "P9", "name": "Author-identity corruption defined", "description": "Author-identity corruption: a real paper exists, but the citation assigns it to a substantially different set of authors."},
+        {"id": "P10", "name": "Both are treated as one phenomenon", "description": "Fabrication and author-identity corruption are treated as two faces of one phenomenon and both counted, because from a reader's perspective the reference fails to point to the work it claims to credit either way, leaving an unverifiable intellectual debt."},
+        {"id": "P11", "name": "Ordinary bibliographic drift explicitly excluded", "description": "Minor name variants, spelling mistakes, and venue/year/publication-status changes (e.g., preprint to proceedings) are not counted as hallucination unless author evidence no longer matches at a substantial level."},
+        {"id": "P12", "name": "Definition intentionally narrow: no claims about truth or authorship", "description": "The measure makes no claim about whether the surrounding text was LLM-generated or whether the cited result is true; it asks only whether the bibliography points to a real work by the named authors."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P9", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P10", "evidence": ["E7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["E7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["E8"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P12", "evidence": ["E9"], "votes": 2, "confidence": "majority"},
+        {"from": "P6", "to": "P7", "evidence": ["E10"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Positioning relative to related work: closest comparators and how this study differs.",
+      "nodes": [
+        {"id": "P13", "name": "Zhao et al. audits preprints, not camera-ready proceedings", "description": "Zhao et al. audit 111M references across 2.5M arXiv/bioRxiv/SSRN/PubMed papers, but their corpus is dominated by preprints rather than camera-ready proceedings."},
+        {"id": "P14", "name": "GhostCite is comparable but less conservative and less structured", "description": "GhostCite audits 2.2M citations across 56,381 AI/ML and security-venue papers (2020-2025), finding 1.07% of papers carry an invalid citation and 76.7% of surveyed reviewers report not checking references; it is less conservative in selecting candidates and needs more manual filtering."},
+        {"id": "P15", "name": "This work differs by auditing camera-ready proceedings with more conservative precision", "description": "This study differs from Zhao et al. by auditing camera-ready proceedings rather than preprints, and from GhostCite on precision, paper-level structure (affected-paper prevalence, high-count tail), and reported per-paper cost."},
+        {"id": "P16", "name": "Prior controlled-prompting studies characterize models in isolation", "description": "Studies like Naser (11.4-56.8% hallucination rates across models/domains under direct prompting) characterize models in isolation, whereas this work measures what survives peer review into the archival record."},
+        {"id": "P17", "name": "Convergence of independent measurements supports the phenomenon's reality", "description": "Reading the convergence of this and other independent, concurrent measurements (Zhao et al., GhostCite, Ansari, Sakai et al., GPTZero disclosures) is taken as evidence that the citation-hallucination phenomenon is real and growing."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P15", "evidence": ["E11"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P15", "evidence": ["E12"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P15", "evidence": ["E13"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P17", "evidence": ["E14"], "votes": 2, "confidence": "majority"},
+        {"from": "P6", "to": "P15", "evidence": ["E15"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C1"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "RefChecker pipeline architecture: extraction, multi-source verification, and escalation logic.",
+      "nodes": [
+        {"id": "P18", "name": "Corpus restricted to venue/platform-controlled camera-ready PDFs", "description": "The corpus includes only accepted papers whose camera-ready PDFs are openly accessible via OpenReview or official proceedings pages, excluding author-hosted substitutes, to ensure every analyzed manuscript is tied to a controlled publication record."},
+        {"id": "P19", "name": "References extracted and normalized from multiple input formats", "description": "RefChecker extracts bibliographies from PDFs (primary input here), parsing fields (title, authors, year, venue, DOI, arXiv ID, URL) using LLM-assisted parsing (Gemini 3.1 Flash Lite) or GROBID fallback, preserving the original string for auditability, then normalizing fields to absorb harmless formatting variation."},
+        {"id": "P20", "name": "Multi-source verification needed due to variable coverage/quality", "description": "Each normalized reference is checked against multiple bibliographic sources (Semantic Scholar, OpenAlex, CrossRef, DBLP, ACL Anthology) because coverage and metadata quality vary significantly across venues, years, and publication types; disagreements are preserved rather than treating one source as absolute ground truth."},
+        {"id": "P21", "name": "Deterministic filters trigger escalation to deep web search", "description": "A reference is escalated when unverifiable, when author overlap falls below a 60% default threshold (for 3+ author references), when a DOI/arXiv ID resolves to a different work, or when a cited URL fails/misdirects; minor year/venue variation alone does not trigger escalation."},
+        {"id": "P22", "name": "Escalated references undergo constrained LLM web search plus re-verification", "description": "Escalated references are sent to an LLM with web-search capability, constrained to find a dedicated source page (not merely another paper repeating the citation); if found, RefChecker re-verifies cited metadata against that source before clearing or retaining suspicion."},
+        {"id": "P23", "name": "LLMs used as evidence-gathering escalation step, not sole authority", "description": "LLMs help parse noisy bibliographies and perform targeted searches, but the final decision is constrained by external evidence (database matches, identifiers, discovered pages, re-verified metadata); this design reduces but does not eliminate model risk (missing obscure sources, over-trusting low-quality pages)."},
+        {"id": "P24", "name": "Only LIKELY verdicts surviving re-verification count as hallucinated", "description": "Of the three-layer label system (final status, issue value, hallucination verdict), only references with a positive hallucination outcome after re-verification (LIKELY, surviving metadata re-check) are counted in the aggregate hallucination measurements; errors, warnings, suggestions, and unverified cases inform triage but are not automatically counted."}
+      ],
+      "edges": [
+        {"from": "P18", "to": "P19", "evidence": ["E16"], "votes": 2, "confidence": "majority"},
+        {"from": "P19", "to": "P20", "evidence": ["E17"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["E18"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P22", "evidence": ["E19"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["E20"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P24", "evidence": ["E21"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P24", "evidence": ["E22"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1: the checkability property is what makes this pipeline design possible"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "The core denominator argument: sub-1% reference-level rates translate to high paper-level prevalence at proceedings scale.",
+      "nodes": [
+        {"id": "P25", "name": "Reference-level rate is small in essentially every venue-year", "description": "Across the 48,095-paper, 2,614,992-reference corpus, the reference-level likely-hallucinated rate stays below 1% in essentially every venue-year (e.g., 2025: 0.38% ICLR, 0.54% ICML, 0.68% NeurIPS, 0.81% USENIX Security on all references)."},
+        {"id": "P26", "name": "A conference is not a single bibliography", "description": "A sub-1% rate sounds negligible for one bibliography, but a full proceedings contains thousands of papers and hundreds of thousands of references (e.g., ICLR 2025: 221,281 references across 3,703 papers), so even a small rate reaches a large absolute number of flagged references and distinct papers (835 flagged references, 692 papers for ICLR 2025 alone)."},
+        {"id": "P27", "name": "Paper-level prevalence is large: roughly 1-in-4 to 1-in-3 for at least one flag", "description": "At the paper level, at least one likely hallucinated reference appears in 18.7% of ICLR 2025, 23.3% of ICML 2025, 26.2% of NeurIPS 2025, and 34.9% of USENIX Security 2025 accepted papers."},
+        {"id": "P28", "name": "Raising the threshold to two doesn't flatten the signal", "description": "Requiring at least two academic-paper-like likely hallucinated references (a more conservative, false-positive-resistant threshold) still yields 1.9% (ICLR), 3.4% (ICML), 5.1% (NeurIPS), and 4.8% (USENIX Security) for 2025 — roughly one in twenty accepted papers at NeurIPS/USENIX Security."},
+        {"id": "P29", "name": "Post-ChatGPT rise visible at the two-threshold level but not the raw reference level", "description": "The post-ChatGPT trend does not show clearly at the raw reference-level rate (where false-positive noise dominates), but sharpens once focus shifts to papers with several likely hallucinated references, which are far less likely to be false positives."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["E23"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P27", "evidence": ["E24"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["E25"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P29", "evidence": ["E26"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P25", "evidence": ["E27"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Distribution shape: most affected papers have one bad pointer, but a long tail concentrates risk and confidence.",
+      "nodes": [
+        {"id": "P30", "name": "Most affected papers carry just one flagged reference", "description": "Among affected papers in 2025, exactly one likely hallucinated reference accounts for 87% (ICLR), 81% (ICML), 74% (NeurIPS), and 65% (USENIX Security), arguing against framing affected papers as generally compromised manuscripts."},
+        {"id": "P31", "name": "A visible high-count tail exists nonetheless", "description": "Despite the single-reference majority, a visible tail of papers carries 5+ hallucinated citations in a single bibliography, with USENIX Security 2025 showing 34.6% of affected papers with ≥2 and 2.0% with ≥5, and NeurIPS 2025 showing 1,545 affected papers, 407 with ≥2, and 30 with ≥5."},
+        {"id": "P32", "name": "Higher counts per paper increase confidence the flags are genuine", "description": "The more failures a single bibliography accumulates, the less plausible it is that every one is a false positive, so 5+-reference papers are the cases the authors can most safely call genuine."},
+        {"id": "P33", "name": "The tail is rare by paper-rate but not by reference-count", "description": "Papers with 5+ flagged references are rare on a paper-rate basis (≤1%, often zero pre-2022) but contribute a disproportionate share of all flagged references (e.g., 11.7% at USENIX Security 2024, 9.6% at NeurIPS 2025), so even a tail-only check would intercept a non-trivial fraction of hallucinated citations."},
+        {"id": "P34", "name": "Per-paper maxima reach double digits", "description": "The single-paper maximum observed is 20 (NeurIPS), 13 (ICML and USENIX Security), and 8 (ICLR) — a bibliography with 20 likely hallucinated references is not a borderline case."}
+      ],
+      "edges": [
+        {"from": "P30", "to": "P31", "evidence": ["E28"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P32", "evidence": ["E29"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["E30"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P34", "evidence": ["E31"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P31", "evidence": ["E32"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Ruling out ordinary bibliographic drift as the explanation for the observed rates.",
+      "nodes": [
+        {"id": "P35", "name": "Natural objection: maybe this is just citation noise, not hallucination", "description": "A natural objection is that the measured rates reflect ordinary bibliographic drift (e.g., an arXiv year instead of venue year, a transliterated name, an outdated URL) rather than genuine hallucination."},
+        {"id": "P36", "name": "Failures decompose into identity-level buckets, not drift categories", "description": "Across every venue family, likely hallucinated references decompose into three identity-level failure buckets — unresolved references, multi-field failures, and substantial author-list mismatches — with ordinary venue/year/publication-status drift logged separately and never entering any rate."}
+      ],
+      "edges": [
+        {"from": "P35", "to": "P36", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P36", "evidence": ["E34"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2: definition already excludes drift, and the measurement confirms this in practice"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Peer review does not catch hallucinated citations: rating, tier, and area analyses all show no relationship.",
+      "nodes": [
+        {"id": "P37", "name": "Mean reviewer rating is nearly identical for clean vs. affected papers", "description": "Joining hallucination counts to mean reviewer rating for the OpenReview-covered subset (22,764 papers) shows the difference between clean (0 hallucinated refs) and affected (≥1) papers is almost negligible: Δ=+0.02 ICLR, +0.005 ICML, +0.04 NeurIPS — if anything affected papers rate marginally higher."},
+        {"id": "P38", "name": "Acceptance tier is uncorrelated with hallucination prevalence", "description": "Slicing by acceptance tier instead of rating shows posters affected at 20.4%, spotlights at 23.5%, orals at 20.3% — acceptance into the most selective tier does not lower hallucinated-citation prevalence."},
+        {"id": "P39", "name": "Every research area is affected within a narrow band", "description": "Across 14 research areas with ≥100 papers, affected-paper prevalence sits in a narrow 15.5%-25.7% band; the problem cannot be reduced to a particular community's authoring practices, though LLM/foundation-model researchers appear slightly less prone (16.1%), possibly from more careful reference checking."},
+        {"id": "P40", "name": "Accepted and rejected ICLR 2023 papers show nearly identical hallucination rates despite a 2-point rating gap", "description": "Accepted ICLR 2023 papers (mean rating 6.61) are affected 16.0% of the time; rejected papers (mean rating 4.67, nearly two points lower) are affected 16.9% of the time — a negligible integrity gap despite a large assessment gap."},
+        {"id": "P41", "name": "Hallucination rate reflects authoring practice, not paper quality", "description": "Because a paper judged much weaker by reviewers is not, in expectation, much more likely to carry hallucinated citations, the hallucinated-citation rate is driven by authoring practice rather than overall paper quality."},
+        {"id": "P42", "name": "Reviewers' rating signal is orthogonal to bibliographic integrity", "description": "Together, these results show reviewers' rating signal carries essentially no information about whether a paper's bibliography survives verification — the signal exists in the published record but is invisible to the process deciding what gets published."},
+        {"id": "P43", "name": "Governance policies (desk rejection) respond to exactly this gap", "description": "Recent ICLR 2026 and ICML 2026 policies explicitly listing hallucinated references as desk-rejection grounds are responding to precisely this invisibility of the signal to ordinary review."}
+      ],
+      "edges": [
+        {"from": "P37", "to": "P42", "evidence": ["E35"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P38", "to": "P42", "evidence": ["E36"], "votes": 2, "confidence": "majority"},
+        {"from": "P40", "to": "P41", "evidence": ["E37"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P41", "to": "P42", "evidence": ["E38"], "votes": 2, "confidence": "majority"},
+        {"from": "P42", "to": "P43", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P39", "to": "P42", "evidence": ["E40"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Manual adjudication of true and false positives, revealing the genuine difficulty of the boundary.",
+      "nodes": [
+        {"id": "P44", "name": "An automated flag is a starting point, not a verdict", "description": "The single most consistent lesson from the audit is that manual inspection is needed: across manually verified references, most flags were not hallucinations but mangled author strings, truncated titles, or PDF-extraction corruption."},
+        {"id": "P45", "name": "True positives share a sharp identity-failure property", "description": "The flags that survived scrutiny shared a sharper property: no corresponding work could be found, or a real title was bound to an unrelated authorship record — illustrated by cases where no source anywhere matches a well-formed cited title/authors, and where a real title (e.g., 'Compressive Transformers...') is bound to a wrong author list."},
+        {"id": "P46", "name": "False positives arise from editor-as-coauthor, parsing artifacts, and title collisions", "description": "Documented false-positive patterns include an editor's name miscounted as a coauthor, a title fragment parsed as part of the author field (e.g., 'Jimmy Ba Adam'), and two genuinely distinct real papers sharing an identical title where the tool matched the wrong one."},
+        {"id": "P47", "name": "Author-list-mismatch thresholds are inherently fragile", "description": "Deciding how much author-list divergence counts as fabrication is hard: on a two-author reference a single wrong name already crosses a 'half the names' cutoff, yet one wrong name is exactly what an ordinary copy-paste slip produces; the kind of difference (transposition vs. genuinely different person) matters as much as its size."},
+        {"id": "P48", "name": "Metadata alone can't reliably separate error from fabrication", "description": "At this resolution, metadata alone almost never separates an erroneous copy-paste from deliberate or machine-generated fabrication, so the tool's output remains a set of candidates requiring human verification and final decision."}
+      ],
+      "edges": [
+        {"from": "P44", "to": "P45", "evidence": ["E41"], "votes": 2, "confidence": "majority"},
+        {"from": "P44", "to": "P46", "evidence": ["E41"], "votes": 2, "confidence": "majority"},
+        {"from": "P46", "to": "P47", "evidence": ["E42"], "votes": 2, "confidence": "majority"},
+        {"from": "P47", "to": "P48", "evidence": ["E43"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P44", "evidence": ["E44"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4: candidates flagged by the pipeline are what gets manually adjudicated here"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Author-contact validation study: authors' own explanations converge on workflow breakdown, not intentional fabrication.",
+      "nodes": [
+        {"id": "P49", "name": "Authors of heavily-flagged papers were contacted for validation", "description": "To further check results, authors of accepted papers with at least five likely hallucinated references were contacted directly and shown the tool's output for their paper."},
+        {"id": "P50", "name": "Authors attribute failures to bibliography-construction errors", "description": "Across responses, authors consistently attribute citation hallucinations to errors introduced during bibliography construction (often LLM-based generation/reformatting not subsequently verified, sometimes specifically at the camera-ready stage) rather than intentional fabrication."},
+        {"id": "P51", "name": "Some cases involve corrupted metadata on real works or valid false positives", "description": "Other authors clarify that cited works were real but had corrupted metadata (author lists, titles, venues), while a smaller subset disputed certain flags as false positives (e.g., webpage references or valid but misidentified papers)."},
+        {"id": "P52", "name": "No author claimed deliberate fabrication; most corrected promptly", "description": "No response claimed deliberate fabrication; where errors were acknowledged, authors uniformly reported correcting the citations and, in several cases, proactively notifying program chairs or updating public versions."},
+        {"id": "P53", "name": "Findings support framing as workflow breakdown, not misconduct", "description": "Read together, these responses match the paper's framing of the failure as an unchecked, machine-completed reference that no pipeline stage was responsible for validating, rather than deliberate misconduct."}
+      ],
+      "edges": [
+        {"from": "P49", "to": "P50", "evidence": ["E45"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P49", "to": "P51", "evidence": ["E46"], "votes": 2, "confidence": "majority"},
+        {"from": "P50", "to": "P52", "evidence": ["E47"], "votes": 2, "confidence": "majority"},
+        {"from": "P52", "to": "P53", "evidence": ["E48"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P51", "to": "P53", "evidence": ["E48"], "votes": 2, "confidence": "majority"},
+        {"from": "P34", "to": "P49", "evidence": ["E49"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6: the high-count tail is the population selected for author contact"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "Practical response: low-cost automated verification integrated into submission workflow, with human oversight preserved.",
+      "nodes": [
+        {"id": "P54", "name": "Auditing is cheap at venue scale", "description": "In one venue-scale scan, auditing 3,703 accepted papers and 221,281 references cost approximately $157, or roughly four cents per paper."},
+        {"id": "P55", "name": "Verification can be run repeatedly without material budget impact", "description": "At this price, verification can be run at submission (to inform review) and again at camera-ready (to catch revision-introduced references) without materially affecting a conference's budget."},
+        {"id": "P56", "name": "Proposed workflow: flag a small set, attach evidence, keep humans in the loop", "description": "The practical implication is not a manual gate but a standardized check folded into submission infrastructure: run the tool at submission/camera-ready, surface only failing references with supporting evidence and the search trail, and let a human confirm or dismiss each flag."},
+        {"id": "P57", "name": "Design respects reviewers' already-strained voluntary workload", "description": "This design is motivated by respect for reviewers' workload, since reviewing is voluntary and already strained by rising submission volumes, and manually resolving every reference is neither reasonable nor scalable."},
+        {"id": "P58", "name": "Desk rejection should preserve room for author justification", "description": "Even though the underlying signal is real and large enough to matter, and desk-rejection policies are a reasonable deterrent, flags should inform an evidence-backed, human-reviewed process giving authors a chance to justify or correct before punitive action, given cases like not-yet-indexed works."}
+      ],
+      "edges": [
+        {"from": "P54", "to": "P55", "evidence": ["E50"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P55", "to": "P56", "evidence": ["E51"], "votes": 2, "confidence": "majority"},
+        {"from": "P56", "to": "P57", "evidence": ["E52"], "votes": 2, "confidence": "majority"},
+        {"from": "P48", "to": "P56", "evidence": ["E53"], "votes": 2, "confidence": "majority", "note": "cross-component link from C9: fragility of automated adjudication motivates keeping humans in the loop"},
+        {"from": "P53", "to": "P58", "evidence": ["E54"], "votes": 2, "confidence": "majority", "note": "cross-component link from C10: workflow-breakdown framing motivates justification-before-punishment"},
+        {"from": "P56", "to": "P58", "evidence": ["E55"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C12",
+      "description": "Contribution summary chain.",
+      "nodes": [
+        {"id": "P59", "name": "Contribution 1: conservative auditable hallucination definition", "description": "A conservative, externally auditable notion of hallucinated citation is defined, based on non-existent works and substantial author-identity mismatch, explicitly excluding ordinary venue/year/publication-status drift."},
+        {"id": "P60", "name": "Contribution 2: RefChecker pipeline", "description": "RefChecker, a scalable open-source reference-verification pipeline combining multiple authoritative bibliographic sources with deep web-search re-verification, is built."},
+        {"id": "P61", "name": "Contribution 3: large-scale audit across top venues", "description": "A large-scale audit of likely hallucinated citations is conducted across accepted papers from top AI and security venues."},
+        {"id": "P62", "name": "Contribution 4: demonstration that hallucinated citations survive peer review", "description": "The audit shows likely hallucinated citations survive peer review and appear in camera-ready proceedings, including award-winning papers and papers with multiple failures in one bibliography."},
+        {"id": "P63", "name": "Contribution 5: quantified trends and low-cost auditability", "description": "The post-ChatGPT increase, paper-level prevalence, error composition, and high-count tail are quantified, and conference-scale auditing is shown to be performable at low cost."}
+      ],
+      "edges": [
+        {"from": "P59", "to": "P60", "evidence": ["E56"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P60", "to": "P61", "evidence": ["E57"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P61", "to": "P62", "evidence": ["E58"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P62", "to": "P63", "evidence": ["E59"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P64", "name": "Results reported in aggregate only, deliberately withholding paper/author identity", "description": "No specific paper, author, or institution is identified; all results are aggregate, motivated by concern that public identification could cause reputational harm disproportionate to what the audit can establish, especially where failures reflect workflow breakdown rather than individual misconduct."},
+    {"id": "P65", "name": "Results depend on the configured LLM provider and change over time", "description": "The extraction and deep-search stages inherit the strengths/weaknesses of the configured LLM provider (stronger models reduce false positives/negatives but cost more); model behavior also changes as providers roll out updates, so a scan run today may not reproduce identically under a future model release."},
+    {"id": "P66", "name": "Extraction noise is a leading cause of false positives; source .bib files would help", "description": "PDF reference extraction is the noisiest pipeline step (merged/split fields, mangled strings, truncated titles); collecting source bibliographies (.bib files) directly at submission would let the pipeline skip this noisiest stage and reduce false positives."},
+    {"id": "P67", "name": "Unpublished or not-yet-indexed works are near-certain false positives", "description": "Genuinely unpublished or very recently accepted work not yet indexed by aggregators can be impossible to confirm at scan time even though real, since no tool can distinguish 'does not exist' from 'not yet indexed' — a structural reason to keep humans in the loop."},
+    {"id": "P68", "name": "Citation-layer verification is necessary but not sufficient for paper integrity", "description": "The audit verifies only whether a cited work exists and its authorship matches; it does not verify whether the citing sentence is faithfully supported by the cited work or whether scientific claims are correct, so it complements rather than replaces claim-level fact-checking."},
+    {"id": "P69", "name": "A shared, canonical citation-verification layer is proposed as a more durable fix", "description": "Much of the friction and false positives stem from bibliographic identity being fragmented across disagreeing sources; a continuously updated canonical citation service unifying these records would raise precision/recall of any checker and help authors fetch correct entries at the point of writing."}
+  ]
+}

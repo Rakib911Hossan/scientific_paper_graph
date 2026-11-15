@@ -1,0 +1,2146 @@
+[
+  {
+    "Nodes": [
+      {
+        "id": "P1",
+        "name": "Gap grows with training set size",
+        "description": "In diffusion models, the gap between the early timescale (\\tau_{gen}) and the later timescale (\\tau_{mem}) grows as the size of the training set increases."
+      },
+      {
+        "id": "P2",
+        "name": "Timescales emerge under n < n*(p)",
+        "description": "The two distinct timescales in the training dynamics of diffusion models emerge under the condition n < n*(p)."
+      },
+      {
+        "id": "P3",
+        "name": "Timescales correspond to inverse eigenvalues",
+        "description": "In the random feature setting, the timescales of training dynamics of diffusion models correspond to the inverse eigenvalues of the random feature correlation matrix."
+      },
+      {
+        "id": "P4",
+        "name": "Generalization timescale scaling",
+        "description": "The characteristic timescale where high-quality sample generation begins (\\tau_{gen}) scales according to the formula \\tau_{gen} \\propto W^{-1}."
+      },
+      {
+        "id": "P5",
+        "name": "Memorization timescale scaling",
+        "description": "The characteristic timescale where memorization of training data starts to emerge (\\tau_{mem}) scales according to the formula \\tau_{mem} \\propto nW^{-1}."
+      },
+      {
+        "id": "P6",
+        "name": "Generalization timescale is constant",
+        "description": "The generalization timescale (\\tau_{gen}) remains constant regardless of the training set size (n)."
+      },
+      {
+        "id": "P7",
+        "name": "Memorization timescale increases linearly",
+        "description": "The memorization timescale (\\tau_{mem}) increases linearly with the training set size (n)."
+      },
+      {
+        "id": "P8",
+        "name": "Training loss decreases during memorization",
+        "description": "On the timescale where overfitting and memorization occur, the training loss decreases."
+      },
+      {
+        "id": "P9",
+        "name": "Test loss increases during memorization",
+        "description": "On the timescale where overfitting and memorization occur, the test loss increases."
+      },
+      {
+        "id": "P10",
+        "name": "Convergence to empirical score at long times",
+        "description": "The training dynamics of diffusion models converge to the low-lying minimum corresponding to the empirical score only at very long training times."
+      },
+      {
+        "id": "P11",
+        "name": "Low-frequency part close to population score",
+        "description": "The low-frequency part of the empirical score is close to the population score."
+      },
+      {
+        "id": "P12",
+        "name": "High-frequency part is dataset-dependent",
+        "description": "The high-frequency part of the empirical score is dataset-dependent."
+      },
+      {
+        "id": "P13",
+        "name": "n-dependent change in loss landscape",
+        "description": "A fundamental n-dependent change in the loss landscape drives memorization in diffusion models."
+      },
+      {
+        "id": "P14",
+        "name": "Score model not expressive enough when n > n*(p)",
+        "description": "When the training set size n exceeds the threshold n*(p), the score model is not expressive enough to represent the empirical score associated to n data."
+      },
+      {
+        "id": "P15",
+        "name": "Score model provides smooth interpolation when n > n*(p)",
+        "description": "When the training set size n exceeds the threshold n*(p), the score model provides a smooth interpolation, approximately independent of the training set."
+      },
+      {
+        "id": "P16",
+        "name": "Larger W achieves generation earlier",
+        "description": "Higher-capacity networks with larger network width W achieve high-quality generation earlier than smaller networks."
+      },
+      {
+        "id": "P17",
+        "name": "Larger W memorizes earlier",
+        "description": "Higher-capacity networks with larger network width W begin to memorize earlier than smaller networks."
+      },
+      {
+        "id": "P18",
+        "name": "U-Net base widths W tested",
+        "description": "The U-Net base widths W tested to analyze the impact of model capacity are 8, 16, 32, 48, and 64."
+      },
+      {
+        "id": "P19",
+        "name": "Total parameter counts p tested",
+        "description": "The total parameter counts p tested to analyze the impact of model capacity are 0.26, 1, 4, 9, 16 \\times 10^6."
+      },
+      {
+        "id": "P20",
+        "name": "U-Net architecture used",
+        "description": "The score model used in the study has a U-Net architecture [46]."
+      },
+      {
+        "id": "P21",
+        "name": "Three resolution levels",
+        "description": "The score model used in the study has three resolution levels."
+      },
+      {
+        "id": "P22",
+        "name": "Base channel width of W",
+        "description": "The score model used in the study has a base channel width of W."
+      },
+      {
+        "id": "P23",
+        "name": "Channel width multipliers",
+        "description": "The score model used in the study has channel width multipliers of 1, 2, and 3 respectively."
+      },
+      {
+        "id": "P24",
+        "name": "Fixed capacity p=4x10^6 used",
+        "description": "A fixed model capacity with parameters p=4\\times10^6 was used to isolate and investigate the impact of training set size n on the metrics."
+      },
+      {
+        "id": "P25",
+        "name": "Fixed capacity W=32 used",
+        "description": "A fixed model capacity with base width W=32 was used to isolate and investigate the impact of training set size n on the metrics."
+      },
+      {
+        "id": "P26",
+        "name": "Overfitting disappears when n > threshold",
+        "description": "Overfitting disappears even at infinite training times when the training set size n becomes larger than a model-dependent threshold."
+      },
+      {
+        "id": "P27",
+        "name": "n > n*(p) is architectural regularization",
+        "description": "In the (n, p) phase diagram, the condition n > n*(p) corresponds to the architectural regularization regime."
+      },
+      {
+        "id": "P28",
+        "name": "Training set size n is a main parameter",
+        "description": "The size of the training set n is one of the two main parameters that define the diffusion model regimes."
+      },
+      {
+        "id": "P29",
+        "name": "Expressivity is a main parameter",
+        "description": "The expressivity of the class of score functions on which the diffusion model is trained is one of the two main parameters that define the diffusion model regimes."
+      },
+      {
+        "id": "P30",
+        "name": "Expressivity characterized by p",
+        "description": "The expressivity of the class of score functions on which the diffusion model is trained is characterized by a number of parameters p."
+      },
+      {
+        "id": "P31",
+        "name": "Empirical score composition",
+        "description": "The empirical score is composed of a low-frequency part and a high-frequency part."
+      },
+      {
+        "id": "P32",
+        "name": "Irregularity of empirical score drives gap",
+        "description": "At low noise levels and large training set sizes, the irregularity of the empirical score is the key driver behind the widening gap between the generalization and memorization timescales."
+      },
+      {
+        "id": "P33",
+        "name": "Learning bias towards low frequency",
+        "description": "Deep neural networks exhibit a learning bias towards low frequency functions."
+      },
+      {
+        "id": "P34",
+        "name": "High-frequency learning time scales with n",
+        "description": "The training time required to learn the high-frequency, dataset-dependent part of the score scales linearly with the training set size n."
+      },
+      {
+        "id": "P35",
+        "name": "RFNN used to parameterize score",
+        "description": "A Random Features Neural Network [RFNN, 43] is used to parameterize the score function in the study of the training dynamics and timescales of score-based models."
+      },
+      {
+        "id": "P36",
+        "name": "Timescale formula",
+        "description": "The mathematical formula relating the training timescales of score-based models to the eigenvalues of the random feature correlation matrix is tau^-1 = psi_p/Delta_t lambda_min."
+      },
+      {
+        "id": "P37",
+        "name": "Gradient descent used",
+        "description": "Gradient descent is the optimization method used to study the dynamics of score learning both analytically and numerically."
+      },
+      {
+        "id": "P38",
+        "name": "Theorem 3.2",
+        "description": "Theorem 3.2 establishes the emergence of two distinct training timescales in the overparameterized RFNN model."
+      },
+      {
+        "id": "P39",
+        "name": "Random matrix theory tools used",
+        "description": "Tools from random matrix theory are used to compute the eigenvalue spectrum in the limit of large datasets, high-dimensional data, and overparameterized models."
+      },
+      {
+        "id": "P40",
+        "name": "SGD optimization used initially",
+        "description": "The theoretical results regarding the training timescales were initially derived under SGD optimization."
+      },
+      {
+        "id": "P41",
+        "name": "Timescales arise under Adam",
+        "description": "The two key training timescales arise under the Adam optimizer."
+      },
+      {
+        "id": "P42",
+        "name": "Fewer steps under Adam",
+        "description": "The number of optimization steps required for the two distinct training timescales to emerge under the Adam optimizer is much fewer than under the SGD optimizer."
+      },
+      {
+        "id": "P43",
+        "name": "Toy Gaussian mixture dataset used",
+        "description": "A toy Gaussian mixture dataset was used to show that the scaling of the memorization timescale with training set size holds in conditional settings."
+      },
+      {
+        "id": "P44",
+        "name": "Classifier-free guidance used",
+        "description": "Classifier-free guidance [21] was used to show that the scaling of the memorization timescale with training set size holds in conditional settings."
+      },
+      {
+        "id": "P45",
+        "name": "Implicit dynamical regularization enlarges regime",
+        "description": "Implicit dynamical regularization in training substantially enlarges the generalization regime of score-based generative models."
+      },
+      {
+        "id": "P46",
+        "name": "Architectural biases constrain memorization",
+        "description": "Architectural biases are a constraint on memorization."
+      }
+    ],
+    "Edges": [
+      {
+        "node": "P1",
+        "inputs": [
+          "P6",
+          "P7"
+        ],
+        "outputs": [
+          "P32",
+          "P45"
+        ],
+        "evidence": [
+          "S5",
+          "S39"
+        ]
+      },
+      {
+        "node": "P2",
+        "inputs": [
+          "P28",
+          "P29",
+          "P30"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S34",
+          "S37"
+        ]
+      },
+      {
+        "node": "P3",
+        "inputs": [
+          "P35"
+        ],
+        "outputs": [
+          "P36"
+        ],
+        "evidence": [
+          "S48",
+          "S153"
+        ]
+      },
+      {
+        "node": "P4",
+        "inputs": [
+          "P16"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S137",
+          "S138"
+        ]
+      },
+      {
+        "node": "P5",
+        "inputs": [
+          "P17"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S137",
+          "S138"
+        ]
+      },
+      {
+        "node": "P6",
+        "inputs": [
+          "P24",
+          "P25"
+        ],
+        "outputs": [
+          "P1"
+        ],
+        "evidence": [
+          "S112",
+          "S122",
+          "S5"
+        ]
+      },
+      {
+        "node": "P7",
+        "inputs": [
+          "P24",
+          "P25"
+        ],
+        "outputs": [
+          "P1",
+          "P13",
+          "P43",
+          "P44"
+        ],
+        "evidence": [
+          "S112",
+          "S122",
+          "S5"
+        ]
+      },
+      {
+        "node": "P11",
+        "inputs": [
+          "P31"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S62"
+        ]
+      },
+      {
+        "node": "P12",
+        "inputs": [
+          "P31"
+        ],
+        "outputs": [
+          "P34"
+        ],
+        "evidence": [
+          "S62"
+        ]
+      },
+      {
+        "node": "P13",
+        "inputs": [
+          "P7"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S133",
+          "S134",
+          "S122"
+        ]
+      },
+      {
+        "node": "P14",
+        "inputs": [
+          "P30"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S35"
+        ]
+      },
+      {
+        "node": "P15",
+        "inputs": [
+          "P30"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S35"
+        ]
+      },
+      {
+        "node": "P16",
+        "inputs": [
+          "P18",
+          "P19"
+        ],
+        "outputs": [
+          "P4"
+        ],
+        "evidence": [
+          "S136",
+          "S137"
+        ]
+      },
+      {
+        "node": "P17",
+        "inputs": [
+          "P18",
+          "P19"
+        ],
+        "outputs": [
+          "P5"
+        ],
+        "evidence": [
+          "S136",
+          "S137"
+        ]
+      },
+      {
+        "node": "P18",
+        "inputs": [
+          "P22"
+        ],
+        "outputs": [
+          "P16",
+          "P17"
+        ],
+        "evidence": [
+          "S88",
+          "S136"
+        ]
+      },
+      {
+        "node": "P21",
+        "inputs": [
+          "P20"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S88"
+        ]
+      },
+      {
+        "node": "P22",
+        "inputs": [
+          "P20"
+        ],
+        "outputs": [
+          "P18"
+        ],
+        "evidence": [
+          "S88"
+        ]
+      },
+      {
+        "node": "P23",
+        "inputs": [
+          "P20"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S88"
+        ]
+      },
+      {
+        "node": "P26",
+        "inputs": [
+          "P27"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S21",
+          "S7",
+          "S35"
+        ]
+      },
+      {
+        "node": "P27",
+        "inputs": [
+          "P30"
+        ],
+        "outputs": [
+          "P26"
+        ],
+        "evidence": [
+          "S21",
+          "S35"
+        ]
+      },
+      {
+        "node": "P29",
+        "inputs": [
+          "P30"
+        ],
+        "outputs": [
+          "P2"
+        ],
+        "evidence": [
+          "S34"
+        ]
+      },
+      {
+        "node": "P32",
+        "inputs": [
+          "P1",
+          "P10"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S41",
+          "S42",
+          "S243"
+        ]
+      },
+      {
+        "node": "P34",
+        "inputs": [
+          "P12",
+          "P33"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S61",
+          "S62",
+          "S63"
+        ]
+      },
+      {
+        "node": "P36",
+        "inputs": [
+          "P3"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S48",
+          "S223"
+        ]
+      },
+      {
+        "node": "P38",
+        "inputs": [
+          "P35",
+          "P39"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S224",
+          "S153",
+          "S49",
+          "S209"
+        ]
+      },
+      {
+        "node": "P41",
+        "inputs": [
+          "P40"
+        ],
+        "outputs": [
+          "P42"
+        ],
+        "evidence": [
+          "S247",
+          "S248"
+        ]
+      },
+      {
+        "node": "P42",
+        "inputs": [
+          "P40",
+          "P41"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S247",
+          "S248"
+        ]
+      },
+      {
+        "node": "P43",
+        "inputs": [
+          "P7"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S253",
+          "S5"
+        ]
+      },
+      {
+        "node": "P44",
+        "inputs": [
+          "P7"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S253",
+          "S5"
+        ]
+      },
+      {
+        "node": "P45",
+        "inputs": [
+          "P1"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S40",
+          "S243"
+        ]
+      }
+    ]
+  },
+  {
+    "Nodes": [
+      {
+        "id": "P1",
+        "name": "Timescale gap grows with training set size",
+        "description": "In diffusion models, the gap between the early timescale (\\tau_{gen}) and the later timescale (\\tau_{mem}) grows as the size of the training set increases."
+      },
+      {
+        "id": "P2",
+        "name": "Timescales emerge under n < n*(p)",
+        "description": "The two distinct timescales in the training dynamics of diffusion models emerge under the condition n < n*(p)."
+      },
+      {
+        "id": "P3",
+        "name": "Timescales correspond to inverse eigenvalues",
+        "description": "In the random feature setting, the timescales of training dynamics of diffusion models correspond to the inverse eigenvalues of the random feature correlation matrix."
+      },
+      {
+        "id": "P4",
+        "name": "Generalization timescale scales as W^-1",
+        "description": "The characteristic timescale where high-quality sample generation begins (\\tau_{gen}) scales according to the formula \\tau_{gen} \\propto W^{-1}."
+      },
+      {
+        "id": "P5",
+        "name": "Memorization timescale scales as nW^-1",
+        "description": "The characteristic timescale where memorization of training data starts to emerge (\\tau_{mem}) scales according to the formula \\tau_{mem} \\propto nW^{-1}."
+      },
+      {
+        "id": "P6",
+        "name": "Generalization timescale remains constant",
+        "description": "The generalization timescale (\\tau_{gen}) remains constant regardless of the training set size (n)."
+      },
+      {
+        "id": "P7",
+        "name": "Memorization timescale increases linearly",
+        "description": "The memorization timescale (\\tau_{mem}) increases linearly with the training set size (n)."
+      },
+      {
+        "id": "P8",
+        "name": "Training loss decreases during memorization",
+        "description": "On the timescale where overfitting and memorization occur, the training loss decreases."
+      },
+      {
+        "id": "P9",
+        "name": "Test loss increases during memorization",
+        "description": "On the timescale where overfitting and memorization occur, the test loss increases."
+      },
+      {
+        "id": "P10",
+        "name": "Convergence to empirical score at long times",
+        "description": "The training dynamics of diffusion models converge to the low-lying minimum corresponding to the empirical score only at very long training times."
+      },
+      {
+        "id": "P11",
+        "name": "Low-frequency empirical score close to population",
+        "description": "The low-frequency part of the empirical score is close to the population score."
+      },
+      {
+        "id": "P12",
+        "name": "High-frequency empirical score is dataset-dependent",
+        "description": "The high-frequency part of the empirical score is dataset-dependent."
+      },
+      {
+        "id": "P13",
+        "name": "Loss landscape change drives memorization",
+        "description": "A fundamental n-dependent change in the loss landscape drives memorization in diffusion models."
+      },
+      {
+        "id": "P14",
+        "name": "Model not expressive enough when n > n*(p)",
+        "description": "When the training set size n exceeds the threshold n*(p), the score model is not expressive enough to represent the empirical score associated to n data."
+      },
+      {
+        "id": "P15",
+        "name": "Model interpolates smoothly when n > n*(p)",
+        "description": "When the training set size n exceeds the threshold n*(p), the score model provides a smooth interpolation, approximately independent of the training set."
+      },
+      {
+        "id": "P16",
+        "name": "Larger W achieves generation earlier",
+        "description": "Higher-capacity networks with larger network width W achieve high-quality generation earlier than smaller networks."
+      },
+      {
+        "id": "P17",
+        "name": "Larger W memorizes earlier",
+        "description": "Higher-capacity networks with larger network width W begin to memorize earlier than smaller networks."
+      },
+      {
+        "id": "P18",
+        "name": "U-Net base widths tested",
+        "description": "The U-Net base widths W tested to analyze the impact of model capacity are 8, 16, 32, 48, and 64."
+      },
+      {
+        "id": "P19",
+        "name": "Total parameter counts tested",
+        "description": "The total parameter counts p tested to analyze the impact of model capacity are 0.26, 1, 4, 9, 16 \\times 10^6."
+      },
+      {
+        "id": "P20",
+        "name": "U-Net architecture used",
+        "description": "The score model used in the study has a U-Net architecture [46]."
+      },
+      {
+        "id": "P21",
+        "name": "Three resolution levels used",
+        "description": "The score model used in the study has three resolution levels."
+      },
+      {
+        "id": "P22",
+        "name": "Base channel width W used",
+        "description": "The score model used in the study has a base channel width of W."
+      },
+      {
+        "id": "P23",
+        "name": "Channel width multipliers used",
+        "description": "The score model used in the study has channel width multipliers of 1, 2, and 3 respectively."
+      },
+      {
+        "id": "P24",
+        "name": "Fixed model capacity p=4x10^6 used",
+        "description": "A fixed model capacity with parameters p=4\\times10^6 was used to isolate and investigate the impact of training set size n on the metrics."
+      },
+      {
+        "id": "P25",
+        "name": "Fixed base width W=32 used",
+        "description": "A fixed model capacity with base width W=32 was used to isolate and investigate the impact of training set size n on the metrics."
+      },
+      {
+        "id": "P26",
+        "name": "Overfitting disappears when n > threshold",
+        "description": "Overfitting disappears even at infinite training times when the training set size n becomes larger than a model-dependent threshold."
+      },
+      {
+        "id": "P27",
+        "name": "n > n*(p) is architectural regularization",
+        "description": "In the (n, p) phase diagram, the condition n > n*(p) corresponds to the architectural regularization regime."
+      },
+      {
+        "id": "P28",
+        "name": "Training set size n is main parameter",
+        "description": "The size of the training set n is one of the two main parameters that define the diffusion model regimes."
+      },
+      {
+        "id": "P29",
+        "name": "Expressivity is main parameter",
+        "description": "The expressivity of the class of score functions on which the diffusion model is trained is one of the two main parameters that define the diffusion model regimes."
+      },
+      {
+        "id": "P30",
+        "name": "Expressivity characterized by p",
+        "description": "The expressivity of the class of score functions on which the diffusion model is trained is characterized by a number of parameters p."
+      },
+      {
+        "id": "P31",
+        "name": "Empirical score has low and high frequencies",
+        "description": "The empirical score is composed of a low-frequency part and a high-frequency part."
+      },
+      {
+        "id": "P32",
+        "name": "Irregularity drives widening gap",
+        "description": "At low noise levels and large training set sizes, the irregularity of the empirical score is the key driver behind the widening gap between the generalization and memorization timescales."
+      },
+      {
+        "id": "P33",
+        "name": "DNNs have low-frequency learning bias",
+        "description": "Deep neural networks exhibit a learning bias towards low frequency functions."
+      },
+      {
+        "id": "P34",
+        "name": "High-frequency learning time scales with n",
+        "description": "The training time required to learn the high-frequency, dataset-dependent part of the score scales linearly with the training set size n."
+      },
+      {
+        "id": "P35",
+        "name": "RFNN used to parameterize score",
+        "description": "A Random Features Neural Network [RFNN, 43] is used to parameterize the score function in the study of the training dynamics and timescales of score-based models."
+      },
+      {
+        "id": "P36",
+        "name": "Timescale formula in RFNN",
+        "description": "The mathematical formula relating the training timescales of score-based models to the eigenvalues of the random feature correlation matrix is tau^-1 = psi_p/Delta_t lambda_min."
+      },
+      {
+        "id": "P37",
+        "name": "Gradient descent used for optimization",
+        "description": "Gradient descent is the optimization method used to study the dynamics of score learning both analytically and numerically."
+      },
+      {
+        "id": "P38",
+        "name": "Theorem 3.2 on RFNN timescales",
+        "description": "Theorem 3.2 establishes the emergence of two distinct training timescales in the overparameterized RFNN model."
+      },
+      {
+        "id": "P39",
+        "name": "Random matrix theory used for spectrum",
+        "description": "Tools from random matrix theory are used to compute the eigenvalue spectrum in the limit of large datasets, high-dimensional data, and overparameterized models."
+      },
+      {
+        "id": "P40",
+        "name": "Results derived under SGD",
+        "description": "The theoretical results regarding the training timescales were initially derived under SGD optimization."
+      },
+      {
+        "id": "P41",
+        "name": "Timescales arise under Adam",
+        "description": "The two key training timescales arise under the Adam optimizer."
+      },
+      {
+        "id": "P42",
+        "name": "Adam requires fewer steps than SGD",
+        "description": "The number of optimization steps required for the two distinct training timescales to emerge under the Adam optimizer is much fewer than under the SGD optimizer."
+      },
+      {
+        "id": "P43",
+        "name": "Toy Gaussian mixture for conditional setting",
+        "description": "A toy Gaussian mixture dataset was used to show that the scaling of the memorization timescale with training set size holds in conditional settings."
+      },
+      {
+        "id": "P44",
+        "name": "Classifier-free guidance for conditional setting",
+        "description": "Classifier-free guidance [21] was used to show that the scaling of the memorization timescale with training set size holds in conditional settings."
+      },
+      {
+        "id": "P45",
+        "name": "Implicit dynamical regularization enlarges generalization",
+        "description": "Implicit dynamical regularization in training substantially enlarges the generalization regime of score-based generative models."
+      },
+      {
+        "id": "P46",
+        "name": "Architectural biases constrain memorization",
+        "description": "Architectural biases are a constraint on memorization."
+      }
+    ],
+    "Edges": [
+      {
+        "node": "P1",
+        "inputs": [
+          "P6",
+          "P7"
+        ],
+        "outputs": [
+          "P32",
+          "P45"
+        ],
+        "evidence": [
+          "S5",
+          "S39"
+        ]
+      },
+      {
+        "node": "P3",
+        "inputs": [
+          "P35"
+        ],
+        "outputs": [
+          "P36"
+        ],
+        "evidence": [
+          "S48",
+          "S153"
+        ]
+      },
+      {
+        "node": "P4",
+        "inputs": [],
+        "outputs": [
+          "P16"
+        ],
+        "evidence": [
+          "S138"
+        ]
+      },
+      {
+        "node": "P5",
+        "inputs": [],
+        "outputs": [
+          "P17"
+        ],
+        "evidence": [
+          "S138"
+        ]
+      },
+      {
+        "node": "P6",
+        "inputs": [
+          "P24",
+          "P25"
+        ],
+        "outputs": [
+          "P1"
+        ],
+        "evidence": [
+          "S112",
+          "S5"
+        ]
+      },
+      {
+        "node": "P7",
+        "inputs": [
+          "P24",
+          "P25"
+        ],
+        "outputs": [
+          "P1",
+          "P13",
+          "P34",
+          "P43",
+          "P44"
+        ],
+        "evidence": [
+          "S112",
+          "S5"
+        ]
+      },
+      {
+        "node": "P10",
+        "inputs": [
+          "P32"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S41",
+          "S42"
+        ]
+      },
+      {
+        "node": "P11",
+        "inputs": [
+          "P31"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S62"
+        ]
+      },
+      {
+        "node": "P12",
+        "inputs": [
+          "P31"
+        ],
+        "outputs": [
+          "P34"
+        ],
+        "evidence": [
+          "S62"
+        ]
+      },
+      {
+        "node": "P13",
+        "inputs": [
+          "P7"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S122",
+          "S133",
+          "S134"
+        ]
+      },
+      {
+        "node": "P14",
+        "inputs": [],
+        "outputs": [
+          "P26",
+          "P27"
+        ],
+        "evidence": [
+          "S35"
+        ]
+      },
+      {
+        "node": "P15",
+        "inputs": [],
+        "outputs": [
+          "P26",
+          "P27"
+        ],
+        "evidence": [
+          "S35"
+        ]
+      },
+      {
+        "node": "P16",
+        "inputs": [
+          "P4"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S137",
+          "S138"
+        ]
+      },
+      {
+        "node": "P17",
+        "inputs": [
+          "P5"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S137",
+          "S138"
+        ]
+      },
+      {
+        "node": "P18",
+        "inputs": [],
+        "outputs": [
+          "P19"
+        ],
+        "evidence": [
+          "S136"
+        ]
+      },
+      {
+        "node": "P19",
+        "inputs": [
+          "P18"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S136"
+        ]
+      },
+      {
+        "node": "P20",
+        "inputs": [],
+        "outputs": [
+          "P21",
+          "P22",
+          "P23"
+        ],
+        "evidence": [
+          "S88"
+        ]
+      },
+      {
+        "node": "P21",
+        "inputs": [
+          "P20"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S88"
+        ]
+      },
+      {
+        "node": "P22",
+        "inputs": [
+          "P20"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S88"
+        ]
+      },
+      {
+        "node": "P23",
+        "inputs": [
+          "P20"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S88"
+        ]
+      },
+      {
+        "node": "P24",
+        "inputs": [],
+        "outputs": [
+          "P6",
+          "P7"
+        ],
+        "evidence": [
+          "S112"
+        ]
+      },
+      {
+        "node": "P25",
+        "inputs": [],
+        "outputs": [
+          "P6",
+          "P7"
+        ],
+        "evidence": [
+          "S112"
+        ]
+      },
+      {
+        "node": "P26",
+        "inputs": [
+          "P14",
+          "P15"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S7",
+          "S35"
+        ]
+      },
+      {
+        "node": "P27",
+        "inputs": [
+          "P14",
+          "P15"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S21",
+          "S35"
+        ]
+      },
+      {
+        "node": "P31",
+        "inputs": [],
+        "outputs": [
+          "P11",
+          "P12"
+        ],
+        "evidence": [
+          "S62"
+        ]
+      },
+      {
+        "node": "P32",
+        "inputs": [
+          "P1",
+          "P33"
+        ],
+        "outputs": [
+          "P10"
+        ],
+        "evidence": [
+          "S41",
+          "S243"
+        ]
+      },
+      {
+        "node": "P33",
+        "inputs": [],
+        "outputs": [
+          "P32"
+        ],
+        "evidence": [
+          "S41"
+        ]
+      },
+      {
+        "node": "P34",
+        "inputs": [
+          "P7",
+          "P12"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S62",
+          "S63"
+        ]
+      },
+      {
+        "node": "P35",
+        "inputs": [],
+        "outputs": [
+          "P3",
+          "P38"
+        ],
+        "evidence": [
+          "S153"
+        ]
+      },
+      {
+        "node": "P36",
+        "inputs": [
+          "P3"
+        ],
+        "outputs": [
+          "P38"
+        ],
+        "evidence": [
+          "S223",
+          "S48"
+        ]
+      },
+      {
+        "node": "P38",
+        "inputs": [
+          "P35",
+          "P36",
+          "P39"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S224",
+          "S209",
+          "S49"
+        ]
+      },
+      {
+        "node": "P39",
+        "inputs": [],
+        "outputs": [
+          "P38"
+        ],
+        "evidence": [
+          "S49"
+        ]
+      },
+      {
+        "node": "P40",
+        "inputs": [],
+        "outputs": [
+          "P41",
+          "P42"
+        ],
+        "evidence": [
+          "S247"
+        ]
+      },
+      {
+        "node": "P41",
+        "inputs": [
+          "P40"
+        ],
+        "outputs": [
+          "P42"
+        ],
+        "evidence": [
+          "S247",
+          "S248"
+        ]
+      },
+      {
+        "node": "P42",
+        "inputs": [
+          "P40",
+          "P41"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S247",
+          "S248"
+        ]
+      },
+      {
+        "node": "P43",
+        "inputs": [
+          "P7"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S253",
+          "S5"
+        ]
+      },
+      {
+        "node": "P44",
+        "inputs": [
+          "P7"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S253",
+          "S5"
+        ]
+      },
+      {
+        "node": "P45",
+        "inputs": [
+          "P1"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S40",
+          "S39"
+        ]
+      }
+    ]
+  },
+  {
+    "Nodes": [
+      {
+        "id": "P1",
+        "name": "Gap grows with training set size",
+        "description": "In diffusion models, the gap between the early timescale (\\tau_{gen}) and the later timescale (\\tau_{mem}) grows as the size of the training set increases."
+      },
+      {
+        "id": "P2",
+        "name": "Emergence of timescales under n < n*(p)",
+        "description": "The two distinct timescales in the training dynamics of diffusion models emerge under the condition n < n*(p)."
+      },
+      {
+        "id": "P3",
+        "name": "Timescales correspond to inverse eigenvalues",
+        "description": "In the random feature setting, the timescales of training dynamics of diffusion models correspond to the inverse eigenvalues of the random feature correlation matrix."
+      },
+      {
+        "id": "P4",
+        "name": "Generalization timescale W scaling",
+        "description": "The characteristic timescale where high-quality sample generation begins (\\tau_{gen}) scales according to the formula \\tau_{gen} \\propto W^{-1}."
+      },
+      {
+        "id": "P5",
+        "name": "Memorization timescale nW scaling",
+        "description": "The characteristic timescale where memorization of training data starts to emerge (\\tau_{mem}) scales according to the formula \\tau_{mem} \\propto nW^{-1}."
+      },
+      {
+        "id": "P6",
+        "name": "Generalization timescale independent of n",
+        "description": "The generalization timescale (\\tau_{gen}) remains constant regardless of the training set size (n)."
+      },
+      {
+        "id": "P7",
+        "name": "Memorization timescale linear with n",
+        "description": "The memorization timescale (\\tau_{mem}) increases linearly with the training set size (n)."
+      },
+      {
+        "id": "P8",
+        "name": "Training loss decreases during memorization",
+        "description": "On the timescale where overfitting and memorization occur, the training loss decreases."
+      },
+      {
+        "id": "P9",
+        "name": "Test loss increases during memorization",
+        "description": "On the timescale where overfitting and memorization occur, the test loss increases."
+      },
+      {
+        "id": "P10",
+        "name": "Convergence to empirical score at long times",
+        "description": "The training dynamics of diffusion models converge to the low-lying minimum corresponding to the empirical score only at very long training times."
+      },
+      {
+        "id": "P11",
+        "name": "Low-frequency part close to population score",
+        "description": "The low-frequency part of the empirical score is close to the population score."
+      },
+      {
+        "id": "P12",
+        "name": "High-frequency part dataset-dependent",
+        "description": "The high-frequency part of the empirical score is dataset-dependent."
+      },
+      {
+        "id": "P13",
+        "name": "n-dependent change in loss landscape",
+        "description": "A fundamental n-dependent change in the loss landscape drives memorization in diffusion models."
+      },
+      {
+        "id": "P14",
+        "name": "Inexpressivity above n*(p)",
+        "description": "When the training set size n exceeds the threshold n*(p), the score model is not expressive enough to represent the empirical score associated to n data."
+      },
+      {
+        "id": "P15",
+        "name": "Smooth interpolation above n*(p)",
+        "description": "When the training set size n exceeds the threshold n*(p), the score model provides a smooth interpolation, approximately independent of the training set."
+      },
+      {
+        "id": "P16",
+        "name": "Larger W achieves early generation",
+        "description": "Higher-capacity networks with larger network width W achieve high-quality generation earlier than smaller networks."
+      },
+      {
+        "id": "P17",
+        "name": "Larger W achieves early memorization",
+        "description": "Higher-capacity networks with larger network width W begin to memorize earlier than smaller networks."
+      },
+      {
+        "id": "P18",
+        "name": "W widths tested",
+        "description": "The U-Net base widths W tested to analyze the impact of model capacity are 8, 16, 32, 48, and 64."
+      },
+      {
+        "id": "P19",
+        "name": "p parameters tested",
+        "description": "The total parameter counts p tested to analyze the impact of model capacity are 0.26, 1, 4, 9, 16 \\times 10^6."
+      },
+      {
+        "id": "P20",
+        "name": "U-Net architecture used",
+        "description": "The score model used in the study has a U-Net architecture [46]."
+      },
+      {
+        "id": "P21",
+        "name": "Three resolution levels",
+        "description": "The score model used in the study has three resolution levels."
+      },
+      {
+        "id": "P22",
+        "name": "Base channel width W",
+        "description": "The score model used in the study has a base channel width of W."
+      },
+      {
+        "id": "P23",
+        "name": "Channel width multipliers",
+        "description": "The score model used in the study has channel width multipliers of 1, 2, and 3 respectively."
+      },
+      {
+        "id": "P24",
+        "name": "Fixed capacity p=4e6 tested",
+        "description": "A fixed model capacity with parameters p=4\\times10^6 was used to isolate and investigate the impact of training set size n on the metrics."
+      },
+      {
+        "id": "P25",
+        "name": "Fixed capacity W=32 tested",
+        "description": "A fixed model capacity with base width W=32 was used to isolate and investigate the impact of training set size n on the metrics."
+      },
+      {
+        "id": "P26",
+        "name": "Overfitting disappearance above threshold",
+        "description": "Overfitting disappears even at infinite training times when the training set size n becomes larger than a model-dependent threshold."
+      },
+      {
+        "id": "P27",
+        "name": "Architectural regularization regime",
+        "description": "In the (n, p) phase diagram, the condition n > n*(p) corresponds to the architectural regularization regime."
+      },
+      {
+        "id": "P28",
+        "name": "n is a main parameter",
+        "description": "The size of the training set n is one of the two main parameters that define the diffusion model regimes."
+      },
+      {
+        "id": "P29",
+        "name": "Expressivity is a main parameter",
+        "description": "The expressivity of the class of score functions on which the diffusion model is trained is one of the two main parameters that define the diffusion model regimes."
+      },
+      {
+        "id": "P30",
+        "name": "Expressivity characterized by p",
+        "description": "The expressivity of the class of score functions on which the diffusion model is trained is characterized by a number of parameters p."
+      },
+      {
+        "id": "P31",
+        "name": "Empirical score frequency composition",
+        "description": "The empirical score is composed of a low-frequency part and a high-frequency part."
+      },
+      {
+        "id": "P32",
+        "name": "Irregularity of empirical score drives gap",
+        "description": "At low noise levels and large training set sizes, the irregularity of the empirical score is the key driver behind the widening gap between the generalization and memorization timescales."
+      },
+      {
+        "id": "P33",
+        "name": "DNN learning bias to low frequency",
+        "description": "Deep neural networks exhibit a learning bias towards low frequency functions."
+      },
+      {
+        "id": "P34",
+        "name": "High-frequency learning time scales with n",
+        "description": "The training time required to learn the high-frequency, dataset-dependent part of the score scales linearly with the training set size n."
+      },
+      {
+        "id": "P35",
+        "name": "RFNN parameterization",
+        "description": "A Random Features Neural Network [RFNN, 43] is used to parameterize the score function in the study of the training dynamics and timescales of score-based models."
+      },
+      {
+        "id": "P36",
+        "name": "Timescale eigenvalue formula",
+        "description": "The mathematical formula relating the training timescales of score-based models to the eigenvalues of the random feature correlation matrix is tau^-1 = psi_p/Delta_t lambda_min."
+      },
+      {
+        "id": "P37",
+        "name": "Gradient descent optimization",
+        "description": "Gradient descent is the optimization method used to study the dynamics of score learning both analytically and numerically."
+      },
+      {
+        "id": "P38",
+        "name": "Theorem 3.2 RFNN timescales",
+        "description": "Theorem 3.2 establishes the emergence of two distinct training timescales in the overparameterized RFNN model."
+      },
+      {
+        "id": "P39",
+        "name": "Random matrix theory spectrum calculation",
+        "description": "Tools from random matrix theory are used to compute the eigenvalue spectrum in the limit of large datasets, high-dimensional data, and overparameterized models."
+      },
+      {
+        "id": "P40",
+        "name": "SGD optimization derivation",
+        "description": "The theoretical results regarding the training timescales were initially derived under SGD optimization."
+      },
+      {
+        "id": "P41",
+        "name": "Timescales under Adam",
+        "description": "The two key training timescales arise under the Adam optimizer."
+      },
+      {
+        "id": "P42",
+        "name": "Adam requires fewer steps",
+        "description": "The number of optimization steps required for the two distinct training timescales to emerge under the Adam optimizer is much fewer than under the SGD optimizer."
+      },
+      {
+        "id": "P43",
+        "name": "Toy Gaussian mixture validation",
+        "description": "A toy Gaussian mixture dataset was used to show that the scaling of the memorization timescale with training set size holds in conditional settings."
+      },
+      {
+        "id": "P44",
+        "name": "Classifier-free guidance validation",
+        "description": "Classifier-free guidance [21] was used to show that the scaling of the memorization timescale with training set size holds in conditional settings."
+      },
+      {
+        "id": "P45",
+        "name": "Implicit dynamical regularization effect",
+        "description": "Implicit dynamical regularization in training substantially enlarges the generalization regime of score-based generative models."
+      },
+      {
+        "id": "P46",
+        "name": "Architectural biases constrain memorization",
+        "description": "Architectural biases are a constraint on memorization."
+      }
+    ],
+    "Edges": [
+      {
+        "node": "P1",
+        "inputs": [
+          "P2",
+          "P6",
+          "P7"
+        ],
+        "outputs": [
+          "P32",
+          "P45"
+        ],
+        "evidence": [
+          "S5",
+          "S39",
+          "S243",
+          "S40",
+          "S41"
+        ]
+      },
+      {
+        "node": "P2",
+        "inputs": [
+          "P28",
+          "P30"
+        ],
+        "outputs": [
+          "P1",
+          "P6",
+          "P7"
+        ],
+        "evidence": [
+          "S34",
+          "S37"
+        ]
+      },
+      {
+        "node": "P3",
+        "inputs": [
+          "P35",
+          "P37"
+        ],
+        "outputs": [
+          "P36",
+          "P39"
+        ],
+        "evidence": [
+          "S48",
+          "S153",
+          "S32",
+          "S193"
+        ]
+      },
+      {
+        "node": "P4",
+        "inputs": [
+          "P18"
+        ],
+        "outputs": [
+          "P16"
+        ],
+        "evidence": [
+          "S136",
+          "S138",
+          "S137"
+        ]
+      },
+      {
+        "node": "P5",
+        "inputs": [
+          "P7",
+          "P18"
+        ],
+        "outputs": [
+          "P17"
+        ],
+        "evidence": [
+          "S136",
+          "S138",
+          "S5",
+          "S137"
+        ]
+      },
+      {
+        "node": "P6",
+        "inputs": [
+          "P2",
+          "P24",
+          "P25"
+        ],
+        "outputs": [
+          "P1"
+        ],
+        "evidence": [
+          "S112",
+          "S5",
+          "S128",
+          "S39",
+          "S243"
+        ]
+      },
+      {
+        "node": "P7",
+        "inputs": [
+          "P2",
+          "P24",
+          "P25"
+        ],
+        "outputs": [
+          "P1",
+          "P5",
+          "P13",
+          "P43",
+          "P44"
+        ],
+        "evidence": [
+          "S112",
+          "S5",
+          "S122",
+          "S39",
+          "S243",
+          "S138",
+          "S133",
+          "S134",
+          "S253"
+        ]
+      },
+      {
+        "node": "P8",
+        "inputs": [
+          "P24",
+          "P25"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S112",
+          "S234"
+        ]
+      },
+      {
+        "node": "P9",
+        "inputs": [
+          "P24",
+          "P25"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S112",
+          "S234"
+        ]
+      },
+      {
+        "node": "P10",
+        "inputs": [
+          "P37"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S32",
+          "S42"
+        ]
+      },
+      {
+        "node": "P11",
+        "inputs": [
+          "P31"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S62"
+        ]
+      },
+      {
+        "node": "P12",
+        "inputs": [
+          "P31"
+        ],
+        "outputs": [
+          "P34"
+        ],
+        "evidence": [
+          "S62",
+          "S63"
+        ]
+      },
+      {
+        "node": "P13",
+        "inputs": [
+          "P7"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S133",
+          "S134"
+        ]
+      },
+      {
+        "node": "P14",
+        "inputs": [
+          "P28",
+          "P30"
+        ],
+        "outputs": [
+          "P26"
+        ],
+        "evidence": [
+          "S35",
+          "S7",
+          "S25"
+        ]
+      },
+      {
+        "node": "P15",
+        "inputs": [
+          "P28",
+          "P30"
+        ],
+        "outputs": [
+          "P26"
+        ],
+        "evidence": [
+          "S35",
+          "S7",
+          "S25"
+        ]
+      },
+      {
+        "node": "P16",
+        "inputs": [
+          "P4"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S137",
+          "S138"
+        ]
+      },
+      {
+        "node": "P17",
+        "inputs": [
+          "P5"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S137",
+          "S138"
+        ]
+      },
+      {
+        "node": "P18",
+        "inputs": [
+          "P20",
+          "P22"
+        ],
+        "outputs": [
+          "P4",
+          "P5"
+        ],
+        "evidence": [
+          "S88",
+          "S136",
+          "S138"
+        ]
+      },
+      {
+        "node": "P19",
+        "inputs": [
+          "P20",
+          "P30"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S88",
+          "S136"
+        ]
+      },
+      {
+        "node": "P20",
+        "inputs": [],
+        "outputs": [
+          "P18",
+          "P19",
+          "P21",
+          "P22",
+          "P23"
+        ],
+        "evidence": [
+          "S88",
+          "S136"
+        ]
+      },
+      {
+        "node": "P21",
+        "inputs": [
+          "P20"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S88"
+        ]
+      },
+      {
+        "node": "P22",
+        "inputs": [
+          "P20"
+        ],
+        "outputs": [
+          "P18",
+          "P25"
+        ],
+        "evidence": [
+          "S88",
+          "S136",
+          "S112"
+        ]
+      },
+      {
+        "node": "P23",
+        "inputs": [
+          "P20"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S88"
+        ]
+      },
+      {
+        "node": "P24",
+        "inputs": [
+          "P30"
+        ],
+        "outputs": [
+          "P6",
+          "P7",
+          "P8",
+          "P9"
+        ],
+        "evidence": [
+          "S34",
+          "S112"
+        ]
+      },
+      {
+        "node": "P25",
+        "inputs": [
+          "P22"
+        ],
+        "outputs": [
+          "P6",
+          "P7",
+          "P8",
+          "P9"
+        ],
+        "evidence": [
+          "S88",
+          "S112"
+        ]
+      },
+      {
+        "node": "P26",
+        "inputs": [
+          "P14",
+          "P15"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S35",
+          "S7",
+          "S25"
+        ]
+      },
+      {
+        "node": "P27",
+        "inputs": [
+          "P28",
+          "P30",
+          "P46"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S21",
+          "S238",
+          "S36",
+          "S59"
+        ]
+      },
+      {
+        "node": "P28",
+        "inputs": [],
+        "outputs": [
+          "P2",
+          "P14",
+          "P15",
+          "P27"
+        ],
+        "evidence": [
+          "S34",
+          "S37",
+          "S35",
+          "S21"
+        ]
+      },
+      {
+        "node": "P29",
+        "inputs": [],
+        "outputs": [
+          "P30"
+        ],
+        "evidence": [
+          "S34"
+        ]
+      },
+      {
+        "node": "P30",
+        "inputs": [
+          "P29"
+        ],
+        "outputs": [
+          "P2",
+          "P14",
+          "P15",
+          "P19",
+          "P24",
+          "P27"
+        ],
+        "evidence": [
+          "S34",
+          "S37",
+          "S35",
+          "S136",
+          "S112",
+          "S21"
+        ]
+      },
+      {
+        "node": "P31",
+        "inputs": [],
+        "outputs": [
+          "P11",
+          "P12"
+        ],
+        "evidence": [
+          "S62"
+        ]
+      },
+      {
+        "node": "P32",
+        "inputs": [
+          "P1"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S41",
+          "S243"
+        ]
+      },
+      {
+        "node": "P33",
+        "inputs": [],
+        "outputs": [
+          "P34"
+        ],
+        "evidence": [
+          "S61",
+          "S63"
+        ]
+      },
+      {
+        "node": "P34",
+        "inputs": [
+          "P12",
+          "P33"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S62",
+          "S61",
+          "S63"
+        ]
+      },
+      {
+        "node": "P35",
+        "inputs": [],
+        "outputs": [
+          "P3",
+          "P38"
+        ],
+        "evidence": [
+          "S153",
+          "S48",
+          "S224"
+        ]
+      },
+      {
+        "node": "P36",
+        "inputs": [
+          "P3"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S48",
+          "S223"
+        ]
+      },
+      {
+        "node": "P37",
+        "inputs": [],
+        "outputs": [
+          "P3",
+          "P10"
+        ],
+        "evidence": [
+          "S32",
+          "S48",
+          "S42"
+        ]
+      },
+      {
+        "node": "P38",
+        "inputs": [
+          "P35",
+          "P39"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S153",
+          "S209",
+          "S224"
+        ]
+      },
+      {
+        "node": "P39",
+        "inputs": [
+          "P3"
+        ],
+        "outputs": [
+          "P38"
+        ],
+        "evidence": [
+          "S48",
+          "S49",
+          "S209"
+        ]
+      },
+      {
+        "node": "P40",
+        "inputs": [],
+        "outputs": [
+          "P41",
+          "P42"
+        ],
+        "evidence": [
+          "S247",
+          "S248"
+        ]
+      },
+      {
+        "node": "P41",
+        "inputs": [
+          "P40"
+        ],
+        "outputs": [
+          "P42"
+        ],
+        "evidence": [
+          "S247",
+          "S248"
+        ]
+      },
+      {
+        "node": "P42",
+        "inputs": [
+          "P40",
+          "P41"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S247",
+          "S248"
+        ]
+      },
+      {
+        "node": "P43",
+        "inputs": [
+          "P7"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S5",
+          "S253"
+        ]
+      },
+      {
+        "node": "P44",
+        "inputs": [
+          "P7"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S5",
+          "S253"
+        ]
+      },
+      {
+        "node": "P45",
+        "inputs": [
+          "P1"
+        ],
+        "outputs": [],
+        "evidence": [
+          "S243",
+          "S40"
+        ]
+      },
+      {
+        "node": "P46",
+        "inputs": [],
+        "outputs": [
+          "P27"
+        ],
+        "evidence": [
+          "S59",
+          "S21",
+          "S238"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,243 @@
+{
+ "arxiv_id": "2601.13645",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Quadratic upper bound (QUB) loss for fast adversarial training and its empirical effect on robustness and loss-landscape flatness",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Adversarial training is costly",
+     "description": "Adversarial training (AT) with multi-step attacks like PGD generates strong examples but requires substantial computation and long training time."
+    },
+    {
+     "id": "P2",
+     "name": "FAT trades exploration for speed",
+     "description": "Fast adversarial training uses single-step attacks, allowing only coarse exploration of the adversarial space, and often suffers catastrophic overfitting, where robustness to PGD drops dramatically."
+    },
+    {
+     "id": "P3",
+     "name": "Goal: better loss without stronger inner maximization",
+     "description": "The paper aims to improve FAT robustness through a new loss function rather than stronger inner maximization, keeping training short."
+    },
+    {
+     "id": "P4",
+     "name": "Quadratic upper bound on AT loss",
+     "description": "Using convexity of cross-entropy w.r.t. logits, the AT loss is upper-bounded by L(f(x)) + (f(x+d)-f(x))^T grad_f L(f(x)) + (||H||_2/2)||f(x+d)-f(x)||^2 (Lemma 1)."
+    },
+    {
+     "id": "P5",
+     "name": "Hessian norm bound",
+     "description": "The Hessian norm of the cross-entropy loss w.r.t. logits satisfies ||H||_2 <= 1/2 (Lemma 2)."
+    },
+    {
+     "id": "P6",
+     "name": "QUB loss definition",
+     "description": "The QUB loss is L_QUB = L(f(x)) + (f(x+d)-f(x))^T grad_f L(f(x)) + (1/4)||f(x+d)-f(x)||^2, usable by simply replacing the loss in existing AT methods."
+    },
+    {
+     "id": "P7",
+     "name": "Clean-loss term drives standard accuracy",
+     "description": "The first term of QUB, loss on clean samples, drives standard accuracy."
+    },
+    {
+     "id": "P8",
+     "name": "Second term flattens the landscape",
+     "description": "The second term approximates d^T grad_x L(f(x)), the loss increment under perturbation; minimizing it dampens loss change and flattens the loss landscape."
+    },
+    {
+     "id": "P9",
+     "name": "Third term limits logit change",
+     "description": "The third term, the squared change in logits under perturbation, limits the effect of adversarial examples on the output, as in earlier works such as TRADES."
+    },
+    {
+     "id": "P10",
+     "name": "Second term is cheaper than input-gradient form",
+     "description": "Because grad_f L = softmax minus one-hot is closed-form and lives in R^C, the second QUB term needs no extra backprop and less memory than input-sized d^T grad_x L."
+    },
+    {
+     "id": "P11",
+     "name": "QUB over-regularizes clean accuracy",
+     "description": "Because of its worst-case nature QUB yields larger gradients than the AT loss, and using it throughout can cause excessive regularization that degrades standard accuracy."
+    },
+    {
+     "id": "P12",
+     "name": "QUB-decreasing schedule",
+     "description": "QUB-decreasing linearly transitions from QUB loss to AT loss over training (L_total = (1-lambda_t) L_QUB + lambda_t L_AT, lambda_t = t/T) to balance robustness and generalization."
+    },
+    {
+     "id": "P13",
+     "name": "QUB improves robustness of most FAT methods",
+     "description": "Except for FGSM-RS, all baseline AT methods improve in robustness when QUB loss is applied (Table 1, CIFAR-10 ResNet18)."
+    },
+    {
+     "id": "P14",
+     "name": "QUB-static vs decreasing trade-off",
+     "description": "QUB-static achieves better robust accuracy than QUB-decreasing for most methods, but at larger standard accuracy cost, sometimes outweighing the robustness gain (e.g. Free-AT)."
+    },
+    {
+     "id": "P15",
+     "name": "QUB-decreasing balances",
+     "description": "QUB-decreasing achieves comparable or improved robust accuracy and better standard accuracy than QUB-static in many settings."
+    },
+    {
+     "id": "P16",
+     "name": "FGSM-RS is harmed",
+     "description": "Combining QUB with FGSM-RS can degrade performance, because FGSM-RS's low-quality perturbations make QUB enforce smoothness in non-informative regions."
+    },
+    {
+     "id": "P17",
+     "name": "Modest training-time overhead",
+     "description": "QUB adds slight training time over baselines but FAT with QUB remains cheaper than multi-step PGD-AT and TRADES."
+    },
+    {
+     "id": "P18",
+     "name": "Loss landscape is flatter with QUB",
+     "description": "Loss-landscape visualizations show smoother landscapes with QUB (Fig 1), and the average dominant Hessian eigenvalue is smaller (Fig 2), with sparsity analysis in Fig 4, supporting the flattening explanation."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 2.3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.1, Lemma 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.1, Lemma 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2, Eq 8"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.2 Remark"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 3.3, Alg 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P16",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P17",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P18",
+     "evidence": [
+      "Sec 4.3, Fig 1-2, 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P19",
+   "name": "Experimental setup",
+   "description": "Experiments use CIFAR-10, CIFAR-100 and Tiny ImageNet with ResNet18, WideResNet34-10 and PreActResNet18, SGD with lr 0.1, 100 epochs, on one RTX 4090."
+  },
+  {
+   "id": "P20",
+   "name": "FGSM limitations",
+   "description": "FGSM adds perturbations of a fixed size epsilon in one step, failing to explore the adversarial space sufficiently, and FGSM-trained models lack robustness to PGD attacks."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the cost/overfitting problem of FAT, through the derived QUB bound and its interpretation, to the QUB-decreasing schedule, to empirical robustness and landscape-flatness evidence."
+}

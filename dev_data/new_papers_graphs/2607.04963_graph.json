@@ -1,0 +1,217 @@
+{
+ "arxiv_id": "2607.04963",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Normalized entropy locates trajectory-neglect outliers, which STAPO selectively optimizes",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Sparse rewards cause trajectory neglect",
+     "description": "Sparse and delayed rewards in long-horizon agent tasks cause trajectory neglect, where the agent loses focus on the task goal and interaction history at intermediate steps, producing low-quality actions."
+    },
+    {
+     "id": "P2",
+     "name": "Prior step-level methods optimize all steps",
+     "description": "Step-level methods such as GiGPO and EMPG optimize all steps indiscriminately and lack a mechanism to locate the outlier steps caused by trajectory neglect."
+    },
+    {
+     "id": "P3",
+     "name": "Shannon entropy conflates complexity and confidence",
+     "description": "Shannon entropy of step-level action distributions conflates inherent state complexity with agent confidence, because a high-entropy step may simply reflect a complex state with many plausible actions."
+    },
+    {
+     "id": "P4",
+     "name": "Normalized entropy defined",
+     "description": "Normalized entropy Hn is the z-score of a step's mean token entropy within the group of actions taken at the same anchor state across sampled trajectories, which decouples state complexity from model confidence."
+    },
+    {
+     "id": "P5",
+     "name": "IQR outlier mask",
+     "description": "Outlier steps are those whose Hn lies outside [Q1 - 1.5*IQR, Q3 + 1.5*IQR] over the training batch, so outliers are located without a manual threshold."
+    },
+    {
+     "id": "P6",
+     "name": "Outliers are low-quality actions",
+     "description": "On ALFWorld and WebShop test sets, outlier steps (by normalized entropy) cluster at negative step-level advantage while inliers have higher advantage."
+    },
+    {
+     "id": "P7",
+     "name": "Outliers show weak trajectory focus",
+     "description": "Outlier steps have lower trajectory attribution scores than inliers, so the model's focus on the trajectory is significantly weaker at outliers."
+    },
+    {
+     "id": "P8",
+     "name": "Trajectory-aware reward",
+     "description": "The trajectory-aware reward is the KL divergence between the policy's action distribution under the full prompt and under a trajectory-blind prompt with goal and history masked out; higher values mean the action depends more on the trajectory."
+    },
+    {
+     "id": "P9",
+     "name": "Trajectory-independent penalty",
+     "description": "The trajectory-independent penalty is the KL divergence between the policy and the reference policy on the masked prompt, guarding against reward hacking and mode collapse when raising the trajectory-aware reward."
+    },
+    {
+     "id": "P10",
+     "name": "STAPO objective",
+     "description": "STAPO adds a selective term, gated by the outlier mask, of alpha times the trajectory-aware reward minus gamma times the trajectory-independent penalty to a GiGPO-style two-level (episode and step) advantage group-based RL objective."
+    },
+    {
+     "id": "P11",
+     "name": "STAPO wins on ALFWorld and WebShop",
+     "description": "STAPO outperforms all baselines on ALFWorld and WebShop, reaching 96.9% on ALFWorld with Qwen2.5-7B-Instruct and raising WebShop success from 65.0% (GiGPO) to 69.0% with Qwen2.5-1.5B-Instruct."
+    },
+    {
+     "id": "P12",
+     "name": "Normalized entropy beats Shannon entropy",
+     "description": "Localizing outliers with normalized entropy beats raw Shannon entropy in the ablation (ALFWorld 92.2 vs 89.6, WebShop 69.0 vs 67.2)."
+    },
+    {
+     "id": "P13",
+     "name": "Masking both goal and history is best",
+     "description": "Masking both goal and history for the reward beats masking only history or only goal, and history-only beats goal-only, so history is more critical than goal."
+    },
+    {
+     "id": "P14",
+     "name": "Selective penalty beats global KL",
+     "description": "Applying the penalty selectively at outlier steps beats a standard global KL penalty, and raising the global KL coefficient degrades ALFWorld from 88.3% to 84.6%."
+    },
+    {
+     "id": "P15",
+     "name": "STAPO reduces outlier proportion",
+     "description": "Compared to GiGPO, STAPO yields trajectories with a significantly lower proportion of outlier steps, and performance is negatively correlated with outlier proportion."
+    },
+    {
+     "id": "P16",
+     "name": "STAPO rescues cold-start exploration",
+     "description": "Training Llama3.1-8B-Instruct on WebShop gives GiGPO a flat zero success rate because no sparse outcome reward is found, while STAPO's trajectory-aware reward still provides a learning signal."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.2, Eq 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2, Eq 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.3, Fig 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.3, Fig 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2-4.3, Eq 10"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2-4.3, Eq 10"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.2, Table 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.3, Table 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.3, Table 3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.3, Table 3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P15",
+     "evidence": [
+      "Sec 5.4, Fig 5"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P16",
+     "evidence": [
+      "Sec 5.5, Fig 6"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P17",
+   "name": "Gain on search QA is modest",
+   "description": "On search-augmented QA, STAPO improves over GiGPO by only about 1% on average, attributed to shorter interaction horizons that naturally mitigate trajectory neglect."
+  },
+  {
+   "id": "P18",
+   "name": "Larger lambda helps",
+   "description": "Performance improves as the IQR coefficient lambda increases from 0.0 to 3.0, and STAPO beats GiGPO at every setting including the non-selective 'All'."
+  },
+  {
+   "id": "P19",
+   "name": "Group-based RL is cheaper than actor-critic",
+   "description": "Group-based RL methods (RLOO, GRPO, DAPO) estimate advantages from groups of samples and avoid training an independent critic, improving scalability and stability."
+  }
+ ],
+ "structural_reasoning": "Trajectory neglect motivates a better uncertainty signal (normalized entropy), whose outliers are validated as low-quality, then optimized selectively; results and ablations follow."
+}

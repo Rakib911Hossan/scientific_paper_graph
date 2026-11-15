@@ -1,0 +1,182 @@
+{
+  "arxiv_id": "2602.23611v1",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices. Re-key to S-style IDs if a sentence-indexed version of this paper is provided.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: why variable-level causal-graph methods for fairness are impractical, motivating cluster CPDAGs.",
+      "nodes": [
+        {"id": "P1", "name": "Full causal graph assumption", "description": "Most existing causality-based fairness methods assume access to the ground-truth causal graph over an individual's features."},
+        {"id": "P2", "name": "Structure learning is hard", "description": "Lacking perfect domain knowledge forces solving the notoriously difficult problem of learning the entire causal graph structure from observational data."},
+        {"id": "P3", "name": "Restrictive functional assumptions", "description": "Learning the full graph relies on restrictive functional assumptions about the data-generating process, whose violations can undermine fairness guarantees."},
+        {"id": "P4", "name": "CPDAG relaxation", "description": "Recent methods leverage a CPDAG, identifiable from conditional independence relations, to relax the full-graph assumption."},
+        {"id": "P5", "name": "CPDAG estimation still hard in high dimensions", "description": "Estimating a CPDAG remains challenging in high-dimensional settings, requiring many conditional independence tests whose errors can accumulate and undermine fairness guarantees."},
+        {"id": "P6", "name": "Cluster CPDAG needs far fewer tests", "description": "Cluster CPDAG inference needs substantially fewer conditional independence tests than variable-level CPDAG inference because clustering reduces graph size."},
+        {"id": "P7", "name": "Research question", "description": "Motivates the research question: can interventional fairness be achieved using a cluster CPDAG despite unknown within-cluster causal structure?"}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 2, "confidence": "majority"},
+        {"from": "P1", "to": "P4", "evidence": ["E3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["E4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P6", "evidence": ["E5"], "votes": 2, "confidence": "majority"},
+        {"from": "P6", "to": "P7", "evidence": ["E6"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Interventional fairness definition and its identifiability advantage.",
+      "nodes": [
+        {"id": "P8", "name": "Interventional fairness definition", "description": "Prediction is interventionally fair if the interventional distribution of the outcome is invariant to interventions on sensitive features, holding admissible features fixed (Salimi et al. 2019)."},
+        {"id": "P9", "name": "Group-level, interventional (not counterfactual)", "description": "Interventional fairness is a group-level notion defined via interventional distributions, distinct from individual-level counterfactual fairness."},
+        {"id": "P10", "name": "Identifiable from partial graph knowledge", "description": "Interventional distributions in the fairness definition can be identified using partial causal graph knowledge, formalized as a CPDAG."},
+        {"id": "P11", "name": "Back-door adjustment applicability", "description": "Under acyclicity and no unobserved confounders, standard back-door adjustment can be applied to identify interventional distributions."}
+      ],
+      "edges": [
+        {"from": "P8", "to": "P9", "evidence": ["E7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P10", "evidence": ["E8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["E9"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Cluster DAGs / cluster CPDAGs and the extra structure (independence arcs, marks) they require versus plain CPDAGs.",
+      "nodes": [
+        {"id": "P12", "name": "Cluster DAG construction", "description": "A cluster graph is built by grouping nodes of a variable-level DAG according to a partition; a directed edge exists between clusters if any variable-level edge crosses between them."},
+        {"id": "P13", "name": "Admissible partition assumption", "description": "The resulting cluster graph is assumed to be a DAG, feasible via an admissible partition designed with domain knowledge."},
+        {"id": "P14", "name": "Ambiguous within-cluster conditional independence", "description": "Even under acyclicity, a cluster graph can entail different conditional independence relations among clusters depending on unspecified variable-level structure inside clusters (e.g., collider vs non-collider)."},
+        {"id": "P15", "name": "Independence arcs / marks introduced", "description": "Anand et al. propose independence arcs (marg/cond/never) plus connection and separation marks to explicitly represent the within-cluster ambiguity."},
+        {"id": "P16", "name": "Cluster CPDAG defined", "description": "A cluster CPDAG expresses a cluster Markov equivalence class using directed edges, independence arcs, and connection/separation marks common to all compatible cluster DAGs, plus undirected edges that vary."},
+        {"id": "P17", "name": "CLOC inference method", "description": "CLOC (Anand et al. 2025) infers a cluster CPDAG without restrictive assumptions about within-cluster connectivity, motivating its use as the inference backbone here."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P13", "evidence": ["E10"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P14", "evidence": ["E11"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P15", "evidence": ["E12"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P16", "evidence": ["E13"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["E14"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "Why cluster CPDAGs make adjustment-set identification hard, and the two-step algorithm that solves it.",
+      "nodes": [
+        {"id": "P18", "name": "Single adjustment set unidentifiable", "description": "Because a cluster CPDAG represents multiple compatible DAGs, a single adjustment set Z cannot be identified for back-door adjustment."},
+        {"id": "P19", "name": "Enumerate multiple candidate sets", "description": "The proposed solution is to enumerate adjustment sets Z1,...,ZM such that at least one is valid for the true cluster DAG."},
+        {"id": "P20", "name": "Variable-level enumeration methods don't transfer", "description": "Efficient enumeration methods for variable-level CPDAGs rely on graphical properties (e.g., chordality) that cluster CPDAGs lack."},
+        {"id": "P21", "name": "Novel enumeration algorithm needed", "description": "A novel adjustment-set enumeration algorithm is developed that explicitly accounts for independence arcs and separation/connection marks."},
+        {"id": "P22", "name": "Step 1: Parent set enumeration", "description": "First enumerate candidate parent sets of sensitive features A (definite parents plus possible-parent subsets of siblings satisfying Theorem 3.5)."},
+        {"id": "P23", "name": "Step 2: Adjustment set completion", "description": "If parent sets contain connection-marked clusters, iteratively augment each candidate set via Algorithm 1's queue-based propagation to achieve d-separation."},
+        {"id": "P24", "name": "Refinement fallback for FAIL cases", "description": "When Algorithm 1 cannot guarantee identifiability (FAIL), the cluster CPDAG is refined by splitting connection-marked clusters into singleton nodes and re-inferring, at worst reaching variable-level granularity."}
+      ],
+      "edges": [
+        {"from": "P18", "to": "P19", "evidence": ["E15"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["E16"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P22", "evidence": ["E17"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P23", "evidence": ["E18"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P24", "evidence": ["E19"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Worst-case unfairness penalty and the computational bottleneck it creates.",
+      "nodes": [
+        {"id": "P25", "name": "True valid Zm unknown", "description": "It is uncertain which of Z1,...,ZM yields a valid adjustment for the true cluster DAG."},
+        {"id": "P26", "name": "Worst-case penalty formulation", "description": "The unfairness penalty is defined as the maximum, over m, of the aggregated kernel MMD between interventional distribution pairs."},
+        {"id": "P27", "name": "Naive computation is prohibitive", "description": "Naively computing this worst-case MMD requires O(M·NA^2·NXad·n^2) time, which is computationally prohibitive."},
+        {"id": "P28", "name": "Need for efficient MMD estimation", "description": "This prohibitive cost motivates developing efficient estimation strategies for the penalty function."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["E20"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P27", "evidence": ["E21"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["E22"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "The barycenter-MMD + random-Fourier-feature strategy that resolves the computational bottleneck.",
+      "nodes": [
+        {"id": "P29", "name": "Barycenter MMD decomposition", "description": "Pairwise MMD summation over sensitive-value pairs (a,a') is rewritten as a sum of MMDs to a barycenter (mixture) distribution, reducing O(NA^2) to O(NA)."},
+        {"id": "P30", "name": "RFF approximation of kernel", "description": "The feature map of the MMD kernel is approximated with dRFF-dimensional random Fourier features, reducing per-MMD cost from O(n^2) to O(n·dRFF)."},
+        {"id": "P31", "name": "IPW-weighted kernel mean embedding estimator", "description": "Combining inverse probability weighting with RFFs yields a weighted empirical estimator of the kernel mean embedding for each interventional distribution."},
+        {"id": "P32", "name": "Overall complexity reduced", "description": "Combining barycenter decomposition and RFF approximation reduces overall worst-case MMD computation to O(M·NA·NXad·n·dRFF)."},
+        {"id": "P33", "name": "Mellowmax relaxation of max", "description": "Since the max over m in the penalty is non-differentiable, it is approximated with the Mellowmax function to enable gradient-based training."}
+      ],
+      "edges": [
+        {"from": "P28", "to": "P29", "evidence": ["E23"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C5"},
+        {"from": "P28", "to": "P30", "evidence": ["E24"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C5"},
+        {"from": "P29", "to": "P32", "evidence": ["E25"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P32", "evidence": ["E25"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P32", "evidence": ["E26"], "votes": 2, "confidence": "majority"},
+        {"from": "P26", "to": "P33", "evidence": ["E27"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Synthetic experiment results: C-IFair vs baselines across cluster counts and settings.",
+      "nodes": [
+        {"id": "P34", "name": "C-IFair best among practical baselines (synthetic)", "description": "Excluding Oracle and Full, C-IFair achieves the best RMSE and unfairness across all synthetic settings (d=5,10,15; linear and nonlinear)."},
+        {"id": "P35", "name": "C-IFair closest to Oracle", "description": "C-IFair achieves fairness closest to Oracle while maintaining high accuracy, despite Oracle requiring the unrealistic true variable-level DAG."},
+        {"id": "P36", "name": "Unaware/No-DesCs insufficient", "description": "Unaware and No-DesCs exhibit high RMSE and unfairness, implying that simply discarding predictive features fails to remove indirect discriminatory effects."},
+        {"id": "P37", "name": "ε-IFair/ℓ-IFair degrade at high dimension", "description": "ε-IFair and ℓ-IFair produce less fair predictions than C-IFair in high-dimensional setups (d=15), indicating inferred variable-level CPDAGs become unreliable there."},
+        {"id": "P38", "name": "Cluster CPDAGs more reliable at scale", "description": "Cluster CPDAG inference is more reliable than variable-level CPDAG inference in high-dimensional setups, explaining C-IFair's relative advantage at d=15."},
+        {"id": "P39", "name": "λ trade-off confirmed", "description": "Varying penalty weight λ from 0 to 200 shows increasing λ reduces unfairness at the cost of higher RMSE, confirming C-IFair can flexibly tune the fairness-accuracy trade-off."}
+      ],
+      "edges": [
+        {"from": "P34", "to": "P35", "evidence": ["E28"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P36", "to": "P34", "evidence": ["E29"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P38", "evidence": ["E30"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P34", "evidence": ["E31"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P39", "evidence": ["E32"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Real-world dataset results and fairness illustration.",
+      "nodes": [
+        {"id": "P40", "name": "C-IFair best on real-world AUC/unfairness", "description": "Excluding Oracle and Full, C-IFair achieves the best AUC and unfairness among all baselines on Adult, German credit, and OULAD datasets."},
+        {"id": "P41", "name": "Practical utility underscored", "description": "The real-world results underscore C-IFair's practical utility for real-world fairness applications."},
+        {"id": "P42", "name": "Fairness illustration on Adult", "description": "Comparing inferred interventional distributions of Ŷ across sensitive-feature interventions on Adult shows C-IFair makes sufficiently fair predictions with respect to gender and race."}
+      ],
+      "edges": [
+        {"from": "P40", "to": "P41", "evidence": ["E33"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P42", "to": "P41", "evidence": ["E34"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Contribution summary chain: cluster-graph algorithm -> learning framework -> empirical validation.",
+      "nodes": [
+        {"id": "P43", "name": "Contribution 1: adjustment cluster set algorithm", "description": "A graphical algorithm to enumerate adjustment cluster sets, at least one of which enables identification of interventional distributions for the true cluster DAG."},
+        {"id": "P44", "name": "Contribution 2: worst-case fairness learning framework", "description": "A learning framework that achieves interventional fairness by penalizing worst-case unfairness across adjustment cluster sets, using an efficient barycenter kernel MMD."},
+        {"id": "P45", "name": "Contribution 3: empirical validation", "description": "Extensive experiments on synthetic and real-world datasets demonstrate a better fairness-accuracy trade-off than existing approaches."}
+      ],
+      "edges": [
+        {"from": "P43", "to": "P44", "evidence": ["E35"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P44", "to": "P45", "evidence": ["E36"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P46", "name": "Legal alignment of causal fairness", "description": "Causal notions of fairness align with legal requirements since discrimination is often legally assessed via the causal relationship between decisions and sensitive attributes."},
+    {"id": "P47", "name": "Future work: cluster MPDAGs", "description": "Extending cluster CPDAGs to cluster MPDAGs is highly non-trivial but would further reduce structural uncertainty and improve the fairness-accuracy trade-off; left to future work."}
+  ]
+}

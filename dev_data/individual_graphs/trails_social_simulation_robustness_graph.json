@@ -1,0 +1,187 @@
+{
+  "arxiv_id": "2511_TRAILS_placeholder",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/figures/tables rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "The validation gap: realism without robustness",
+      "nodes": [
+        {"id": "P1", "name": "LLMs escalate the purposes of social simulation", "description": "LLM-based social simulations are increasingly used not just to explore social mechanisms (cooperation, opinion dynamics, norm formation) but as intervention testbeds and to inform real-world policy, public health, and epidemiology decisions."},
+        {"id": "P2", "name": "Existing validation focuses almost entirely on realism", "description": "Existing validation efforts focus almost entirely on whether a simulation resembles the world: plausible agent behavior, matching empirical patterns, theoretical grounding, or convincingness to human evaluators."},
+        {"id": "P3", "name": "Realism is necessary but not sufficient", "description": "Realism, while necessary, is not sufficient; a simulation's conclusions should also remain stable across reasonable alternative configurations, just as empirical findings must survive alternative controls and sensitivity analyses."},
+        {"id": "P4", "name": "Without robustness testing, artifact vs. mechanism cannot be distinguished", "description": "Without robustness testing, researchers cannot tell whether a finding reflects the social process being modeled or the design choices used to model it."},
+        {"id": "P5", "name": "Robustness and sensitivity analysis remain underdeveloped in practice", "description": "Despite growing use of real-world grounding, empirical comparison, theory-driven design, and human evaluation to improve mechanistic validity, few studies test whether the same collective outcome survives reasonable perturbations in design choices."},
+        {"id": "P6", "name": "This gap motivates expanding validation to include robustness audits", "description": "Because small implementation choices may propagate through repeated agent interaction into large macro-level differences, this validation gap motivates expanding realism-centered validation to include systematic robustness audits."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S1", "S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S2"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "The butterfly effect mechanism and its sources",
+      "nodes": [
+        {"id": "P7", "name": "Individual LLMs are sensitive to small task-representation changes", "description": "Individual LLMs are already known to be sensitive to small changes in how a task is represented: minor prompt perturbations, formatting choices, output constraints, and option ordering can change model performance or decisions."},
+        {"id": "P8", "name": "Agent outputs become inputs for other agents", "description": "In social simulation, an LLM agent's outputs become actions, messages, memories, and inputs for other agents, so small representational changes at the individual level can propagate through repeated multi-agent interaction."},
+        {"id": "P9", "name": "Local differences compound into macro-level outcome differences", "description": "Small changes in one agent's response can become a different action, message, memory update, or social signal for other agents; these local differences propagate through interaction protocols and accumulate into large differences in macro-level outcomes."},
+        {"id": "P10", "name": "This accumulation constitutes the 'butterfly effect' in LLM social simulation", "description": "The cascade from small individual-level representational differences to large collective-level outcome differences, extending a butterfly-effect framing previously used for single-model AI pipelines to multi-agent social simulations."},
+        {"id": "P11", "name": "Design-level vs. representation-level perturbations distinguished", "description": "Design-level perturbations change the substantive simulation setup (model, network topology, interaction protocol), while representation-level perturbations keep the setup fixed but change how it is presented to the LLM (e.g., prose vs. bullets, reordering, relabeling)."},
+        {"id": "P12", "name": "Representation-level robustness is especially easy to overlook", "description": "Representation-level robustness is especially easy to overlook because most studies assume that equivalent textual representations will behave equivalently in LLM social simulations."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P12", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Position: calibrate robustness audits to claim strength",
+      "nodes": [
+        {"id": "P13", "name": "Central position statement", "description": "Scientific claims drawn from LLM social simulations should be calibrated to the robustness audits that support them: stronger claims demand stronger audits, and claims that no audit can support should not be drawn at all."},
+        {"id": "P14", "name": "Three claim-type tiers requiring increasing audit strength", "description": "Exploratory probes (generating hypotheses) require modest robustness evidence; mechanism claims (explaining why an outcome emerges) require stronger checks across agent specification, memory, protocol, environment, and measurement; policy/intervention claims require the highest audit standard because simulated effects may be misread as real-world predictions."},
+        {"id": "P15", "name": "Simulation openness scales audit difficulty", "description": "Goal-structured simulations, theory-guided open-ended simulations, and emergence-driven open-ended simulations form a spectrum; the more open-ended and less theoretically constrained the simulation, the more challenging the robustness audit becomes."},
+        {"id": "P16", "name": "Domain stakes further raise the required audit bar", "description": "Higher-stakes domains (public health, policy making, platform governance, financial markets) require stronger robustness evidence than low-risk exploratory demonstrations, because their results may inform real-world claims, institutions, or interventions."},
+        {"id": "P17", "name": "Claim type, simulation complexity, and stakes jointly determine required audit strength", "description": "Together, claim type, simulation complexity, and domain stakes determine how much robustness evidence a simulation result needs: the more ambitious the claim, the more open-ended the simulation, and the higher the stakes, the stronger the audit required."},
+        {"id": "P18", "name": "Same simulation can support, weaken, or reverse a claim under different implementations", "description": "Because of butterfly effects, under different implementations the same simulation may support, weaken, or reverse the same claim, so a plausible macro-level pattern (e.g., echo chamber formation) may mask an unstable underlying micro/meso-level process."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P15", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P16", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P17", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P17", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P17", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P18", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Case study 1: repeated Prisoner's Dilemma perturbations",
+      "nodes": [
+        {"id": "P19", "name": "Persona format alone shifts cooperation dramatically", "description": "Holding content fixed and varying only surface persona format (PLAIN prose, DESCRIPTIVE bullets, TABULAR key-value) produces substantial, statistically significant effects: in the two-agent setting, DESCRIPTIVE personas cooperate 76 percentage points less than PLAIN and 73 points less than TABULAR (p < 0.001)."},
+        {"id": "P20", "name": "Persona format effects generalize across single- and two-agent settings", "description": "In the single-agent setting against fixed opponent policies, TABULAR personas earn significantly more points and are consistently the least cooperative across all four opponent policies, paralleling the two-agent result."},
+        {"id": "P21", "name": "Semantically equivalent personas can shift the apparent equilibrium", "description": "Because persona format changes shift cooperation so substantially while preserving the same underlying content, semantically equivalent personas can shift the apparent equilibrium of the simulation."},
+        {"id": "P22", "name": "Game-instruction framing also significantly shifts cooperation", "description": "Holding payoff matrix and persona fixed and varying only game-instruction framing (CANONICAL, MORALIZED, RISK) significantly changes cooperation and payoff, with MORALIZED framing consistently increasing cooperation relative to the other two framings."},
+        {"id": "P23", "name": "Memory representation has comparatively small effects", "description": "Unlike persona format and game framing, varying only memory representation (holding persona and game framing fixed) produces only small effects: most payoff shifts are below 0.2 (of 0-5) and most cooperation-rate shifts are below 0.1 (of 0-1)."}
+      ],
+      "edges": [
+        {"from": "P19", "to": "P20", "evidence": ["S4.1", "Figure2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P21", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P21", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Case study 2: social-media echo chamber perturbations",
+      "nodes": [
+        {"id": "P24", "name": "Modest increases in initial network homophily substantially raise echo-chamber outcomes", "description": "Comparing three input networks with only modest increases in initial stance assortativity, final interaction-network stance assortativity increases substantially (0.142 to 0.247 to 0.287, all pairwise differences significant), and the weighted same-group edge ratio crosses from below 0.5 (mostly cross-stance) to clearly above 0.5 (majority within-stance)."},
+        {"id": "P25", "name": "Small structural homophily shifts flip cross-group exposure to echo-chamber interaction", "description": "Because this modest increase in initial assortativity is enough to shift the weighted same-group edge ratio across the 0.5 threshold, a small structural perturbation is enough to shift the simulation from mostly cross-group exposure to echo-chamber-like interaction."},
+        {"id": "P26", "name": "Hub assignment changes echo-chamber strength but not presence", "description": "Varying which stance group occupies the highest-degree network nodes does not significantly change final stance assortativity, but does significantly change the strength of the weighted same-group edge ratio (strongest when pro-regulation agents occupy hubs, weakest when anti-regulation agents do), while echo-chamber-like interaction (ratio > 0.5) remains present in every hub condition."},
+        {"id": "P27", "name": "Activation probability and memory window show null effects", "description": "Varying activation probability and memory window does not produce significant changes in either stance assortativity or weighted same-group edge ratio."},
+        {"id": "P28", "name": "Recommendation feed size amplifies echo-chamber outcomes", "description": "Increasing recommendation feed size from 5 to 10 posts significantly strengthens echo-chamber outcomes: stance assortativity increases from 0.247 to 0.277 (p=0.014) and weighted same-group edge ratio increases from 0.542 to 0.568 (p=0.003)."}
+      ],
+      "edges": [
+        {"from": "P24", "to": "P25", "evidence": ["S4.2", "Figure3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Cross-case, cross-model finding synthesis",
+      "nodes": [
+        {"id": "P29", "name": "Sensitivity is uneven across architectural dimensions", "description": "Across both case studies, persona format can produce equilibrium-flipping shifts (up to 76 pp), several other perturbations (game framing, network homophily, hub assignment, feed size) produce smaller but consistent, statistically significant shifts, while others (memory representation, memory window, activation probability) have small or null effects -- sensitivity is neither uniformly fragile nor uniformly robust."},
+        {"id": "P30", "name": "The same perturbation produces very different effect sizes across model families", "description": "The identical persona-format perturbation that produces a 76 pp cooperation gap in gpt-5.2 produces a comparably large ~77 pp gap in claude-haiku-4-5, a moderate ~36 pp gap in gemini-2.5-flash, and essentially no effect (~1 pp) in deepseek-v3."},
+        {"id": "P31", "name": "Model identity is itself a robustness dimension", "description": "Because sensitivity magnitude varies so widely across model families for the same perturbation, model identity is itself a robustness dimension, and cross-model checks on only a small set of models can leave fragility undetected."},
+        {"id": "P32", "name": "Robustness must be measured per claim and per model, not assumed", "description": "Given both the uneven cross-dimension sensitivity and the uneven cross-model sensitivity, robustness is a property that should be measured per claim and per model rather than assumed."},
+        {"id": "P33", "name": "This evidence motivates a systematic audit taxonomy", "description": "Because the key open question is which design choices must be audited, and across which models, before results can be trusted, this motivates introducing a taxonomy (TRAILS) for systematically answering that question."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P32", "evidence": ["S4", "S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P31", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P32", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "TRAILS taxonomy and prioritization heuristics",
+      "nodes": [
+        {"id": "P34", "name": "TRAILS has two complementary components", "description": "TRAILS consists of TRAILS-D, which audits design-level perturbations (changes to the substantive simulation setup), and TRAILS-R, which audits representation-level perturbations (changes to how a fixed condition is presented to the LLM)."},
+        {"id": "P35", "name": "TRAILS-D spans micro, meso, and macro design dimensions", "description": "TRAILS-D organizes design-level perturbations into eight dimensions across three levels: micro (model substrate, agent specification, internal state/cognition, memory and temporality), meso (interaction protocol, intervention design), and macro (environment structure, population and scale)."},
+        {"id": "P36", "name": "TRAILS-R targets representation and interface sensitivity", "description": "TRAILS-R covers representational format, instruction hierarchy, linguistic framing, context representation, and interaction sequencing -- asking whether the same collective outcome survives changes in how a fixed condition is presented, given that prior work shows small prompt variations can substantially affect LLM outputs."},
+        {"id": "P37", "name": "Findings that fail TRAILS-R should be reported as interface-sensitive, not robust", "description": "If a collective outcome does not survive representation-level changes, the finding should be reported as interface-sensitive rather than treated as robust evidence about the social process."},
+        {"id": "P38", "name": "Heuristic 1: align audits with the claim's mechanism", "description": "Audits should be aligned with the claim's mechanism -- e.g., a claim that cooperation arises as a stable strategic equilibrium requires auditing persona format and game framing more than memory representation, since the former shape strategic disposition while the latter shapes only recall."},
+        {"id": "P39", "name": "Heuristic 2: ensure each perturbation spans a meaningful range", "description": "Two prompt variants are weaker evidence of robustness than a sweep across several reasonable alternatives along the same axis."},
+        {"id": "P40", "name": "Heuristic 3: audit across model families before claiming generality", "description": "Because the same perturbation can produce dramatic effects in one model and none in another, claims phrased about 'LLM agents' in general require evidence from multiple frontier models."},
+        {"id": "P41", "name": "Heuristics combine with the claim-type hierarchy to calibrate audit scope", "description": "Together with the claim-type hierarchy (exploratory/mechanism/policy), these three prioritization heuristics let researchers calibrate audit scope to the strength of the claim being made."}
+      ],
+      "edges": [
+        {"from": "P34", "to": "P35", "evidence": ["S5", "Table1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P36", "evidence": ["S5", "Table1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P36", "to": "P37", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P38", "to": "P41", "evidence": ["S5"], "votes": 2, "confidence": "majority"},
+        {"from": "P39", "to": "P41", "evidence": ["S5"], "votes": 2, "confidence": "majority"},
+        {"from": "P40", "to": "P41", "evidence": ["S5"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P40", "evidence": ["S4.2", "S5"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "name": "Alternative views and responses",
+      "nodes": [
+        {"id": "P42", "name": "Objection: all empirical methods exhibit sensitivity", "description": "LLM simulations are not unique in exhibiting sensitivity: MCMC estimates vary with seeds, ABMs depend on initialization, and human-subject studies are sensitive to sampling and measurement choices."},
+        {"id": "P43", "name": "Response: this is precisely why LLM simulation needs its own protocols", "description": "Every other empirical tradition has developed protocols for handling its sensitivities (train-test splits, ablations in ML; multiverse and specification-curve analysis in social science); LLM simulations introduce a distinct perturbation surface (textual, high-dimensional, semantically opaque), which is exactly why they need an analogous protocol, which TRAILS provides."},
+        {"id": "P44", "name": "Objection: LLM agents are not human, so robustness cannot make outputs evidence about humans", "description": "A stronger objection holds that because LLM agents are not human, robustness testing cannot make their outputs valid evidence about human social behavior."},
+        {"id": "P45", "name": "Response: the claim-calibration framework already addresses this concern", "description": "The position is already calibrated to this concern since audit strength scales with claim type, simulation complexity, and domain stakes; policy-testbed uses demand the strongest audits, and claims surviving TRAILS-D/R across frontier models deserve more evidentiary weight, though still less than human-subject evidence."},
+        {"id": "P46", "name": "Objection: premature standardization will calcify methodology", "description": "Imposing audit standards now risks freezing a still-evolving design space in place before the field knows what it is doing."},
+        {"id": "P47", "name": "Response: TRAILS is a minimal, revisable vocabulary, not a rigid checklist", "description": "TRAILS is a vocabulary for stating which perturbations were tested and which were not, not a fixed checklist, which is precisely what lets the field accumulate evidence about which dimensions matter without foreclosing exploration; the risk of no standards is as real as the risk of premature ones."},
+        {"id": "P48", "name": "Objection: comprehensive robustness audits are prohibitively expensive", "description": "Auditing every TRAILS dimension across multiple models and seeds quickly becomes infeasible, especially for small labs."},
+        {"id": "P49", "name": "Response: the framework is graded and prioritizable to manage cost", "description": "Audit strength scales with claim strength (exploratory probes do not require comprehensive audits), and the prioritization heuristics let researchers concentrate compute on the dimensions most likely to confound the specific claim; transparent reporting of what was and wasn't audited is itself a contribution that lets the field aggregate evidence across studies."}
+      ],
+      "edges": [
+        {"from": "P42", "to": "P43", "evidence": ["S6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P44", "to": "P45", "evidence": ["S6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P46", "to": "P47", "evidence": ["S6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P48", "to": "P49", "evidence": ["S6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P45", "evidence": ["S6"], "votes": 2, "confidence": "majority"},
+        {"from": "P34", "to": "P43", "evidence": ["S6"], "votes": 1, "confidence": "single_run"},
+        {"from": "P41", "to": "P49", "evidence": ["S6"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P50", "name": "Three-level scope definition of LLM social simulation", "description": "The paper's scope is defined through a micro-level (human-like agents generated/mediated by LLMs), meso-level (social interaction within shared environments and institutional rules), and macro-level (collective phenomena) chain, building on prior 'Silicon Societies' and generative social simulation framing."},
+    {"id": "P51", "name": "Goal-structured vs. open-ended scenario distinction", "description": "The paper distinguishes goal- or incentive-structured scenarios (agents act under well-specified incentives/payoffs, e.g., negotiation, cooperation, market dynamics) from open-ended scenarios (no shared task/payoff structure, e.g., polarization, conformity, norm formation, emergent coordination)."},
+    {"id": "P52", "name": "Prior ABM validation challenges predate LLM-based simulation", "description": "Agent-based modeling has long faced challenges in behavioral realism, empirical validation, replication, and sensitivity to modeling choices, independent of the LLM-specific concerns raised in this paper."},
+    {"id": "P53", "name": "Prior work already flags additional LLM-specific uncertainty sources", "description": "Prior work (Larooij and Törnberg) argues generative social simulations may increase behavioral realism while introducing new uncertainty sources including black-box model behavior, cultural biases, stochastic variation, alignment effects, and prompt sensitivity."},
+    {"id": "P54", "name": "Prisoner's Dilemma experimental setup details", "description": "The repeated Prisoner's Dilemma uses T=10 rounds, the canonical payoff structure ((C,C)->(3,3), (C,D)->(0,5), (D,C)->(5,0), (D,D)->(1,1)), both single-agent (vs. fixed benchmark policies) and two-agent play, evaluated via average payoff and cooperation rate."},
+    {"id": "P55", "name": "Echo-chamber experimental setup details", "description": "The echo-chamber simulation uses 100 agents with frozen stances on AI regulation on a five-point scale, interacting for 15 rounds on a fixed power-law-like network, choosing among POST/REPOST/REPLY/DO NOTHING actions, measured via stance assortativity and weighted same-group edge ratio."},
+    {"id": "P56", "name": "Scope limitation: structural echo chambers vs. belief-update polarization", "description": "Because agent stances are frozen throughout the echo-chamber simulation, the perturbations test sensitivity in the formation of structural echo chambers (who interacts with whom) rather than opinion polarization driven by belief updating, leaving the latter as an open question for future work."},
+    {"id": "P57", "name": "Call to action: improve robustness reporting", "description": "Future simulation studies should state the simulation scenario, domain stakes, and evidentiary claim-type role, and report which perturbations were tested, which findings were stable or sensitive, and which dimensions were left unaudited."},
+    {"id": "P58", "name": "Call to action: build shared robustness-auditing infrastructure", "description": "The field needs reusable perturbation libraries, open-source datasets/benchmarks for robustness audits, and more empirical work systematically testing which perturbations matter most and how instability propagates from micro/meso to macro levels."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "This graph closely mirrors the paper's own narrative arc: motivation (C1) -> mechanism (C2) -> position statement (C3) -> empirical demonstration in two case studies (C4, C5) -> cross-case/cross-model synthesis (C6) -> proposed solution (C7) -> anticipated objections (C8). The two case-study components are largely internal lists of distinct, independently-reported perturbation results (as the paper itself presents them one after another without claiming causal links between, say, persona-format and memory-representation effects), so edges within C4 and C5 are sparse and only connect findings the paper itself explicitly relates (e.g., the single- and two-agent persona-format results reinforcing the same conclusion). C6 is the paper's own explicit synthesis, and its cross-component edges into C7 correctly reflect that the empirical unevenness (both cross-dimension and cross-model) is the paper's stated motivation for a taxonomy rather than a fixed checklist. C7's internal structure (TRAILS-D/TRAILS-R split, then three prioritization heuristics) mirrors Section 5's own organization, including a cross-component edge from the cross-model finding (P30) to the heuristic it directly motivates (P40). C8 mirrors the paper's explicit numbered objection-response pairs, with edges back into C3 and C7 where the paper explicitly invokes its own framework as the response. The isolated nodes are appropriately limited to scope/definitional setup, prior-work context, experimental configuration details, and the concluding calls to action, none of which function as premises within the paper's central argument chain."
+}

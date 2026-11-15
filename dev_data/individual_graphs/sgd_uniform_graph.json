@@ -1,0 +1,252 @@
+{
+  "arxiv_id": "2508.20823v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Uniform-in-time bounds under-explored in optimization",
+          "description": "Despite extensive research on stochastic optimization, uniform-in-time bounds had not been explored in this context before a recent prior work by two of the authors with Jiang and Ying."
+        },
+        {
+          "id": "P2",
+          "name": "Confidence sequences slower shrinkage rate",
+          "description": "Unlike the typical Theta(k^-1/2) shrinkage rate of confidence intervals, confidence sequences (time-uniform bounds) exhibit a slower rate of O(k^-1/2 * sqrt(log log k))."
+        },
+        {
+          "id": "P3",
+          "name": "log log k term is necessary (Duchi and Haque)",
+          "description": "Duchi and Haque established that the sqrt(log log k) term in confidence sequence rates is not merely an artifact but a necessary component of such bounds."
+        },
+        {
+          "id": "P4",
+          "name": "Uniform-in-time equivalent to stopping-time convergence",
+          "description": "Uniform-in-time guarantees are particularly important in stochastic optimization because such guarantees imply convergence in stopping times, and convergence in stopping time is equivalent to uniform-in-time convergence."
+        },
+        {
+          "id": "P5",
+          "name": "Practical algorithms use data-driven stopping",
+          "description": "In practice, stochastic optimization algorithms are usually terminated based on dynamic, data-driven criteria such as early stopping when validation performance plateaus, which mathematically defines a random stopping time."
+        },
+        {
+          "id": "P6",
+          "name": "Paper establishes uniform-in-time SGD bound",
+          "description": "This work establishes a uniform-in-time convergence bound for standard SGD on strongly convex functions, proving a log log k + log(1/beta), all-over-k, high-probability convergence rate."
+        }
+      ],
+      "edges": [
+        {"from": "P2", "to": "P3", "evidence": ["S1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["S1.1", "S1.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P1", "to": "P6", "evidence": ["S1.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P6", "evidence": ["S1.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P7",
+          "name": "Lemma 1: conditional MGF recursion",
+          "description": "Lemma 1 establishes a recursive bound on the conditional moment generating function of the suboptimality gap, under sub-Gaussian gradient noise, L-smoothness, and step-size/multiplier constraints."
+        },
+        {
+          "id": "P8",
+          "name": "Lemma 1 proof uses smoothness, Cauchy-Schwarz, sub-Gaussianity",
+          "description": "The proof of Lemma 1 combines L-smoothness of the objective, the Cauchy-Schwarz inequality, and the conditional 1-sub-Gaussian noise assumption to bound the conditional expectation of the exponentiated suboptimality gap."
+        },
+        {
+          "id": "P9",
+          "name": "Lemma 2: specialized recursion with time-varying multiplier",
+          "description": "Lemma 2 specializes Lemma 1 with a specific time-varying sequence of exponential multipliers t_k satisfying certain step-size compatibility conditions, yielding a cleaner recursive MGF bound."
+        },
+        {
+          "id": "P10",
+          "name": "Lemma 3: improved last-iterate rate",
+          "description": "Using Lemmas 1 and 2 with a specific choice of step size and multiplier sequence, Lemma 3 proves an O(log(1/beta)/k) last-iterate high-probability convergence rate for SGD on strongly convex objectives."
+        },
+        {
+          "id": "P11",
+          "name": "Lemma 3 improves prior state-of-the-art by log factor",
+          "description": "The last-iterate convergence rate in Lemma 3 removes a logarithmic factor in k compared to the previous state-of-the-art result for the non-random-last-iterate setting."
+        }
+      ],
+      "edges": [
+        {"from": "P8", "to": "P7", "evidence": ["S2.lemma1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P9", "evidence": ["S2.lemma2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S2.lemma3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["S2.lemma3", "S1.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P12",
+          "name": "Positive supermartingale construction",
+          "description": "Using Lemma 2's recursion with a specific coefficient choice satisfying 2(t_{k+1}-t_k) - mu*t_{k+1}*eta_k <= 0, the process exp(t_k*Delta_k - (L/mu)*log(k+B-1)) is shown to be a positive supermartingale."
+        },
+        {
+          "id": "P13",
+          "name": "Ville's inequality applied to supermartingale",
+          "description": "Ville's maximal inequality for nonnegative supermartingales is applied to the constructed supermartingale to bound the probability that the process exceeds a threshold over a dyadic block of iterations."
+        },
+        {
+          "id": "P14",
+          "name": "Union bound over dyadic blocks",
+          "description": "The per-dyadic-block high-probability bounds are combined via a union bound over all dyadic blocks (indexed by m), using a probability budget of beta/(m+1)^2 per block, summing to a total failure probability controlled by beta*pi^2/6."
+        },
+        {
+          "id": "P15",
+          "name": "Theorem 1: uniform-in-time upper bound",
+          "description": "Theorem 1 combines the supermartingale construction, Ville's inequality, and the union bound over dyadic blocks to establish that, with probability at least 1 - beta*pi^2/6, the bound log log k + log(1/beta) over k holds simultaneously for all k in N+."
+        }
+      ],
+      "edges": [
+        {"from": "P9", "to": "P12", "evidence": ["S2.thm1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P13", "evidence": ["S2.thm1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S2.thm1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["S2.thm1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P15", "evidence": ["S2.thm1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P16",
+          "name": "Strongly convex problem class definition",
+          "description": "The problem class Psi_sc(mu, sigma) formalizes strongly convex objectives paired with a stochastic first-order oracle satisfying unbiasedness and a sub-Gaussian-type moment condition on gradient noise."
+        },
+        {
+          "id": "P17",
+          "name": "Uniform-in-time convergence rate definition",
+          "description": "A stochastic gradient method M has uniform-in-time convergence rate epsilon(.) on the problem class with confidence 1-alpha if the suboptimality is bounded by epsilon(k) simultaneously for all k, with probability at least 1-alpha, for every problem instance in the class."
+        },
+        {
+          "id": "P18",
+          "name": "Reduction: optimizer with uniform-in-time guarantee builds a test sequence",
+          "description": "Lemma 4 shows that a stochastic gradient method with a uniform-in-time convergence guarantee can be used to construct a sequence of statistical tests that progressively discriminate between a family of increasingly close Gaussian mean distributions indexed by an infinite binary sequence."
+        },
+        {
+          "id": "P19",
+          "name": "Test sequence discriminates via optimizer's own iterates",
+          "description": "The constructed test uses the optimizer's iterate at a chosen sample size, projected to the nearest candidate parameter, to recover successive bits of the underlying binary sequence with high probability, relying on strong convexity to translate small suboptimality into small parameter estimation error."
+        },
+        {
+          "id": "P20",
+          "name": "Duchi-Haque testing lower bound (Lemma 5)",
+          "description": "A known lower bound for such (alpha, {n_k})-test sequences (Duchi and Haque) states that whenever the pairwise KL-divergences between candidate distributions are bounded appropriately, the required sample sizes n_k must, for infinitely many k, exceed order (1-alpha) times the inverse KL bound times log k."
+        },
+        {
+          "id": "P21",
+          "name": "Theorem 2: uniform-in-time lower bound",
+          "description": "Combining the reduction in Lemma 4 with the Duchi-Haque testing lower bound in Lemma 5 yields Theorem 2: any stochastic gradient method with a uniform-in-time convergence guarantee on the strongly convex problem class must, for infinitely many n, satisfy epsilon(n) >= (sigma^2 (1-alpha) log log n) / (48 * mu * n)."
+        }
+      ],
+      "edges": [
+        {"from": "P16", "to": "P17", "evidence": ["S3.def1", "S3.def2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S3.lemma4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["S3.lemma4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["S3.proof2"], "votes": 2, "confidence": "majority"},
+        {"from": "P20", "to": "P21", "evidence": ["S3.proof2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P21", "evidence": ["S3.proof2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P22",
+          "name": "Upper and lower bounds share log log k / k order",
+          "description": "The upper bound in Theorem 1 and the lower bound in Theorem 2 both scale as log log k / k (up to constants and the log(1/beta) or (1-alpha) confidence-dependent terms), demonstrating the upper bound is tight."
+        },
+        {
+          "id": "P23",
+          "name": "Tightness established via matching bounds",
+          "description": "Because the upper bound (Theorem 1) and lower bound (Theorem 2) match up to constants, the paper establishes that its uniform-in-time convergence rate for SGD on strongly convex objectives is tight."
+        }
+      ],
+      "edges": [
+        {"from": "P15", "to": "P22", "evidence": ["S1.2", "S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P22", "evidence": ["S1.2", "S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P23", "evidence": ["S1.2", "S4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P24",
+      "name": "Roots in Robbins-Monro and Kiefer-Wolfowitz",
+      "description": "Stochastic optimization for smooth, strongly convex objectives has roots tracing back to the pioneering work of Robbins and Monro and Kiefer and Wolfowitz."
+    },
+    {
+      "id": "P25",
+      "name": "Confidence sequences used in sequential decision-making",
+      "description": "Due to their time-uniform nature, confidence sequences have become widely utilized in sequential decision-making tasks."
+    },
+    {
+      "id": "P26",
+      "name": "Stopping time example: early stopping in ML",
+      "description": "Early stopping in large-scale machine learning, where training halts once validation performance plateaus or degrades, is a widely adopted heuristic to prevent overfitting and exemplifies a data-driven stopping rule."
+    },
+    {
+      "id": "P27",
+      "name": "Assumption 1: smooth strong convexity",
+      "description": "The objective function f is assumed mu-strongly convex and L-smooth, attaining its minimum f* at some x* in R^d."
+    },
+    {
+      "id": "P28",
+      "name": "Assumption 2: unbiased sub-Gaussian stochastic gradient",
+      "description": "The stochastic gradient is assumed conditionally unbiased and conditionally 1-sub-Gaussian given the filtration generated by past randomness."
+    },
+    {
+      "id": "P29",
+      "name": "Proposition 1: equivalent sub-Gaussian formulation",
+      "description": "Up to constants, the conditional 1-sub-Gaussian condition in Assumption 2 is shown equivalent to a bound on the moment generating function of the inner product between any measurable direction and the gradient noise."
+    },
+    {
+      "id": "P30",
+      "name": "Standard SGD step size choice",
+      "description": "The standard SGD algorithm uses step size eta_k of order 1/k for all k, as specified in the main theorem."
+    },
+    {
+      "id": "P31",
+      "name": "Comparison table with prior state-of-the-art (Table 1)",
+      "description": "Table 1 compares this paper's upper and lower bound rates against the existing state-of-the-art high-probability convergence rate for the non-random last-iterate setting, highlighting the different domains (non-random last iterate vs. uniform-in-time vs. infinitely-often) covered by each result."
+    },
+    {
+      "id": "P32",
+      "name": "Practical implications for dynamic termination criteria",
+      "description": "The paper's contributions have practical implications for applications requiring dynamic termination criteria, such as early stopping in machine learning."
+    }
+  ],
+  "structural_score": 9,
+  "structural_reasoning": "The graph is highly coherent, reflecting the tightly linear proof structure typical of a theoretical optimization paper: the introduction's motivation chain for uniform-in-time bounds and stopping-time equivalence (C1) directly motivates the paper's main contribution; the sequence of technical lemmas builds a clear proof chain from the basic MGF recursion (Lemma 1) through its specialization (Lemma 2) to the last-iterate rate (Lemma 3) (C2); the supermartingale-and-Ville's-inequality argument extending Lemma 3 into the uniform-in-time upper bound (Theorem 1) is fully chained (C3); the lower bound's reduction from optimization to hypothesis testing via Lemma 4 and the cited Duchi-Haque result culminating in Theorem 2 is similarly well-chained (C4); and the final tightness claim explicitly ties the upper and lower bounds together (C5). Edge confidence is very high throughout because formal theorem-proof papers make each logical dependency explicit and unambiguous. The isolated-node set consists of background assumptions, motivating examples, and a comparison table that contextualize the results without being additional derived claims in the dependency chain. No cycles or ambiguous directions were found, consistent with the strictly deductive nature of the paper's argument."
+}

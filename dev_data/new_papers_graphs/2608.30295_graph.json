@@ -1,0 +1,195 @@
+{
+ "arxiv_id": "2608.30295",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "CateKV: from KV-cache limits and sequential consistency to the hybrid method and its accuracy/efficiency results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Long-context inference is costly",
+     "description": "As context grows, LLM inference needs to store and retrieve all KV caches, so latency and memory rise; for Llama-3-8B-Instruct-262k with FlashAttention, going from 1K to 1M tokens raises latency by over 3000x."
+    },
+    {
+     "id": "P2",
+     "name": "KV eviction loses accuracy",
+     "description": "KV eviction methods discard KV pairs by predefined policies, usually causing significant accuracy loss because essential information is removed."
+    },
+    {
+     "id": "P3",
+     "name": "KV retrieval keeps high memory",
+     "description": "KV retrieval methods keep all KV pairs and retrieve relevant tokens at decoding, preserving accuracy but not mitigating memory usage, which limits batch size and throughput."
+    },
+    {
+     "id": "P4",
+     "name": "Sequential consistency of heads",
+     "description": "Some attention heads concentrate on a few critical tokens consistently across pre-filling and decoding (consistent heads), while others vary significantly across decoding steps with broad attention (adaptive heads); this occurs across different LLMs and layers."
+    },
+    {
+     "id": "P5",
+     "name": "Critical tokens found at pre-fill",
+     "description": "For consistent heads, critical tokens can be identified from the pre-filling stage using the attention of the last Lobs query tokens (observation window) and used to guide decoding."
+    },
+    {
+     "id": "P6",
+     "name": "CV-based head classification",
+     "description": "CateKV classifies heads into consistent and adaptive types using a coefficient-of-variation-based score over a reference dataset, and classification results are highly similar across samples."
+    },
+    {
+     "id": "P7",
+     "name": "CateKV hybrid cache",
+     "description": "CateKV retains only a small budget of critical KV pairs in consistent heads (chunk-level top-k) and most KV pairs (retention ratio eta) in adaptive heads, chosen by pre-filling attention weights."
+    },
+    {
+     "id": "P8",
+     "name": "Theoretical bound",
+     "description": "A Rademacher-complexity bound on the CV-based classifier's generalization (Lemma 1) bounds the head-classification accuracy P_head that drives CateKV's eviction performance."
+    },
+    {
+     "id": "P9",
+     "name": "Accuracy near full attention on RULER",
+     "description": "On RULER at 128K with r=0.4, eta=1.0 and a consistent-head budget of 2048, CateKV keeps about 41% of the KV cache, outperforms StreamingLLM, SnapKV, PyramidKV and DuoAttention, and is comparable to full attention."
+    },
+    {
+     "id": "P10",
+     "name": "LongBench accuracy retained",
+     "description": "On LongBench, CateKV reduces KV cache to 42% across five LLMs with an average accuracy decline of at most 0.3%; combined with Quest or ShadowKV the decrease is at most 0.2%."
+    },
+    {
+     "id": "P11",
+     "name": "Better than DuoAttention at low full-head ratios",
+     "description": "DuoAttention's accuracy declines notably when retrieval heads fall below 0.3 of heads, while CateKV stays near full attention even at an adaptive-head ratio of 0.1, because consistent heads capture cross-query similarity whereas streaming heads cover initial and recent tokens."
+    },
+    {
+     "id": "P12",
+     "name": "Single-sample efficiency",
+     "description": "In single-sample inference, generic settings (r=0.4, eta=1.0) give Phi-3 2.11x memory and 1.79x latency reductions, and a tuned setting gives Llama-3 up to 2.72x memory and 2.18x decoding latency reductions with under 0.25% accuracy decline."
+    },
+    {
+     "id": "P13",
+     "name": "Batch throughput",
+     "description": "In batch inference at 40K tokens, generic settings give up to 2.38x batch size and 2.25x throughput, and further compression on Llama-3 gives 4.33x batch size and 3.96x throughput."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.1, Fig 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2, Algorithm 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2.1, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2.2, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2.4, Fig 7"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.3.1, Table 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.3.2, Table 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Integration with MInference",
+   "description": "Combining CateKV with the pre-filling accelerator MInference on RULER (8K-256K) causes no performance degradation and even slight improvement, showing sequential consistency is unaffected by pre-filling patterns."
+  },
+  {
+   "id": "P15",
+   "name": "Retention ratio threshold",
+   "description": "In adaptive heads, when eta exceeds about 0.6 the model matches or surpasses full-KV performance, below that accuracy drops significantly, and latency falls linearly as eta decreases."
+  },
+  {
+   "id": "P16",
+   "name": "Robust to consistent-head budget",
+   "description": "CateKV shows strong robustness across different sparse budgets for consistent heads (Fig 8c)."
+  }
+ ],
+ "structural_reasoning": "Problem framing of eviction versus retrieval motivates the sequential-consistency observation, which grounds head classification and the hybrid cache; accuracy and efficiency results build on the method. Ablations are isolated."
+}

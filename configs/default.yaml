@@ -1,0 +1,33 @@
+model: gemini-3.5-flash
+
+backend: gemini  # gemini | local -- local runs every LLM call through llm/local_model.py (transformers + bitsandbytes 4-bit) instead of the Gemini API
+
+local:
+  model_id: Qwen/Qwen2.5-3B-Instruct  # unquantized HF repo id -- loaded in 4-bit at runtime via bitsandbytes (llm/local_model.py), not a pre-quantized checkpoint, so any base instruct model works here without needing an AWQ/GPTQ-specific repo. 3B not 7B: Stage 1 feeds the model the *entire* paper's sentence pool as context, so a single prefill attention allocation can spike several GiB on a free-tier T4 (~15GB) -- a smaller model leaves far more headroom for that spike, not just less weight memory. Bump back to 7B if you have more VRAM (Colab Pro/A100/L4).
+  dtype: float16  # T4 is Turing-generation, no native bf16 tensor-core support -- use bfloat16 instead on a newer GPU (A100/L4/etc.)
+  max_output_tokens: 4096
+
+rate_limit:
+  min_seconds_between_calls: 13  # per-key limit, keeps each key under ~5 req/min
+
+retry:
+  max_retries: 2
+  base_delay: 2  # seconds, exponential backoff base for call_with_retry
+
+chunking:
+  max_sentences: null  # null = no chunking, single call with the full sentence pool (Gemini's context window never needs this). Set via CLAIM_PIPELINE_CHUNK_SIZE_SENTENCES for the local backend, where Stage 1's full-sentence-pool prompt can OOM a consumer GPU regardless of model size (see CLAUDE.md "Local backend") -- ranking/summarize.py and ranking/thesis.py split the pool into chunks of this size, generate per chunk, then merge.
+
+thesis:
+  max_claims: 20  # ceiling on synthesized thesis claims; model returns fewer if the paper doesn't support that many distinct findings
+
+evidence:
+  max_questions_per_claim: 5  # ceiling; model returns fewer if the claim doesn't genuinely warrant that many distinct evidence points
+  candidate_top_k: 8  # BM25 candidates shown to the question-generation prompt, grounding it in claim-relevant text
+  bm25_top_k: 5  # BM25 candidates used as context when answering each generated question
+
+paths:
+  data_raw: data/raw
+  data_interim: data/interim
+  data_processed: data/processed
+  data_checkpoints: data/checkpoints
+  data_graph: data/graph

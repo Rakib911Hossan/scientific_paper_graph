@@ -1,0 +1,221 @@
+{
+ "arxiv_id": "2508.08883",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Fundamental problem of causal inference -> scarce ground truth -> synthetic data necessity and principles",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Counterfactuals are unobservable",
+     "description": "By the fundamental problem of causal inference, the outcome of the same unit cannot be observed both with and without treatment, so counterfactual outcomes are unobservable."
+    },
+    {
+     "id": "P2",
+     "name": "Ground truth for causal queries is scarce",
+     "description": "Ground truth causal queries often cannot be observed due to the fundamental problem, confounding and selection bias, so the community relies on expensive expert knowledge or experimental studies."
+    },
+    {
+     "id": "P3",
+     "name": "RCTs are an insufficient substitute",
+     "description": "RCTs are expensive, time-consuming, often ethically infeasible, suffer non-random dropout and limited generalizability, and do not provide the diverse covariate coverage needed to train Causal ML models."
+    },
+    {
+     "id": "P4",
+     "name": "Evaluation relies on synthetic data",
+     "description": "Because real ground truth is scarce, evaluations of Causal ML methods rely predominantly on synthetic and semi-synthetic datasets."
+    },
+    {
+     "id": "P5",
+     "name": "Synthetic data is biased by design freedom",
+     "description": "Researchers' design choices, often made to favor their own methods, bias synthetic and semi-synthetic experiments and limit comparability across studies."
+    },
+    {
+     "id": "P6",
+     "name": "Unknown unknowns are excluded",
+     "description": "Synthetic data can include only features researchers know how to model, so unknown unknowns are excluded."
+    },
+    {
+     "id": "P7",
+     "name": "Synthetic setups are too simple",
+     "description": "Synthetic experiments are often derived from overly simplistic models such as additive noise models and lack sufficient realism to encourage practitioner adoption."
+    },
+    {
+     "id": "P8",
+     "name": "Design choices flip method rankings",
+     "description": "Curth et al. (2021) showed that making the IHDP treatment effect linear, with covariates unchanged, significantly shifted relative method rankings."
+    },
+    {
+     "id": "P9",
+     "name": "RealCause is unstable across seeds and realizations",
+     "description": "On IHDP, RealCause's point-estimate ATE error is 0.17 (true ATE 4.02), but over 20 seeds the mean error is 0.38 +/- 0.39 (up to 1.77), and over 100 realizations it is 0.95 +/- 1.36 (up to 9.45)."
+    },
+    {
+     "id": "P10",
+     "name": "CausalNF robust to some diffeomorphism violations",
+     "description": "Applying segmented-linear or sinusoidal noise transformations that violate the diffeomorphism assumption did not significantly increase CausalNF's counterfactual RMSE, which reflects method-friendly synthetic choices rather than general robustness."
+    },
+    {
+     "id": "P11",
+     "name": "CausalNF fails on non-identifiable example",
+     "description": "On a non-identifiable counterfactual example, CausalNF consistently converges to one of two SCMs sharing the same observational distribution, giving consistently biased errors when the other is true."
+    },
+    {
+     "id": "P12",
+     "name": "Principle 1: synthetic data is necessary",
+     "description": "Synthetic data is the only reliable source of ground truth for causal queries and allows full control over noise, confounding and structural complexity, enabling rigorous controlled experiments."
+    },
+    {
+     "id": "P13",
+     "name": "Principle 2: state design choices",
+     "description": "Because researcher freedom biases results, all design choices (causal models, queries, training data, generation algorithm and induced distribution) must be explicitly stated so experiments are reproducible and the domain of validity is clear."
+    },
+    {
+     "id": "P14",
+     "name": "Principle 3: beyond aggregated accuracy",
+     "description": "Evaluation should go beyond aggregated accuracy within the identification domain, including behavior outside the identification domain, since behavior under assumption violations is difficult to predict."
+    },
+    {
+     "id": "P15",
+     "name": "Principle 4: standardized frameworks",
+     "description": "Standardized evaluation frameworks should be developed to improve comparability, replicability and documentation of data generation processes and assumptions."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 2, Problem 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 2, Problem 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 2, Problem 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 2, Problem 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.1, App B"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.2, App C"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 3.2, App C"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P14",
+     "evidence": [
+      "Sec 3.2 conclusions, Sec 4.3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P14",
+     "evidence": [
+      "Sec 3.2 conclusions, Sec 4.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P16",
+   "name": "Synthetic experiments cannot capture unknown unknowns",
+   "description": "Synthetic experiments are insufficient for fully assessing real-world performance because they cannot model unknown unknowns; semi-synthetic experiments share this limitation."
+  },
+  {
+   "id": "P17",
+   "name": "Existing benchmark platforms fall short",
+   "description": "CauseMe and CausalBench do not include counterfactual estimation tasks, and their (semi-)synthetic dataset documentation lacks details needed to comply with Principle 2."
+  }
+ ],
+ "structural_reasoning": "Scarce ground truth drives reliance on synthetic data, whose biases and simplicity (demonstrated with RealCause and CausalNF) motivate the four principles."
+}

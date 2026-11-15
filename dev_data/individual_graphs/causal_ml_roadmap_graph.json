@@ -1,0 +1,253 @@
+{
+  "title_ref": "Causal Machine Learning Is Not a Panacea: A Roadmap for Observational Causal Inference in Health",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This source document (a JAMIA-style perspective/roadmap article, not a preprint with an arXiv ID) was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: why causal ML on observational data is attractive, and why that attractiveness creates risk.",
+      "nodes": [
+        {"id": "P1", "name": "RCTs not always feasible", "description": "Randomized controlled trials remain the gold standard for establishing causal relationships, but are not always feasible due to ethical or logistical constraints."},
+        {"id": "P2", "name": "Observational data seen as a bridge", "description": "Researchers may consider causal inference on large-scale observational, retrospective data as a bridge between gold-standard RCTs and ubiquitous real-world data."},
+        {"id": "P3", "name": "Curated observational data can emulate an RCT", "description": "When observational data are curated to follow a set of assumptions, causal inference can be applied to emulate an RCT, yielding valid treatment effect estimates."},
+        {"id": "P4", "name": "Causal ML promising for complex confounders", "description": "Causal ML shows promise because ML excels at extracting signals from multi-modal data (images, notes, time-series), allowing adjustment on complex confounders that traditional statistical methods struggle to incorporate."},
+        {"id": "P5", "name": "ML flexibility increases risk of erroneous findings", "description": "Drawing valid causal inferences requires justifying assumptions in the data and modeling choices; the flexibility of ML increases the risk of erroneous findings."},
+        {"id": "P6", "name": "Erroneous causal conclusions risk patient safety", "description": "Inappropriately drawing causal conclusions from ML carries risks to medical science and potentially patient safety."},
+        {"id": "P7", "name": "Limitations of causal ML under-appreciated", "description": "Despite advances in causal ML, its limitations remain largely under-appreciated across disciplines, and this gap in shared knowledge may impact the validity of findings."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["E3"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["E4"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["E5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P7", "evidence": ["E6"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Causal DAG as the foundation for identifiability, and how ML's optimization for prediction creates new verification challenges.",
+      "nodes": [
+        {"id": "P8", "name": "Non-random treatment assignment causes confounding", "description": "When estimating causal effects from observational data, treatments are often non-randomly assigned, confounding direct comparisons of outcomes."},
+        {"id": "P9", "name": "Causal DAG models treatment-outcome relationships", "description": "The causal relationships between treatment, outcome, and other relevant variables can be modeled using a causal directed acyclic graph (DAG)."},
+        {"id": "P10", "name": "DAG structure implies identifiability assumptions", "description": "The structure of a causal DAG implies a set of independence conditions between variables that generate identifiability assumptions, determining when a causal interpretation of treatment effects is tenable."},
+        {"id": "P11", "name": "Accurate DAG construction is a crucial first step", "description": "Constructing an accurate DAG with input from domain experts is a crucial first step in ensuring meaningful causal conclusions."},
+        {"id": "P12", "name": "ML models optimized for prediction, not causal validity", "description": "By default, most ML approaches are optimized for predictive performance."},
+        {"id": "P13", "name": "ML may exploit spurious associations", "description": "Because ML is optimized for predictive performance, ML models may leverage spurious associations to make predictions even when an underlying causal relationship exists."},
+        {"id": "P14", "name": "This obscures identifiability-assumption violations", "description": "This tendency to exploit spurious associations means ML introduces new challenges in verifying (and can obscure violations of) the causal identifiability assumptions."}
+      ],
+      "edges": [
+        {"from": "P8", "to": "P9", "evidence": ["E7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["E8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["E9"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P13", "evidence": ["E10"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["E11"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P14", "evidence": ["E12"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "The Overlap assumption: how to assess it, and the diagnostic ambiguity of propensity-model performance.",
+      "nodes": [
+        {"id": "P15", "name": "Overlap assumption defined", "description": "The overlap assumption requires every patient to have a non-zero probability of receiving the treatment."},
+        {"id": "P16", "name": "Propensity model used to assess overlap", "description": "Overlap can be partly assessed by fitting a propensity score model to predict treatment assignment from variables that could influence it, per the causal DAG."},
+        {"id": "P17", "name": "High discrimination + well-specified model implies low overlap", "description": "If the propensity model is well-specified, high discriminative performance implies low overlap, while poor discriminative performance indicates more randomness in treatment assignment."},
+        {"id": "P18", "name": "Poor performance can also indicate underfitting", "description": "If the model is poorly specified, near-random discriminative performance could simply indicate underfitting rather than true overlap."},
+        {"id": "P19", "name": "Standard ML techniques mitigate specification issues", "description": "Issues with model specification can be mitigated in part using standard supervised ML techniques such as cross-validation for model selection."},
+        {"id": "P20", "name": "Domain experts needed for thorough overlap evaluation", "description": "To more thoroughly evaluate overlap, one should consult domain experts, ideally those responsible for assigning the treatments, who can help identify settings where overlap is impossible."}
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["E13"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["E14"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P18", "evidence": ["E15"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P19", "evidence": ["E16"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P20", "evidence": ["E17"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P20", "evidence": ["E17"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "Conditional exchangeability (no unobserved confounding): unverifiability and mitigation strategies.",
+      "nodes": [
+        {"id": "P21", "name": "No-unobserved-confounding is unverifiable", "description": "The assumption of no unobserved confounding is unverifiable in observational data."},
+        {"id": "P22", "name": "Identifying confounders requires domain expertise", "description": "Identifying confounders generally requires domain expertise."},
+        {"id": "P23", "name": "Missing confounders can make interpretation untenable", "description": "If potential confounders (e.g., social determinants of health, patient preferences) are unavailable in the data, a causal interpretation may be untenable if their influence could flip the conclusions."},
+        {"id": "P24", "name": "Small unmeasured confounders should still be disclosed", "description": "Even if unmeasured confounders are believed small in magnitude, they should be acknowledged as a limitation when communicating findings."},
+        {"id": "P25", "name": "Sensitivity analyses provide further assurance", "description": "As further assurance, one can employ sensitivity analyses that quantify the magnitude of an unobserved confounder necessary to change the conclusions."}
+      ],
+      "edges": [
+        {"from": "P21", "to": "P22", "evidence": ["E18"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P23", "evidence": ["E19"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P24", "evidence": ["E20"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P25", "evidence": ["E21"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "SUTVA: consistency and non-interference violations, and how ML practitioners without clinical expertise can mishandle them.",
+      "nodes": [
+        {"id": "P26", "name": "SUTVA requires consistency and non-interference", "description": "SUTVA requires that all patients receive the same version of treatment (consistency) and that no patient's outcome is affected by others' treatment assignments (non-interference)."},
+        {"id": "P27", "name": "Hidden treatment variation causes consistency violations", "description": "Consistency violations may arise from hidden variation in the treatment variable, e.g., dose strength."},
+        {"id": "P28", "name": "Treating variation source as a confounder washes out effect", "description": "When sources of treatment variation are inadvertently treated as confounders (e.g., dose strength), subsequent adjustment can wash out the treatment effect."},
+        {"id": "P29", "name": "Interference example: nosocomial infection transmission", "description": "Interference may occur when treating one patient affects outcomes for others, as in nosocomial infection management, where an ML model might use room ID (predictive of transmission) as a feature."},
+        {"id": "P30", "name": "Non-expert ML practitioners may misclassify these variables", "description": "ML practitioners with limited clinical expertise may overlook the causal significance of variables like dose strength or room ID and include them in model development purely because they boost predictive performance."},
+        {"id": "P31", "name": "Correct handling requires distinguishing treatment-definition vs. interference variables", "description": "The predictive utility of dose strength suggests it should be incorporated into the treatment definition, whereas the utility of room ID reflects interference rather than treatment, requiring different handling."},
+        {"id": "P32", "name": "Without expertise, predictive associations get mistaken for causal factors", "description": "Without domain expertise, researchers risk mistaking predictive associations for sources of treatment effect heterogeneity or genuine causal factors."}
+      ],
+      "edges": [
+        {"from": "P26", "to": "P27", "evidence": ["E22"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P28", "evidence": ["E23"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P29", "evidence": ["E24"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P30", "evidence": ["E25"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P31", "evidence": ["E26"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P31", "evidence": ["E26"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P32", "evidence": ["E27"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Synthesis of identification-challenges section into a single takeaway.",
+      "nodes": [
+        {"id": "P33", "name": "DAG-first, domain-expert-checked workflow required", "description": "It is essential to first define a causal DAG, then examine the data for potential assumption violations using domain expertise and empirical checks."},
+        {"id": "P34", "name": "ML flexibility raises overfitting-to-spurious-signal risk across all three assumptions", "description": "The flexibility of ML models increases the risk of overfitting to spurious signals that may obscure violations of overlap, exchangeability, and SUTVA."},
+        {"id": "P35", "name": "Careful collaborative variable/model selection mitigates risk", "description": "Careful selection of confounders, treatment/outcome definitions, and associated models in collaboration with domain experts can mitigate assumption-violation risks or quantify their potential impact."}
+      ],
+      "edges": [
+        {"from": "P11", "to": "P33", "evidence": ["E28"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P14", "to": "P34", "evidence": ["E29"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P20", "to": "P35", "evidence": ["E30"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C3"},
+        {"from": "P25", "to": "P35", "evidence": ["E30"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C4"},
+        {"from": "P32", "to": "P35", "evidence": ["E30"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5"},
+        {"from": "P33", "to": "P34", "evidence": ["E31"], "votes": 2, "confidence": "majority"},
+        {"from": "P34", "to": "P35", "evidence": ["E32"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Covariate selection for modeling: avoiding irrelevant variables and mediators.",
+      "nodes": [
+        {"id": "P36", "name": "Temptation to include all covariates", "description": "For ML practitioners it is tempting to incorporate all observed covariates as predictors to adjust for confounding."},
+        {"id": "P37", "name": "Irrelevant variables risk spurious correlation", "description": "Irrelevant variables may be spuriously correlated with the outcome."},
+        {"id": "P38", "name": "Mediators lie on the treatment-outcome path", "description": "Some variables may be causal mediators — intermediate variables caused by the treatment that influence the outcome, occurring along the DAG path from treatment to outcome."},
+        {"id": "P39", "name": "Adjusting for mediators dilutes treatment effect estimates", "description": "Adjusting for mediators dilutes estimates of treatment effects, since the treatment may not get credit for changes in outcomes it caused via the mediator."},
+        {"id": "P40", "name": "Consulting the DAG avoids mediator inclusion", "description": "One can avoid including mediators by consulting the DAG and ensuring all predictors are measured before treatment and follow-up."}
+      ],
+      "edges": [
+        {"from": "P36", "to": "P37", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P39", "evidence": ["E34"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P39", "to": "P40", "evidence": ["E35"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P40", "evidence": ["E35"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Metalearner modeling choices: indirect vs. direct estimators and their robustness trade-offs.",
+      "nodes": [
+        {"id": "P41", "name": "Metalearners plug in arbitrary base models", "description": "Metalearners allow users to plug in base models of arbitrary complexity and estimate treatment effects from combinations of the base models' outputs."},
+        {"id": "P42", "name": "Indirect estimators predict outcomes per arm then difference", "description": "Indirect estimators (S-learner, T-learner) estimate the outcome under each treatment assignment separately given covariates, then take the difference."},
+        {"id": "P43", "name": "Indirect estimators are fragile to base-model error", "description": "Because the treatment effect is the difference between two separate predictions, errors in either prediction can be magnified and distort the final estimate."},
+        {"id": "P44", "name": "Regularization can flatten outcome estimates and conceal heterogeneity", "description": "In high-dimensional data, model-simplifying techniques like regularization can shrink away treatment heterogeneity, flattening outcome estimates and potentially causing a premature conclusion of no treatment effect."},
+        {"id": "P45", "name": "Direct estimators model treatment effect explicitly", "description": "Direct estimators (X-learner, DR-learner, R-learner, double ML, orthogonal statistical learning) use base-model outputs to model the treatment effect directly in a second step, via pseudo-outcomes or residual-based isolation, since the true effect is never directly observed per individual."},
+        {"id": "P46", "name": "Direct methods more robust to base-model error", "description": "Although base-model errors can still bias direct methods' estimates, direct methods are often more robust to these errors than indirect methods."}
+      ],
+      "edges": [
+        {"from": "P41", "to": "P42", "evidence": ["E36"], "votes": 2, "confidence": "majority"},
+        {"from": "P42", "to": "P43", "evidence": ["E37"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P43", "to": "P44", "evidence": ["E38"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P45", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P43", "to": "P46", "evidence": ["E40"], "votes": 2, "confidence": "majority"},
+        {"from": "P45", "to": "P46", "evidence": ["E40"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Synthesis of modeling-choices section into a single takeaway.",
+      "nodes": [
+        {"id": "P47", "name": "DAG consultation reduces irrelevant/mediator inclusion risk", "description": "Consulting the causal DAG when choosing covariates reduces the risk of including irrelevant variables and mediators."},
+        {"id": "P48", "name": "Choice of combination method affects estimate quality", "description": "The method of combining base model outputs (indirect vs. direct) impacts the quality of treatment effect estimates."},
+        {"id": "P49", "name": "Direct methods preferable when base-model accuracy is a central concern", "description": "Indirect methods are attractive for their simplicity, but if the accuracy of base models is a central concern, direct methods may be preferable."}
+      ],
+      "edges": [
+        {"from": "P40", "to": "P47", "evidence": ["E41"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P46", "to": "P48", "evidence": ["E42"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"},
+        {"from": "P48", "to": "P49", "evidence": ["E43"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Evaluation problem: no ground-truth treatment effect, and the surrogate strategies proposed instead.",
+      "nodes": [
+        {"id": "P50", "name": "No true treatment effect for validation", "description": "In causal inference only the outcome under the assigned treatment is observed, so there is no 'true' treatment effect available for held-out validation as in standard supervised ML."},
+        {"id": "P51", "name": "Standard ML test-set paradigm does not apply", "description": "Because there is no ground-truth treatment effect, the standard ML paradigm of comparing predicted to observed outcomes on a held-out test set does not apply to causal effect evaluation."},
+        {"id": "P52", "name": "Global null analysis proposed", "description": "One strategy is a global null analysis using a synthetic treatment with no true effect, allowing estimated effects to be directly evaluated similarly to supervised ML since the expected effect is zero."},
+        {"id": "P53", "name": "Negative control / plasmode simulation as complements", "description": "To complement a global null analysis, one can perform a negative control analysis (a treatment with no effect per expert knowledge) or plasmode simulation when feasible."},
+        {"id": "P54", "name": "Cross-modeling-approach stability as a second strategy", "description": "Another strategy is comparing estimates across different modeling approaches and assessing whether sign and magnitude are stable, since each approach encodes different assumptions."},
+        {"id": "P55", "name": "Stability builds confidence but doesn't replace RCTs", "description": "Stability across modeling approaches builds confidence in results but these analyses do not supersede evaluation through RCTs or grounding in real-world causal mechanisms."}
+      ],
+      "edges": [
+        {"from": "P50", "to": "P51", "evidence": ["E44"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P51", "to": "P52", "evidence": ["E45"], "votes": 2, "confidence": "majority"},
+        {"from": "P52", "to": "P53", "evidence": ["E46"], "votes": 2, "confidence": "majority"},
+        {"from": "P51", "to": "P54", "evidence": ["E47"], "votes": 2, "confidence": "majority"},
+        {"from": "P54", "to": "P55", "evidence": ["E48"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "Synthesis of evaluation section: treat causal ML outputs as hypotheses, not findings.",
+      "nodes": [
+        {"id": "P56", "name": "Gold-standard validation generally infeasible", "description": "Gold-standard validation is generally infeasible in observational causal inference."},
+        {"id": "P57", "name": "Results should be treated as hypotheses, not definitive findings", "description": "Causal ML results from observational data should be treated as causal hypotheses rather than definitive findings."},
+        {"id": "P58", "name": "Hypotheses can guide RCT prioritization or mechanistic evaluation", "description": "These hypotheses can then be prioritized for testing in RCTs or evaluated against plausible physiological or biological mechanisms."}
+      ],
+      "edges": [
+        {"from": "P55", "to": "P56", "evidence": ["E49"], "votes": 2, "confidence": "majority", "note": "cross-component link from C10"},
+        {"from": "P56", "to": "P57", "evidence": ["E50"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P57", "to": "P58", "evidence": ["E51"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C12",
+      "description": "Overall conclusion: toward responsible use, and the proposed roadmap.",
+      "nodes": [
+        {"id": "P59", "name": "Unjustified assumptions/choices risk misleading conclusions", "description": "Without well-justified causal assumptions and ML modeling choices, analyses may yield conclusions that are misleading."},
+        {"id": "P60", "name": "Roadmap proposed organizing recommendations", "description": "A roadmap is proposed that organizes recommendations for using causal ML in observational data into questions addressing causal assumptions, modeling, and evaluation."},
+        {"id": "P61", "name": "Roadmap is a non-exhaustive foundation for interdisciplinary teams", "description": "Although not exhaustive, the roadmap offers a foundation for interdisciplinary teams to ground their causal ML analyses."}
+      ],
+      "edges": [
+        {"from": "P35", "to": "P59", "evidence": ["E52"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C6"},
+        {"from": "P49", "to": "P59", "evidence": ["E52"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C9"},
+        {"from": "P58", "to": "P59", "evidence": ["E52"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C11"},
+        {"from": "P59", "to": "P60", "evidence": ["E53"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P60", "to": "P61", "evidence": ["E54"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P62", "name": "Causal ML adapts standard ML techniques for causal inference", "description": "Regardless of the use case (population-level trends or personalized treatment-effect prediction), the field of causal ML adapts standard ML techniques for causal inference."},
+    {"id": "P63", "name": "Paper scopes to binary treatment/outcome", "description": "The paper considers the setting of a binary treatment and outcome to lay the foundation for more complex analyses (e.g., multiple treatments), as a deliberate scoping choice."}
+  ]
+}

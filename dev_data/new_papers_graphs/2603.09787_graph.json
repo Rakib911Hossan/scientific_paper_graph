@@ -1,0 +1,309 @@
+{
+ "arxiv_id": "2603.09787",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Encoded absences: definition, mechanism, failure of standard XAI, adapted methods and empirical findings",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Standard XAI ties activation to presence",
+     "description": "Mainstream attribution and feature-visualization methods associate neuron activation with the presence of concepts: attribution highlights present input features and feature visualization finds inputs that maximize activation."
+    },
+    {
+     "id": "P2",
+     "name": "Encoded absence defined",
+     "description": "A neuron z_j encodes the absence of a concept if inserting the concept into the input decreases its activation, i.e. f_j([x,C=1]) < f_j([x,C=0]) (Definition 2.1)."
+    },
+    {
+     "id": "P3",
+     "name": "DNNs can implement encoded absences",
+     "description": "A neuron encoding the absence of a concept can be constructed with negative weights from neurons encoding its presence plus a source of positive potential, so DNNs can implement such neurons (Proposition 2.2)."
+    },
+    {
+     "id": "P4",
+     "name": "Target attribution misses absences",
+     "description": "Standard target attribution only highlights concepts present in the input, and concepts whose absence is informative are typically not present in images of the target class, so they cannot appear."
+    },
+    {
+     "id": "P5",
+     "name": "Maximization cannot visualize absences",
+     "description": "Feature visualization through maximization cannot visualize concepts whose absence is encoded, since maximally activating inputs contain minimal amounts of inhibiting concepts."
+    },
+    {
+     "id": "P6",
+     "name": "Counterfactual explanations cannot explain absences",
+     "description": "Counterfactual explanations operate between samples or classes and implicitly delete content, so they cannot tell whether a prediction relies on presence of a class concept or absence of a competing one."
+    },
+    {
+     "id": "P7",
+     "name": "Non-target attribution",
+     "description": "Computing the attribution for class t on inputs from other classes (non-target attribution) makes concepts whose absence is informative appear, with negative attribution indicating inhibition."
+    },
+    {
+     "id": "P8",
+     "name": "Feature visualization through minimization",
+     "description": "Finding the input that minimizes a neuron's pre-activation reveals the patterns that inhibit it, i.e. the concepts whose absence the neuron encodes."
+    },
+    {
+     "id": "P9",
+     "name": "Hassenstein-Reichardt toy model: standard XAI fails",
+     "description": "In a synthetic Hassenstein-Reichardt detector, Integrated Gradients and highest-activating patches explain the neuron encoding both directions faithfully but only highlight the left-to-right motion for the neuron encoding presence of one direction and absence of the other."
+    },
+    {
+     "id": "P10",
+     "name": "Non-target attribution reveals the HR absence",
+     "description": "The proposed modifications reveal the missing inhibitory signal in the Hassenstein-Reichardt detector, with right-to-left motion receiving negative attribution (Fig 3e)."
+    },
+    {
+     "id": "P11",
+     "name": "Trained toy CNN learns an encoded absence",
+     "description": "A small CNN trained to classify green-pixel presence learns an output that encodes absence of green via a negative weight from the green channel and a positive weight from the red/blue channel, matching the mechanistic construction."
+    },
+    {
+     "id": "P12",
+     "name": "Adapted methods explain the toy CNN",
+     "description": "On the toy CNN, standard methods fail to show the green pixel's causal role, while non-target attribution and minimization highlight the green pixel for the absence-encoding output (Fig 4)."
+    },
+    {
+     "id": "P13",
+     "name": "ImageNet models use encoded absences",
+     "description": "In VGG19, ResNet-50 and ViT-B/16, inserting least-activating patches strongly suppresses channel activations while random patches have little effect (Table 1)."
+    },
+    {
+     "id": "P14",
+     "name": "Other concept-discovery notions don't capture absences",
+     "description": "Inserting logical-NOT patches from Mu and Andreas (2020) or the most activating patches decreases activation no more than random patches, so they target presences or a different notion of NOT."
+    },
+    {
+     "id": "P15",
+     "name": "Absences support fine-grained classification",
+     "description": "Channels that encode presence of concepts of a class often simultaneously encode absence of concepts of closely related classes, e.g. Border Collie vs. Leonberger, aiding fine-grained discrimination and robustness (Fig 6)."
+    },
+    {
+     "id": "P16",
+     "name": "Biased model overfits to colorful patches",
+     "description": "On a synthetic ISIC bias where all benign samples have colorful patches, a model with no debiasing overfits to them and fails when the patches are absent or the association is inverted (Table 2)."
+    },
+    {
+     "id": "P17",
+     "name": "Presence-only debiasing is insufficient",
+     "description": "Presence debiasing with existing attribution priors reduces the bias but still fails on malignant samples with inserted patches, indicating bias from the absence of colorful patches."
+    },
+    {
+     "id": "P18",
+     "name": "Presence+absence debiasing works",
+     "description": "Presence+absence debiasing gives the highest average accuracy in both setups without the training bias, comparable to a model trained without bias (Table 2)."
+    },
+    {
+     "id": "P19",
+     "name": "Biases arise from absence too",
+     "description": "Biases can arise from concept absence as well as presence, so effective debiasing must account for both."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1-2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 2.2"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P4",
+     "evidence": [
+      "Sec 3-4"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P5",
+     "evidence": [
+      "Sec 3, Sec 4"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P6",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.1, Fig 3d"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.1, Fig 3e"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.2, Fig 4b"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.2, Fig 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.3, Table 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.3, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P15",
+     "evidence": [
+      "Sec 5.3, Fig 6"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P15",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P18",
+     "evidence": [
+      "Sec 5.4, Table 2"
+     ]
+    },
+    {
+     "from": "P16",
+     "to": "P17",
+     "evidence": [
+      "Sec 5.4, Table 2"
+     ]
+    },
+    {
+     "from": "P17",
+     "to": "P18",
+     "evidence": [
+      "Sec 5.4, Table 2"
+     ]
+    },
+    {
+     "from": "P17",
+     "to": "P19",
+     "evidence": [
+      "Sec 5.4, Sec 6"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P20",
+   "name": "Absences matter in biology",
+   "description": "In biological systems, absences serve as reasoning cues, e.g. the Hassenstein-Reichardt model has Drosophila neurons activated by rightward motion in combination with absence of leftward motion."
+  },
+  {
+   "id": "P21",
+   "name": "Non-target attribution has noise caveat",
+   "description": "Negative non-target attributions do not by themselves guarantee an encoded absence because attribution can be noisy, though this did not meaningfully affect the studied applications."
+  },
+  {
+   "id": "P22",
+   "name": "Non-target attribution resembles targeted FGSM",
+   "description": "Non-target attribution is algorithmically similar to the input gradient with respect to a non-true class used in targeted FGSM attacks."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the definition and mechanism of encoded absences, through why standard XAI misses them and the proposed adaptations, to toy and ImageNet evidence and the debiasing application."
+}

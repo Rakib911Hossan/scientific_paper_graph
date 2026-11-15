@@ -1,0 +1,250 @@
+{
+ "arxiv_id": "2609.15359",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Decode load imbalance under unknown output lengths motivates predict-calibrate-schedule pipeline, evaluated end to end",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Heavy-tailed output lengths",
+     "description": "Real-world LLM workloads have highly skewed, heavy-tailed output length distributions, producing heterogeneous decoding demand and uneven KV cache consumption."
+    },
+    {
+     "id": "P2",
+     "name": "Decoder load imbalance",
+     "description": "Identically provisioned decoders gradually diverge in KV cache utilization, with some persistently saturated while others stay underutilized."
+    },
+    {
+     "id": "P3",
+     "name": "Stateless routing fails",
+     "description": "Round-robin routing fails to balance decoders and can worsen queue buildup and preemption; least-request treats request count as load proxy and saturates under long generations, so vLLM and SGLang keep RR."
+    },
+    {
+     "id": "P4",
+     "name": "Prior length-aware work is limited",
+     "description": "PO-IT and Ranking only enable SJF within a single decode instance without cross-instance placement, prediction can add critical-path latency, and Llumnix migrates after imbalance occurs at significant overhead for large KV caches."
+    },
+    {
+     "id": "P5",
+     "name": "Device-assisted speculative prediction",
+     "description": "A LoRA-fine-tuned lightweight LLM on the request-origin device predicts output length in parallel with cloud-side prefill, hiding prediction latency; its training target is the maximum output length across LLaMA and Qwen models under multiple temperatures."
+    },
+    {
+     "id": "P6",
+     "name": "Underestimation is the costly error",
+     "description": "Underestimating output length triggers queue buildup, preemption and multi-fold latency inflation, whereas moderate overestimation only causes conservative allocation mitigated by PagedAttention."
+    },
+    {
+     "id": "P7",
+     "name": "Uncertainty-aware conformal calibration",
+     "description": "UAC computes one-sided nonconformity scores over a sliding window of recent requests and sets the upper bound L_up = L_pred + q_alpha, guaranteeing P(L_out <= L_up) >= 1 - alpha under exchangeability."
+    },
+    {
+     "id": "P8",
+     "name": "Memory-aware global routing",
+     "description": "The global scheduler estimates KV demand B = ceil((L_prompt + L_up)/S), keeps only decoders whose effective free blocks fit it, routes to the feasible decoder with the shortest waiting queue, and reserves blocks atomically; it falls back to RR on timeout and to maximum capacity if none is feasible."
+    },
+    {
+     "id": "P9",
+     "name": "Local SJF reordering",
+     "description": "Because per-token latency is stable, decoding time is roughly proportional to output length, so each decoder reorders its queue by L_up (SJF) with a maximum waiting time to avoid starvation, mitigating head-of-line blocking."
+    },
+    {
+     "id": "P10",
+     "name": "Prediction accuracy",
+     "description": "On Alpaca, SP-7B reduces MAE by 11.1% over PO-IT and 21.1% over S3, with higher Acc-50 and Acc-100."
+    },
+    {
+     "id": "P11",
+     "name": "Calibration lowers underestimation",
+     "description": "UAC substantially lowers underestimation probability and caps residual error versus raw SP or a fixed 10% offset heuristic."
+    },
+    {
+     "id": "P12",
+     "name": "Main latency gains",
+     "description": "Across ShareGPT and BurstGPT workloads and LLaMA3.1-8B and Qwen2.5-3B, MAPS cuts mean E2E latency by 42.6% and P99 E2E latency by up to 84.8% versus vLLM, SGLang and Llumnix."
+    },
+    {
+     "id": "P13",
+     "name": "Better balance",
+     "description": "At high load MAPS keeps the decoders' queue-length ratio at 0.96 versus 1.36x under vLLM, with queues reduced on both decoders."
+    },
+    {
+     "id": "P14",
+     "name": "Robust to weak predictor",
+     "description": "MAPS-160M still beats all baselines (E2E P99 improved 21.5%/21.0%/56.8% over SGLang/vLLM/Llumnix) and MAPS stays within 19.8% of the oracle's P99, so limited headroom remains for predictor improvement."
+    },
+    {
+     "id": "P15",
+     "name": "Ablation: UAC",
+     "description": "Removing UAC raises P99 and mean E2E latency by 14.3% and 18.4% because underestimation causes preemption and cascading queue delays."
+    },
+    {
+     "id": "P16",
+     "name": "Ablation: routing policy",
+     "description": "Replacing minimum-queue routing with maximum-capacity routing degrades latency (Qwen2.5-3B P99 and mean up to 1.11x and 1.36x), showing routing should target queue buildup rather than residual memory."
+    },
+    {
+     "id": "P17",
+     "name": "Ablation: SJF",
+     "description": "Replacing local SJF with FCFS consistently increases mean and tail latency, more at P99 under higher rates."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Appendix A"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2, Sec 4.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.1, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.1, Table 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.3, Fig 5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P16",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P17",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P18",
+   "name": "Runtime state collection",
+   "description": "Each decoder's monitor periodically reports free, reserved and effective blocks and queue length to a Redis-backed runtime state collector that also holds a sliding window of recent outcomes."
+  },
+  {
+   "id": "P19",
+   "name": "Tail latency vs baselines",
+   "description": "Llumnix shows large max inter-token latency due to migration under memory pressure, while vLLM and SGLang show rapid TTFT growth under load and MAPS keeps max ITL low and stable."
+  },
+  {
+   "id": "P20",
+   "name": "Limitations",
+   "description": "Evaluation uses only six A6000 GPUs (one prefiller, two decoders), predictor is fine-tuned on Alpaca and may need adaptation for other workloads, and chain-of-thought length prediction remains open."
+  }
+ ],
+ "structural_reasoning": "Argument flows from the load-imbalance problem and prior-work gaps to prediction, calibration and hierarchical scheduling, then to evaluation and ablations."
+}

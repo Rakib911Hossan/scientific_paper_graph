@@ -1,0 +1,227 @@
+{
+  "arxiv_id": "2411.03417v2",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: LLM peer-review promise vs. controversy, and the deliberately low-risk use case chosen.",
+      "nodes": [
+        {"id": "P1", "name": "LLMs promising but controversial for peer review", "description": "LLMs represent a promising but controversial tool in aiding scientific peer review; the idea is contentious because LLMs can hallucinate, exhibit biases, and may compromise fairness."},
+        {"id": "P2", "name": "Despite risks, LLMs may usefully scrutinize manuscripts", "description": "Despite these potential issues, LLMs may serve as useful analytical tools to scrutinize manuscripts and identify weaknesses or inaccuracies needing attention."},
+        {"id": "P3", "name": "Wider ethical implications unclear, so a low-risk use case is chosen", "description": "Because the wider ethical implications and appropriate use cases of LLMs in review remain unclear, the study evaluates a relatively clear-cut, low-risk use case: vetting submissions against submission standards, with results shown only to authors."},
+        {"id": "P4", "name": "Author checklists are a standard compliance mechanism", "description": "Author checklists, used at NeurIPS and other venues, contain questions ensuring authors follow appropriate research and manuscript preparation practices, helping authors avoid mistakes that could lead to rejection."},
+        {"id": "P5", "name": "Checklist Assistant restricted to authors only, to avoid review bias", "description": "To prevent potential bias in the review process, the Checklist Assistant's usage is confined exclusively to authors, not made accessible to reviewers."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["E3"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P5", "evidence": ["E4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Positioning relative to related work on LLMs in peer review.",
+      "nodes": [
+        {"id": "P6", "name": "Prior LLM-in-review work focuses on reviewer assignment or full review generation", "description": "Prior work has used language models mainly for reviewer-paper similarity scoring (assignment) or, more recently, generating entire paper reviews evaluated via author/researcher ratings."},
+        {"id": "P7", "name": "It's unclear how review-generation ratings map to peer review's actual objectives", "description": "It is not entirely clear how ratings of LLM-generated reviews translate to meeting peer review's actual objectives (identifying errors, choosing better papers, providing useful author feedback), and peer-review evaluations themselves are known to be biased."},
+        {"id": "P8", "name": "This work targets a narrower, more concrete task: checklist validation", "description": "This work focuses on a more concrete task than end-to-end review generation — validating that papers meet Author Checklist criteria — evaluated in the setting of an actual peer-review conference."},
+        {"id": "P9", "name": "Prior error/strength-detection studies show mixed LLM capability and small sample sizes", "description": "Prior work found GPT-4 identifies deliberately inserted errors more than half the time in one setting but performs at chance identifying the objectively 'stronger' of two abstracts, and both error-detection experiments used small paper samples with prompts specifically asking for errors."},
+        {"id": "P10", "name": "Prior checklist-compliance studies were retrospective; this one is live-deployed", "description": "Prior papers investigating LLM checklist-compliance evaluation were retrospective studies of already-published papers, whereas this work is deployed live at a peer-review venue, helping authors improve compliance before submission."},
+        {"id": "P11", "name": "LLM use is already widespread in manuscript/review preparation", "description": "Recent work estimates 17.5% of CS arXiv abstracts (as of Jan 2024) show significant LLM-driven modification, and LLMs are increasingly used in generating peer reviews too, underscoring the need for systematic evaluation of LLM efficacy in peer review."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["E5"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P8", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P8", "evidence": ["E7"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P8", "evidence": ["E8"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P8", "evidence": ["E9"], "votes": 1, "confidence": "single_run"},
+        {"from": "P3", "to": "P8", "evidence": ["E10"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "System design: prompt engineering choices and their empirical/anticipatory motivations.",
+      "nodes": [
+        {"id": "P12", "name": "Each checklist item processed as an independent API call", "description": "Each checklist item is treated as an individual task/API call, with GPT-4 given the author's answer, justification, the guidelines, and the full paper+appendices."},
+        {"id": "P13", "name": "Clear step-by-step instructions improved LLM performance", "description": "Tuning on a dozen papers (some correctly filled, some with deliberately planted errors) showed the LLM performed better with clear, step-by-step instructions."},
+        {"id": "P14", "name": "Score/review mixing initially occurred, fixed by format instruction", "description": "Before prompt adjustments, LLM responses often mixed the review with the score; specifying the score be returned on a separate line fixed this."},
+        {"id": "P15", "name": "Anticipated over-strictness motivated explicit leniency instructions", "description": "The team hypothesized users might find responses overly strict, vague, and lengthy (later confirmed), so they added instructions like 'use 0 score sparingly' and 'focus on significant improvements.'"},
+        {"id": "P16", "name": "0 and 0.5 scores merged out of harshness concern", "description": "Although the assistant returned scores of 0, 0.5, and 1, the team merged 0 and 0.5 into a single 'needs improvement' category rather than differentiating severity, due to concern the LLM's evaluations might be too harsh."},
+        {"id": "P17", "name": "Within-paper score variation is significantly lower than across-paper variation", "description": "A consistency sanity check found that variation in scores across multiple runs on the same paper was significantly lower than variation across different papers for all but one question (the ethics question, Q9), supporting the reliability of using the scores at all."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P12", "evidence": ["E11"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P12", "evidence": ["E12"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P16", "evidence": ["E13"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P17", "evidence": ["E14"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "Overview of checklist usage patterns: what authors answered and how the LLM scored them.",
+      "nodes": [
+        {"id": "P18", "name": "Most questions received Yes responses; NA common for some", "description": "Across 234 submitted papers, most checklist questions received Yes responses, but Theory, Impacts, Safeguards, Documentation, Human Subjects, and Risks saw significant NA usage, and Code/Data and Error Bars saw notable No responses."},
+        {"id": "P19", "name": "Most LLM feedback flagged 'needs improvement'", "description": "For most questions, the majority of LLM feedback suggested improvement was needed, though for Theory, Human Subjects, and Risks, many NA responses were deemed appropriate ('No Concerns'), likely reflecting LLM confidence that those items were genuinely inapplicable."},
+        {"id": "P20", "name": "Every submission received multiple 'needs improvement' flags", "description": "All 234 submissions received at least 8 and at most 13 (out of 15) 'needs improvement' ratings, with more than half receiving 12 or more."}
+      ],
+      "edges": [
+        {"from": "P18", "to": "P19", "evidence": ["E15"], "votes": 2, "confidence": "majority"},
+        {"from": "P19", "to": "P20", "evidence": ["E16"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P19", "evidence": ["E17"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C3"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Survey findings: authors' pre- vs. post-usage perceptions, and the expectation-experience gap.",
+      "nodes": [
+        {"id": "P21", "name": "Majority found the assistant useful and would revise", "description": "Among the 63 authors who completed both surveys, 70% reported plans to revise based on feedback, 70% found the assistant concretely useful, and 67% expressed excitement about future LLM checklist use — all statistically significant majorities."},
+        {"id": "P22", "name": "Pre-usage expectations were even more positive than post-usage experience", "description": "Authors were more positive before using the tool than after; there was a statistically significant drop in positive responses on the 'Useful' and 'Excited to Use' questions between pre- and post-usage surveys."},
+        {"id": "P23", "name": "Number of 'needs improvement' flags didn't predict survey sentiment", "description": "No substantial effect of the number of 'needs improvement' scores on survey responses was found, suggesting the written content of feedback mattered more to author perception than the raw score count."},
+        {"id": "P24", "name": "No significant selection bias detected in survey drop-off", "description": "Comparing pre-usage responses of submitters vs. non-submitters, and post-usage respondents vs. non-respondents, found no substantial differences in positive-response rates, suggesting the survey drop-off did not introduce significant selection bias."}
+      ],
+      "edges": [
+        {"from": "P21", "to": "P22", "evidence": ["E18"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P23", "evidence": ["E19"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C4"},
+        {"from": "P21", "to": "P24", "evidence": ["E20"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Qualitative challenges reported by authors, led by inaccuracy and excessive strictness.",
+      "nodes": [
+        {"id": "P25", "name": "Inaccuracy was the most frequently reported issue", "description": "20 of 52 authors giving freeform feedback reported the LLM was inaccurate, including overlooking existing content, misinterpreting a thought experiment as real, and wrongly assuming human-subjects involvement from an 'interpretability' discussion."},
+        {"id": "P26", "name": "Excessive strictness was the second most common issue", "description": "14 of 52 authors reported the LLM was too strict, consistent with the team's earlier anticipation that motivated leniency-focused prompt instructions."},
+        {"id": "P27", "name": "Additional lower-frequency issues also reported", "description": "Other reported issues included infeasibility of changes due to page limits (5), overly generic feedback (4), insufficient LLM capabilities e.g. non-multimodal (4), inconsistency across resubmissions (3), desire for full-paper review (3), weakness on theory papers (2), and verbosity (2)."}
+      ],
+      "edges": [
+        {"from": "P15", "to": "P26", "evidence": ["E21"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3: anticipated strictness concern was borne out"},
+        {"from": "P25", "to": "P27", "evidence": ["E22"], "votes": 1, "confidence": "single_run"},
+        {"from": "P22", "to": "P25", "evidence": ["E23"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5: issues found post-usage explain the expectation-experience gap"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Characterization of LLM feedback quality: granularity, specificity, and scope creep.",
+      "nodes": [
+        {"id": "P28", "name": "LLM feedback validated as accurately extractable and clusterable", "description": "Using a second LLM (GPT-4) to extract and cluster feedback points, manual inspection on 10 randomly selected checklists confirmed the extracted points accurately matched the original long-form feedback."},
+        {"id": "P29", "name": "LLM gave granular, multi-point feedback per question", "description": "The LLM identified many distinct granular feedback types within each checklist question, typically providing 4-6 distinct points of feedback per question across all 15 questions."},
+        {"id": "P30", "name": "Feedback included concrete, specific content for many questions", "description": "For example, on the 'Claims' question the LLM commented on consistency/precision (e.g., matching abstract and introduction) for 50 papers, and on 'Compute resources' it commented specifically on execution-time details."},
+        {"id": "P31", "name": "Feedback also included generic boilerplate", "description": "The LLM also tends to provide some generic boilerplate commentary for each question, with the most common feedback category being generic enhancement suggestions."},
+        {"id": "P32", "name": "LLM sometimes expanded checklist question scope", "description": "The LLM often expanded the scope of checklist questions beyond their literal content, e.g., raising reproducibility concerns under the ethics question, or anonymity concerns under the code/data accessibility question."},
+        {"id": "P33", "name": "Overall: feedback is concrete/actionable enough to inform revisions", "description": "Overall, the analysis suggests the LLM gave concrete and actionable feedback authors could use to modify submissions, and that a more detailed rubric-based checklist could enable even more granular automated feedback."}
+      ],
+      "edges": [
+        {"from": "P28", "to": "P29", "evidence": ["E24"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P30", "evidence": ["E25"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P31", "evidence": ["E25"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P32", "evidence": ["E26"], "votes": 1, "confidence": "single_run"},
+        {"from": "P30", "to": "P33", "evidence": ["E27"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P33", "evidence": ["E27"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Evidence of behavioral change: self-reported plans and analysis of actual re-submissions.",
+      "nodes": [
+        {"id": "P34", "name": "Authors self-reported concrete revision plans", "description": "Of 78 survey responses, 45 addressed the change-description question and 35 described actual planned changes, most commonly improving checklist justifications with more detail/references (14), adding experiment/dataset/compute details (6), or correcting a wrongly filled answer (2)."},
+        {"id": "P35", "name": "40 paired re-submissions analyzed for actual changes", "description": "Among 184 distinct paper submissions, 40 instances involved the same author submitting the same paper twice, enabling before/after comparison of checklist answers and justifications."},
+        {"id": "P36", "name": "Most re-submission pairs changed answers and/or justifications", "description": "In 22 of 40 pairs authors changed at least one checklist answer, and in 39 of 40 pairs they changed at least one justification, with only one pair being an exact unmodified resubmission."},
+        {"id": "P37", "name": "Justification length substantially increased on re-submission", "description": "Over half the time when authors changed a checklist justification, the justification's word count more than doubled between first and second submission."},
+        {"id": "P38", "name": "LLM re-evaluation is responsive to author-made changes", "description": "When neither answer nor justification changed, LLM evaluation stayed the same 81% of the time (improved 7%, worse 12%); when justification changed, it improved 13% vs worse 5%; when the answer itself changed, it improved 15% vs worse 2% — some evidence the LLM's evaluation responds meaningfully to author changes, though sample size is small."},
+        {"id": "P39", "name": "Causal attribution to the assistant remains non-definitive", "description": "While changes in submissions cannot be causally attributed definitively to the checklist assistant, the combination of self-reported plans, increased justification length, and LLM-response patterns constitutes qualitative evidence the assistant meaningfully helped some authors improve submissions."}
+      ],
+      "edges": [
+        {"from": "P35", "to": "P36", "evidence": ["E28"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P36", "to": "P37", "evidence": ["E29"], "votes": 2, "confidence": "majority"},
+        {"from": "P36", "to": "P38", "evidence": ["E30"], "votes": 2, "confidence": "majority"},
+        {"from": "P34", "to": "P39", "evidence": ["E31"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P39", "evidence": ["E31"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P39", "evidence": ["E31"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P34", "evidence": ["E32"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C7: quality of feedback plausibly enabled concrete revision plans"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Adversarial gaming experiment: motivation, method, and result.",
+      "nodes": [
+        {"id": "P40", "name": "Intended use restricted to author assistance, not verification", "description": "The Checklist Assistant was intended to help authors improve papers, not to serve as an automated reviewer-facing verification tool."},
+        {"id": "P41", "name": "Concern: could an assistant be gamed if used for verification?", "description": "If the assistant were repurposed as an automated verification step, a natural concern is whether authors could 'game' the system by AI-improving checklist responses without making real paper changes, creating false compliance impressions."},
+        {"id": "P42", "name": "Concern motivated by known adversarial-behavior literature in peer review", "description": "This concern is motivated by documented adversarial behavior issues elsewhere in peer review and known feasibility of adversarial attacks on other review-process components."},
+        {"id": "P43", "name": "An LLM attack agent iteratively refined justifications using system feedback", "description": "A separate LLM (GPT-4o) attack agent was given initial checklist responses and iteratively revised justifications based solely on Checklist Assistant feedback (without altering the paper), given a 3-attempt budget matching the deployed system's submission limit, selecting the highest-scoring result."},
+        {"id": "P44", "name": "Adversarial attack produced score increases on 14/15 questions", "description": "Repeated evaluation (234 papers × 3 repeats per condition) showed a clear improvement in scores after the adversarial attack: 14 of 15 questions showed score increases comparing original vs. 3-round-adversarially-refined justifications."},
+        {"id": "P45", "name": "Manual inspection found illegitimate gaming strategies scored highly", "description": "Manual examination revealed the attack LLM used illegitimate strategies — e.g., fabricating a hardware description absent from the paper, or generating a placeholder code-repository URL — which were nonetheless scored '1' by the Checklist Assistant."},
+        {"id": "P46", "name": "Conclusion: automated assistants risk manipulation without human oversight", "description": "If used as an unsupervised review tool, such assistants could be manipulated to raise scores via persuasive rebuttals with no real value added for readers, since scores wouldn't reflect substantive paper changes — highlighting a vulnerability of automated review tools."}
+      ],
+      "edges": [
+        {"from": "P40", "to": "P41", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P42", "to": "P41", "evidence": ["E34"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P43", "evidence": ["E35"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P43", "to": "P44", "evidence": ["E36"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P44", "to": "P45", "evidence": ["E37"], "votes": 2, "confidence": "majority"},
+        {"from": "P45", "to": "P46", "evidence": ["E38"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Other limitations and their mitigations: interpretive errors, over-reliance, privacy, and bias/fairness.",
+      "nodes": [
+        {"id": "P47", "name": "LLM may misinterpret complex content, causing false positives/negatives", "description": "LLMs may misinterpret complex content or fail to fully assess criteria, producing false positives (excessive/irrelevant requests) and false negatives (overlooked proof errors)."},
+        {"id": "P48", "name": "Risk of author over-reliance mitigated by encouraging manual validation", "description": "There is a risk authors over-rely on LLM analysis and miss deeper issues requiring human judgment; the team mitigated this by encouraging authors to manually validate outputs and treat the assistant as a supplement, not a replacement."},
+        {"id": "P49", "name": "Assistant limited to text only, missing figures/tables/external links", "description": "The Checklist Assistant was based only on paper text and did not check figures, tables, or external links, so it may have flagged missing information actually present in those unchecked assets."},
+        {"id": "P50", "name": "Privacy risk from processing papers via a third-party LLM API", "description": "Using LLMs raises data privacy/security concerns since papers are processed through a third-party API; the team recommended anonymization and confidentiality efforts, but this may have discouraged privacy-sensitive authors from participating."},
+        {"id": "P51", "name": "Bias risk mitigated by restricting visibility to authors only", "description": "LLM biases could compromise review fairness, especially for unconventional/interdisciplinary research; this risk is mitigated by keeping outputs visible only to authors, not reviewers, meta-reviewers, or program chairs — though further use by reviewers could reintroduce this risk."}
+      ],
+      "edges": [
+        {"from": "P47", "to": "P48", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P25", "to": "P47", "evidence": ["E40"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6: inaccuracy reports substantiate this limitation"},
+        {"from": "P5", "to": "P51", "evidence": ["E41"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1: author-only restriction is the concrete bias mitigation"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "Overall conclusion: benefits, limitations, and the case for cautious expansion with human oversight.",
+      "nodes": [
+        {"id": "P52", "name": "Expectation-experience gap indicates need for better calibration", "description": "The gap between authors' overly optimistic pre-usage expectations and their more tempered post-usage experience suggests current LLM capabilities may not fully meet user expectations, highlighting a need for better expectation calibration and performance improvement."},
+        {"id": "P53", "name": "Granular feedback capability coexists with accuracy/strictness limitations", "description": "The assistant's demonstrated ability to give granular, specific feedback (4-6 points/question) coexists with frequent reports of inaccuracy and excessive strictness, underscoring inherent limitations in interpreting nuanced scientific content."},
+        {"id": "P54", "name": "Behavioral evidence of positive influence, but not definitively causal", "description": "Evidence that assistant-users made more substantive revisions (expanded justifications, detailed explanations) suggests a positive influence on submission quality, but the inability to establish definitive causal attribution motivates calls for more controlled (e.g., randomized) studies."},
+        {"id": "P55", "name": "Gaming risk necessitates careful safeguards for any expanded role", "description": "Because skilled authors could exploit an unsupervised assistant to game scores via persuasive rebuttals without real content changes, expanding LLM roles in peer review requires careful, proactive safeguards to preserve review integrity."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P52", "evidence": ["E42"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P29", "to": "P53", "evidence": ["E43"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C7"},
+        {"from": "P26", "to": "P53", "evidence": ["E43"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C6"},
+        {"from": "P39", "to": "P54", "evidence": ["E44"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"},
+        {"from": "P46", "to": "P55", "evidence": ["E45"], "votes": 2, "confidence": "majority", "note": "cross-component link from C9"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P56", "name": "IRB approval and informed consent were obtained", "description": "The study was approved by the Carnegie Mellon University Institutional Review Board (IRB), and participants gave written documentation of informed consent."},
+    {"id": "P57", "name": "Parsing issues with PDFs required iterative code fixes", "description": "The parsing pipeline initially struggled with subsections, titles, checklist spacing/incompleteness, and merged special characters (e.g., 'fi'/'fl'), requiring iterative refinement."},
+    {"id": "P58", "name": "Future work: domain-specific training and multimodal handling", "description": "Future work should focus on improving LLM accuracy on scientific text (e.g., domain-specific training), handling multimodal content like figures/tables, measuring/mitigating bias, and integrating assistants directly into submission platforms."},
+    {"id": "P59", "name": "Future work: randomized controlled experiments for definitive causal evidence", "description": "Conducting randomized controlled experiments is suggested as a way to provide definitive evidence of the LLM assistant's causal impact on submission quality, addressing the non-definitive causal attribution limitation."}
+  ]
+}

@@ -1,0 +1,232 @@
+{
+ "arxiv_id": "2609.12397",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Isolated evaluation fails, motivating UFO's atomized chain-of-evaluation, whose components are validated against human judgment",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Isolated evaluation contradicts the generation objective",
+     "description": "Existing embedding-based and MLLM-based evaluators assess alignment with each modal condition in isolation, which contradicts the simultaneous condition alignment objective of multi-modal image generation and yields poor consistency with human judgments."
+    },
+    {
+     "id": "P2",
+     "name": "Subject-driven customization is hard to evaluate",
+     "description": "Subject-driven customization requires regenerating the subject free-form (pose and position may vary) while following textual edits to some attributes, so judging visual and textual alignment at once is difficult."
+    },
+    {
+     "id": "P3",
+     "name": "Isolated evaluation causes false positives and negatives",
+     "description": "Isolated evaluation compares only subject appearance to the reference and ignores intended textual modifications, so it rates images that ignore the text highly (false positives) and penalizes correct edits that reduce visual similarity (false negatives)."
+    },
+    {
+     "id": "P4",
+     "name": "UFO decomposes alignment into AEUs",
+     "description": "UFO uses a vision-language model on the reference image and text to decompose omni-condition alignment into a sequential chain of fine-grained, disentangled Atomic Evaluation Units at local component and global attribute levels."
+    },
+    {
+     "id": "P5",
+     "name": "AEUs get modality-relevance classes",
+     "description": "Each AEU is assigned a relevance class of image-only, text-only or text-and-image, so each attribute is evaluated against the correct condition type."
+    },
+    {
+     "id": "P6",
+     "name": "AEUs scored by VQA or function calls",
+     "description": "Each AEU is converted to a VQA query answered Yes/No (score 1/0), and dedicated function calls such as ArcFace (score = 1 minus normalized ArcFace distance) are used for attributes like facial identity."
+    },
+    {
+     "id": "P7",
+     "name": "Weighted aggregation of AEU scores",
+     "description": "Each AEU gets an integer weight from 1 to 5 from VLM reasoning about attribute importance, and the final score is the weighted average of AEU scores."
+    },
+    {
+     "id": "P8",
+     "name": "Embedding metrics correlate poorly with humans",
+     "description": "On UFO-Bench, CLIP-T has a negative total Spearman correlation with human ranking (-0.1996), and CLIP-I and DINO reach only about 0.3 to 0.4."
+    },
+    {
+     "id": "P9",
+     "name": "MLLM metrics improve but lack local precision",
+     "description": "VIEScore and DreamBench++ reach total correlation above 0.55 but only around 0.58 or lower on local editing, because they lack a mechanism to decouple the editing region from the preserved background."
+    },
+    {
+     "id": "P10",
+     "name": "UFO has the highest human correlation",
+     "description": "UFO achieves a total Spearman correlation of 0.6889 with human rankings, the highest among compared metrics, with an average improvement of 15.25%."
+    },
+    {
+     "id": "P11",
+     "name": "Atomic decomposition ablation",
+     "description": "Removing AEU decomposition (feeding the image to the VLM for a single holistic score) drops correlation with human preference from 0.6889 to 0.5752."
+    },
+    {
+     "id": "P12",
+     "name": "Weighted aggregation ablation",
+     "description": "Replacing adaptive weights with uniform weights of 1 drops correlation from 0.6889 to 0.6253."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2.4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.3, Table 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    }
+   ]
+  },
+  {
+   "component_id": "C2",
+   "description": "UFO-Bench construction leads to the model ranking results",
+   "nodes": [
+    {
+     "id": "P13",
+     "name": "Existing benchmarks lack interaction diversity",
+     "description": "Existing customization benchmarks mostly cover simple background shifts or single attribute changes and lack diverse, conflicting interactions between textual and visual conditions."
+    },
+    {
+     "id": "P14",
+     "name": "UFO-Bench design",
+     "description": "UFO-Bench has 86 reference images across 7 categories with 3 tiers of editing difficulty and 81.97% conflicting condition pairs, spanning Non-Editing, Local, Global and Complex editing paradigms."
+    },
+    {
+     "id": "P15",
+     "name": "Doubao is best on UFO-Bench",
+     "description": "Closed-source Doubao (2025-12) achieves the highest total UFO score of 0.7439, measured with four samples per reference-prompt pair (2,640 instances per model)."
+    },
+    {
+     "id": "P16",
+     "name": "Qwen-Image tops open-source models",
+     "description": "Open-source Qwen-Image (2025-12) scores 0.7252 total, surpassing closed-source Nano-Banana and outperforming other community models."
+    },
+    {
+     "id": "P17",
+     "name": "Qwen-Image weak at local editing",
+     "description": "Qwen-Image excels at non-editing (0.7635) and global editing (0.7836) but drops to 0.6532 on local editing, suggesting precise text-guided editing remains a challenge for open-source diffusion models."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P14",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P14",
+     "to": "P16",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P16",
+     "to": "P17",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P18",
+   "name": "GPT-4o judge and human protocol",
+   "description": "Evaluations use GPT-4o (2024-05-13) as judge MLLM, and human evaluation ranks six models' outputs for 100 test cases (600 images), compared to metrics by per-case Spearman correlation with Fisher Z averaging."
+  },
+  {
+   "id": "P19",
+   "name": "Expert tools catch identity errors",
+   "description": "In a face-identity case, ArcFace scores (0.1509 versus 0.8146) let UFO detect identity inconsistency that holistic metrics like VIEScore overlook."
+  }
+ ],
+ "structural_reasoning": "Problem (isolated evaluation) leads to the UFO pipeline, whose design is validated by human correlation and ablations; the benchmark's design leads to model rankings. Setup details isolated."
+}

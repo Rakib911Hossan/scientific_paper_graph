@@ -1,0 +1,158 @@
+{
+ "arxiv_id": "2507.18807",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Cost of the Fisher diagonal motivates recycling the Adam accumulator as the Squisher, validated empirically",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Fisher diagonal measures parameter sensitivity",
+     "description": "The Fisher diagonal is widely used as a measure of parameter sensitivity in applications such as pruning, sparse training, continual learning, task similarity and model merging."
+    },
+    {
+     "id": "P2",
+     "name": "Computing the Fisher is costly and inconvenient",
+     "description": "Computing the Fisher diagonal requires per-example gradients on sampled labels, often done with a batch size of one, and needs training data that may be unavailable; this hinders adoption, e.g. Fisher Merging is absent from mergekit."
+    },
+    {
+     "id": "P3",
+     "name": "Adaptive optimizers keep squared-gradient accumulators",
+     "description": "Adam-style optimizers maintain an exponential moving average of squared gradients, available for free at the end of training."
+    },
+    {
+     "id": "P4",
+     "name": "Joint Fisher is a square of sums",
+     "description": "The joint (empirical) Fisher is a square of aggregated gradients rather than a sum of squares, which gives theoretical motivation for relating the squared-gradient accumulator to the Fisher diagonal; joint and standard Fisher coincide (Lin et al. 2024)."
+    },
+    {
+     "id": "P5",
+     "name": "Accumulator differs from Fisher in EMA and bias",
+     "description": "The accumulator averages over a long EMA history (time constant about 10,000 steps for beta2 = 0.999), including gradients at old parameters, so it is a biased estimate of the joint empirical Fisher and needs rescaling when magnitudes matter."
+    },
+    {
+     "id": "P6",
+     "name": "Squisher is the accumulator used as Fisher",
+     "description": "The Squisher uses the squared gradient accumulator in place of the Fisher diagonal, directly where only relative parameter importance matters and with a rescaling term where magnitudes matter."
+    },
+    {
+     "id": "P7",
+     "name": "Squisher matches Fisher across settings",
+     "description": "Across six settings spanning five applications, replacing the Fisher with the Squisher had little impact on performance and consistently outperformed Fisher-free baselines."
+    },
+    {
+     "id": "P8",
+     "name": "Squisher costs nearly nothing",
+     "description": "Computing the Squisher takes under 0.1 seconds in all settings (under 1 second for EWC), versus substantial time to compute the Fisher."
+    },
+    {
+     "id": "P9",
+     "name": "Rescaling matters in continual learning",
+     "description": "In continual learning, using the squared gradient accumulator without tuning the rescaling term lambda gives suboptimal results."
+    },
+    {
+     "id": "P10",
+     "name": "Unfinished training hurts the Squisher",
+     "description": "Squisher performance can degrade when fine-tuned models are not fully trained, since the accumulator has seen too few steps; beta2 = 0.95 degrades performance while the default 0.999 is best."
+    },
+    {
+     "id": "P11",
+     "name": "Explicit joint Fisher is close to Fisher",
+     "description": "Explicitly squaring the sum of per-example gradients (turning off the moving average) gives results close to the Fisher, suggesting the joint Fisher is a useful approximation."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P2",
+     "to": "P6",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 2.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 2.3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 2.3, Sec 3.7 ablations"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3, Fig 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.8, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.7 ablations"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P11",
+     "evidence": [
+      "Sec 3.7, Table 2"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P12",
+   "name": "Fisher is not trivially the accumulator",
+   "description": "Despite Adam's paper asserting the accumulator approximates the Fisher diagonal without evidence, the two differ in subtle ways that require modifications to use the accumulator successfully."
+  },
+  {
+   "id": "P13",
+   "name": "Fisher merging is rescaling-invariant",
+   "description": "Fisher Merging is invariant to rescaling all Fisher values by a constant, so using the Squisher or the raw accumulator as Fisher proxies yields the same merge."
+  },
+  {
+   "id": "P14",
+   "name": "Differences are noise-level",
+   "description": "Performance differences between Fisher and Squisher are problem-dependent and small relative to baselines, largely attributable to noise, so neither is claimed superior."
+  },
+  {
+   "id": "P15",
+   "name": "Pruning marginally degrades, merging improves",
+   "description": "With the Squisher, performance degraded marginally in Fisher pruning, improved in Fisher merging, and was almost identical in other settings."
+  },
+  {
+   "id": "P16",
+   "name": "Per-sample gradient libraries are limited",
+   "description": "Specialized per-sample gradient libraries add overhead, require code changes and lack full architecture support (e.g. layer normalization), unlike the Squisher."
+  },
+  {
+   "id": "P17",
+   "name": "Unbiasedness requires model-sampled labels",
+   "description": "Mini-batch Fisher estimation is unbiased only when labels are sampled from the model's likelihood; with empirical labels the estimators are biased."
+  }
+ ],
+ "structural_reasoning": "Cost motivation and the square-of-sums argument lead to the Squisher definition, whose validity is shown by performance, runtime and ablation results."
+}

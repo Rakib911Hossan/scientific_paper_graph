@@ -1,0 +1,319 @@
+{
+  "arxiv_id": "2507.13283v1",
+  "correction_notes": "Initial graph build (not a correction pass). Evidence uses paraphrase-anchored tags (E<n>) since no sentence-indexed source was provided. Edges follow explicit motivational/derivational language ('we pose our question', 'this allows us to', 'by combining', ablation-style comparisons to prior bounds). Two independent theoretical tracks (sub-Weibull SsGD; p-BCM clipped-SsGD) are kept as separate components since the paper studies them as parallel, largely independent contributions sharing only background/motivation.",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {"id": "P1", "name": "Weakly convex definition", "description": "A function f is rho-weakly convex iff f(x) + (rho/2)||x||^2 is convex, for rho >= 0."},
+        {"id": "P2", "name": "Composition proposition", "description": "The composition of an L-Lipschitz convex function h and a beta-smooth function c is a beta*L-weakly convex function."},
+        {"id": "P3", "name": "Weakly convex includes Lipschitz-convex and smooth", "description": "By letting h and c be the identity function, weakly convex functions include all Lipschitz continuous convex functions and smooth functions."},
+        {"id": "P4", "name": "Neural net loss connection", "description": "The composition function structure connects to neural network architecture: the sample loss of a network with sigmoid/tanh activations and logistic loss is weakly convex while being non-convex and non-smooth."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 1, "confidence": "single_run"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 1, "confidence": "single_run"},
+        {"from": "P3", "to": "P4", "evidence": ["E3"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {"id": "P6", "name": "Prior weakly convex analyses assume light-tailed noise", "description": "Prior works on SFOM convergence in weakly convex optimization key on the gradient noise being variance-bounded or sub-Gaussian (light-tailed)."},
+        {"id": "P7", "name": "Empirical evidence of heavy-tailed gradient noise", "description": "Recent observations empirically show gradient noise distributions may be heavy-tailed, in training CNNs and BERT."},
+        {"id": "P8", "name": "Motivation for weaker noise assumptions", "description": "These observations motivate assuming gradient noises satisfy weaker assumptions than variance boundedness or sub-Gaussianity."},
+        {"id": "P9", "name": "Paper considers heavy-tailed noise in weakly convex optimization", "description": "The paper considers heavy-tailed gradient noises in weakly convex optimization."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P8", "evidence": ["E4"], "votes": 1, "confidence": "single_run"},
+        {"from": "P7", "to": "P8", "evidence": ["E4"], "votes": 1, "confidence": "single_run"},
+        {"from": "P8", "to": "P9", "evidence": ["E5"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {"id": "P10", "name": "Sub-Weibull definition", "description": "X follows sigma-sub-Weibull(theta) if E[exp((|X|/sigma)^(1/theta))] <= 2, with tail parameter theta >= 1/2."},
+        {"id": "P11", "name": "Sub-Weibull generalizes sub-Gaussian/sub-exponential", "description": "Sub-Weibull is more general than sub-Gaussian; theta=1/2 reduces to sub-Gaussian, theta=1 corresponds to sub-exponential, and heavier tails occur as theta increases."},
+        {"id": "P12", "name": "Prior sub-Weibull SFOM work limited to smooth/convex", "description": "Prior works studying high-probability convergence of SFOMs under sub-Weibull noise have done so in smooth optimization."},
+        {"id": "P13", "name": "Gap: sub-Weibull SsGD for weakly convex unknown", "description": "For stochastic weakly convex optimization under sub-Weibull noise, whether SGD/SsGD exhibits worse dependence on iterations and failure probability than in the smooth case is unknown (Q1)."},
+        {"id": "P14", "name": "SGD becomes SsGD under non-differentiability", "description": "Due to possible non-differentiability of weakly convex functions, the SGD method specifically refers to stochastic sub-gradient descent (SsGD)."}
+      ],
+      "edges": [
+        {"from": "P10", "to": "P11", "evidence": ["E6"], "votes": 1, "confidence": "single_run"},
+        {"from": "P12", "to": "P13", "evidence": ["E7"], "votes": 1, "confidence": "single_run"},
+        {"from": "P9", "to": "P13", "evidence": ["E7"], "votes": 1, "confidence": "single_run"},
+        {"from": "P13", "to": "P14", "evidence": ["E8"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {"id": "P16", "name": "p-BCM definition", "description": "A centralized random vector X has bounded p-th central moment if E[||X||^p] <= sigma^p for p in (1,2]."},
+        {"id": "P17", "name": "p-BCM strictly weaker than variance-bounded", "description": "If gradient noise satisfies p-BCM for p<2, the second central moment could be infinite, so p-BCM is strictly weaker than variance-boundedness."},
+        {"id": "P18", "name": "Vanilla SGD may diverge under p-BCM", "description": "For p in (1,2), existing theory shows vanilla SGD may diverge under p-BCM noise, making this case much more complicated."},
+        {"id": "P19", "name": "Gradient clipping enables convergence under p-BCM", "description": "Prior works demonstrate that through gradient clipping (restricting stochastic gradient norm to a threshold), SFOMs can be proven to converge under p-BCM noise in smooth or convex optimization."},
+        {"id": "P20", "name": "Extension to weakly convex motivated", "description": "The demonstrated success of clipping in smooth/convex settings motivates extending the analysis to the weakly convex scenario."},
+        {"id": "P21", "name": "Gap: clipped-SGD weakly convex high-probability under p-BCM unknown", "description": "Whether clipped-SGD exhibits worse dependence on iterations and failure probability than the smooth case for weakly convex optimization under p-BCM noise is unknown (Q2)."}
+      ],
+      "edges": [
+        {"from": "P16", "to": "P17", "evidence": ["E9"], "votes": 1, "confidence": "single_run"},
+        {"from": "P17", "to": "P18", "evidence": ["E9"], "votes": 1, "confidence": "single_run"},
+        {"from": "P18", "to": "P19", "evidence": ["E10"], "votes": 1, "confidence": "single_run"},
+        {"from": "P19", "to": "P20", "evidence": ["E10"], "votes": 1, "confidence": "single_run"},
+        {"from": "P20", "to": "P21", "evidence": ["E11"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {"id": "P25", "name": "Theorem 1: sub-Weibull SsGD high-probability rate", "description": "Under Assumptions 3.1-3.5, projected SsGD achieves stated high-probability convergence bounds on the Moreau-envelope gradient norm for theta=1/2, theta in (1/2,1], and theta>1."},
+        {"id": "P26", "name": "Rate matches smooth case (theta general)", "description": "The dependence on iteration number and failure probability delta in the O(1/sqrt(T)) unknown-horizon rate aligns with that of the smooth case in prior work."},
+        {"id": "P27", "name": "No degradation conclusion (Q1 answer)", "description": "Under sub-Weibull noise, the theoretical convergence rate of SGD/SsGD for non-convex, non-smooth yet weakly convex objectives does not degrade compared to the smooth case."},
+        {"id": "P28", "name": "Degradation as theta increases", "description": "As theta increases (heavier tail), the iteration complexity of SsGD deteriorates, consistent with empirical observations of SsGD handling heavy-tailed noise."},
+        {"id": "P29", "name": "Extra log(1/delta)log(T/delta)^(theta-1) term for theta>1", "description": "When theta>1, an extra term log(1/delta)log(T/delta)^(theta-1) emerges in the upper bound complexity."},
+        {"id": "P30", "name": "Sub-Weibull Freedman inequality use", "description": "The extra term for theta>1 arises because the analysis employs the sub-Weibull Freedman inequality (an extension of the sub-Gaussian Freedman inequality)."},
+        {"id": "P31", "name": "Gamma-function coefficient grows large", "description": "The constant coefficient preceding sigma^2 in the theta>1 case is Gamma(3theta+1), which grows extremely large as theta increases."},
+        {"id": "P32", "name": "SsGD performs poorly for theta>1 conclusion", "description": "Despite the noise-norm square remaining bounded, SsGD performs poorly with sigma-sub-Weibull(theta)-type noise when theta>1, due to the large Gamma-function coefficient."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["E12"], "votes": 1, "confidence": "single_run"},
+        {"from": "P26", "to": "P27", "evidence": ["E12"], "votes": 1, "confidence": "single_run"},
+        {"from": "P25", "to": "P28", "evidence": ["E13"], "votes": 1, "confidence": "single_run"},
+        {"from": "P25", "to": "P29", "evidence": ["E14"], "votes": 1, "confidence": "single_run"},
+        {"from": "P29", "to": "P30", "evidence": ["E14"], "votes": 1, "confidence": "single_run"},
+        {"from": "P30", "to": "P31", "evidence": ["E15"], "votes": 1, "confidence": "single_run"},
+        {"from": "P31", "to": "P32", "evidence": ["E15"], "votes": 1, "confidence": "single_run"},
+        {"from": "P28", "to": "P32", "evidence": ["E15"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {"id": "P34", "name": "Corollary 1: fixed eta_t = gamma/sqrt(t)", "description": "Setting eta_t = gamma/sqrt(t) in Theorem 1 yields explicit O(1/sqrt(T)) rates for each theta regime."},
+        {"id": "P35", "name": "Reduces to deterministic case when sigma=0", "description": "Corollary 1's result reduces to the deterministic rate O((Delta_1 + rho*G^2*logT)/sqrt(T)) when sigma=0 for any theta>1."},
+        {"id": "P36", "name": "theta=1/2 aligns with Davis and Drusvyatskiy (2018b)", "description": "For theta=1/2 (sub-Gaussian case), disregarding log(1/delta) and logT, the result aligns with the in-expectation results in Davis and Drusvyatskiy (2018b)."},
+        {"id": "P37", "name": "Comparison to Madden 2020 / Li and Liu 2022 (non-convex smooth)", "description": "For theta>=1/2, the results share the same order of T and log(1/delta) as prior high-probability bounds for non-convex smooth SGD under sub-Weibull noise."},
+        {"id": "P38", "name": "Key difference: G-Lipschitz condition needed", "description": "Unlike Li and Liu (2022), which only requires eta_t||grad f(x_t)||<=G, this analysis (like Madden et al. 2020) relies on a globally bounded (sub-)gradient norm, because weakly convex analysis via Moreau envelopes makes it difficult to remove the G-Lipschitz condition."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P34", "evidence": ["E16"], "votes": 1, "confidence": "single_run"},
+        {"from": "P34", "to": "P35", "evidence": ["E17"], "votes": 1, "confidence": "single_run"},
+        {"from": "P34", "to": "P36", "evidence": ["E18"], "votes": 1, "confidence": "single_run"},
+        {"from": "P34", "to": "P37", "evidence": ["E19"], "votes": 1, "confidence": "single_run"},
+        {"from": "P37", "to": "P38", "evidence": ["E20"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {"id": "P40", "name": "Corollary 2: fixed time-horizon T with tuned step-size", "description": "Fixing the time horizon T and assuming access to parameters Delta_1, G, sigma allows a refined step-size choice and tighter bound than Corollary 1."},
+        {"id": "P41", "name": "Deterministic reduction (sigma=0)", "description": "When sigma=0, Corollary 2's bound reduces to the deterministic case O(sqrt(rho*Delta_1*G^2/T))."},
+        {"id": "P42", "name": "Alignment with Davis and Drusvyatskiy (2018b) at theta=1/2", "description": "For theta=1/2, ignoring the log(1/delta) factor, the iteration complexity aligns with the in-expectation result in Davis and Drusvyatskiy (2018b)."},
+        {"id": "P43", "name": "Similarity to Liu et al. (2023a)", "description": "For theta=1/2, the result is similar to the high-probability convergence of SsGD for convex, G-Lipschitz functions with unbounded constrained domain in Liu et al. (2023a)."},
+        {"id": "P44", "name": "log(T/delta) persists for theta>1 even with fixed T", "description": "Even with constant step-size and fixed time horizon T, a log(T/delta) term still emerges for theta>1."},
+        {"id": "P45", "name": "log(T/delta) dependency may be inherent to sub-Weibull noise", "description": "The persistence of log(T/delta) for theta>1 despite fixing T suggests this dependency may be inherent to sub-Weibull-type gradient noise rather than an artifact of the analysis technique."}
+      ],
+      "edges": [
+        {"from": "P40", "to": "P41", "evidence": ["E21"], "votes": 1, "confidence": "single_run"},
+        {"from": "P40", "to": "P42", "evidence": ["E22"], "votes": 1, "confidence": "single_run"},
+        {"from": "P40", "to": "P43", "evidence": ["E23"], "votes": 1, "confidence": "single_run"},
+        {"from": "P40", "to": "P44", "evidence": ["E24"], "votes": 1, "confidence": "single_run"},
+        {"from": "P44", "to": "P45", "evidence": ["E24"], "votes": 1, "confidence": "single_run"},
+        {"from": "P30", "to": "P45", "evidence": ["E24"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {"id": "P50", "name": "Lemma 1: fundamental descent inequality", "description": "For projection-SsGD, a descent-type inequality bounds eta_t||grad f_{1/rho-bar}(x_t)||^2 in terms of Delta_t - Delta_{t+1} plus a martingale-type inner product term and noise terms."},
+        {"id": "P51", "name": "Distinction from L-smooth descent lemma", "description": "Lemma 1 is analogous to the descent lemma for L-smooth functions, but the inner product term involves x-hat_t - x_t rather than x_{t+1} - x_t."},
+        {"id": "P52", "name": "Martingale term cannot be ignored in high-probability analysis", "description": "Unlike in-expectation analysis where the martingale term has zero expectation and can be ignored, high-probability analysis requires concentration inequalities to bound it."},
+        {"id": "P53", "name": "Sub-Weibull has no MGF for theta>1", "description": "Bakhshizadeh et al. (2022) proved a sub-Weibull random variable does not have a moment generating function when theta>1, making concentration inequalities challenging to establish."},
+        {"id": "P54", "name": "Bernstein-type concentration inequality (Madden et al. 2024)", "description": "Madden et al. (2024) developed a Bernstein-type concentration inequality extending the Freedman sub-Gaussian inequality, which can be applied despite the MGF non-existence issue."},
+        {"id": "P55", "name": "Lemma 2 derived from concentration inequality", "description": "A usable concentration lemma (Lemma 2) for sums of sub-Weibull martingale differences is directly derived from the Madden et al. (2024) inequality."},
+        {"id": "P56", "name": "Need to bound rho-bar*eta_t*||x-hat_t - x_t||*sigma by M_t", "description": "Applying Lemma 2 requires the term rho-bar*eta_t*||x-hat_t - x_t||*sigma to be upper-bounded by M_t when theta>1/2."},
+        {"id": "P57", "name": "Lemma 3: Moreau envelope displacement bound", "description": "For a rho-weakly convex function, the displacement ||x-hat - x|| is bounded by 2||g||/(rho-bar - rho) for g in the sub-differential."},
+        {"id": "P58", "name": "Combining Lemma 3 and G-Lipschitz bounds the needed quantity", "description": "Combining Lemma 3 with the G-Lipschitz Assumption 3.3 upper-bounds rho-bar*eta_t*||x-hat_t-x_t||*sigma, enabling application of the concentration inequality."},
+        {"id": "P59", "name": "Concentration inequality bounds the martingale term", "description": "This allows bounding rho-bar*eta_t*<x_{t+1}-x_t, xi_t> by O(eta_t^2 ||grad f_{1/rho-bar}(x_t)||^2), which acts as a descent term."},
+        {"id": "P60", "name": "Telescoping yields Delta_1 bound", "description": "By telescoping the sum, Delta_t - Delta_{t+1} can be upper-bounded by Delta_1."}
+      ],
+      "edges": [
+        {"from": "P50", "to": "P51", "evidence": ["E25"], "votes": 1, "confidence": "single_run"},
+        {"from": "P50", "to": "P52", "evidence": ["E26"], "votes": 1, "confidence": "single_run"},
+        {"from": "P53", "to": "P54", "evidence": ["E27"], "votes": 1, "confidence": "single_run"},
+        {"from": "P54", "to": "P55", "evidence": ["E28"], "votes": 1, "confidence": "single_run"},
+        {"from": "P52", "to": "P56", "evidence": ["E29"], "votes": 1, "confidence": "single_run"},
+        {"from": "P55", "to": "P56", "evidence": ["E29"], "votes": 1, "confidence": "single_run"},
+        {"from": "P57", "to": "P58", "evidence": ["E30"], "votes": 1, "confidence": "single_run"},
+        {"from": "P56", "to": "P58", "evidence": ["E30"], "votes": 1, "confidence": "single_run"},
+        {"from": "P58", "to": "P59", "evidence": ["E30"], "votes": 1, "confidence": "single_run"},
+        {"from": "P59", "to": "P60", "evidence": ["E31"], "votes": 1, "confidence": "single_run"},
+        {"from": "P60", "to": "P25", "evidence": ["E31"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 7,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 9.0, "edge_score": 7.0, "flagged_edges": ["P60->P25 links the proof-sketch component to the theorem-statement component; included since the proof sketch is explicitly presented as sketching Theorem 1's derivation."]}
+    },
+    {
+      "component_id": "C9",
+      "nodes": [
+        {"id": "P65", "name": "Clipping introduced for p-BCM setting", "description": "The clipping technique is introduced because existing works have shown vanilla SsGD may diverge when p in (1,2) under the p-BCM assumption."},
+        {"id": "P66", "name": "Theorem 2: clipped-SsGD high-probability rate (unknown horizon)", "description": "Under Assumptions 3.1-3.4 and 3.6, with specified lambda_t and eta_t, projected clipped-SsGD achieves a stated high-probability bound on the average squared Moreau-envelope gradient norm."},
+        {"id": "P67", "name": "Rate is O(T^{(1-p)/p}) regardless of sigma known", "description": "The high-probability convergence rate is O(T^{(1-p)/p}) in T regardless of whether sigma is known."},
+        {"id": "P68", "name": "Deterministic reduction reduces to vanilla GD", "description": "When sigma=0, the step-size and clipping level simplify so that Algorithm 2 reduces to the vanilla projected GD method with rate O(1/sqrt(T))."},
+        {"id": "P69", "name": "log T attributed to time-varying step-size", "description": "The emergence of log T in Theorem 2 is solely attributed to the use of a time-varying step-size."},
+        {"id": "P70", "name": "Theorem 3: fixed time-horizon removes log T", "description": "By fixing the time horizon T (Theorem 3), the log T factor present in Theorem 2 can be eliminated, yielding dependence log(1/delta) instead of log(T/delta)."},
+        {"id": "P71", "name": "Improved delta-dependence vs Hong and Lin (2025)", "description": "The log(1/delta) dependence in Theorem 3 is more optimal than the log(T/delta) dependence in Hong and Lin (2025), which analyzes AdaGrad-norm for weakly convex, G-Lipschitz functions with sub-Gaussian noise."}
+      ],
+      "edges": [
+        {"from": "P65", "to": "P66", "evidence": ["E32"], "votes": 1, "confidence": "single_run"},
+        {"from": "P66", "to": "P67", "evidence": ["E33"], "votes": 1, "confidence": "single_run"},
+        {"from": "P66", "to": "P68", "evidence": ["E34"], "votes": 1, "confidence": "single_run"},
+        {"from": "P66", "to": "P69", "evidence": ["E35"], "votes": 1, "confidence": "single_run"},
+        {"from": "P69", "to": "P70", "evidence": ["E35"], "votes": 1, "confidence": "single_run"},
+        {"from": "P70", "to": "P71", "evidence": ["E36"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C10",
+      "nodes": [
+        {"id": "P73", "name": "Theorem 4/5: in-expectation upper bounds", "description": "In-expectation upper bounds for mini-batch clipped-SsGD in weakly convex optimization under p-BCM noise are derived, paralleling Theorems 2 and 3 (Theorem 5 fixes T to remove log(eT))."},
+        {"id": "P74", "name": "Sample complexity O(eps^{-2p/(p-1)})", "description": "From Theorem 5, finding an eps-stationary point (in expectation) requires at most O(eps^{-2p/(p-1)}) sub-gradient evaluations."},
+        {"id": "P75", "name": "Zhang et al. (2020b) lower bound for smooth L-smooth case", "description": "Zhang et al. (2020b) showed the sample-complexity lower bound for any stochastic algorithm under p-BCM noise when minimizing L-smooth functions cannot be lower than Omega(eps^{-(3p-2)/(p-1)})."},
+        {"id": "P76", "name": "Derived sample complexity exceeds the smooth lower bound", "description": "The paper's sample complexity O(eps^{-2p/(p-1)}) exceeds (is worse than) the Zhang et al. (2020b) lower bound for L-smooth optimization."},
+        {"id": "P77", "name": "No existing lower bound for weakly convex under p-BCM", "description": "No existing work provides a lower sample complexity (or convergence rate) for SFOMs under the p-BCM assumption when minimizing weakly convex functions."},
+        {"id": "P78", "name": "Unclear whether weakly convex shares smooth lower bound", "description": "It remains unclear whether stochastic gradient methods for non-smooth, non-convex yet weakly convex functions enjoy the same lower sample complexity as smooth functions."},
+        {"id": "P79", "name": "Results still valuable despite apparent suboptimality", "description": "Given the unresolved lower-bound question, the authors argue their results still demonstrate value for weakly convex optimization even though the rate may not seem optimal compared to L-smooth optimization results."}
+      ],
+      "edges": [
+        {"from": "P73", "to": "P74", "evidence": ["E37"], "votes": 1, "confidence": "single_run"},
+        {"from": "P74", "to": "P76", "evidence": ["E38"], "votes": 1, "confidence": "single_run"},
+        {"from": "P75", "to": "P76", "evidence": ["E38"], "votes": 1, "confidence": "single_run"},
+        {"from": "P77", "to": "P78", "evidence": ["E39"], "votes": 1, "confidence": "single_run"},
+        {"from": "P78", "to": "P79", "evidence": ["E39"], "votes": 1, "confidence": "single_run"},
+        {"from": "P76", "to": "P79", "evidence": ["E39"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C11",
+      "nodes": [
+        {"id": "P81", "name": "Hu et al. (2025) prior in-expectation result", "description": "Hu et al. (2025) provided the first in-expectation convergence analysis for clipped-SGD under p-BCM noise in weakly convex optimization, in a distributed setting."},
+        {"id": "P82", "name": "Hu et al. (2025) lacks concrete rate", "description": "Hu et al. (2025) only provides a general in-expectation upper bound without specifying convergence rate/complexity or concrete choices of eta_t and lambda_t, limiting practical insight."},
+        {"id": "P83", "name": "Hu et al. (2025) clipping level cannot adapt to sigma", "description": "In Hu et al. (2025), the clipping level lambda_t cannot adapt to sigma; convergence requires lambda_t increasing to infinity regardless of whether sigma=0."},
+        {"id": "P84", "name": "This paper's lambda_t adapts to sigma", "description": "In this paper's analysis, lambda_t is set to max{sigma*t^{1/p}, 2G}, which is fixed at 2G when sigma=0, so clipping has no effect and clipped-SsGD reduces to vanilla GD in that case."},
+        {"id": "P85", "name": "Hu et al. (2025) example achieves only O(1/logT)", "description": "Hu et al. (2025) give an example with eta_t=1/(t+1), lambda_t=2G(t+1)^0.4, achieving convergence rate O(1/logT)."},
+        {"id": "P86", "name": "This paper's rate is significantly better", "description": "The O(1/logT) rate from Hu et al. (2025)'s example is significantly worse than this paper's O(T^{-(p-1)/p}) rate for any p in (1,2]."},
+        {"id": "P87", "name": "This paper additionally provides high-probability bounds", "description": "Unlike Hu et al. (2025), which only gives in-expectation guarantees, this paper establishes high-probability upper bounds for non-smooth weakly convex clipped-SsGD under p-BCM noise, inspired by prior high-probability analyses in smooth/convex settings."},
+        {"id": "P88", "name": "High-probability bounds more practical", "description": "High-probability bounds are argued to be more practical for real-world applications compared to in-expectation upper bounds."}
+      ],
+      "edges": [
+        {"from": "P81", "to": "P82", "evidence": ["E40"], "votes": 1, "confidence": "single_run"},
+        {"from": "P81", "to": "P83", "evidence": ["E41"], "votes": 1, "confidence": "single_run"},
+        {"from": "P83", "to": "P84", "evidence": ["E41"], "votes": 1, "confidence": "single_run"},
+        {"from": "P85", "to": "P86", "evidence": ["E42"], "votes": 1, "confidence": "single_run"},
+        {"from": "P82", "to": "P87", "evidence": ["E43"], "votes": 1, "confidence": "single_run"},
+        {"from": "P87", "to": "P88", "evidence": ["E43"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C12",
+      "nodes": [
+        {"id": "P90", "name": "Unbiased clipped gradient no longer holds", "description": "Unlike unclipped SsGD, the clipped stochastic sub-gradient g_t is no longer an unbiased estimator of the sub-gradient of f at x_t."},
+        {"id": "P91", "name": "Martingale term challenge under clipping", "description": "Because clipping introduces bias, the inner-product term in the descent inequality is not a martingale, complicating the high-probability analysis."},
+        {"id": "P92", "name": "Bias-variance decomposition of xi_t", "description": "The noise term xi_t is decomposed into an unbiased part xi_t^u and a biased part xi_t^b, following Cutkosky and Mehta (2021)."},
+        {"id": "P93", "name": "Decomposition restores a martingale term", "description": "After decomposition, the term involving xi_t^u is a martingale, allowing concentration inequalities to bound its summation again."},
+        {"id": "P94", "name": "Lemma 4: bounds on xi_t^u and xi_t^b", "description": "For lambda_t >= 2G, explicit bounds on ||xi_t^u||, ||xi_t^b||, and their second moments are established in terms of sigma, lambda_t, B, and p."},
+        {"id": "P95", "name": "Trade-off between xi_t^u and xi_t^b via lambda_t", "description": "Increasing lambda_t increases the norm of xi_t^u while decreasing the norm of xi_t^b, motivating a careful choice of lambda_t to balance the two."},
+        {"id": "P96", "name": "Setting eta_t*lambda_t <= eta_0 balances terms", "description": "Following Liu and Zhou (2023), bounding eta_t*lambda_t <= eta_0 balances the orders of xi_t^u and xi_t^b and is important for applying concentration inequalities to the martingale terms."}
+      ],
+      "edges": [
+        {"from": "P90", "to": "P91", "evidence": ["E44"], "votes": 1, "confidence": "single_run"},
+        {"from": "P91", "to": "P92", "evidence": ["E45"], "votes": 1, "confidence": "single_run"},
+        {"from": "P92", "to": "P93", "evidence": ["E45"], "votes": 1, "confidence": "single_run"},
+        {"from": "P94", "to": "P95", "evidence": ["E46"], "votes": 1, "confidence": "single_run"},
+        {"from": "P95", "to": "P96", "evidence": ["E47"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P100", "name": "SFOM definition", "description": "Stochastic first-order optimization methods use unbiased or biased estimators of the true gradient to improve training efficiency, unlike deterministic gradient-based methods."},
+    {"id": "P101", "name": "High-probability vs in-expectation convergence", "description": "High-probability convergence bounds the iterations/oracle calls needed so that a single run satisfies the target accuracy with probability at least 1-delta, and is more informative for practical single-run applications than in-expectation convergence."},
+    {"id": "P102", "name": "Fréchet sub-differential definition", "description": "The Fréchet sub-differential extends the classical convex sub-differential/gradient to non-smooth, non-convex functions via a liminf inequality condition."},
+    {"id": "P103", "name": "Fréchet sub-gradient reduces to standard cases", "description": "If f is convex, the Fréchet sub-differential reduces to the classical convex sub-differential; if f is differentiable, it collapses to the singleton gradient set."},
+    {"id": "P104", "name": "Moreau envelope definition", "description": "For a rho-weakly convex f, its Moreau envelope f_{1/rho-bar} is defined via a proximal minimization with rho-bar > rho."},
+    {"id": "P105", "name": "Davis and Drusvyatskiy (2018b) originates Moreau envelope approach", "description": "Davis and Drusvyatskiy (2018b) were first to use the gradient of the Moreau envelope of a weakly convex function to analyze convergence of the stochastic sub-gradient method."},
+    {"id": "P106", "name": "Moreau envelope properties enable stationarity via nearby point", "description": "If the Moreau envelope gradient norm at x is small, there exists a nearby point x-hat that is approximately stationary for f, motivating use of the Moreau envelope gradient as the convergence measure."},
+    {"id": "P107", "name": "Assumptions 3.1-3.6 listed", "description": "Standard assumptions are stated: weak convexity (3.1), existence of finite local minimum (3.2), bounded sub-gradient norm G (3.3), unbiased oracle (3.4), sub-Weibull noise (3.5), p-BCM noise (3.6)."},
+    {"id": "P108", "name": "Algorithm 1: projected SsGD", "description": "The projected SsGD algorithm iterates x_{t+1} = Proj_X(x_t - eta_t g_t) using an unbiased stochastic gradient oracle."},
+    {"id": "P109", "name": "Algorithm 2: projected clipped-SsGD", "description": "The projected clipped-SsGD algorithm additionally computes a mini-batch gradient estimate and clips its norm to a threshold lambda_t before the projected update."},
+    {"id": "P110", "name": "Related work: sub-Weibull SFOM survey", "description": "Multiple prior works (Madden et al. 2020, Li and Liu 2022, Liu et al. 2022, Liu and Zhou 2024, Li et al. 2025, Ospina et al. 2022, Yu et al. 2025, Chen et al. 2025) studied SFOM convergence under sub-Weibull noise in convex/smooth/online/distributed settings."},
+    {"id": "P111", "name": "Related work: p-BCM clipped-SFOM survey", "description": "Multiple prior works (Zhang et al. 2020b, Cutkosky and Mehta 2021, Nguyen et al. 2023, Sadiev et al. 2023, Gorbunov et al. 2024, Liu and Zhou 2023, Liu et al. 2023b, Chezhegov et al. 2025a/b, Li and Liu 2023) studied clipped-SFOM convergence under p-BCM noise in smooth/convex/non-convex settings."},
+    {"id": "P112", "name": "Zhang et al. (2020b) strongly convex lower bound", "description": "Zhang et al. (2020b) also shows that for strongly convex optimization under p-BCM noise, no SFOM can converge faster than Omega(T^{-2(p-1)/p})."},
+    {"id": "P113", "name": "Vural et al. (2022) convex lower bound", "description": "Vural et al. (2022) establishes that for convex optimization under p-BCM noise, any SFOM's convergence rate is bounded below by Omega(T^{-(p-1)/p})."},
+    {"id": "P114", "name": "No prior lower bounds for weakly convex heavy-tailed", "description": "No existing work has established lower bounds on the convergence rate of SFOMs under heavy-tailed noises for weakly convex optimization."},
+    {"id": "P115", "name": "Liu et al. (2024) related online setting", "description": "Liu et al. (2024) developed a first-order online optimization algorithm with high-probability convergence under p-BCM noise for non-smooth, non-convex online optimization, but still requires continuous differentiability."},
+    {"id": "P116", "name": "Contribution summary: sub-Weibull SsGD rate", "description": "The paper establishes the first high-probability convergence rate of SsGD for weakly convex optimization under sub-Weibull noise."},
+    {"id": "P117", "name": "Contribution summary: p-BCM clipped-SsGD rate", "description": "The paper establishes the first high-probability convergence rate of mini-batch clipped-SsGD for weakly convex optimization under p-BCM noise, with delta-dependence O(log(T/delta)) consistent with prior smooth-optimization work."},
+    {"id": "P118", "name": "log T eliminable by fixing horizon in both analyses", "description": "In both the high-probability and in-expectation analyses, the logarithmic term log T can be eliminated by fixing the time horizon T."}
+  ],
+  "structural_score": 7,
+  "structural_reasoning": "The graph separates the paper's two parallel theoretical tracks (sub-Weibull SsGD: C3, C5, C6, C7, C8; p-BCM clipped-SsGD: C4, C9, C10, C11, C12) which share only background motivation (C1, C2) and are not otherwise causally linked, matching how the paper itself frames them as answering two independent research questions (Q1, Q2). Proof-sketch components (C8, C12) are kept separate from the theorem-statement components they support, with a single connecting edge (P60->P25) rather than merging them, since the proof sketch is explicitly presented as a derivation route rather than additional claims. Comparison-to-prior-work nodes (C6, C7, C10, C11) are attached where the text makes an explicit comparative or explanatory claim (e.g. 'aligns with', 'is significantly worse than', 'is more optimal than'); background survey material (related-work lists, standard definitions, assumption statements, algorithm listings) is left isolated since it is descriptive scaffolding rather than a premise feeding a specific downstream inference. All edges are single_run confidence since this is a single extraction pass with no multi-run voting."
+}

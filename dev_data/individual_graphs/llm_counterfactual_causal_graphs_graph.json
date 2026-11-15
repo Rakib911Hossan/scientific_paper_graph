@@ -1,0 +1,262 @@
+{
+  "arxiv_id": "2606.05972v1",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: LLM opacity, its real-world stakes, and the limits of existing explainability approaches.",
+      "nodes": [
+        {"id": "P1", "name": "LLM inference is opaque", "description": "LLMs exhibit broad capabilities, yet their inference remains opaque: decision factors are unobservable and generated explanations often lack faithfulness."},
+        {"id": "P2", "name": "Opacity hinders high-stakes adoption", "description": "This opacity hinders adoption in high-stakes domains, risking confident hallucinations and biases in medicine and fictitious legal precedents that undermine accountability."},
+        {"id": "P3", "name": "Attribution/attention methods are correlational", "description": "Attribution and attention-based explainability methods are primarily correlational, whereas faithful explanations require causal evidence."},
+        {"id": "P4", "name": "Counterfactual causal-graph methods remain local/input-centered", "description": "Counterfactual methods using causal graphs over textual variables provide stronger causal evidence but typically remain local and input-centered: they quantify a given factor's causal effect but do not recover the model's high-level inference."},
+        {"id": "P5", "name": "Mechanistic interpretability is low-level and often misaligned with stakeholder needs", "description": "Mechanistic interpretability targets internal components like neurons and circuits, providing a valuable low-level science but is often misaligned with the explanations stakeholders actually need."},
+        {"id": "P6", "name": "Missing: global causal account of concept organization", "description": "What remains missing is an applicable explainability method providing a global, causal account of how a model organizes human-interpretable concepts and reduces them to a prediction."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["E2"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P6", "evidence": ["E3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P6", "evidence": ["E4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P6", "evidence": ["E5"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Core reframing: using causal graphs to model LLM inference itself rather than the external world.",
+      "nodes": [
+        {"id": "P7", "name": "Prior causal-graph work models external-world processes", "description": "Prior work uses causal graphs, and sometimes LLMs, to recover causal graphs of external-world processes (concepts → text → prediction, graph usually assumed a priori)."},
+        {"id": "P8", "name": "This paper models LLM inference itself", "description": "Instead, this paper uses causal graphs to model LLM inference itself (text → concepts → prediction), providing a transparent view of how the model perceives and organizes high-level concepts to produce a prediction."},
+        {"id": "P9", "name": "The graph is itself the explanation; nothing assumed a priori", "description": "In this new setting, the graph is itself the explanation, and both the relevant concepts and their causal relations must be inferred rather than assumed in advance."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["E6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["E7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P8", "evidence": ["E8"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Positioning relative to the three senses of causal graphs in LLM interpretability, and relative to the closest related work (COAT).",
+      "nodes": [
+        {"id": "P10", "name": "Sense 1: mechanistic-interpretability graphs over model internals", "description": "In mechanistic interpretability, causal graphs are defined over model-internal components (attention heads, neurons, residual-stream directions), abstracting away the complete computation to retain only components hypothesized to mediate a targeted behavior."},
+        {"id": "P11", "name": "Sense 2: graphs enabling causal-effect estimation of concepts on predictions", "description": "Causal graphs are also used to enable estimation of causal effects of high-level concepts on predictions (via counterfactuals, matching, adjustment), where the graph is usually assumed in advance and describes concepts → text → prediction."},
+        {"id": "P12", "name": "Sense 3 (this paper): graphs describing the model's high-level reasoning", "description": "The paper introduces a third utility: causal graphs describing the model's high-level reasoning (text → concepts → prediction), where the graph is the explanation and has received no prior attention in the literature."},
+        {"id": "P13", "name": "COAT is the closest related work but targets real-world structure", "description": "COAT (Liu et al. 2024) also uses an LLM to propose concepts and applies causal discovery, but aims to recover real-world causal structures and focuses on local Markov blankets for causal effect estimation."},
+        {"id": "P14", "name": "Departure 1: recover the full graph, not a local Markov blanket", "description": "Because the goal is to characterize the model's internal reasoning rather than estimate a real-world effect, this work recovers the full graph from text to prediction rather than only a local Markov blanket, to capture the complete reasoning process."},
+        {"id": "P15", "name": "Departure 2: MCMC-inspired counterfactual augmentation for sparse coverage", "description": "Because observational data sparsely cover the model's internal decision space, this work introduces an MCMC-inspired counterfactual augmentation procedure to actively expand the concept space for more robust graph discovery."}
+      ],
+      "edges": [
+        {"from": "P10", "to": "P12", "evidence": ["E9"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P12", "evidence": ["E9"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P12", "evidence": ["E10"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P13", "to": "P14", "evidence": ["E11"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P15", "evidence": ["E12"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P14", "evidence": ["E13"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "The data-coverage bottleneck in causal discovery and why the LLM setting makes it tractable.",
+      "nodes": [
+        {"id": "P16", "name": "Reliable structure learning needs representative coverage", "description": "A central challenge in causal discovery is data coverage: reliable structure learning requires a representative sample spanning diverse combinations of concept values."},
+        {"id": "P17", "name": "Achieving coverage often requires costly/impractical/unethical interventions", "description": "In many domains, obtaining such coverage requires costly, impractical, or unethical interventions."},
+        {"id": "P18", "name": "LLM mechanism makes counterfactual generation cheap", "description": "Because the mechanism under study is an LLM, the model itself can be prompted to generate counterfactual texts in which a targeted concept is altered while the remaining context stays stable, making the coverage bottleneck more tractable."},
+        {"id": "P19", "name": "MCMC-inspired algorithm iteratively expands and filters", "description": "The MCMC-inspired algorithm iteratively proposes counterfactual chains and rejects unfaithful candidates, producing a denser, higher-quality concept space for robust causal discovery."}
+      ],
+      "edges": [
+        {"from": "P16", "to": "P17", "evidence": ["E14"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P18", "evidence": ["E15"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["E16"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P18", "evidence": ["E17"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Formal setup: concept vectors, the LLM-inference causal graph, and its structural constraints.",
+      "nodes": [
+        {"id": "P20", "name": "Causal Graph framework adopted, relaxed to allow cycles", "description": "The method adopts Pearl's Causal Graph framework, relaxed to admit cyclic dependencies, acknowledging potential reciprocal influences among concepts an LLM uses internally."},
+        {"id": "P21", "name": "Concept-extraction function maps text to a concept vector", "description": "A concept-extraction function ϕ maps input text x to a concept vector [l_c1,...,l_cn], where each l_ci is a categorical variable over subsets S ⊆ Y indicating which classes the LLM perceives concept ci to support (∅ = absent, Y = non-discriminative)."},
+        {"id": "P22", "name": "Graph defined over text, concepts, and prediction", "description": "The LLM's inference process is represented as a directed graph G=(V,E) with V = {X} ∪ C ∪ {Ŷ}, capturing high-level causal flow from input text through LLM-perceived concepts to the prediction."},
+        {"id": "P23", "name": "Structural constraints: X is root, Ŷ is sink", "description": "Three structural constraints are imposed: X has only outgoing edges (root), Ŷ has only incoming edges (sink), and the text's effect on prediction is mediated by the concept variables."},
+        {"id": "P24", "name": "Task reduces to recovering C and E", "description": "Given these constraints, the task reduces to recovering the concept set C and edge set E."}
+      ],
+      "edges": [
+        {"from": "P20", "to": "P22", "evidence": ["E18"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P22", "evidence": ["E19"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["E20"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P24", "evidence": ["E21"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P24", "evidence": ["E22"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Phase 1-2 of the pipeline: label prediction and discriminative concept discovery/filtering.",
+      "nodes": [
+        {"id": "P25", "name": "Label Prediction substitutes LLM predictions for ground truth", "description": "Ground-truth labels in D are replaced with the LLM's own predictions ŷ=f(x); all downstream phases use these predicted labels so the recovered graph reflects the model's perspective rather than dataset labels."},
+        {"id": "P26", "name": "Concepts proposed iteratively over class-balanced batches", "description": "Discriminative Concept Discovery processes training data in small, class-balanced batches; for each batch, the model proposes new candidate concepts which are added to the accumulating concept set C."},
+        {"id": "P27", "name": "Concepts periodically filtered by relevance and discriminativeness", "description": "Every ten batches, accumulated concepts are annotated and filtered, retaining only concepts whose assigned value maps to a strictly partial subset of classes (neither ∅ nor Y) in a fraction of examples exceeding threshold τ=1/|Y|."},
+        {"id": "P28", "name": "Filtering removes non-expressed and non-discriminative concepts", "description": "This filtering removes concepts that are rarely expressed in text (providing little evidence for a text-to-concept edge) and concepts broadly aligned with all classes (providing little evidence for a concept-to-prediction edge)."},
+        {"id": "P29", "name": "Final concept set fixed after test-set filtering pass", "description": "After processing all training batches, test examples are annotated with concept vectors and the same filtering criterion is applied once more, yielding the final concept set C."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["E23"], "votes": 2, "confidence": "majority"},
+        {"from": "P26", "to": "P27", "evidence": ["E24"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["E25"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P29", "evidence": ["E26"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P25", "evidence": ["E27"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Phase 3 of the pipeline: MCMC-inspired counterfactual data expansion, including the Metropolis-Hastings-like acceptance test.",
+      "nodes": [
+        {"id": "P30", "name": "Expansion operates in text space, not directly in concept space", "description": "Rather than operating directly in the discrete concept space, the algorithm operates in raw text space: the LLM proposes a textual perturbation, which is mapped to a concept vector by ϕ and retained only if it induces the intended conceptual shift."},
+        {"id": "P31", "name": "Operating in text space preserves linguistic coherence", "description": "Operating in text space preserves linguistic coherence while allowing exploration of realizable regions of the concept space, i.e., configurations expressible by natural text."},
+        {"id": "P32", "name": "Each example initiates an independent expansion chain", "description": "Each original training example initiates an independent expansion process lasting K=11 steps, iterating through concepts and sampling a target class y* to determine a directional shift (MORE/LESS)."},
+        {"id": "P33", "name": "Acceptance test requires target alignment and minimal side effects", "description": "A proposal is accepted (akin to a Metropolis-Hastings test) if it achieves the intended target alignment for the targeted concept and the count of drifted non-target concepts is bounded by a small tolerance ϵ."},
+        {"id": "P34", "name": "Recursive refinement re-prompts on failure", "description": "If a proposal fails either acceptance condition, the LLM is re-prompted with feedback on which criterion was violated, up to R=5 regeneration attempts per concept; if all fail, no sample is appended for that concept."},
+        {"id": "P35", "name": "Expansion densifies the concept manifold for causal discovery", "description": "The MCMC-inspired expansion densifies the latent concept space by exploring combinations beyond the original dataset, stochastically exploring the valid concept manifold and providing richer support for causal discovery."}
+      ],
+      "edges": [
+        {"from": "P19", "to": "P30", "evidence": ["E28"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P30", "to": "P31", "evidence": ["E29"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P32", "evidence": ["E30"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P33", "evidence": ["E31"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P34", "evidence": ["E32"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P35", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P32", "evidence": ["E34"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Phase 4 of the pipeline: causal discovery via σ-CG, and why σ-CG was chosen.",
+      "nodes": [
+        {"id": "P36", "name": "σ-CG chosen for cyclic, discrete-variable compatibility", "description": "σ-CG (Forré and Mooij 2018) is chosen because it accommodates cyclic causal structures, which may arise in LLM inference and cannot be ruled out a priori, and it supports the discrete variables produced by the concept annotations."},
+        {"id": "P37", "name": "σ-CG applied to the expanded dataset", "description": "σ-CG is applied to the expanded, annotated dataset D_mcmc, obtaining a directed graph G over the variables V."},
+        {"id": "P38", "name": "Ŷ enforced as the unique sink during orientation", "description": "As background knowledge, the algorithm imposes that ŷ is the unique sink node and enforces this constraint during edge orientation."}
+      ],
+      "edges": [
+        {"from": "P20", "to": "P36", "evidence": ["E35"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P36", "to": "P37", "evidence": ["E36"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P37", "evidence": ["E37"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P23", "to": "P38", "evidence": ["E38"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Predictive fidelity evaluation: rationale, protocol, and headline result.",
+      "nodes": [
+        {"id": "P39", "name": "No ground-truth graph exists for direct evaluation", "description": "Because the goal is to recover a causal graph over the LLM's latent inference process, there is no ground-truth graph available for direct evaluation."},
+        {"id": "P40", "name": "Predictive fidelity rationale: parents should screen off indirect variables", "description": "The learned graphs are evaluated via predictive fidelity: if a graph captures meaningful dependencies, direct causal parents should screen off indirect variables, making them more predictive of a node than other concept subsets."},
+        {"id": "P41", "name": "Post-hoc prediction task compares parent set to all other subsets", "description": "For each target node, a multinomial logistic regression is trained to predict it from its graph-based parent set, compared via 10-fold CV to models trained on all other concept subsets that do not fully contain the parent set."},
+        {"id": "P42", "name": "Graph-based predictors outperform average alternative subset in every setting", "description": "Graph-based predictors outperform the average alternative subset in every setting, across all models, datasets, and target types, indicating discovered parent sets capture relevant information."},
+        {"id": "P43", "name": "Parent set ranks in Top-3 in most settings", "description": "In every setting but one, the causal-graph parent set ranks among the best predictors (Top-3) in a majority of CV cases, despite being compared against tens of alternatives, further strengthening the conclusion."}
+      ],
+      "edges": [
+        {"from": "P39", "to": "P40", "evidence": ["E39"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P40", "to": "P41", "evidence": ["E40"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P41", "to": "P42", "evidence": ["E41"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P42", "to": "P43", "evidence": ["E42"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P41", "evidence": ["E43"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Qualitative analysis of learned graphs: convergence vs. divergence across LLMs by task naturalism.",
+      "nodes": [
+        {"id": "P44", "name": "Synthetic Disease Diagnosis concepts consistent across LLMs", "description": "On the synthetic Disease Diagnosis dataset, extracted concepts are consistent across LLMs and successfully recover the ground-truth variables (specific symptoms) defining the dataset's generative causal graph."},
+        {"id": "P45", "name": "Even with similar concepts, causal topologies differ", "description": "The learned graphs reveal that different LLMs can follow different concept-level reasoning patterns: even when models rely on similar concepts, their causal topologies differ."},
+        {"id": "P46", "name": "Naturalistic tasks show model-specific concept sets, not just topologies", "description": "This model-specific structure is even more pronounced in naturalistic Sentiment Analysis and LLM-as-a-Judge tasks, where the extracted concepts themselves vary across models, suggesting models rely on different reasoning mechanisms."},
+        {"id": "P47", "name": "Reasoning differences matter for deployment decisions", "description": "These differences matter for deployment: choosing among models requires understanding not only their performance but also whether their underlying reasoning aligns with stakeholders' expectations and constraints."}
+      ],
+      "edges": [
+        {"from": "P44", "to": "P45", "evidence": ["E44"], "votes": 2, "confidence": "majority"},
+        {"from": "P45", "to": "P46", "evidence": ["E45"], "votes": 2, "confidence": "majority"},
+        {"from": "P46", "to": "P47", "evidence": ["E46"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "MCMC convergence diagnostics: why naive KL decrease is insufficient and the bounded trajectory used instead.",
+      "nodes": [
+        {"id": "P48", "name": "Multi-chain diagnostics inapplicable in single-chain-per-instance setting", "description": "Multi-chain diagnostics such as the Gelman-Rubin statistic are not directly applicable because the setting uses a single chain per instance; convergence is instead monitored via the empirical KL divergence over the combinatorial concept-state distribution across iterations."},
+        {"id": "P49", "name": "Naive KL decrease is not sufficient evidence of convergence", "description": "A naive KL decrease is not sufficient evidence of convergence, since as the sample pool grows each new counterfactual carries diminishing marginal weight, mechanically reducing KL regardless of genuine stabilization."},
+        {"id": "P50", "name": "Empirical KL bounded between orthogonal-expansion and perfect-overlap extremes", "description": "To separate genuine convergence from this artifact, the empirical KL is bounded between an orthogonal-expansion upper bound (every new sample unseen) and a perfect-overlap lower bound (every new sample duplicates an existing one)."},
+        {"id": "P51", "name": "Desirable trajectory moves from upper bound toward lower bound", "description": "A desirable trajectory begins near the upper bound (actively discovering new valid concept states) and gradually approaches the lower bound (samples increasingly come from a stable, realizable region)."},
+        {"id": "P52", "name": "Empirical KL follows the desired trajectory", "description": "The empirical KL curve on Sentiment Analysis for GPT-OSS-20B follows precisely this desired trajectory."},
+        {"id": "P53", "name": "Structural stability confirmed once KL stabilizes", "description": "Once the KL stabilizes, the Hamming distance between causal edge sets recovered across successive iterations drops to zero, suggesting additional augmentation no longer changes the learned graph."}
+      ],
+      "edges": [
+        {"from": "P48", "to": "P49", "evidence": ["E47"], "votes": 2, "confidence": "majority"},
+        {"from": "P49", "to": "P50", "evidence": ["E48"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P50", "to": "P51", "evidence": ["E49"], "votes": 2, "confidence": "majority"},
+        {"from": "P51", "to": "P52", "evidence": ["E50"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P52", "to": "P53", "evidence": ["E51"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C12",
+      "description": "Ablation on the contribution of MCMC counterfactual augmentation itself.",
+      "nodes": [
+        {"id": "P54", "name": "Three data regimes compared", "description": "The contribution of MCMC expansion is evaluated by comparing three data regimes: All Original, Original Seed (subset seeding the chains), and Seed + Counterfactuals."},
+        {"id": "P55", "name": "Counterfactuals achieve highest predictive accuracy", "description": "The counterfactual-augmented regime achieves the highest predictive accuracy for both concept nodes and prediction across all models."},
+        {"id": "P56", "name": "MCMC introduces concept-state combinations absent from original data", "description": "The MCMC-generated counterfactuals introduce concept-state combinations absent in the original data, enabling more accurate estimation of dependencies between concepts."},
+        {"id": "P57", "name": "Causal-graph parent subsets outperform average subset (replicated)", "description": "Consistent with the predictive fidelity evaluation, the causal graph's parent subsets outperform the average over all concept subsets in this ablation as well."},
+        {"id": "P58", "name": "Together, results demonstrate necessity of the augmentation stage", "description": "Together, these two patterns (counterfactual benefit and parent-subset superiority) demonstrate the necessity of the counterfactual augmentation stage."}
+      ],
+      "edges": [
+        {"from": "P54", "to": "P55", "evidence": ["E52"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P55", "to": "P56", "evidence": ["E53"], "votes": 2, "confidence": "majority"},
+        {"from": "P42", "to": "P57", "evidence": ["E54"], "votes": 2, "confidence": "majority", "note": "cross-component link from C9"},
+        {"from": "P56", "to": "P58", "evidence": ["E55"], "votes": 2, "confidence": "majority"},
+        {"from": "P57", "to": "P58", "evidence": ["E55"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C13",
+      "description": "Contribution summary chain.",
+      "nodes": [
+        {"id": "P59", "name": "Contribution 1: causal paradigm for global concept-based explainability", "description": "A causal paradigm is introduced for global, concept-based explainability that maps LLM reasoning to causal graphs."},
+        {"id": "P60", "name": "Contribution 2: MCMC-inspired counterfactual augmentation framework", "description": "An MCMC-inspired data augmentation framework is proposed that generates counterfactuals to better cover the concept space, enabling robust causal discovery."},
+        {"id": "P61", "name": "Contribution 3: evaluation protocol for structural stability and predictive fidelity", "description": "An evaluation protocol is developed for assessing both the structural stability and predictive fidelity of the resulting causal graphs, addressing the absence of gold-standard reasoning graphs."}
+      ],
+      "edges": [
+        {"from": "P59", "to": "P60", "evidence": ["E56"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P60", "to": "P61", "evidence": ["E57"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P62", "name": "Limitation: sensitivity to batch pairing in concept extraction", "description": "Concept extraction runs only once in small batches due to token limits and cost; different batch assignments could highlight distinct contrastive features and yield a different concept set, a limitation future work could mitigate with multiple shuffled extraction passes."},
+    {"id": "P63", "name": "Limitation: validation restricted to local parents, not full multi-hop chains", "description": "The current validation protocol primarily evaluates local predictive fidelity through discovered parent sets, demonstrating immediate predictors are informative and stable but not directly verifying longer multi-hop causal chains or the broader graph hierarchy."},
+    {"id": "P64", "name": "Limitation: dependence on self-annotation and generation faithfulness", "description": "The framework relies on the target LLM to annotate concepts, generate counterfactuals, and judge whether edits satisfy constraints; since LLM self-assessments are not guaranteed faithful, errors may propagate despite acceptance criteria mitigating this risk, motivating future external validation or human audits."},
+    {"id": "P65", "name": "Future work: languages, open-ended generation, multimodal domains", "description": "Future work plans to extend the framework to additional languages, open-ended generation settings, and multimodal domains, broadening evaluation toward standardized, stakeholder-oriented explainability frameworks."}
+  ]
+}

@@ -1,0 +1,196 @@
+{
+ "arxiv_id": "2507.01915",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Conflicting-objective alignment -> MGDA limits -> GAPO / P-GAPO -> theory and experiments",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Single reward misses diverse preferences",
+     "description": "Standard RLHF uses a single reward model representing average human preference, but human opinions are diverse and cannot be encapsulated in one reward."
+    },
+    {
+     "id": "P2",
+     "name": "Objectives conflict",
+     "description": "Optimizing multiple alignment objectives such as helpfulness and harmlessness is hard because the objectives conflict; e.g. Safe RLHF often yields exaggerated safety behavior, harmless but unhelpful responses."
+    },
+    {
+     "id": "P3",
+     "name": "Linear scalarization is limited",
+     "description": "Linear scalarization of multiple rewards is inherently limited in exploring Pareto-optimal solutions that balance trade-offs, and preference-weighted rewards exacerbate RLHF training instability."
+    },
+    {
+     "id": "P4",
+     "name": "MGDA finds Pareto-stationary points",
+     "description": "MGDA solves min ||sum alpha_i grad J_i||^2 over the simplex; either the solution is 0 (Pareto stationary) or it gives a descent direction improving all objectives."
+    },
+    {
+     "id": "P5",
+     "name": "MGDA optimizes objectives at consistent rates",
+     "description": "Theorem 3.1 shows MGDA's update makes all objectives improve at consistent rates, which restricts the underdeveloped objectives when one is near-optimal."
+    },
+    {
+     "id": "P6",
+     "name": "MGDA is dominated by small gradients",
+     "description": "When gradient magnitudes differ greatly, MGDA's update direction is dominated by the objective with the smallest gradient, neglecting objectives that still need optimization; it also ignores user preferences by finding one Pareto solution."
+    },
+    {
+     "id": "P7",
+     "name": "GAPO gradient rescaling",
+     "description": "GAPO normalizes each objective's gradient by the p-th power of its L2 norm (p=1 standard normalization, p=2 reciprocal-length rescaling) before solving the MGDA problem, to mitigate gradient scale disparities."
+    },
+    {
+     "id": "P8",
+     "name": "GAPO descent and proportional rates",
+     "description": "Theorem 3.2 shows GAPO's direction is a common descent direction for all objectives unless Pareto stationary, and Theorem 3.3 shows objective improvement is proportional to the p-th power of gradient L2 norm, focusing on underdeveloped objectives with larger gradients."
+    },
+    {
+     "id": "P9",
+     "name": "P-GAPO user preferences",
+     "description": "P-GAPO normalizes gradients with p=1 and takes a preference-weighted sum with user preference vector lambda, so the update prioritizes preferred objectives and yields Pareto solutions matching user needs."
+    },
+    {
+     "id": "P10",
+     "name": "Practical implementation",
+     "description": "GAPO is implemented over PPO using only the last-layer policy gradients to avoid the m*n space cost of full gradients."
+    },
+    {
+     "id": "P11",
+     "name": "Single-objective PPO fails the other objective",
+     "description": "PPO-H and PPO-S reach the best score on one dimension but perform poorly on the other (PPO-S refuses most prompts), motivating multi-objective alignment."
+    },
+    {
+     "id": "P12",
+     "name": "Safe RLHF under-optimizes harmlessness",
+     "description": "Safe RLHF gives only small harmlessness improvement because the SFT model is already near its safety constraint, so PPO-Lagrangian rapidly shrinks the harmlessness weight."
+    },
+    {
+     "id": "P13",
+     "name": "GAPO best balance",
+     "description": "On Mistral-7B with PKU-SafeRLHF and HH-RLHF, GAPO (p=1 and p=2) achieve the best and second-best average of helpfulness and harmlessness, keeping PPO-H-level helpfulness with high harmlessness."
+    },
+    {
+     "id": "P14",
+     "name": "GAPO p=1 wins GPT-4o evaluation",
+     "description": "In GPT-4o pairwise evaluation against the SFT model, GAPO p=1 outperforms Safe RLHF, is competitive with PPO-H and PPO-S, and significantly surpasses p=2."
+    },
+    {
+     "id": "P15",
+     "name": "P-GAPO front beats RS and MORLHF",
+     "description": "P-GAPO outperforms MORLHF when preferences are balanced (lambda 0.4-0.6), MORLHF is slightly better at extreme preferences, and the P-GAPO and MORLHF fronts completely dominate Rewarded Soups."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.1, Thm 3.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2, Thm 3.2-3.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.2, Fig 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [],
+ "structural_reasoning": "Argument runs from conflicting-objective alignment limits of single reward, linear scalarization and MGDA, through the GAPO/P-GAPO method and theorems, to experimental validation."
+}

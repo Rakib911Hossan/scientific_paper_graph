@@ -1,0 +1,249 @@
+{
+  "arxiv_id": "2605.11362v1",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: static-fairness dominance, statistical-fairness limitations in TTE, and the resulting research gap.",
+      "nodes": [
+        {"id": "P1", "name": "Fair ML largely static", "description": "Existing works in fair ML cover bias detection, fair prediction, and fair decision-making, but largely focus on static settings."},
+        {"id": "P2", "name": "TTE fairness underexplored", "description": "Fairness in temporal contexts, particularly survival/time-to-event (TTE) analysis, remains relatively underexplored."},
+        {"id": "P3", "name": "Existing TTE fairness uses statistical definitions", "description": "Current approaches to fair survival analysis adopt statistical fairness definitions rather than causal ones."},
+        {"id": "P4", "name": "Statistical definitions can't disentangle causal mechanisms", "description": "Statistical fairness definitions, even with unlimited data, cannot disentangle the causal mechanisms that generate disparities."},
+        {"id": "P5", "name": "Causal fairness literature mostly static", "description": "Causal fairness literature introduces important causal fairness notions but is concerned with the static setting only, with few dynamic-setting exceptions."},
+        {"id": "P6", "name": "Gap: causal reasoning for TTE fairness", "description": "There remains a need for a deeper understanding of how causal reasoning can be applied to fairness in temporal/TTE data, which this paper aims to fill."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["E3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["E4"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["E5"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Standard Fairness Model (SFM) adapted to survival analysis, and the resulting two independence assumptions it encodes.",
+      "nodes": [
+        {"id": "P7", "name": "SFM adapted to survival setting", "description": "The Standard Fairness Model (SFM) cluster causal diagram is adapted to survival analysis, with protected attribute X, confounders Z, mediators W, survival time T, and censoring time C."},
+        {"id": "P8", "name": "T, C unobserved; (M, δ) observed instead", "description": "T and C are assumed unobserved; instead the pair (M, δ) is observed, where M = min(T,C) and δ indicates whether the observed event is death."},
+        {"id": "P9", "name": "No bidirected T–C edge implies conditional independence", "description": "Absence of a bidirected arrow between T and C in the SFM implies T ⊥ C | X, Z, W, i.e., the censoring mechanism is conditionally independent of the survival mechanism."},
+        {"id": "P10", "name": "Conditional independence enables standard survival tools", "description": "The T ⊥ C | X,Z,W assumption allows application of standard survival-analysis tools such as conditional Kaplan-Meier and Nelson-Aalen estimators."},
+        {"id": "P11", "name": "No further bidirected edges among {T,C,M,δ} and {X,Z,W}", "description": "The SFM further encodes lack-of-confounding assumptions: no bidirected edges between {T,C,M,δ} and {X,Z,W}, and none between X,W or Z,W."},
+        {"id": "P12", "name": "Lack-of-confounding enables effect identification", "description": "These lack-of-confounding assumptions are important for identifying the different causal effects of X on the survival curve."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["E6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P9", "evidence": ["E7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["E8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P11", "evidence": ["E9"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P12", "evidence": ["E10"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Two-step decomposition strategy for the TV disparity measure, motivated directly by the two SFM assumption groups.",
+      "nodes": [
+        {"id": "P13", "name": "TV disparity measure defined", "description": "The total variation measure TV_{x0,x1}(t) = P(T>t|X=x1) - P(T>t|X=x0) is used to quantify survival differences across demographic groups at time t."},
+        {"id": "P14", "name": "Goal: decompose TV into pathway contributions", "description": "The goal is to decompose the TV disparity into contributions from the direct (X→T), indirect (X→W→T), and spurious (X⇢Z→T) pathways."},
+        {"id": "P15", "name": "Two-step process mirrors the two SFM assumption groups", "description": "The decomposition proceeds in two steps closely related to the two types of assumptions encoded in the SFM: Step 1 (inference of P(T|X,Z,W)) and Step 2 (inference of causal effects of X on functionals of P(T|X,Z,W))."},
+        {"id": "P16", "name": "Step 1: infer P(T|X,Z,W) via conditional independence", "description": "Under T⊥C|X,Z,W, the likelihood for T depends only on (M,δ), so conditional Kaplan-Meier/Nelson-Aalen estimators validly recover P(T|X,Z,W)."},
+        {"id": "P17", "name": "Step 2 setup: define Φ as a functional of P(T|X,Z,W)", "description": "Given P(T|X,Z,W), a mapping Φ = ϕ(P(T|X,Z,W)) is defined so the TV measure can be rewritten as E[Φ|X=x1] - E[Φ|X=x0]."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["E11"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["E12"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P15", "evidence": ["E12"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P10", "to": "P16", "evidence": ["E13"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C2"},
+        {"from": "P15", "to": "P16", "evidence": ["E12"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P17", "evidence": ["E14"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "The Causal Reduction Theorem (Thm 1) and the resulting decomposition/identification results.",
+      "nodes": [
+        {"id": "P18", "name": "Φ is a deterministic function of X,Z,W", "description": "Theorem 1 (Causal Reduction) shows that Φ's structural mechanism f_Φ(x,z,w)=ϕ(P(T|X=x,Z=z,W=w)) makes Φ a deterministic function of X,Z,W, not depending on noise variables."},
+        {"id": "P19", "name": "Φ can be added to the causal diagram", "description": "Because Φ is a deterministic function of X,Z,W, it can be added as a new node to the causal diagram, yielding a reduced causal model."},
+        {"id": "P20", "name": "Direct/indirect/spurious Φ-effects defined", "description": "Using the reduced model, x-specific direct (x-DE), indirect (x-IE), and spurious (x-SE) effects of X on Φ are defined analogously to standard causal fairness effects."},
+        {"id": "P21", "name": "TV(Φ) decomposes into DE, IE, SE", "description": "The TV_{x0,x1}(Φ) disparity measure decomposes as TV = x-DE - x-IE - x-SE, following prior causal-fairness decomposition results."},
+        {"id": "P22", "name": "Decomposition holds at each time point", "description": "Because Theorem 1 applies to Φ(t) for any t, the pathway decomposition of disparity can be performed at each individual time point, yielding a time-resolved explanation of disparity evolution."},
+        {"id": "P23", "name": "Effects identifiable under the SFM (Prop. 1)", "description": "Proposition 1 shows that, under the SFM, the potential outcome E[Φ_{xy,W_xw}(t)|X=xz] is identifiable as a weighted sum over Z,W of conditional expectations of Φ, using estimable propensities."}
+      ],
+      "edges": [
+        {"from": "P17", "to": "P18", "evidence": ["E15"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C3"},
+        {"from": "P18", "to": "P19", "evidence": ["E16"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["E17"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["E18"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P22", "evidence": ["E19"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P23", "evidence": ["E20"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P21", "to": "P23", "evidence": ["E20"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Estimation strategies for the identified causal effects: model-based (RSF) and doubly-robust.",
+      "nodes": [
+        {"id": "P24", "name": "RSF used for model-based estimation", "description": "Random survival forests (RSF) are used to non-parametrically estimate P(T|X,Z,W) via the conditional cumulative hazard function, from which the survival function is obtained."},
+        {"id": "P25", "name": "Model-based estimator of causal effects (Prop. 2)", "description": "Proposition 2 gives a plug-in model-based estimator for the potential outcome E[Φ_{xy,W_xw}(t)|X=xz] using the fitted f(x,z,w) and estimated propensities."},
+        {"id": "P26", "name": "Time-invariant covariates make time-decomposition cheap", "description": "Because X,Z,W are time-invariant in this setting, the estimated propensities do not depend on time, making the temporal causal decomposition computationally inexpensive."},
+        {"id": "P27", "name": "Doubly-robust estimator derived (Thm 2)", "description": "Theorem 2 derives a novel influence function for the potential outcome ψ under censored data, enabling doubly-robust debiasing of the model-based estimator."},
+        {"id": "P28", "name": "Cross-fitting used for debiased estimation", "description": "The influence function is used with cross-fitting: nuisance functions are fit on one fold via xgboost while the influence function is evaluated on the remaining fold, with folds swapped to obtain a one-step debiased estimate."}
+      ],
+      "edges": [
+        {"from": "P23", "to": "P24", "evidence": ["E21"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P24", "to": "P25", "evidence": ["E22"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P26", "evidence": ["E23"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P27", "evidence": ["E24"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P27", "to": "P28", "evidence": ["E25"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Extension to competing risks: why joint event-time distributions are infeasible and CIFs are used instead.",
+      "nodes": [
+        {"id": "P29", "name": "Multiple event types motivate competing risks setting", "description": "Individuals may be simultaneously at risk of multiple distinct event types, motivating the competing risks (CR) extension beyond the basic non-informative-censoring case."},
+        {"id": "P30", "name": "Only minimum event time observed", "description": "In the CR setting only M = min(T1,...,TK,C) and the event-type indicator δ are observed, not the individual event times."},
+        {"id": "P31", "name": "Competing events may have unobserved common causes", "description": "Competing events may have unobserved common causes, represented as bidirected edges among T1,...,TK."},
+        {"id": "P32", "name": "Full joint distribution generally infeasible to identify", "description": "Because only the minimum event time is observed and competing events may share unobserved causes, identifying the full joint distribution P(T1,...,TK|X,Z,W) is generally infeasible without strong assumptions like independence of failure times, which rarely hold."},
+        {"id": "P33", "name": "CIFs used as the observable functional instead", "description": "As a result, most competing-risks approaches, including this work, focus on cumulative incidence functions (CIFs) rather than the full joint distribution."},
+        {"id": "P34", "name": "CIFs account for competition between event types", "description": "CIFs explicitly account for competition: increasing one event type's rate necessarily reduces the CIFs of the remaining events, and CIFs sum with all-cause survival to 1."},
+        {"id": "P35", "name": "Thm 1 applies to CIFs as Φ_k(t)", "description": "By the Causal Reduction Theorem, each Φ_k(t) := CIF_k(t) is a deterministic functional of P(T1,...,TK|X,Z,W) and hence a deterministic function of (X,Z,W), enabling the same direct/indirect/spurious decomposition for each cause k."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P30", "evidence": ["E26"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P32", "evidence": ["E27"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P32", "evidence": ["E27"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["E28"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P34", "evidence": ["E29"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P35", "evidence": ["E30"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P33", "to": "P35", "evidence": ["E30"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Extension to informative censoring via copula-based sensitivity analysis and the copula-graphic bounds theorem.",
+      "nodes": [
+        {"id": "P36", "name": "Informative censoring breaks T⊥C assumption", "description": "In the informative censoring (IC) setting, T ⊥ C | X,Z,W no longer holds (a bidirected T⇢C arrow exists), so standard survival-analysis tools are not directly applicable."},
+        {"id": "P37", "name": "Inference requires additional assumptions", "description": "Because T⊥C|X,Z,W fails, inference of S(t|X,Z,W) is not possible without additional assumptions, motivating a sensitivity analysis approach."},
+        {"id": "P38", "name": "Archimedean copula assumption adopted", "description": "The joint survival function H(t,c)=P(T>t,C>c) is assumed to follow an Archimedean copula parameterized by Kendall's τ, the sensitivity parameter."},
+        {"id": "P39", "name": "Classical CGE assumes disjoint jumps", "description": "The classical copula-graphic estimator (CGE) assumes that at each grid point only one of S(t) or G(t) jumps, recursively identifying S(t) and G(t) from CIFs."},
+        {"id": "P40", "name": "Fixed-grid CIF estimation violates disjoint-jump assumption", "description": "In this setting, estimation proceeds on a fixed grid of estimated CIFs where both Ŝ and Ĝ may jump at the same grid point, violating the classical CGE's disjoint-increment assumption."},
+        {"id": "P41", "name": "Classical CGE must be adapted", "description": "Because the disjoint-jump assumption is violated, the classical CGE must be adapted: τ no longer uniquely identifies S(t_{i+1}), G(t_{i+1})."},
+        {"id": "P42", "name": "Thm 3: sharp bounds under non-disjoint increments", "description": "Theorem 3 derives sharp, closed-form bounds on S(t_{i+1}) and G(t_{i+1}) given prior values and CIF increments, which collapse to point estimates as the grid is refined."},
+        {"id": "P43", "name": "Midpoint interpolation yields point estimates", "description": "Point estimates of S(t) and G(t) are obtained via midpoint interpolation of the derived bounds, yielding a point-identified estimator as the grid becomes refined."},
+        {"id": "P44", "name": "Recovered Ŝ(t) enables Thm 1 decomposition under IC", "description": "After recovering Ŝ(t), the Causal Reduction Theorem is invoked again to compute direct/indirect/spurious effects of X on S(t), quantifying causal fairness under informative censoring via sensitivity analysis on τ."}
+      ],
+      "edges": [
+        {"from": "P36", "to": "P37", "evidence": ["E31"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P37", "to": "P38", "evidence": ["E32"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P39", "to": "P41", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P40", "to": "P41", "evidence": ["E33"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P38", "to": "P39", "evidence": ["E34"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P42", "evidence": ["E35"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P42", "to": "P43", "evidence": ["E36"], "votes": 2, "confidence": "majority"},
+        {"from": "P43", "to": "P44", "evidence": ["E37"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P44", "evidence": ["E38"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Case study setup: ICU race-differential analysis and its causal-structure justification.",
+      "nodes": [
+        {"id": "P45", "name": "ANZICS APD cohort constructed", "description": "The case study uses the ANZICS Adult Patient Database, covering 181 hospitals across Australia (Jan 2023-Jul 2024), yielding 249,958 patients, 10,436 (~4.2%) Indigenous."},
+        {"id": "P46", "name": "Indigenous status modeled as X, no reverse causation with Z", "description": "Indigenous status and sociodemographic variables may share common causes but neither causes the other, motivating the X⇢Z spurious relationship as in prior literature."},
+        {"id": "P47", "name": "Clinical variables modeled as mediators W", "description": "Clinical variables are temporally downstream of X and Z (e.g., indigenous status may influence illness severity via healthcare-access disparities), justifying their role as mediators W."},
+        {"id": "P48", "name": "Censoring is administrative, justifying NIC for death analysis", "description": "The censoring mechanism is related to the data extraction process (an administrative reason), justifying the non-informative censoring assumption for the death-outcome analysis."},
+        {"id": "P49", "name": "Death censoring is informative for readmission", "description": "Death censoring has unobserved common causes with readmission (latent illness severity, unmeasured frailty, care quality), so the readmission analysis falls under informative censoring."},
+        {"id": "P50", "name": "Two potential unmeasured confounders acknowledged", "description": "The causal structure has two acknowledged limitations: genetic variation may confound X→W, and geographic remoteness may confound X, W, and T jointly."}
+      ],
+      "edges": [
+        {"from": "P46", "to": "P47", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P45", "to": "P48", "evidence": ["E40"], "votes": 2, "confidence": "majority"},
+        {"from": "P47", "to": "P50", "evidence": ["E41"], "votes": 1, "confidence": "single_run"},
+        {"from": "P48", "to": "P49", "evidence": ["E42"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Case study findings: death disparities (NIC) reveal masked opposing pathway effects.",
+      "nodes": [
+        {"id": "P51", "name": "TV measure near zero after T=80 days", "description": "The raw TV disparity measure for death rises then falls, with confidence intervals including 0 after T=80 days, appearing to suggest little disparity."},
+        {"id": "P52", "name": "Direct effect favors minority patients", "description": "The direct effect decreases up to T=50 days then stabilizes, with its sign implying minority patients experience improved survival along the direct path."},
+        {"id": "P53", "name": "Indirect effect harms minority patients, growing over time", "description": "The indirect effect decreases over time, implying reduced minority survival along this pathway (due to higher chronic/acute illness burden), reaching ~3% difference by T=50 days and continuing to amplify to T=180 days."},
+        {"id": "P54", "name": "Spurious effect favors minority patients, growing over time", "description": "The spurious effect increases up to T=180 days, implying improved minority survival along the spurious pathway, related to lower average age at admission."},
+        {"id": "P55", "name": "Decomposition reveals masked opposing effects", "description": "Together, the near-zero TV measure masks substantial, opposing pathway-specific effects — a pattern that would be missed by standard statistical fairness analysis."}
+      ],
+      "edges": [
+        {"from": "P52", "to": "P55", "evidence": ["E43"], "votes": 2, "confidence": "majority"},
+        {"from": "P53", "to": "P55", "evidence": ["E43"], "votes": 2, "confidence": "majority"},
+        {"from": "P54", "to": "P55", "evidence": ["E43"], "votes": 2, "confidence": "majority"},
+        {"from": "P51", "to": "P55", "evidence": ["E44"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P55", "evidence": ["E45"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4: time-resolved decomposition enables detecting the masked pattern"},
+        {"from": "P48", "to": "P51", "evidence": ["E46"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Case study findings: readmission disparities (IC) via sensitivity analysis.",
+      "nodes": [
+        {"id": "P56", "name": "TV measure for readmission increases over time", "description": "The readmission TV measure increases over time, indicating higher readmission burden for minority patients."},
+        {"id": "P57", "name": "Route II sensitivity analysis applied with τ>0", "description": "Sensitivity analysis is performed via Route II (population-level copula) with τ ∈ {0.1,0.5,0.8}, assuming T1,T2 are positively correlated due to shared causes."},
+        {"id": "P58", "name": "Direct/indirect effects show higher minority readmission burden", "description": "Along both the direct and indirect pathways, minority patients show increased readmission burden, with the indirect effect attributed to more complicated admission diagnoses and worse chronic health."},
+        {"id": "P59", "name": "Spurious effect favors minority patients again", "description": "Along the spurious pathway, minority patients again show lower readmission burden, likely due to lower average age at ICU admission."},
+        {"id": "P60", "name": "Confidence bounds limit definitive conclusions on direct effect", "description": "Despite the directional findings, the confidence bounds for the direct effect do not allow definitive conclusions about effect sizes."}
+      ],
+      "edges": [
+        {"from": "P49", "to": "P57", "evidence": ["E47"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"},
+        {"from": "P44", "to": "P57", "evidence": ["E48"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P57", "to": "P58", "evidence": ["E49"], "votes": 2, "confidence": "majority"},
+        {"from": "P57", "to": "P59", "evidence": ["E49"], "votes": 2, "confidence": "majority"},
+        {"from": "P58", "to": "P60", "evidence": ["E50"], "votes": 2, "confidence": "majority"},
+        {"from": "P56", "to": "P58", "evidence": ["E51"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "Contribution summary chain.",
+      "nodes": [
+        {"id": "P61", "name": "Contribution 1: formalize causal fairness for TTE + Causal Reduction Theorem", "description": "Causal fairness is formalized for survival analysis, proving the Causal Reduction Theorem that enables identification and decomposition of group disparities in TTE settings."},
+        {"id": "P62", "name": "Contribution 2: three regimes instantiated with identification results", "description": "The framework is instantiated in three regimes (non-informative censoring, competing risks, informative censoring), with identification results derived for each (Prop. 1)."},
+        {"id": "P63", "name": "Contribution 3: two new technical results (Thm 2, Thm 3)", "description": "Two new technical results are proven: a doubly robust estimator for censored data, and sharp bounds for copula-graphic estimation under non-disjoint increments."},
+        {"id": "P64", "name": "Contribution 4: real-world ICU case study", "description": "Race differentials in post-ICU mortality are analyzed, demonstrating that causal fairness for TTE yields scientific insights missed by standard statistical fairness analyses."}
+      ],
+      "edges": [
+        {"from": "P61", "to": "P62", "evidence": ["E52"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P62", "to": "P63", "evidence": ["E53"], "votes": 2, "confidence": "majority"},
+        {"from": "P63", "to": "P64", "evidence": ["E54"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P65", "name": "Non-parametric focus distinguishes from prior mediation-survival work", "description": "Unlike most causal mediation literature for survival analysis, which adopts parametric models, this work focuses on non-parametric inference, avoiding strong distributional assumptions."},
+    {"id": "P66", "name": "Future work: sensitivity analysis for unmeasured confounding in mediation", "description": "Developing sensitivity analyses for causal decompositions in the presence of unmeasured confounding (e.g., genetic variation, geographic remoteness) is left as an important future direction."},
+    {"id": "P67", "name": "Future work: relax copula family assumption", "description": "The choice of Archimedean copula family in the informative censoring setting is itself an additional modeling assumption that future work could relax."},
+    {"id": "P68", "name": "Future work: time-varying covariates and isolating competing-risk effects", "description": "The current formulation assumes time-invariant covariates and does not isolate primary from competing hazard effects in the competing-risks analysis; both are left for future extensions."}
+  ]
+}

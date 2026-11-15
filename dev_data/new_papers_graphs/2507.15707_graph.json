@@ -1,0 +1,178 @@
+{
+ "arxiv_id": "2507.15707",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Benchmark design with two accuracy measures underlies the RQ1-RQ5 findings on question-type effects",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Accuracy measures proposed",
+     "description": "The study defines final selection (FS) accuracy, which scores only the final answer or selected option, and reasoning accuracy, which scores correctness of the reasoning steps (manually evaluated)."
+    },
+    {
+     "id": "P2",
+     "name": "Benchmark design",
+     "description": "Five LLMs (two closed-source, three open-source) are tested zero-shot on 300 GSM8K quantitative and 300 bAbI deductive problems (the latter with two added irrelevant facts), each formatted as short-answer, multiple-choice (with a 'Something else' option) and True/False questions."
+    },
+    {
+     "id": "P3",
+     "name": "FS accuracy differs by question type",
+     "description": "There are more statistically significant differences in final selection accuracy across question types than in reasoning accuracy; e.g. on GSM8K300 SAQ beats 5-option MCQ in 8/15 cases and loses in 2/15."
+    },
+    {
+     "id": "P4",
+     "name": "Reasoning accuracy mostly unaffected",
+     "description": "On GSM8K300, 80% of SAQ-vs-MCQ cases (12/15) and 70% of SAQ-vs-TFQ cases (7/10) show no significant reasoning-accuracy difference."
+    },
+    {
+     "id": "P5",
+     "name": "Reasoning and FS accuracy not correlated",
+     "description": "Reasoning accuracy does not necessarily correlate with final selection accuracy."
+    },
+    {
+     "id": "P6",
+     "name": "Correct reasoning, wrong selection",
+     "description": "LLMs sometimes reason correctly but select the wrong final answer (wrong option due to decimal/unit conversion, TFQ guessing before reasoning, or missing final selection), which makes SAQ performance better than MCQ/TFQ."
+    },
+    {
+     "id": "P7",
+     "name": "Models misunderstand 'Something else'",
+     "description": "LLMs often fail to choose 'Something else' when appropriate, repeatedly recalculating to match a numeric option; Gemma and Llama do so in about 29% and 14% of MCQ outputs."
+    },
+    {
+     "id": "P8",
+     "name": "MCQ performance depends on design factors",
+     "description": "MCQ performance varies with the position of the correct answer, the number of options and the wording of options."
+    },
+    {
+     "id": "P9",
+     "name": "TFQ performance depends on design factors",
+     "description": "TFQ performance depends on instruction type, whether True or False is the correct answer, and word choices."
+    },
+    {
+     "id": "P10",
+     "name": "True answers reasoned better",
+     "description": "LLMs mostly reason better on TFQs whose correct answer is 'True' than 'False'."
+    },
+    {
+     "id": "P11",
+     "name": "Question vs statement format",
+     "description": "FS accuracy is worse for TFQs in question format than in statement format, except GPT-4o on bAbI300 and Gemma on GSM8K300."
+    },
+    {
+     "id": "P12",
+     "name": "Both skills must improve",
+     "description": "Improving LLM performance on MCQs and TFQs requires improving both reasoning accuracy and the accuracy of selecting the final answer."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 3, Sec 4, Table 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3, Sec 4"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P4",
+     "evidence": [
+      "Sec 5, Table 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 3, Sec 5"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 4-5, Table 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 6"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P12",
+     "evidence": [
+      "Conclusions"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P12",
+     "evidence": [
+      "Conclusions"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P8",
+     "evidence": [
+      "Sec 7, Tables 1-3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P9",
+     "evidence": [
+      "Sec 8, Tables 4-6"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 8.2, Table 5"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 8.1, Table 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Models misselect options",
+   "description": "Approximately 9% of Llama's MCQ outputs select an incorrect option after a valid calculation (Fig 3a)."
+  },
+  {
+   "id": "P14",
+   "name": "Number of options effect varies",
+   "description": "On GSM8K300, 5-option and 11-option MCQs show no significant difference for GPT-4o and the Llama models, but 5-option MCQs are better in 4 of 12 cases for the other models."
+  }
+ ],
+ "structural_reasoning": "Benchmark design and two metrics feed the RQ1/RQ2 findings, the divergence between them motivates the error-pattern analysis, and factor analyses (RQ4/5) are separate."
+}

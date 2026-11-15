@@ -1,0 +1,199 @@
+{
+ "arxiv_id": "2607.29287",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "TwT: difficulty-adaptive reasoning for multi-domain MT, from motivating failures of uniform reasoning to training pipeline and results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Humans adapt reasoning to difficulty",
+     "description": "Human translators use fast intuitive processing (System 1) for familiar content and slow deliberate reasoning (System 2) at Rich Points such as ambiguous terminology, complex syntax or cultural disparities, whereas MT systems translate all inputs uniformly."
+    },
+    {
+     "id": "P2",
+     "name": "Existing MT sits at two extremes",
+     "description": "SFT-trained LLM translators operate purely in System 1 and struggle with Rich Points and out-of-domain data, while large reasoning models and CoT prompting apply the same long reasoning pattern regardless of input difficulty."
+    },
+    {
+     "id": "P3",
+     "name": "Pure RL collapses to templates",
+     "description": "Applying RL directly to a base model leads reasoning traces to collapse to shallow patterns of at most 100 tokens regardless of KL setting, with the top three templates accounting for about 73% of traces on Zh-En."
+    },
+    {
+     "id": "P4",
+     "name": "SFT-then-RL overthinks",
+     "description": "RL after CoT SFT produces longer reasoning but cannot control when it is needed, giving verbose, redundant traces even for simple inputs."
+    },
+    {
+     "id": "P5",
+     "name": "General-CoT lacks domain awareness",
+     "description": "General-CoT performs poorly in-domain because its reasoning lacks domain grounding, defaulting to generic translations, while adding explicit domain reasoning (Domain-CoT) largely restores in-domain quality (e.g. 56.53 to 62.65 on Hard samples), though it still applies the same strategy regardless of difficulty."
+    },
+    {
+     "id": "P6",
+     "name": "Cold start: difficulty-aware CoT distillation",
+     "description": "TwT's cold-start builds ~7k difficulty-adaptive traces: DeepSeek-R1 generates domain-aware CoT, GPT-4o rates difficulty via Rich Points (sentence complexity, vocabulary rarity, grammatical divergence, contextual nuance) and rewrites Easy inputs into concise System 1 checks and Hard inputs into full System 2 deliberation, followed by SFT."
+    },
+    {
+     "id": "P7",
+     "name": "RL stage with hybrid reward",
+     "description": "The RL stage uses GRPO with a hybrid reward combining BLEU and COMET translation quality with a repetition penalty to optimize adaptive reasoning behavior."
+    },
+    {
+     "id": "P8",
+     "name": "TwT beats larger reasoning models cheaply",
+     "description": "Evaluated on 15 benchmarks, TwT-7B and TwT-14B outperform much larger SOTA reasoning models in translation quality while reducing token usage by 32-60% (32% vs OpenAI-o3-mini, 60% vs Gemini-2.0-Flash-Thinking); in-domain TwT-14B averages 66.62 vs DeepSeek-R1 65.40 and GPT-5 66.05."
+    },
+    {
+     "id": "P9",
+     "name": "Generalizes OOD and across languages",
+     "description": "TwT-7B averages 66.25 on five OOD test sets versus 63.58 for SFT-Parallel-7B, and TwT-Gemma-2-9B-IT trained on 27K examples beats Tower-Plus-9B trained on 286K by +8.19 across seen and 59 unseen languages."
+    },
+    {
+     "id": "P10",
+     "name": "TwT adapts reasoning length to difficulty",
+     "description": "On Easy inputs TwT cuts token usage by 33% while gaining +6.4 quality over General-CoT, and on Hard inputs it gains +6.7 quality points."
+    },
+    {
+     "id": "P11",
+     "name": "Ablations: adaptive CoT and two stages are needed",
+     "description": "Removing adaptive CoT raises reasoning length from 278 to 748 tokens with comparable quality, removing the SFT stage causes degradation and length collapse to 62 tokens, and only the full pipeline reaches the best score (64.77); removing the repetition penalty gives only a slight drop."
+    },
+    {
+     "id": "P12",
+     "name": "TwT removes reasoning redundancy",
+     "description": "TwT resolves over 94% of the redundant reasoning steps found in the SFT-with-RL baseline, including 97.2% of Low-Density Long Descriptions and 87.3% of Over-Segmentation issues."
+    },
+    {
+     "id": "P13",
+     "name": "Model-agnostic",
+     "description": "TwT yields consistent improvements across three backbones (Qwen2.5-7B, Llama-3.1-8B, Gemma-2-9B)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 4.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.1 (cold start initializes adaptive reasoning before RL)"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2, Sec 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2, Table 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.1-4.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 5, Tables 3-4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 5, Tables 3-4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 5, Table 5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 6.3, Table 8"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.1, Table 6"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.1, Table 6"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P12",
+     "evidence": [
+      "Sec 6.2, Table 7"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 6.2, Table 7"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 6.1, Table 6"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Limitation: RL data difficulty uncontrolled",
+   "description": "The RL training data is randomly sampled without controlling its difficulty distribution (stated limitation)."
+  }
+ ],
+ "structural_reasoning": "Observed failures of uniform reasoning (pure RL collapse, SFT+RL verbosity, missing domain awareness) motivate the difficulty-aware cold start, which with hybrid-reward RL yields the reported results, adaptivity and ablation findings."
+}

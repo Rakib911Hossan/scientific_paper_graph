@@ -1,0 +1,207 @@
+{
+ "arxiv_id": "2508.20577",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Max attention logit growth in large-batch training motivates MERIT's max-norm, element-wise trust ratio, which yields better large-batch results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Large batches degrade AdamW",
+     "description": "Training language models with AdamW at large batch size shows clear performance degradation, requiring additional training tokens to reach comparable generalization."
+    },
+    {
+     "id": "P2",
+     "name": "Max attention logit grows sharply",
+     "description": "During large-batch training with AdamW the max attention logit in attention layers increases sharply, exceeding values seen in small-batch training."
+    },
+    {
+     "id": "P3",
+     "name": "Inflated logits hurt attention",
+     "description": "An inflated max attention logit yields overly sharp (near one-hot) attention distributions that limit the expressive ability of attention layers."
+    },
+    {
+     "id": "P4",
+     "name": "LAMB reduces only first-layer logit",
+     "description": "LAMB's weight-wise trust ratio reduces max attention logit in the first self-attention layer of GPT-2 but not in the medium (12th) layer."
+    },
+    {
+     "id": "P5",
+     "name": "l2 trust ratio ineffective on extremes",
+     "description": "There is a large disparity between max norms and l2 norms of query/key weights, so l2-norm-based trust ratios cannot effectively limit the maximum of W_Q/W_K."
+    },
+    {
+     "id": "P6",
+     "name": "Max-norm trust ratio",
+     "description": "MERIT computes the trust ratio with the max-norm, giving larger updates to extreme weight values and limiting spikes in max attention logit."
+    },
+    {
+     "id": "P7",
+     "name": "Weights similar within rows/columns",
+     "description": "Query/key weight values show high similarity within rows (multi-head attention) and within columns (outlier dimension phenomenon)."
+    },
+    {
+     "id": "P8",
+     "name": "Weight-wise ratio is error-prone",
+     "description": "LAMB's weight-wise trust ratio is inaccurate because extreme values in one row/column can harm training stability of other rows/columns."
+    },
+    {
+     "id": "P9",
+     "name": "Element-wise ratio design",
+     "description": "MERIT computes row-wise and column-wise max-norm ratios and sets the element-wise ratio to the max of them, bounded below by the weight-wise ratio, with element-wise update clipping to 1."
+    },
+    {
+     "id": "P10",
+     "name": "MERIT fixes middle-layer logit growth",
+     "description": "MERIT's design successfully suppresses the rapid increase of max attention logit in the middle self-attention layers where LAMB fails."
+    },
+    {
+     "id": "P11",
+     "name": "MERIT beats baselines on val loss",
+     "description": "On OpenWebText with GPT-2 small/medium/large, MERIT achieves lower validation loss than LAMB, AdamW, Lion and Sophia-G, with gaps widening as model size grows."
+    },
+    {
+     "id": "P12",
+     "name": "Larger batches without degradation",
+     "description": "MERIT enables a 6k batch size with no degradation versus the standard batch size (480) at 48B training tokens, allowing larger batches than LAMB and AdamW."
+    },
+    {
+     "id": "P13",
+     "name": "Ablation: maxLAMB and MERIT loss",
+     "description": "Validation loss (GPT-2 small/medium): AdamW 3.470/3.172, LAMB 3.355/3.068, maxLAMB 3.304/3.040, MERIT 3.280/2.982."
+    },
+    {
+     "id": "P14",
+     "name": "Clipping and weight-wise bound matter",
+     "description": "Removing element-wise clipping weakens MERIT's gains, and using the weight-wise ratio as a lower bound significantly improves generalization."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Fig 2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, App C"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.1, Fig 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 4.1, App E"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3, Algorithm 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3, Fig 2(b)"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3, Fig 2(b)"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.2, Fig 4"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.2, Fig 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.4, Table 3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.4, Table 3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.4, Fig 9"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Negligible overhead",
+   "description": "Max-norm and element-wise trust ratio calculation adds about 1% extra computation over LAMB's l2 trust ratio (Table 2)."
+  },
+  {
+   "id": "P16",
+   "name": "QK-Norm hurts large-batch training",
+   "description": "QK-Norm permits larger learning rates for AdamW in GPT-2 but degrades performance in large-batch training (Fig 8)."
+  },
+  {
+   "id": "P17",
+   "name": "Large-batch generalization gap",
+   "description": "Naively increasing batch size degrades generalization (the generalization gap), and Chinchilla-scaled settings used batch 1K/4K/8K for small/medium/large GPT-2."
+  }
+ ],
+ "structural_reasoning": "Problem (large-batch degradation, logit growth) leads to diagnosis of LAMB's limits, to MERIT's two design parts, then to empirical results and ablations."
+}

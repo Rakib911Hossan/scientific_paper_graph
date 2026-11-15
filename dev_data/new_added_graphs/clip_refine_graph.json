@@ -1,0 +1,402 @@
+{
+  "arxiv_id": "2504.12717v1",
+  "note": "Single-pass extraction (no sentence-level indexing available for this document). Evidence fields reference sections/tables/figures/equations instead of indexed sentences (S#). Votes/confidence/fidelity fields from the reference schema are omitted since no multi-run validation was performed.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: the modality gap in CLIP and limitations of existing remedies",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "CLIP's multi-modal feature spaces exhibit a modality gap",
+          "description": "Although CLIP achieves remarkable zero-shot performance, its image and text alignment is imperfect: CLIP models tend to encode images and texts into different feature clusters even after sufficient training on massive datasets, a phenomenon termed the modality gap."
+        },
+        {
+          "id": "P2",
+          "name": "The modality gap harms downstream task performance",
+          "description": "Prior work shows the modality gap largely affects downstream task performance, especially fine-grained classification, and that CLIP models often fail to retrieve localized objects and attributes in images from corresponding captions."
+        },
+        {
+          "id": "P3",
+          "name": "Pre-training modifications reduce the gap but require costly large-scale retraining",
+          "description": "Existing pre-training modifications (auxiliary self-supervised losses, shared encoder weights/feature maps) reduce the modality gap but require training from scratch on million-scale datasets like LAION-400M, incurring heavy computational costs across multiple GPUs, and such pre-trained models are often not published."
+        },
+        {
+          "id": "P4",
+          "name": "Fine-tuning methods are cheaper but degrade zero-shot transfer performance",
+          "description": "Fine-tuning methods (prompt tuning, adapters) require much smaller datasets and less compute than pre-training, but degrade the general zero-shot transfer performance because their primary goal is improving target-task performance."
+        },
+        {
+          "id": "P5",
+          "name": "CLIP-Refine proposed: lightweight post-pre-training between pre-training and fine-tuning",
+          "description": "The paper proposes a post-pre-training phase between pre-training and fine-tuning, aiming to mitigate the modality gap and enhance zero-shot transfer performance of off-the-shelf pre-trained CLIP models using only small datasets and modest compute (e.g., a single GPU and COCO Captions)."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["Sec 1"]},
+        {"from": "P2", "to": "P3", "evidence": ["Sec 1"]},
+        {"from": "P2", "to": "P4", "evidence": ["Sec 1"]},
+        {"from": "P3", "to": "P5", "evidence": ["Sec 1"]},
+        {"from": "P4", "to": "P5", "evidence": ["Sec 1"]}
+      ]
+    },
+    {
+      "component_id": "C2",
+      "description": "Challenges specific to post-pre-training: uniformity corruption and catastrophic forgetting",
+      "nodes": [
+        {
+          "id": "P6",
+          "name": "Naive feature-gap minimization corrupts hypersphere uniformity",
+          "description": "Directly minimizing the gap between image and text features (naive alignment loss) corrupts the feature space's uniformity on the hypersphere, an important property of contrastive representations that indicates how much input information is preserved."
+        },
+        {
+          "id": "P7",
+          "name": "Post-pre-training with contrastive loss causes catastrophic forgetting",
+          "description": "Post-pre-training with contrastive loss causes catastrophic forgetting of general knowledge in pre-trained CLIP models, driven by overfitting due to restricted mini-batch sizes far smaller than those used in original pre-training."
+        },
+        {
+          "id": "P8",
+          "name": "Both challenges must be addressed to design an effective post-pre-training method",
+          "description": "Because naive alignment destroys uniformity and contrastive post-pre-training induces catastrophic forgetting, an effective post-pre-training method must reduce the modality gap without sacrificing uniformity or retained knowledge."
+        }
+      ],
+      "edges": [
+        {"from": "P5", "to": "P6", "evidence": ["Sec 1"]},
+        {"from": "P5", "to": "P7", "evidence": ["Sec 1"]},
+        {"from": "P6", "to": "P8", "evidence": ["Sec 1"]},
+        {"from": "P7", "to": "P8", "evidence": ["Sec 1"]}
+      ]
+    },
+    {
+      "component_id": "C3",
+      "description": "Method: Random Feature Alignment (RaFA) design rationale",
+      "nodes": [
+        {
+          "id": "P9",
+          "name": "Naive L2 alignment loss degrades generalization via uniformity loss",
+          "description": "A naive loss minimizing the L2 distance between image and text feature vectors (Eq. 2) improves alignment of positive pairs but destroys hypersphere uniformity by forcing changes to the feature distribution, degrading validation performance as shown by prior work on alignment/uniformity trade-offs."
+        },
+        {
+          "id": "P10",
+          "name": "RaFA instead matches feature distributions to a shared prior via random reference vectors",
+          "description": "Instead of directly matching paired features, RaFA refines image and text features to follow a shared prior distribution (e.g., standard Gaussian) by minimizing the L2 distance between each feature vector and a random reference vector sampled from the prior, shared across the image-text pair (Eq. 3)."
+        },
+        {
+          "id": "P11",
+          "name": "RaFA indirectly minimizes modality gap while preserving uniformity and avoiding overfitting",
+          "description": "By using a shared random reference vector per pair, RaFA indirectly minimizes the modality gap, gradually aligns features to the shared prior, and the randomness helps avoid overfitting to the small post-pre-training dataset and reforms model capacity."
+        }
+      ],
+      "edges": [
+        {"from": "P8", "to": "P9", "evidence": ["Sec 3.3", "Eq. 2"]},
+        {"from": "P9", "to": "P10", "evidence": ["Sec 3.3", "Eq. 3"]},
+        {"from": "P10", "to": "P11", "evidence": ["Sec 3.3"]}
+      ]
+    },
+    {
+      "component_id": "C4",
+      "description": "Method: Hybrid Contrastive-Distillation (HyCD) design rationale",
+      "nodes": [
+        {
+          "id": "P12",
+          "name": "Standard self-distillation from the frozen pre-trained model retains knowledge",
+          "description": "To retain past knowledge, a baseline strategy penalizes the post-pre-training model with a knowledge distillation loss where the frozen pre-trained CLIP model acts as teacher, minimizing a batch-wise KL-divergence between teacher and student softmax outputs over image-text similarity matrices (Eqs. 4-7)."
+        },
+        {
+          "id": "P13",
+          "name": "Pure self-distillation interferes with RaFA by over-anchoring to pre-trained parameters",
+          "description": "Although minimizing the standard self-distillation loss retains past knowledge, it strongly enchains the model's parameters to the pre-trained ones, which was found to interfere with RaFA's feature-alignment objective."
+        },
+        {
+          "id": "P14",
+          "name": "HyCD blends ground-truth pair labels with teacher outputs via alpha-blending",
+          "description": "To reconcile RaFA with knowledge retention, HyCD modifies the teacher output by alpha-blending an indicator function for correct image-text pairs with the teacher's similarity output (Eq. 8), letting the model learn the correct pairing directly while referencing the teacher's relative knowledge on other pairs."
+        },
+        {
+          "id": "P15",
+          "name": "HyCD loss computed bidirectionally over image-to-text and text-to-image directions",
+          "description": "Using the blended hybrid targets, the HyCD loss is computed as the average of image-to-text and text-to-image KL-divergence losses (Eqs. 9-10), enabling the model to both retain past knowledge and learn new alignment knowledge."
+        }
+      ],
+      "edges": [
+        {"from": "P8", "to": "P12", "evidence": ["Sec 3.4", "Eqs. 4-7"]},
+        {"from": "P12", "to": "P13", "evidence": ["Sec 3.4"]},
+        {"from": "P13", "to": "P14", "evidence": ["Sec 3.4", "Eq. 8"]},
+        {"from": "P14", "to": "P15", "evidence": ["Sec 3.4", "Eqs. 9-10"]}
+      ]
+    },
+    {
+      "component_id": "C5",
+      "description": "Method: combined CLIP-Refine objective and training procedure",
+      "nodes": [
+        {
+          "id": "P16",
+          "name": "CLIP-Refine jointly optimizes RaFA and HyCD with equal weighting",
+          "description": "CLIP-Refine optimizes model parameters by jointly minimizing the sum of RaFA loss and HyCD loss (Eq. 1); equal contribution of both losses was empirically found to achieve the best performance, avoiding the need for additional balancing hyperparameters."
+        },
+        {
+          "id": "P17",
+          "name": "Combining RaFA and HyCD yields larger gains than either alone",
+          "description": "While HyCD alone improves generalization performance of pre-trained CLIP models, combining it with RaFA achieves larger improvements by minimizing the modality gap without losing past knowledge, per the algorithmic procedure in Algorithm 1."
+        }
+      ],
+      "edges": [
+        {"from": "P11", "to": "P16", "evidence": ["Sec 3.2", "Eq. 1"]},
+        {"from": "P15", "to": "P16", "evidence": ["Sec 3.2", "Eq. 1"]},
+        {"from": "P16", "to": "P17", "evidence": ["Sec 3.4", "Algorithm 1"]}
+      ]
+    },
+    {
+      "component_id": "C6",
+      "description": "Related work positioning: distinguishing post-pre-training from prior pre-training and fine-tuning approaches",
+      "nodes": [
+        {
+          "id": "P18",
+          "name": "Prior pre-training modifications require large-scale datasets and multi-GPU compute",
+          "description": "Methods adding auxiliary losses (cyclic consistency, fine-grained token similarity, self-supervised augmentation, supervised contrastive, LLM-augmented text) or sharing encoder weights/discrete token spaces require large-scale datasets like CC12M and LAION-400M, incurring high computational costs on multiple GPUs."
+        },
+        {
+          "id": "P19",
+          "name": "Prior fine-tuning methods reduce target-task modality gap but don't target zero-shot transfer",
+          "description": "Prompt tuning (CoOp/CoCoOp), visual prompt tuning, unified visual-textual prompt tuning, shared low-rank adapters, and mixup-based feature-space refinement (m2-mix) succeed in reducing the gap on target datasets, but do not intend to improve zero-shot transfer performance, unlike CLIP-Refine's objective."
+        },
+        {
+          "id": "P20",
+          "name": "CLIP-Refine is lightweight, cooperative with pre-training, and targets zero-shot transfer",
+          "description": "In contrast to both prior lines, CLIP-Refine improves generalization performance of off-the-shelf pre-trained models using only small datasets (Flickr8/30K, COCO Caption) with a single GPU, is cooperative with any pre-trained model, and can still be followed by fine-tuning to further boost target performance."
+        }
+      ],
+      "edges": [
+        {"from": "P3", "to": "P18", "evidence": ["Sec 2"]},
+        {"from": "P4", "to": "P19", "evidence": ["Sec 2"]},
+        {"from": "P18", "to": "P20", "evidence": ["Sec 2"]},
+        {"from": "P19", "to": "P20", "evidence": ["Sec 2"]},
+        {"from": "P5", "to": "P20", "evidence": ["Sec 2"]}
+      ]
+    },
+    {
+      "component_id": "C7",
+      "description": "Finding: post-pre-training with plain contrastive loss degrades zero-shot classification",
+      "nodes": [
+        {
+          "id": "P21",
+          "name": "Contrastive and m2-mix post-pre-training degrade zero-shot classification accuracy",
+          "description": "On 12 zero-shot classification datasets, post-pre-training with plain contrastive loss (Contrastive, m2-mix) largely degrades top-1 accuracy for all datasets compared to the pre-trained baseline (Table 1)."
+        },
+        {
+          "id": "P22",
+          "name": "Small post-pre-training batch size drives catastrophic forgetting",
+          "description": "Since Self-KD does not show degradation, the contrastive loss's degradation is attributed to catastrophic forgetting caused by a much smaller mini-batch size (512, single GPU) than at original pre-training (32,768, hundreds of GPUs), limiting negative samples and causing overfitting."
+        },
+        {
+          "id": "P23",
+          "name": "CLIP-Refine improves zero-shot classification across all 12 datasets",
+          "description": "In contrast to contrastive-loss baselines, CLIP-Refine impressively improves zero-shot classification performance for all datasets, with ablations showing the gain comes from combining HyCD with RaFA (Table 1)."
+        },
+        {
+          "id": "P24",
+          "name": "HyCD+Lalign (naive alignment) performs worst among baselines",
+          "description": "HyCD combined with the naive alignment loss (HyCD+Lalign) resulted in the worst performance among baselines, confirming that naively minimizing the image-text feature gap leads to generalization degradation (Table 1)."
+        }
+      ],
+      "edges": [
+        {"from": "P6", "to": "P21", "evidence": ["Sec 4.2", "Table 1"]},
+        {"from": "P7", "to": "P22", "evidence": ["Sec 4.2"]},
+        {"from": "P21", "to": "P22", "evidence": ["Sec 4.2"]},
+        {"from": "P17", "to": "P23", "evidence": ["Sec 4.2", "Table 1"]},
+        {"from": "P9", "to": "P24", "evidence": ["Sec 4.2", "Table 1"]}
+      ]
+    },
+    {
+      "component_id": "C8",
+      "description": "Finding: zero-shot retrieval results reveal asymmetric image/text overfitting",
+      "nodes": [
+        {
+          "id": "P25",
+          "name": "CLIP-Refine achieves the best zero-shot retrieval performance with a larger margin than classification",
+          "description": "On COCO2017-Val and Flickr8K/30K retrieval, CLIP-Refine achieves the best performance with an even larger margin over baselines than observed in classification tasks (Table 2)."
+        },
+        {
+          "id": "P26",
+          "name": "Contrastive and m2-mix improve T→I retrieval but degrade I→T retrieval",
+          "description": "Unlike in classification, Contrastive and m2-mix baselines improve text-to-image (T→I) retrieval over the pre-trained model while degrading image-to-text (I→T) retrieval, indicating asymmetric overfitting between modalities."
+        },
+        {
+          "id": "P27",
+          "name": "Image encoders are more prone to overfitting than text encoders due to representation continuity",
+          "description": "This asymmetry is explained by images having continuous-valued pixel representations with high degrees of freedom (prone to overfitting on limited negative samples in small batches), while discrete-token text representations have limited degrees of freedom and can learn new knowledge while retaining the past; since zero-shot classification is itself an I→T task, this also explains the classification degradation in P21."
+        },
+        {
+          "id": "P28",
+          "name": "CLIP-Refine prevents I→T overfitting and improves both retrieval directions",
+          "description": "CLIP-Refine successfully prevents the overfitting in I→T retrieval and greatly improves performance in both I→T and T→I directions, unlike the contrastive-loss baselines."
+        }
+      ],
+      "edges": [
+        {"from": "P23", "to": "P25", "evidence": ["Sec 4.2", "Table 2"]},
+        {"from": "P21", "to": "P26", "evidence": ["Sec 4.2", "Table 2"]},
+        {"from": "P26", "to": "P27", "evidence": ["Sec 4.2"]},
+        {"from": "P27", "to": "P21", "evidence": ["Sec 4.2"]},
+        {"from": "P17", "to": "P28", "evidence": ["Sec 4.2", "Table 2"]}
+      ]
+    },
+    {
+      "component_id": "C9",
+      "description": "Finding: quantitative feature-space analysis (modality gap, alignment, uniformity)",
+      "nodes": [
+        {
+          "id": "P29",
+          "name": "HyCD+Lalign achieves the best gap/alignment scores but destroys uniformity",
+          "description": "Among all methods, HyCD+Lalign achieves the best modality gap and alignment scores, but significantly degrades the uniformity score, indicating that directly minimizing the naive alignment loss destroys the feature space well-constructed by CLIP pre-training (Table 3)."
+        },
+        {
+          "id": "P30",
+          "name": "CLIP-Refine consistently improves modality gap, alignment, and uniformity together",
+          "description": "In contrast to HyCD+Lalign, CLIP-Refine consistently improves all three scores (modality gap, alignment, uniformity), suggesting that minimizing both the image-text gap and preserving uniformity is important for generalization performance, consistent with prior alignment-uniformity theory (Table 3)."
+        },
+        {
+          "id": "P31",
+          "name": "The Gaussian prior naturally balances alignment and uniformity",
+          "description": "Because CLIP-Refine penalizes features to follow the shared reference distribution N(0,I), whose samples tend to be uniformly distributed on the hypersphere, it naturally achieves a good balance of alignment and uniformity while reducing the modality gap."
+        },
+        {
+          "id": "P32",
+          "name": "PCA visualization confirms CLIP-Refine reduces the gap while preserving per-modality feature shape",
+          "description": "PCA visualization shows the contrastive model enlarges the modality gap, HyCD+Lalign gathers image/text features into the same cluster but distorts each modality's feature distribution, while CLIP-Refine reduces the modality gap while keeping the shape of the pre-trained per-modality feature distributions (Fig. 3)."
+        }
+      ],
+      "edges": [
+        {"from": "P24", "to": "P29", "evidence": ["Sec 4.3", "Table 3"]},
+        {"from": "P30", "to": "P31", "evidence": ["Sec 4.3"]},
+        {"from": "P11", "to": "P31", "evidence": ["Sec 4.3"]},
+        {"from": "P29", "to": "P30", "evidence": ["Sec 4.3", "Table 3"]},
+        {"from": "P30", "to": "P32", "evidence": ["Sec 4.3", "Fig. 3"]}
+      ]
+    },
+    {
+      "component_id": "C10",
+      "description": "Ablation: choice of prior distribution in RaFA",
+      "nodes": [
+        {
+          "id": "P33",
+          "name": "Uniform prior U(0,1) yields weak improvements versus Gaussian priors",
+          "description": "Using the uniform distribution U(0,1) as the RaFA prior does not show large improvements in zero-shot performance or uniformity score, likely because samples from U(0,1) do not concentrate on the hypersphere the way N(0,I) samples do, possibly collapsing uniformity gains (Table 4)."
+        },
+        {
+          "id": "P34",
+          "name": "Text-feature-statistics Gaussian prior notably improves zero-shot classification",
+          "description": "Among Gaussian priors using pre-trained feature statistics, the prior based on text feature statistics N(mu_txt, sigma_txt^2) yields the largest zero-shot classification improvement, indicating that aligning image features toward text-feature statistics is particularly effective, consistent with the I→T retrieval gains observed in Sec 4.2 (Table 4)."
+        },
+        {
+          "id": "P35",
+          "name": "Standard Gaussian N(0,I) with sufficient variance performs best overall",
+          "description": "Varying variance magnitude beta in zero-mean Gaussian priors shows performance depends on sufficient randomness; N(0,I) (beta=1) achieves the best overall balance of zero-shot accuracy, alignment, and uniformity, emphasizing the importance of randomness in RaFA (Table 4)."
+        }
+      ],
+      "edges": [
+        {"from": "P10", "to": "P33", "evidence": ["Sec 4.4.1", "Table 4"]},
+        {"from": "P33", "to": "P34", "evidence": ["Sec 4.4.1", "Table 4"]},
+        {"from": "P27", "to": "P34", "evidence": ["Sec 4.4.1"]},
+        {"from": "P34", "to": "P35", "evidence": ["Sec 4.4.1", "Table 4"]}
+      ]
+    },
+    {
+      "component_id": "C11",
+      "description": "Finding: effect of post-pre-training dataset choice",
+      "nodes": [
+        {
+          "id": "P36",
+          "name": "Most CLIP-Refine variants outperform the pre-trained baseline regardless of dataset",
+          "description": "Testing Flickr8K/30K, COCO Caption, CC3M, and CC12M as post-pre-training datasets, most CLIP-Refine models outperform the pre-trained baseline on zero-shot classification and retrieval (Table 5)."
+        },
+        {
+          "id": "P37",
+          "name": "Larger datasets (CC3M/CC12M) underperform smaller, higher-quality COCO Caption",
+          "description": "CC3M and CC12M, despite being larger, are inferior to COCO Caption, likely because they contain mismatched and noisy image-text pairs, whereas COCO Caption's higher-quality captions better support modality alignment."
+        },
+        {
+          "id": "P38",
+          "name": "Filtering low-quality pairs significantly improves performance, confirming data quality matters",
+          "description": "Filtering out low-quality image-text pairs via CLIP-Score-based filtering (DataComp) on CC3M/CC12M yields significant performance improvements, indicating caption quality is crucial and that CLIP-Refine is scalable given high-quality data (Table 5)."
+        }
+      ],
+      "edges": [
+        {"from": "P23", "to": "P36", "evidence": ["Sec 4.4.2", "Table 5"]},
+        {"from": "P36", "to": "P37", "evidence": ["Sec 4.4.2", "Table 5"]},
+        {"from": "P37", "to": "P38", "evidence": ["Sec 4.4.2", "Table 5"]}
+      ]
+    },
+    {
+      "component_id": "C12",
+      "description": "Finding: generalizability across pre-trained model architectures",
+      "nodes": [
+        {
+          "id": "P39",
+          "name": "CLIP-Refine stably improves across six diverse pre-trained CLIP models",
+          "description": "Evaluated on ViT-B/32, ViT-L/14, OpenCLIP ViT-H/14, OpenCLIP ViT-bigG/14, SigLIP ViT-SO400M/14, and DFN ViT-H/14, CLIP-Refine stably improves the pre-trained baseline's zero-shot classification and retrieval performance across all models (Table 6)."
+        },
+        {
+          "id": "P40",
+          "name": "Bigger, stronger pre-trained models still retain a modality gap that CLIP-Refine can address",
+          "description": "The consistent improvement across model scales suggests that even bigger and stronger pre-trained models still suffer from the modality gap, and modifying it with CLIP-Refine helps improve generalization performance regardless of scale."
+        }
+      ],
+      "edges": [
+        {"from": "P23", "to": "P39", "evidence": ["Sec 4.4.3", "Table 6"]},
+        {"from": "P39", "to": "P40", "evidence": ["Sec 4.4.3"]}
+      ]
+    },
+    {
+      "component_id": "C13",
+      "description": "Finding: robustness to mini-batch size in post-pre-training",
+      "nodes": [
+        {
+          "id": "P41",
+          "name": "Plain contrastive loss underperforms pre-trained baseline at feasible batch sizes",
+          "description": "Across varying mini-batch sizes in post-pre-training, plain contrastive-loss post-pre-training underperforms the pre-trained baseline at feasible (small) batch sizes, likely due to large discrepancy from the pre-training batch size (32,768) causing forgetting in negative-pair predictions (Fig. 4)."
+        },
+        {
+          "id": "P42",
+          "name": "CLIP-Refine consistently outperforms both baselines across all tested batch sizes",
+          "description": "CLIP-Refine always outperforms the contrastive-loss baseline and successfully improves over the pre-trained baseline across all feasible mini-batch sizes, showing that HyCD prevents knowledge forgetting even with small mini-batches and few negative pairs (Fig. 4)."
+        }
+      ],
+      "edges": [
+        {"from": "P22", "to": "P41", "evidence": ["Sec 4.4.4", "Fig. 4"]},
+        {"from": "P17", "to": "P42", "evidence": ["Sec 4.4.4", "Fig. 4"]}
+      ]
+    },
+    {
+      "component_id": "C14",
+      "description": "Finding: transferability of CLIP-Refine to downstream fine-tuning",
+      "nodes": [
+        {
+          "id": "P43",
+          "name": "CLIP-Refine improves linear-probe fine-tuning accuracy on ImageNet",
+          "description": "Fine-tuning only a linear classification head on ImageNet while freezing post-pre-trained backbones, CLIP-Refine outperforms both the pre-trained and contrastive-loss baselines, showing the method generates useful representations even for downstream fine-tuning (Table 7)."
+        }
+      ],
+      "edges": [
+        {"from": "P23", "to": "P43", "evidence": ["Sec 4.4.5", "Table 7"]}
+      ]
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P44",
+      "name": "Modality gap theoretical background",
+      "description": "Liang et al. revealed that pre-trained CLIP models encode image and text into different clusters (modality gap), attributable empirically to the small temperature parameter in CLIP's contrastive loss; Qian et al. theoretically showed contrastive loss cannot reduce the modality gap perfectly."
+    },
+    {
+      "id": "P45",
+      "name": "Formal definitions of modality gap, alignment, and uniformity metrics",
+      "description": "Modality gap is defined as the squared L2 distance between mean image and text feature vectors (Eq. 11); alignment is the mean squared distance between positive image-text pairs (Eq. 12); uniformity is defined via an RBF-kernel-based measure of how uniformly features are distributed on the hypersphere (Eq. 13); lower values are better for all three."
+    },
+    {
+      "id": "P46",
+      "name": "Experimental setup details",
+      "description": "Models are trained with AdamW at learning rate 1e-6 for one epoch, mini-batch size 512 by default, α=0.5 for CLIP-Refine, using default image preprocessing per pre-trained model, implemented in PyTorch-1.13 on a single NVIDIA A100 GPU (80GB VRAM); evaluation spans 12 classification datasets and COCO2017-Val/Flickr8K/30K retrieval tasks."
+    }
+  ],
+  "structural_reasoning": "The graph follows a problem-to-method-to-validation structure typical of a representation-learning paper. C1 (modality gap motivation and limitations of pre-training/fine-tuning remedies) leads to C2 (the two specific challenges — uniformity corruption and catastrophic forgetting — that any post-pre-training method must solve), which directly motivates the two core method components: C3 (RaFA, solving the uniformity-corruption challenge via prior-distribution matching) and C4 (HyCD, solving the catastrophic-forgetting challenge via hybrid distillation), unified in C5 (the combined CLIP-Refine objective). C6 positions the method against related pre-training/fine-tuning literature, reinforcing why post-pre-training as a distinct phase is necessary. The experimental components C7-C14 fan out from the completed method: C7 and C8 report the flagship zero-shot classification and retrieval results (including the diagnostic finding about asymmetric image/text overfitting that explains why HyCD+RaFA specifically helps); C9 provides the quantitative alignment/uniformity/modality-gap analysis explaining why CLIP-Refine's Gaussian-prior design works; C10 ablates the prior-distribution choice within RaFA, directly building on and confirming the asymmetry finding from C8; C11-C14 test robustness and generality across post-pre-training datasets, pre-trained model architectures, mini-batch sizes, and downstream fine-tuning transfer, respectively. Modality-gap theoretical background, formal metric definitions, and experimental setup details are treated as isolated nodes since they provide supporting context referenced throughout rather than links in the causal/argumentative chain."
+}

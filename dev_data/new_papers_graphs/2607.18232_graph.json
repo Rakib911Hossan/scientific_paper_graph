@@ -1,0 +1,147 @@
+{
+ "arxiv_id": "2607.18232",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "The EoB typology and dataset enable measuring context-following rate, yielding findings on specific EoBs, tuning, scale and family",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Gap in understanding linguistic framing",
+     "description": "Prior work on LLM context sensitivity (knowledge conflicts, persuasive framing, pragmatic phenomena) lacks a systematic understanding of how form, tone and other aspects of an expression of belief (EoB) affect context integration."
+    },
+    {
+     "id": "P2",
+     "name": "Four-dimension EoB typology",
+     "description": "The paper proposes a typology of 19 EoB types over four linguistically motivated dimensions: form, evidentiality, epistemic stance and tone, each varying how content is expressed while holding semantic meaning constant."
+    },
+    {
+     "id": "P3",
+     "name": "EoBench dataset",
+     "description": "EoBench contains 65,778 EoBs built from 3,462 PopQA-derived semantic tuples (unique-answer facts, 15 relations) each paired with a sampled conflicting object and expressed in each of the 19 EoB types."
+    },
+    {
+     "id": "P4",
+     "name": "Models evaluated",
+     "description": "18 LLMs from Llama3, Qwen3 and Gemma3 are evaluated, spanning 1B-30B parameters and base vs instruction-tuned variants."
+    },
+    {
+     "id": "P5",
+     "name": "Context-following rate metric",
+     "description": "Context-following rate (CFR) is the fraction of valid responses that follow the context rather than prior memory, CFR = #C / (#C + #M), estimating P(Y=C | Y in {C,M})."
+    },
+    {
+     "id": "P6",
+     "name": "Some EoBs persuade more",
+     "description": "Averaged over models, child-directed, imperative, formal, appeal-to-authority, supposition and emotional EoBs are ranked significantly more context-following than a random baseline."
+    },
+    {
+     "id": "P7",
+     "name": "Some EoBs persuade less",
+     "description": "Averaged over models, counterfactual, belief-report, weak-epistemic-stance and interrogative EoBs are ranked significantly less context-following than a random baseline."
+    },
+    {
+     "id": "P8",
+     "name": "Instruction tuning reduces context-following",
+     "description": "Base models are generally as or more susceptible to contradictory context than instruction-tuned counterparts across most EoB dimensions; Qwen3-8B is an exception, with its instruct variant agreeing with in-context belief 18.1% more."
+    },
+    {
+     "id": "P9",
+     "name": "Bigger models less persuaded",
+     "description": "For Llama3 and Gemma3, CFR tends to decrease as model size increases (clearly for Gemma3 from 1B to 30B), while Qwen3 instruct models stay relatively stable with high CFR."
+    },
+    {
+     "id": "P10",
+     "name": "Family matters",
+     "description": "Llama3 models have relatively low CFR compared with similarly sized Gemma3 and Qwen3 models, so model family is an important factor in agreeability to context."
+    },
+    {
+     "id": "P11",
+     "name": "Dimension disparity grows with size",
+     "description": "The disparity in CFR between EoB dimensions tends to increase with model size for Gemma3, Qwen3 Instruct and (from 3B to 8B) Llama3 Instruct."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3, Sec 4"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 5, Eq 1-2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 6.1, Fig 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 6.1, Fig 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 6.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 6.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 6.4, Fig 5"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.3, Fig 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P12",
+   "name": "Limitations of data",
+   "description": "Experiments use synthetic, template-based incorrect assertions along a single dimension, which may not represent natural language variability or true-assertion handling."
+  }
+ ],
+ "structural_reasoning": "Gap and typology lead to the dataset; with the CFR metric across 18 models, specific findings about EoBs, tuning, scale and family follow."
+}

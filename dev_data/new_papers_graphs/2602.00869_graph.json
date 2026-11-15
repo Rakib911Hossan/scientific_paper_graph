@@ -1,0 +1,229 @@
+{
+ "arxiv_id": "2602.00869",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Divergence-gap error analysis of flow matching motivates the FDM objective and its empirical gains",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "CFM regresses a conditional vector field",
+     "description": "Conditional flow matching trains v_t(x,theta) against a conditional vector field per data sample, and L_CFM equals the FM loss up to a constant independent of theta, so it is an unbiased estimate of the marginal field."
+    },
+    {
+     "id": "P2",
+     "name": "CFM leaves a large divergence gap",
+     "description": "Even when CFM regresses the vector field, the divergence gap |div v_t - div u_t| can be substantial, producing significant errors in the learned probability path and likelihood estimates (Fig 1)."
+    },
+    {
+     "id": "P3",
+     "name": "PDE for the path error",
+     "description": "The error eps_t = p_t - p_hat_t satisfies a continuity-type PDE with initial value 0 and a forcing term L_t = -p_t[div(u_t - v_t) + (u_t - v_t).grad log p_t] (Proposition 3.1)."
+    },
+    {
+     "id": "P4",
+     "name": "Divergence gap matters as much as vector-field gap",
+     "description": "The solution of the error PDE (Corollary 3.2) shows that minimizing the divergence gap is as important as reducing the vector-field discrepancy for learning an accurate probability path."
+    },
+    {
+     "id": "P5",
+     "name": "TV bound via divergence loss",
+     "description": "Under mild assumptions, TV(p_t, p_hat_t) <= (1/2) L_DM(theta) for any t, so p_t = p_hat_t when L_DM is zero (Theorem 3.3)."
+    },
+    {
+     "id": "P6",
+     "name": "Divergence loss is intractable directly",
+     "description": "The marginal divergence loss cannot be minimized directly because the divergence of the marginal vector field is unavailable."
+    },
+    {
+     "id": "P7",
+     "name": "Conditional divergence matching bound",
+     "description": "The conditional divergence loss L_CDM upper-bounds L_DM and gives TV(p_t, p_hat_t) <= (1/2) L_CDM (Theorem 4.1)."
+    },
+    {
+     "id": "P8",
+     "name": "L_CDM alone is insufficient",
+     "description": "Minimizing L_CDM alone gives no guarantee of proximity between v_t and u_t because its two terms can cancel and the loss cannot reach exactly zero."
+    },
+    {
+     "id": "P9",
+     "name": "FDM objective",
+     "description": "Flow and divergence matching trains with L_FDM = lambda1 L_CFM + lambda2 L_CDM, directly controlling the gap between vector fields and between their divergences."
+    },
+    {
+     "id": "P10",
+     "name": "FDM is cheaper than higher-order methods",
+     "description": "L_FDM is computationally cheaper than controlling higher-order quantities such as the gradient of the divergence, and an efficient variant uses stop-gradient and Hutchinson trace estimation."
+    },
+    {
+     "id": "P11",
+     "name": "Synthetic mixture shows FDM improves the path",
+     "description": "On a 1D Gaussian mixture with a 3-layer MLP on VP path, FDM (lambda2=0.2) learns the probability path closer to the data than FM (lambda2=0) (Fig 2)."
+    },
+    {
+     "id": "P12",
+     "name": "Checkerboard likelihood improves",
+     "description": "On the checkerboard test set FDM improves likelihood over FM for both OT (2.53 vs 2.38) and VP (2.46 vs 2.34) paths (Table 1)."
+    },
+    {
+     "id": "P13",
+     "name": "CIFAR-10 NLL and FID improve",
+     "description": "On CIFAR-10 FDM(OT) improves NLL from 2.99 to 2.85 and FID from 6.35 to 5.62 over FM(OT) (Table 2)."
+    },
+    {
+     "id": "P14",
+     "name": "DNA generation improves",
+     "description": "FDM improves FM with Linear and Dirichlet probability paths for promoter DNA sequence generation, with and without guidance (Tables 3-4)."
+    },
+    {
+     "id": "P15",
+     "name": "Dynamical-system trajectories improve",
+     "description": "FDM outperforms FM and diffusion on event-guided trajectory sampling, with lower KL divergence between event-constraint histograms (Table 7), without hurting estimation of p(E)."
+    },
+    {
+     "id": "P16",
+     "name": "Video prediction improves",
+     "description": "FDM improves latent FM on KTH and BAIR video prediction, keeping high visual quality in later frames where FM loses motion details (Tables 8-9, Fig 6)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3, Cor 3.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3, Thm 3.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4, Thm 4.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.1, Remark 4.2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Table 1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P13",
+     "evidence": [
+      "Sec 5, Table 2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.2, Tables 3-4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P15",
+     "evidence": [
+      "Sec 5.3.1, Table 7"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P16",
+     "evidence": [
+      "Sec 5.3, Tables 8-9"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P17",
+   "name": "FDM and diffusion models",
+   "description": "Diffusion models with VP or VE SDEs are special cases of flow-based generative models with diffusion paths."
+  },
+  {
+   "id": "P18",
+   "name": "Higher-order score matching is costlier",
+   "description": "Higher-order score-matching methods for diffusion models are significantly more computationally expensive than FDM."
+  },
+  {
+   "id": "P19",
+   "name": "No prior PDE error bound",
+   "description": "To the authors' knowledge, a PDE characterization of the error between exact and learned probability paths and a TV bound using only the vector field and its divergence had not been considered in the literature."
+  },
+  {
+   "id": "P20",
+   "name": "KL control left for future work",
+   "description": "Controlling the KL divergence between probability paths in a computationally efficient way is left for future work."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the observed divergence gap in CFM, through the PDE error analysis and TV bound, to the tractable conditional divergence loss, the FDM objective and its empirical evaluation."
+}

@@ -1,0 +1,224 @@
+{
+ "arxiv_id": "2508.05534",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "CoCoLex mechanism and its evidence against context-aware decoding baselines",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "LLM hallucination in legal text",
+     "description": "LLMs in the legal domain tend to produce hallucinations, text inconsistent with authoritative sources such as case law and statutes, which is risky because law requires strict adherence to sources."
+    },
+    {
+     "id": "P2",
+     "name": "RAG still diverges from context",
+     "description": "RAG with regular decoding struggles to effectively integrate retrieved context, so outputs can diverge from the provided context."
+    },
+    {
+     "id": "P3",
+     "name": "CAD does not enforce faithfulness",
+     "description": "Context-aware decoding methods like CAD amplify the influence of context by adjusting logits (contrasting probabilities with and without context) but do not explicitly enforce faithfulness to the context."
+    },
+    {
+     "id": "P4",
+     "name": "Legal text is templatized",
+     "description": "Legal texts often follow templatized structures and verbatim phrases, motivating token copying from context."
+    },
+    {
+     "id": "P5",
+     "name": "Copy-based decoding",
+     "description": "CoCoLex stores the hidden states of all context tokens with their next tokens, computes L2 distance to the current hidden state, converts it to similarity exp(-dist), and aggregates over the top-k most similar context vectors into a copy distribution over the vocabulary; it is training-free and needs no additional forward passes."
+    },
+    {
+     "id": "P6",
+     "name": "Entropy-based confidence score",
+     "description": "The model's confidence lambda_t = exp(-normalized entropy of its next-token distribution), smoothed with a running average over a past window, so lower entropy gives higher confidence."
+    },
+    {
+     "id": "P7",
+     "name": "CoCoLex interpolation",
+     "description": "CoCoLex's final distribution is p = lambda_t * p_model + (1 - lambda_t) * p_copy, so high confidence relies on the model and low confidence shifts to copying."
+    },
+    {
+     "id": "P8",
+     "name": "CAD/AdaCAD short-form only",
+     "description": "CAD and AdaCAD improve correctness and faithfulness on short-text CUAD but reduce fluency and coherence, and on ObliQA, AQuAECHR and CLERC they lower correctness and faithfulness (AlignScore) while improving only ROUGE, so they struggle on long-form generation."
+    },
+    {
+     "id": "P9",
+     "name": "CoLex outperforms prior decoding",
+     "description": "CoLex (static-weight copy interpolation) improves faithfulness and correctness over regular decoding, CAD and AdaCAD, with larger gains in long-range tasks, and keeps fluency and coherence comparable to regular decoding."
+    },
+    {
+     "id": "P10",
+     "name": "CoCoLex best overall",
+     "description": "CoCoLex further improves correctness and faithfulness over CoLex and improves fluency and coherence relative to CoLex, with results mostly statistically significant (e.g. CLERC Mistral Cor-AS 58.12 vs 54.94 CoLex vs 42.38 regular; Wilcoxon, 95%)."
+    },
+    {
+     "id": "P11",
+     "name": "Human evaluation favors CoCoLex",
+     "description": "On 25 AQuAECHR questions rated by a legal expert on a 5-point scale, CoCoLex scores higher than Regular and AdaCAD on correctness (4.64), faithfulness (4.44), fluency (4.96) and coherence (4.92), and AdaCAD underperforms Regular on faithfulness (3.84)."
+    },
+    {
+     "id": "P12",
+     "name": "Saul benefits most from copying",
+     "description": "The legally pre-trained Saul-7B underperforms the generalist Mistral-7B because it struggles to synthesize provided context, but copy-based decoding substantially improves Saul."
+    },
+    {
+     "id": "P13",
+     "name": "Chunking limits retrieval-based context",
+     "description": "Retrieving and concatenating passages can disrupt semantics through improper chunking, degrading answer accuracy."
+    },
+    {
+     "id": "P14",
+     "name": "CoCoLex+ copies from whole document",
+     "description": "CoCoLex+ extends copying to hidden states of the entire document (encoded in overlapping chunks, each token keeping the state from the chunk with most autoregressive context) while keeping only top-k passages as textual context."
+    },
+    {
+     "id": "P15",
+     "name": "CoCoLex+ improves correctness",
+     "description": "CoCoLex+ consistently outperforms CoCoLex in correctness on CLERC and AQuAECHR for both models (e.g. CLERC Saul Cor-AS 44.91 vs 34.95) while keeping fluency and coherence comparable, though AQuAECHR Saul passage faithfulness slightly declines."
+    },
+    {
+     "id": "P16",
+     "name": "AdaCAD combination tracks AdaCAD's strength",
+     "description": "Combining AdaCAD with CoCoLex improves results where AdaCAD beats regular decoding (CUAD both models, CLERC Saul) and decreases them where AdaCAD underperforms (CLERC Mistral, AQuAECHR both)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.4, Table 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.1-3.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.4, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.4, Table 1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.4, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.5.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.5.1"
+     ]
+    },
+    {
+     "from": "P14",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.5.1, Table 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P16",
+     "evidence": [
+      "Sec 4.5.2, Table 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P16",
+     "evidence": [
+      "Sec 4.5.2"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P17",
+   "name": "Inference overhead",
+   "description": "Relative to regular decoding (1.00x) on CUAD, CAD/AdaCAD take about 1.75x, CoLex/CoCoLex 1.49-1.51x, AdaCAD+CoCoLex 2.31x, and CoCoLex+ 1.96x (2.96x on the longer AQuAECHR documents)."
+  },
+  {
+   "id": "P18",
+   "name": "Five legal benchmarks, two LLMs",
+   "description": "Evaluation uses CUAD, OALQA, ObliQA, AQuAECHR and CLERC with Mistral-7B-Instruct-v0.3 and Saul-7B-Instruct-v1, under an oracle-document setting with BM25 retrieval of passages."
+  },
+  {
+   "id": "P19",
+   "name": "Oracle-document limitation",
+   "description": "Experiments assume oracle documents, so real-world generation quality additionally depends on retrieval accuracy over the whole corpus."
+  }
+ ],
+ "structural_reasoning": "Argument runs from hallucination and the weakness of CAD-style decoding, through the copy-plus-confidence design, to benchmark results, human evaluation, and extensions (CoCoLex+, combination with AdaCAD)."
+}

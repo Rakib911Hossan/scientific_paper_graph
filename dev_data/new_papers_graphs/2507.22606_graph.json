@@ -1,0 +1,207 @@
+{
+ "arxiv_id": "2507.22606",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Limits of existing designs motivate an FSM-based, auto-designed multi-agent framework evaluated on text, ML and coding tasks",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Manual multi-agent design is costly",
+     "description": "Most existing multi-agent systems are manually designed, requiring human effort for complex codebases and iterations of polishing, and target only specific scenarios."
+    },
+    {
+     "id": "P2",
+     "name": "Existing auto-design methods are limited",
+     "description": "SPP, AutoAgents and EvoAgent design a system per specific case and lack generalization; SPP and AutoAgents lack tool use; ADAS and Symbolic-Learning need many iterations and external data."
+    },
+    {
+     "id": "P3",
+     "name": "Existing communication structures lack traceback",
+     "description": "Linear, decentralized-debate and orchestrator structures have limited ability to trace back to fix errors or misunderstandings from previous steps."
+    },
+    {
+     "id": "P4",
+     "name": "Other structures are constrained FSMs",
+     "description": "A linear structure is an FSM with one transition per state and no traceback or verifier; decentralized debate has limited traceback to the first state; an orchestrator system is an FSM with a shared condition verifier."
+    },
+    {
+     "id": "P5",
+     "name": "FSM suits auto-design",
+     "description": "An FSM with a customized condition verifier per state and unconstrained transition conditions maximizes flexibility and is well suited to automatic design."
+    },
+    {
+     "id": "P6",
+     "name": "MetaAgent design procedure",
+     "description": "Given a task-type description, MetaAgent designs the needed agents, summarizes states for the possible situations, and gives each state a task-solving agent, instructions, a condition verifier and listener agents."
+    },
+    {
+     "id": "P7",
+     "name": "FSM deployment loop with traceback",
+     "description": "At deployment the task-solving agent's output is checked by the condition verifier against transition conditions; if one matches the system moves to the next state, which can be an earlier state to allow traceback, and the output is saved as memory."
+    },
+    {
+     "id": "P8",
+     "name": "Initial FSM chains are too long",
+     "description": "The initial FSM design often has excessively long chains of information transfer and task solving that hinder performance."
+    },
+    {
+     "id": "P9",
+     "name": "State-merging optimization",
+     "description": "MetaAgent traverses each pair of states and uses an LLM to decide mergeability, eliminating trivial states, without needing external data or many iterations."
+    },
+    {
+     "id": "P10",
+     "name": "Text-based task results",
+     "description": "MetaAgent scores 0.86 on Trivial Creative Writing and 0.60 on GPQA (Diamond), above Direct, CoT, CoT-SC, llm-debate, Self-Refine and SPP (0.79 and 0.45), surpassing prior prompt-based SOTA by 9%."
+    },
+    {
+     "id": "P11",
+     "name": "ML Bench results",
+     "description": "On ML Bench, MetaAgent beats all auto-designed frameworks, is SOTA on Titanic and House Prices, second-best elsewhere, and reaches 97% of the best human-designed system's average performance."
+    },
+    {
+     "id": "P12",
+     "name": "Software development results",
+     "description": "On software development tasks MetaAgent passes 50% more checkpoints than the human-designed MetaGPT and outperforms other auto-designed frameworks."
+    },
+    {
+     "id": "P13",
+     "name": "Tool use ablation",
+     "description": "Disabling tool use lowers performance on Trivial Creative Writing and GPQA (Diamond), showing the search engine helps."
+    },
+    {
+     "id": "P14",
+     "name": "Traceback ablation",
+     "description": "Systems without traceback often fail due to unresolved bugs, e.g. a tester cannot relay a bug back to the programmer."
+    },
+    {
+     "id": "P15",
+     "name": "Optimization ablation",
+     "description": "Removing the optimization causes a sharp performance drop, with failures from excessively long text in bad cases."
+    },
+    {
+     "id": "P16",
+     "name": "Lower deployment token cost",
+     "description": "MetaAgent achieves higher or comparable performance at relatively lower token cost than other methods, and its task-level design is cheaper and more broadly applicable than case-level design such as AutoAgents."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P6",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Table 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3, Fig 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.1, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2, Table 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.4, Table 6"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.4, Table 6"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P16",
+     "evidence": [
+      "Sec 4.3, Table 7"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P17",
+   "name": "Designer and executor model quality",
+   "description": "On ML Bench, GPT-4o as both designer and executor scores 0.83, while replacing the designer or executor with GPT-3.5-Turbo drops it to 0.26 and 0.35, with executor quality mattering more."
+  }
+ ],
+ "structural_reasoning": "Limitations of prior designs motivate the FSM framework; its design and optimization feed into the empirical results and ablations."
+}

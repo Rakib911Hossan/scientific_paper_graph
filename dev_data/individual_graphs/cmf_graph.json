@@ -1,0 +1,200 @@
+{
+  "arxiv_id": "2601.03032v1",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: sensitive attributes warp manifold geometry, not just distributions, and existing fairness alignment is insufficient.",
+      "nodes": [
+        {"id": "P1", "name": "Standard fairness treats data as static points", "description": "Standard fairness approaches often treat data as static points in high-dimensional space, ignoring the underlying generative structure."},
+        {"id": "P2", "name": "Sensitive attributes causally warp geometry", "description": "Sensitive attributes do not merely shift data distributions but causally warp the geometry of the data manifold itself."},
+        {"id": "P3", "name": "Distributional alignment insufficient", "description": "Distributional alignment (matching P(Z|do(A=a)) across a) is often insufficient for complex data manifolds where A also affects correlation structure and variance."},
+        {"id": "P4", "name": "Warped Swiss Roll illustration", "description": "In the Warped Swiss Roll problem, one group resides on a tightly coiled manifold and another on a loose one, illustrating structural warping beyond mean shift."},
+        {"id": "P5", "name": "Naive latent alignment fails geometrically", "description": "A model that aligns points in latent space can map distinct geometries to the same region without correcting the underlying structural warping, yielding representations that are statistically indistinguishable but geometrically unfaithful."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["E3"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["E4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "CMF's proposed reframing of fairness as geometric invariance.",
+      "nodes": [
+        {"id": "P6", "name": "Fairness as geometric invariance", "description": "A representation is truly fair only if the geometry of the mapping from latent space to data space is invariant to the sensitive attribute."},
+        {"id": "P7", "name": "Penalize metric tensor differences", "description": "CMF enforces geometric invariance by penalizing differences in the Pullback Metric Tensor (first-order geometry) of the decoder between factual and counterfactual pairs."},
+        {"id": "P8", "name": "Penalize Hessian differences", "description": "CMF enforces geometric invariance by penalizing differences in the Hessian (second-order geometry) of the decoder between factual and counterfactual pairs."},
+        {"id": "P9", "name": "Rules of latent space preserved", "description": "By enforcing constraints on the Jacobian and Hessian of the decoder, CMF ensures that distances and shapes in the latent space are preserved across demographic groups."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["E5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P8", "evidence": ["E5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P9", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P9", "evidence": ["E6"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Gap in related work that CMF fills.",
+      "nodes": [
+        {"id": "P10", "name": "Counterfactual fairness assumes fixed geometry", "description": "Counterfactual fairness and related SCM-based extensions encode fairness constraints at the level of predictions or representations, assuming a fixed geometry of the latent space."},
+        {"id": "P11", "name": "Fairness enforced via statistical dependencies only", "description": "These approaches ensure fairness primarily by controlling statistical dependencies rather than geometric or structural ones."},
+        {"id": "P12", "name": "Fair representation learning uses flat Euclidean embeddings", "description": "Fair representation learning methods typically treat embeddings as flat Euclidean spaces and evaluate fairness via prediction invariance or statistical independence, not geometric structure."},
+        {"id": "P13", "name": "Geometric deep learning studies geometry, not fairness", "description": "Work on Riemannian VAEs and geometry-aware generative models studies latent geometry as an inherent property of generative models, not as an object regularized for fairness under sensitive-attribute interventions."},
+        {"id": "P14", "name": "No prior work enforces geometric invariance under intervention", "description": "To the authors' knowledge, no prior work examines how interventions on sensitive variables should preserve local geometric properties such as curvature, metric tensors, or geodesic flows."},
+        {"id": "P15", "name": "CMF fills this gap", "description": "CMF introduces a fairness criterion assessed at the level of geometric invariance rather than statistical independence or causal effects alone, unifying SCMs, differential geometry, and fair representation learning."}
+      ],
+      "edges": [
+        {"from": "P10", "to": "P11", "evidence": ["E7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P11", "evidence": ["E8"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P14", "evidence": ["E9"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P14", "evidence": ["E10"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P15", "evidence": ["E11"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P15", "evidence": ["E12"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "Causal setup: SCM formalization and the representation-recovery goal.",
+      "nodes": [
+        {"id": "P16", "name": "SCM with invertible mechanism", "description": "An SCM is assumed where observed features X are generated by an invertible mechanism from exogenous noise U and sensitive attribute A: X = f(U, A)."},
+        {"id": "P17", "name": "A warps manifestation of intrinsic U", "description": "U represents intrinsic individual properties (e.g., talent, health), while A acts as a parameter that warps the manifestation of U into X."},
+        {"id": "P18", "name": "Goal: recover A-invariant representation", "description": "The representation-learning goal is to recover a representation z approximately equal to U that is invariant to A."}
+      ],
+      "edges": [
+        {"from": "P16", "to": "P17", "evidence": ["E13"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["E14"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Geometric definitions: metric tensor and Hessian as first- and second-order invariance constraints.",
+      "nodes": [
+        {"id": "P19", "name": "Decoder defines a smooth manifold", "description": "An encoder-decoder (autoencoder) framework is used where the decoder D: Z -> X defines a smooth manifold M embedded in X."},
+        {"id": "P20", "name": "Pullback metric tensor defined via Jacobian", "description": "The geometry of the latent space is characterized by the Pullback Metric Tensor G(z) = J_D(z)^T J_D(z), measuring how infinitesimal distances scale under the decoder map."},
+        {"id": "P21", "name": "Fair representation implies matched metric tensors", "description": "If the representation is fair, local manifold scaling should not depend on A, i.e., G(z_factual) ≈ G(z_counterfactual)."},
+        {"id": "P22", "name": "Metric tensor only captures first-order stretching", "description": "The metric tensor only captures first-order local linearities (stretching), motivating a second-order extension to capture bending and twisting."},
+        {"id": "P23", "name": "Hessian defined dimension-wise", "description": "Since the decoder is vector-valued, the curvature constraint is defined dimension-wise via the Hessian H_k(z) = ∇²D_k(z) for each output dimension k."}
+      ],
+      "edges": [
+        {"from": "P19", "to": "P20", "evidence": ["E15"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["E16"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P22", "evidence": ["E17"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P23", "evidence": ["E18"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P21", "evidence": ["E19"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Loss function construction combining task, alignment, and geometric terms.",
+      "nodes": [
+        {"id": "P24", "name": "Combined training loss", "description": "The model is trained to minimize L = L_task + L_align + λ_geo · L_geo, combining reconstruction/prediction loss, counterfactual alignment, and geometric regularization."},
+        {"id": "P25", "name": "L_align is standard counterfactual alignment", "description": "L_align = ||E(x) - E(xcf)||^2 enforces standard counterfactual alignment of encoder outputs."},
+        {"id": "P26", "name": "L_geo penalizes metric and curvature differences", "description": "L_geo is the novel contribution, combining the Frobenius-norm difference of metric tensors and a weighted sum of Frobenius-norm differences of per-dimension Hessians between factual and counterfactual latents."},
+        {"id": "P27", "name": "do(A) enforced as isometry", "description": "Minimizing L_geo forces the model to learn a representation where the causal intervention do(A) acts as an isometry (preserving distances and shapes), not merely a translation."}
+      ],
+      "edges": [
+        {"from": "P21", "to": "P26", "evidence": ["E20"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P23", "to": "P26", "evidence": ["E20"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P25", "to": "P24", "evidence": ["E21"], "votes": 2, "confidence": "majority"},
+        {"from": "P26", "to": "P24", "evidence": ["E22"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P27", "evidence": ["E23"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Experimental setup: synthetic Warped Swiss Roll SCM used to validate CMF.",
+      "nodes": [
+        {"id": "P28", "name": "Warped Swiss Roll SCM constructed", "description": "A synthetic SCM is constructed with A in {0,1} and U ~ Uniform(0,4π), where observed features X in R^3 are generated via a frequency/radius parameter w = 1.0 + 0.5A."},
+        {"id": "P29", "name": "A controls tightness/twist of manifold", "description": "The construction creates a manifold that is tighter and more twisted when A = 1, directly instantiating causal geometric warping by the sensitive attribute."},
+        {"id": "P30", "name": "Ground-truth geometry known", "description": "The synthetic dataset is used because the ground-truth geometry is known, enabling direct evaluation of geometric invariance."},
+        {"id": "P31", "name": "ELU chosen for C² continuity", "description": "ELU activations are used instead of ReLU because they are twice-differentiable (C² continuous), which is required for stable Hessian computation."}
+      ],
+      "edges": [
+        {"from": "P28", "to": "P29", "evidence": ["E24"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P30", "evidence": ["E25"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P31", "evidence": ["E26"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Quantitative results: geometric invariance and fairness-utility trade-off.",
+      "nodes": [
+        {"id": "P32", "name": "Baseline exhibits high geometric error", "description": "The Baseline autoencoder exhibits extremely high geometric errors (Metric Error 16.39, Curvature Error 4.32)."},
+        {"id": "P33", "name": "Baseline relies on A to reconstruct warped manifold", "description": "The high baseline geometric error confirms that the standard autoencoder learns to rely on the sensitive attribute A to reconstruct the warped manifold."},
+        {"id": "P34", "name": "CMF reduces metric error ~1000x", "description": "CMF reduces the Metric Error to 0.018, an approximately 1000x reduction relative to baseline."},
+        {"id": "P35", "name": "CMF reduces curvature error ~100x", "description": "CMF reduces the Curvature Error to 0.046, an approximately 100x reduction relative to baseline."},
+        {"id": "P36", "name": "CMF achieves geometric invariance", "description": "The large reductions in metric and curvature error demonstrate that CMF successfully creates a representation geometrically invariant to A."},
+        {"id": "P37", "name": "Accuracy drops negligibly", "description": "Despite heavy geometric regularization, classification accuracy drops only negligibly from 1.000 (Baseline) to 0.995 (CMF)."},
+        {"id": "P38", "name": "Intrinsic variable U preserved", "description": "The negligible accuracy drop proves that the intrinsic variable U, which predicts Y, was preserved by CMF's representation."},
+        {"id": "P39", "name": "Reconstruction MSE increases", "description": "Reconstruction MSE increases from 0.070 (Baseline) to 0.754 (CMF), reflecting the cost of not using A as a reconstruction shortcut."},
+        {"id": "P40", "name": "MSE increase reflects necessary compromise", "description": "The MSE increase is expected: the Baseline 'cheats' by using A to perfectly reconstruct the warped data, while CMF must find a compromise manifold fitting both demographic groups without encoding the warping factor."},
+        {"id": "P41", "name": "Fairness-utility trade-off quantified", "description": "Together, the near-perfect fairness metrics with only a negligible accuracy drop and a moderate MSE increase quantify CMF's fairness-utility trade-off."}
+      ],
+      "edges": [
+        {"from": "P32", "to": "P33", "evidence": ["E27"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P36", "evidence": ["E28"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P36", "evidence": ["E28"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P37", "to": "P38", "evidence": ["E29"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P39", "to": "P40", "evidence": ["E30"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P36", "to": "P41", "evidence": ["E31"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P41", "evidence": ["E31"], "votes": 2, "confidence": "majority"},
+        {"from": "P40", "to": "P41", "evidence": ["E31"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P36", "evidence": ["E32"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Qualitative results: latent space visualization.",
+      "nodes": [
+        {"id": "P42", "name": "Baseline latent space separated by A", "description": "The Baseline latent space visualization is sharply divided by the sensitive attribute A (shown as Red/Blue clusters)."},
+        {"id": "P43", "name": "CMF latent space aligns distributions", "description": "The CMF latent space visualization shows distributions overlapping across A while preserving intrinsic structure U."},
+        {"id": "P44", "name": "Alignment does not destroy causal information", "description": "The high accuracy score alongside distributional overlap confirms that CMF's alignment did not destroy the causal information required for prediction."}
+      ],
+      "edges": [
+        {"from": "P42", "to": "P43", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P43", "to": "P44", "evidence": ["E34"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P37", "to": "P44", "evidence": ["E35"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Contribution summary chain.",
+      "nodes": [
+        {"id": "P45", "name": "Contribution 1: geometric invariance formalization", "description": "Fairness is formalized as a geometric invariance problem requiring stability of the Riemannian metric and curvature under causal intervention."},
+        {"id": "P46", "name": "Contribution 2: differentiable Jacobian/Hessian alignment loss", "description": "A differentiable loss function is proposed that aligns the Jacobian and Hessian of the generator across counterfactual worlds."},
+        {"id": "P47", "name": "Contribution 3: GIE validation on nonlinear SCM", "description": "CMF is experimentally validated on a non-linear SCM, introducing Geometric Invariance Error (GIE) metrics to quantify disentanglement of structural bias."}
+      ],
+      "edges": [
+        {"from": "P45", "to": "P46", "evidence": ["E36"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P46", "to": "P47", "evidence": ["E37"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P48", "name": "Future work: approximate Hessian-vector products", "description": "Future work will scale CMF to high-dimensional image data using approximate Hessian-vector products to bypass the computational cost of full Hessian calculation."},
+    {"id": "P49", "name": "Future work: graph-structured data", "description": "Future work will extend the CMF framework to graph-structured data."}
+  ]
+}

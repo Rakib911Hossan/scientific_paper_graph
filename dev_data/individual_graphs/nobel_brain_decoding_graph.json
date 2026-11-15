@@ -1,0 +1,168 @@
+{
+  "arxiv_id": "2602.21522v1",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/tables/equations rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: modality fragmentation and the frequency gap",
+      "nodes": [
+        {"id": "P1", "name": "EEG/MEG and fMRI share neural origins but differ in resolution profile", "description": "EEG and MEG offer millisecond-level temporal resolution but poor spatial localization, whereas fMRI provides rich spatial detail but suffers significant temporal lag, despite both stemming from the same underlying neural processes."},
+        {"id": "P2", "name": "Extreme heterogeneity has confined modalities to isolated pipelines", "description": "Despite their shared neural origins, extreme discrepancies between electromagnetic and metabolic signals have traditionally confined EEG/MEG and fMRI to isolated analysis pipelines, hindering holistic interpretation of brain activity."},
+        {"id": "P3", "name": "Current frameworks lack a bridge across the frequency gap", "description": "Although a unified analysis of these complementary modalities could theoretically unlock a holistic view of brain dynamics, current frameworks lack the capability to bridge this 'frequency gap' effectively."},
+        {"id": "P4", "name": "Foundation models are typically task-agnostic and ignore stimulus context", "description": "Most recent brain foundation models aim to learn task-agnostic neural representations and therefore do not explicitly incorporate task-specific or stimulus-level contextual information, so the rich structure of evoking stimuli is underutilized during representation learning."},
+        {"id": "P5", "name": "Integrating external stimuli as context is crucial for raising decoding ceiling", "description": "Because external sensory stimuli provide the ground truth needed to align brain signals with high-level semantic concepts, integrating them as contextual input is crucial for raising the ceiling of decoding performance."},
+        {"id": "P6", "name": "These gaps motivate NOBEL's unified, stimulus-aware design", "description": "The combination of the electromagnetic/metabolic frequency gap and the underuse of stimulus context motivates NOBEL, a neuro-omni-modal brain-encoding LLM designed to bridge both gaps within a shared semantic space."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P6", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P6", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "NOBEL architecture: dual-path fMRI and unified EMEG encoding",
+      "nodes": [
+        {"id": "P7", "name": "Brain decoding conceptualized as multi-modal alignment", "description": "NOBEL conceptualizes brain signal decoding as a multi-modal alignment problem, leveraging a strong LLM to integrate heterogeneous data sources via a modular encoding strategy projecting diverse signals into a shared semantic space compatible with the LLM."},
+        {"id": "P8", "name": "Metabolic signals require disentangling physiological from task-related information", "description": "For fMRI (metabolic) signals, a dual-path strategy is implemented to explicitly disentangle task-agnostic physiological state information from task-specific semantic information, since these two types of information have very different signal properties."},
+        {"id": "P9", "name": "Task-agnostic voxel path uses a universal encoder", "description": "The task-agnostic path uses a universal encoder (based on NeuroSTORM) to process raw 4D voxel input and capture universal physiological features."},
+        {"id": "P10", "name": "Task-specific beta path uses per-stimulus-domain encoders", "description": "Because semantic representations vary significantly across different stimulus domains (e.g., viewing an image vs. watching a video), a set of task-specific encoders is instantiated, one per stimulus domain, to extract high-level semantic content from GLM beta weights."},
+        {"id": "P11", "name": "Modality aligners map both paths' features into LLM input space", "description": "Each encoding branch (voxel and per-domain beta) is followed by a modality-specific 3-layer MLP aligner with GELU activation, mapping heterogeneous features into the LLM's input token space."},
+        {"id": "P12", "name": "Dual-path design enables simultaneous global and stimulus-aligned representation", "description": "The combination of task-agnostic and task-specific fMRI paths allows NOBEL to simultaneously leverage global physiological context and precise, stimulus-aligned semantic details."},
+        {"id": "P13", "name": "EEG and MEG share a common biophysical origin", "description": "Neuronal activity generates electrical currents in the cortex that produce secondary electrical and magnetic fields measurable by EEG and MEG respectively, so despite measuring different physical quantities, EEG and MEG arise from the same underlying neuronal current sources."},
+        {"id": "P14", "name": "Shared origin justifies a unified EEG/MEG encoder", "description": "Exploiting this shared biophysical origin, NOBEL adopts the BrainOmni backbone as a single unified encoder to extract common temporal-spectral representations from EEG/MEG input, rather than treating them as separate domains."},
+        {"id": "P15", "name": "Unified EMEG tokens are likewise mapped into LLM space via an aligner", "description": "The resulting electromagnetic tokens from the unified EEG/MEG encoder are mapped into the LLM's semantic space through their own modality-specific three-layer MLP aligner."},
+        {"id": "P16", "name": "External stimuli are encoded via modality-specific stimulus encoders", "description": "To ground neural representations in perceptual context, distinct encoders are used for different stimulus modalities (visual, audio) to process raw media inputs into stimulus tokens."},
+        {"id": "P17", "name": "Flexible input concatenation forms the final LLM input sequence", "description": "The LLM-input token sequence is dynamically constructed by concatenating the user prompt with the aligned tokens of whichever modalities (stimuli, EEG/MEG, task-specific beta, task-agnostic voxel) are present for a given input, using indicator functions to omit absent modalities."},
+        {"id": "P18", "name": "LoRA adapts the frozen pretrained LLM to the neuroscientific domain", "description": "Low-rank adaptation (LoRA) is used to efficiently adapt the pre-trained multimodal LLM backbone, freezing its original parameters and injecting trainable low-rank matrices into the attention layers."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P10", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P11", "evidence": ["S3.1", "Eq1"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P11", "evidence": ["S3.1", "Eq2"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P12", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S3.1", "S2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["S3.1", "Eq3"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P16", "evidence": ["S3.1", "Eq4"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P17", "evidence": ["S3.1", "Eq5"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P17", "evidence": ["S3.1", "Eq5"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P17", "evidence": ["S3.1", "Eq5"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P18", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Training pipeline: pre-alignment before joint instruction tuning",
+      "nodes": [
+        {"id": "P19", "name": "Backbone inherited from Qwen2.5-Omni for aligned stimulus encoders", "description": "NOBEL leverages Qwen2.5-Omni as its backbone, directly inheriting its visual and auditory encoders, which are thus already aligned with the LLM's semantic space."},
+        {"id": "P20", "name": "Beta-branch decoding is uniquely difficult due to low SNR", "description": "Decoding subtle, stimulus-evoked perceptual information via fMRI beta weights is significantly more difficult than extracting global physiological meta-information, due to the low signal-to-noise ratio of the beta-branch features."},
+        {"id": "P21", "name": "Naive direct mapping of noisy beta features causes optimization instability", "description": "Directly mapping these noisy, high-dimensional beta features to the LLM space often leads to optimization instability and poor semantic grounding."},
+        {"id": "P22", "name": "Targeted pre-alignment strategy implemented for the beta branch", "description": "To address this instability, a targeted pre-alignment strategy is implemented for the fMRI beta branch prior to joint multimodal training, inspired by MindEye2's approach of prioritizing alignment with the LLM's already-robust sensory features."},
+        {"id": "P23", "name": "Contrastive objective aligns beta features with frozen stimulus embeddings", "description": "The output features of the beta encoders and the corresponding frozen stimuli encoders are projected into a shared low-dimensional latent space, with a contrastive objective maximizing similarity between brain-signal embeddings and their ground-truth stimulus embeddings."},
+        {"id": "P24", "name": "MixCo-style feature mixing mitigates limited fMRI sample size", "description": "MixCo-style neural feature mixing is additionally adopted during pre-alignment, interpolating neural representations and stimulus embeddings as cross-modal regularization, to mitigate the limited sample size in fMRI datasets and improve generalization."},
+        {"id": "P25", "name": "Pre-alignment stabilizes fMRI features using stimulus features as semantic anchors", "description": "This pre-alignment process effectively utilizes the high-quality visual/audio representations as semantic anchors to stabilize the fMRI beta features before they are projected into the LLM input space."},
+        {"id": "P26", "name": "Only after pre-alignment does joint omni-modal instruction tuning proceed", "description": "Only after this cross-modal correspondence is established via pre-alignment are the pre-aligned features projected into the LLM input space via the MLP aligners, at which point the framework proceeds to unified omni-modal instruction tuning across all modalities."},
+        {"id": "P27", "name": "All decoding tasks are formulated as brain-to-text generation", "description": "During joint instruction tuning, all decoding tasks are formulated as brain-to-text generation problems, optimized with the standard autoregressive next-token-prediction loss over the target text response."},
+        {"id": "P28", "name": "Modality-aware batch sampling addresses input heterogeneity", "description": "To mitigate optimization instability caused by extreme heterogeneity of input signals, a modality-aware batch sampling strategy ensures all samples within a single training batch belong to the same modality."}
+      ],
+      "edges": [
+        {"from": "P20", "to": "P21", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P22", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P24", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P25", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P25", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P19", "to": "P23", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P25", "to": "P26", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P27", "evidence": ["S3.2", "Eq6"], "votes": 2, "confidence": "majority"},
+        {"from": "P26", "to": "P28", "evidence": ["S4.2"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Results: competitive unimodal performance despite generalist design",
+      "nodes": [
+        {"id": "P29", "name": "NOBEL is a generalist compared against specialist baselines", "description": "Conventional baselines are specialized models trained/optimized exclusively on single datasets for isolated tasks, while NOBEL is a unified, omni-modal foundation model integrating heterogeneous signals within a shared semantic space -- a structurally harder task."},
+        {"id": "P30", "name": "NOBEL outperforms established discriminative EEG/MEG baselines on most benchmarks", "description": "Despite the generalist-vs-specialist disadvantage, NOBEL consistently outperforms established discriminative baselines such as ST-Transformer and SPaRCNet across the majority of EEG and MEG benchmarks."},
+        {"id": "P31", "name": "NOBEL surpasses state-of-the-art BrainOmni on select EEG/MEG benchmarks", "description": "NOBEL exhibits competitive performance even against the current state-of-the-art BrainOmni, and surpasses it specifically on AD65 (81.3%) and TUAB (82.4%)."},
+        {"id": "P32", "name": "This suggests generative LLM alignment can match specialized electromagnetic feature extraction", "description": "Surpassing BrainOmni on some benchmarks suggests the potential of the generative LLM-alignment framework for aligning high-frequency electromagnetic features with the rich semantic space of an LLM."},
+        {"id": "P33", "name": "NOBEL consistently surpasses NeuroSTORM/SWiFT on voxel-based gender classification", "description": "On gender classification across ABIDE-I, Neural Processing, and XP1-2, NOBEL achieves 89.2%, 83.6%, and 78.8% respectively, consistently surpassing both NeuroSTORM and SWiFT baselines."},
+        {"id": "P34", "name": "This indicates LLM semantic-space regularization aids cross-subject generalization", "description": "The consistent gender-classification improvement suggests the unified framework effectively captures global phenotypic traits, potentially benefiting from the regularization provided by the LLM's semantic space to generalize better across subjects."},
+        {"id": "P35", "name": "NOBEL matches NeuroSTORM precision on fine-grained HCP tasks", "description": "On the HCP benchmark (perturbed brain area classification and stimulus amplitude regression), NOBEL matches the high precision of the NeuroSTORM encoder."},
+        {"id": "P36", "name": "This confirms alignment preserves low-level fMRI precision without losing granularity", "description": "Matching NeuroSTORM's precision on HCP confirms that the model successfully retains the underlying encoder's capabilities, and that the alignment/projection process preserves the precision required to perceive subtle, low-level fMRI information."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P30", "evidence": ["S5.1", "Table2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P31", "evidence": ["S5.1", "Table2"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P32", "evidence": ["S5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P33", "evidence": ["S5.1", "Table3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P34", "evidence": ["S5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P35", "evidence": ["S5.1", "Table3"], "votes": 2, "confidence": "majority"},
+        {"from": "P35", "to": "P36", "evidence": ["S5.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Results: stimulus-aware decoding and causal stimulus-brain verification",
+      "nodes": [
+        {"id": "P37", "name": "fMRI-only decoding of stimulus semantics is competitive with specialists", "description": "In fMRI-only decoding, NOBEL achieves 74.6% accuracy on HAD video classification (competitive with a specialized MLP baseline) and a Rouge-L score of 29.7 on NSD image captioning."},
+        {"id": "P38", "name": "NSD result is achieved under a harder multi-subject setting", "description": "The MindEye2 baseline for NSD captioning is reported only on a single-subject split, whereas NOBEL is evaluated in a multi-subject setting, which is more challenging due to heterogeneous functional topography across subjects, yet NOBEL still achieves high linguistic correspondence."},
+        {"id": "P39", "name": "Existing baselines cannot jointly process stimuli and fMRI", "description": "Because stimuli and fMRI reside in distinct modalities, existing baselines struggle to process them concurrently for the stimuli-input cross-modal verification setting."},
+        {"id": "P40", "name": "NOBEL's shared semantic space enables joint stimulus-fMRI processing", "description": "By aligning omni-modal signals within the LLM's semantic space, NOBEL is able to effectively analyze the relationship between sensory input and neural response, something existing single-modality baselines cannot do."},
+        {"id": "P41", "name": "NOBEL achieves high accuracy verifying stimulus-brain correspondence, especially on NSD", "description": "NOBEL achieves 62.8% accuracy on HAD and 92.7% on NSD for the task of determining whether a specific image/video triggered the recorded fMRI signal."},
+        {"id": "P42", "name": "High NSD verification accuracy indicates precise visual-cortical alignment enabling causal verification", "description": "The high accuracy on NSD indicates the model has learned a precise alignment between visual features and their corresponding cortical representations, enabling it to verify the causal link between stimulus and brain activity."}
+      ],
+      "edges": [
+        {"from": "P37", "to": "P38", "evidence": ["S5.2", "Table4"], "votes": 2, "confidence": "majority"},
+        {"from": "P39", "to": "P40", "evidence": ["S5.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P40", "to": "P41", "evidence": ["S5.2", "Table4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P41", "to": "P42", "evidence": ["S5.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Results: synergistic cross-modal fusion of electromagnetic and metabolic signals",
+      "nodes": [
+        {"id": "P43", "name": "NOBEL bridges the frequency gap via paired cross-modal datasets", "description": "To validate synergistic capability, NOBEL is evaluated on paired datasets (LEMON, Nat-View, SMN4Lang) where cross-modal EEG/MEG-fMRI recordings are available, integrating electromagnetic signals with metabolic maps."},
+        {"id": "P44", "name": "Joint model consistently outperforms best single-modality baselines", "description": "Across all paired benchmarks (LEMON, Nat-View, SMN4Lang), NOBEL's joint EEG-MEG+fMRI model consistently outperforms the best-performing single-modality baseline."},
+        {"id": "P45", "name": "EEG-only performance on Nat-View is below chance due to missing spatial features", "description": "On the Nat-View dataset, the EEG-only branch yields below-chance performance (16.7%), likely because the task relies heavily on spatial features that scalp-EEG fails to capture."},
+        {"id": "P46", "name": "Joint model still achieves strong performance despite a weak unimodal branch", "description": "Rather than being hampered by the weak EEG-only branch, the joint model utilizes fMRI information while extracting subtle temporal cues from EEG, pushing final Nat-View accuracy to 92.8%."},
+        {"id": "P47", "name": "This demonstrates the LLM backbone acts as a semantic integrator, not a simple averager", "description": "Because the joint model's performance on Nat-View far exceeds what either modality alone (or a naive average) could achieve, these results validate that NOBEL's LLM backbone acts as a semantic integrator that aligns millisecond-level EEG-MEG dynamics with voxel-level fMRI topology, rather than merely averaging separate encoder outputs."}
+      ],
+      "edges": [
+        {"from": "P43", "to": "P44", "evidence": ["S5.3", "Table5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P45", "to": "P46", "evidence": ["S5.3", "Table5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P44", "to": "P47", "evidence": ["S5.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P46", "to": "P47", "evidence": ["S5.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P48", "name": "EEG/MEG signals face low SNR and complex spatiotemporal dynamics", "description": "The analysis of non-invasive high-frequency electromagnetic brain signals has historically been challenged by low signal-to-noise ratios and the complex spatial-temporal dynamics of neuronal firing."},
+    {"id": "P49", "name": "Shift from supervised architectures to self-supervised EEG/MEG pretraining", "description": "Early EEG/MEG deep learning approaches used specialized supervised architectures for specific clinical tasks (e.g., CNN-Transformer, ST-Transformer, SPaRCNet, FAMED); reliance on extensive annotated data limited scalability, motivating a shift to self-supervised learning approaches (MMM, ContraWR, LaBraM, CBraMod, REVE)."},
+    {"id": "P50", "name": "ROI-based fMRI modeling has a fixed-atlas bottleneck", "description": "Traditional fMRI modeling reduces data to ROI-level time series from pre-defined brain atlases (used by BrainNetCNN, BrainGNN, FBNETGEN, Brain Network Transformer, Brain Harmony, fMRI-LM); this approach suffers from a bottleneck since fixed atlases introduce rigid inductive biases and inconsistent preprocessing, limiting generalization across differently-parcellated datasets."},
+    {"id": "P51", "name": "Volume-based fMRI modeling avoids manual parcellation", "description": "Directly modeling raw 4D voxel data (as in SWiFT and NeuroSTORM) offers an alternative that avoids manual parcellation and preserves fine-grained neural information by treating fMRI as dense spatiotemporal videos rather than simplified graphs."},
+    {"id": "P52", "name": "Distinct research stream decodes perceptual content from fMRI", "description": "A parallel research stream (BrainDiffuser, MindEye, NeuroBind, MindEye2) focuses on explicitly decoding perceptual content such as visual/auditory stimuli, often via GLM-derived beta weights and alignment with diffusion-model latent spaces like CLIP, rather than analyzing physiological states."},
+    {"id": "P53", "name": "Training dataset corpus spans clinical, paired, and stimulus-aware categories", "description": "The training corpus aggregates standard clinical datasets (AD65, ABIDE-I) for baseline physiological competency, scarce paired datasets (LEMON, Nat-View, SMN4Lang, SomatoMotor) for cross-modal joint learning, HCP with injected perturbations for fine-grained signal understanding, and NSD/HAD for stimulus-evoked semantic decoding."},
+    {"id": "P54", "name": "Model instantiated on Qwen2.5-Omni-7B with specific hyperparameters", "description": "NOBEL is instantiated on Qwen2.5-Omni-7B with LoRA rank r=128 and alpha=256, trained with learning rate 2e-5 and batch size 32 for 90,000 steps, using modality-aware batch sampling and greedy decoding at inference."},
+    {"id": "P55", "name": "Separate pre-alignment protocols used for NSD and HAD", "description": "NSD pre-alignment uses a minibatch size of 128 across 8 subjects, learning rate 1e-4 with a cosine cyclic scheduler for 150 epochs (MixCo applied only in the first 50); HAD pre-alignment uses batch size 32, learning rate 1e-3 with a OneCycle scheduler, formulated as 180-way classification with cross-entropy loss."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph closely tracks NOBEL's own paper structure. C1 traces the dual motivation (electromagnetic/metabolic frequency gap plus underused stimulus context) into the design rationale for the model. C2 captures the architecture's two central design decisions -- the dual-path fMRI split and the unified EMEG encoder -- each justified by an explicit biophysical/statistical rationale in the paper (disentangling physiological vs. semantic information; shared neuronal current origin), converging on the flexible token-concatenation mechanism and LoRA adaptation. C3 traces the training-pipeline justification chain precisely as the paper presents it: identifying the low-SNR beta-branch instability problem, motivating pre-alignment, and detailing the two specific techniques (contrastive alignment, MixCo) used to solve it before joint training. C4, C5, and C6 mirror the paper's own three-part results structure (unimodal competitiveness, stimulus-aware decoding validating the beta path, and synergistic multi-modal fusion validating the unified EMEG + fMRI integration), with each results claim linked to the interpretive claim the paper draws from it (e.g., matching NeuroSTORM precision on HCP -> confirms no information loss in alignment; below-chance EEG alone on Nat-View -> demonstrates genuine cross-modal integration rather than naive averaging). Isolated nodes are appropriately limited to related-work background (EEG/MEG and fMRI modeling history) and descriptive experimental/hyperparameter specifications that support but are not premises within the paper's own argument chain."
+}

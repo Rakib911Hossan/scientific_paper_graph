@@ -1,0 +1,402 @@
+{
+  "arxiv_id": "2602.20078v3",
+  "note": "Single-pass extraction (no sentence-level indexing available for this document). Evidence fields reference sections/equations/figures instead of indexed sentences (S#). Votes/confidence/fidelity fields from the reference schema are omitted since no multi-run validation was performed.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Core problem framing: cross-agent noise limits cooperative MARL scalability",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Shared return in cooperative MARL",
+          "description": "All N agents share a single common reward/return, so each agent's learning signal is computed from a return that depends on every agent's actions."
+        },
+        {
+          "id": "P2",
+          "name": "Cross-agent noise",
+          "description": "Because the shared learning signal depends on all agents, the stochasticity of other agents' actions enters each agent's own gradient/advantage estimate as cross-agent noise."
+        },
+        {
+          "id": "P3",
+          "name": "Cross-agent noise grows with N",
+          "description": "The cross-agent noise term grows with the number of agents N, formalized as contributing O(N) variance to the per-agent policy-gradient estimator (Eq. 3)."
+        },
+        {
+          "id": "P4",
+          "name": "Standard MARL is sample-inefficient at scale",
+          "description": "Because variance scales as O(N), maintaining constant estimation error requires batch size to grow with N, making standard multi-agent policy-gradient methods sample-inefficient at large scale."
+        },
+        {
+          "id": "P5",
+          "name": "Classical credit-decomposition methods insufficient at scale",
+          "description": "Counterfactual baselines, Q-factorization, and marginal-contribution estimation methods reduce variance somewhat but still extract signals from the shared return, so cross-agent noise still grows with N and eventually dominates."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["Abstract", "Sec 1"]},
+        {"from": "P2", "to": "P3", "evidence": ["Sec 3.2", "Eq. 3"]},
+        {"from": "P3", "to": "P4", "evidence": ["Sec 3.2"]},
+        {"from": "P5", "to": "P4", "evidence": ["Sec 1", "Sec 2"]}
+      ]
+    },
+    {
+      "component_id": "C2",
+      "description": "Key insight: analytical reference models as a noise-free signal",
+      "nodes": [
+        {
+          "id": "P6",
+          "name": "Analytical models exist in engineering systems",
+          "description": "Many cooperative engineering systems (cloud computing, power systems, traffic networks) admit differentiable analytical models that prescribe efficient system states (e.g., queueing models, power-flow equations)."
+        },
+        {
+          "id": "P7",
+          "name": "Analytical prescriptions are system-level only",
+          "description": "These analytical prescriptions describe system-level efficient states but do not by themselves yield local decision rules for individual agents."
+        },
+        {
+          "id": "P8",
+          "name": "Motivating question: converting system reference to agent-local guidance",
+          "description": "The paper's central question is whether the differentiable structure of an analytical reference can be converted into agent-local descent directions that reduce cooperative policy-gradient variance."
+        },
+        {
+          "id": "P9",
+          "name": "Reference state and system state defined",
+          "description": "A system state x_t (system-level quantities jointly determined by agent actions) and a reference state x̃_t (the analytical model's prescribed efficient state) are defined as the basis for guidance."
+        },
+        {
+          "id": "P10",
+          "name": "Localized agent influence on system state",
+          "description": "Each agent's action typically affects only specific dimensions of the system state vector, so each agent's influence on the system state is localized."
+        }
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["Sec 1", "Sec 4.1"]},
+        {"from": "P7", "to": "P8", "evidence": ["Sec 1"]},
+        {"from": "P8", "to": "P9", "evidence": ["Sec 4.1"]},
+        {"from": "P9", "to": "P10", "evidence": ["Sec 4.1"]}
+      ]
+    },
+    {
+      "component_id": "C3",
+      "description": "Assumptions required for a valid reference/guidance signal",
+      "nodes": [
+        {
+          "id": "P11",
+          "name": "Exogeneity assumption",
+          "description": "Assumption 4.1: the reference state x̃_t does not depend on the policy parameters θ (∇θ x̃_t = 0)."
+        },
+        {
+          "id": "P12",
+          "name": "Descent-aligned reference assumption",
+          "description": "Assumption 4.2: moving the system state toward the reference improves system performance, formalized as ⟨∇_x J(x_t), x̃_t − x_t⟩ > 0 for x_t ≠ x̃_t."
+        },
+        {
+          "id": "P13",
+          "name": "Reference need not be reachable",
+          "description": "The reference x̃_t need not be attainable in practice (it may come from idealized fluid-limit or steady-state models); it is used only to define a descent direction, not as a literal target."
+        },
+        {
+          "id": "P14",
+          "name": "Valid, stable guidance signal",
+          "description": "When Assumptions 4.1 and 4.2 both hold, the reference provides a stable, directionally correct target whose approach is expected to improve the cooperative objective."
+        }
+      ],
+      "edges": [
+        {"from": "P11", "to": "P14", "evidence": ["Sec 4.1", "Eq. 4"]},
+        {"from": "P12", "to": "P14", "evidence": ["Sec 4.1", "Eq. 5"]},
+        {"from": "P13", "to": "P14", "evidence": ["Sec 4.1"]}
+      ]
+    },
+    {
+      "component_id": "C4",
+      "description": "Constructing the DG-PG guidance term and gradient",
+      "nodes": [
+        {
+          "id": "P15",
+          "name": "Deviation measure d(x_t, x̃_t)",
+          "description": "A per-step deviation function d(x_t, x̃_t) = (1/2)||x_t − x̃_t||^2 quantifies how far the system state is from the reference (Eq. 6)."
+        },
+        {
+          "id": "P16",
+          "name": "Reducing d is aligned with improving J",
+          "description": "Under the descent-aligned reference assumption, reducing the deviation d at each step is directionally consistent with improving the cooperative objective J."
+        },
+        {
+          "id": "P17",
+          "name": "Deviation gradient decomposes per-agent via chain rule",
+          "description": "Because d is differentiable in x_t and x_t depends differentiably on each agent's action, the chain rule yields a per-agent gradient term ⟨x_t − x̃_t, z_t^i⟩ that isolates agent i's contribution (Eq. 8)."
+        },
+        {
+          "id": "P18",
+          "name": "Local influence vector z_t^i",
+          "description": "z_t^i, the partial derivative of the system state with respect to agent i's action, is a purely local, analytically computable quantity depending only on x_t, x̃_t, and z_t^i (no other agents' stochastic actions)."
+        },
+        {
+          "id": "P19",
+          "name": "Guidance gradient is noise-free",
+          "description": "Because the per-agent guidance term ⟨x_t − x̃_t, z_t^i⟩ carries no dependence on other agents' sampled actions, it is a noise-free, analytically computable signal."
+        },
+        {
+          "id": "P20",
+          "name": "DG-PG gradient definition",
+          "description": "The DG-PG gradient augments the standard policy gradient with the guidance gradient: ∇θi Jα = (1−α)∇θi J − α∇θi G, where α∈(0,1) is a guidance weight (Eq. 7)."
+        }
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["Sec 4.2"]},
+        {"from": "P16", "to": "P17", "evidence": ["Sec 4.2"]},
+        {"from": "P17", "to": "P18", "evidence": ["Sec 4.2", "Eq. 8"]},
+        {"from": "P18", "to": "P19", "evidence": ["Sec 4.2"]},
+        {"from": "P19", "to": "P20", "evidence": ["Sec 4.2", "Eq. 7", "Eq. 9"]}
+      ]
+    },
+    {
+      "component_id": "C5",
+      "description": "Theoretical guarantees",
+      "nodes": [
+        {
+          "id": "P21",
+          "name": "Nash invariance (Theorem 5.1)",
+          "description": "Under Assumptions 4.1–4.2, at any Nash equilibrium θ* of the original game, both ∇θi J and ∇θi G vanish, so the DG-PG gradient also vanishes for any α∈(0,1) — the augmentation does not create or destroy equilibria."
+        },
+        {
+          "id": "P22",
+          "name": "Standard PG variance is O(N)",
+          "description": "The standard policy-gradient sample variance Var(ĝ_J^i) is O(N) because it relies on the shared return aggregating all agents' stochastic actions."
+        },
+        {
+          "id": "P23",
+          "name": "Guidance term variance is O(1)",
+          "description": "The guidance sample variance Var(ĝ_G^i) is O(1), independent of N, because it depends only on agent-local analytically computed quantities."
+        },
+        {
+          "id": "P24",
+          "name": "Negative correlation between the two gradient components",
+          "description": "Under Assumption 4.2 (descent-aligned reference), improving J reduces the deviation G, so the standard and guidance gradient samples are negatively correlated (ρ<0)."
+        },
+        {
+          "id": "P25",
+          "name": "Agent-independent minimum variance (Theorem 5.2)",
+          "description": "The minimum-variance DG-PG estimator (optimized over α) has variance σJ²σG²(1−ρ²)/(σJ²+σG²+2ρσJσG), which is O(1) since σJ²=O(N) and σG²=O(1) — breaking the O(N) scaling of standard policy gradients."
+        },
+        {
+          "id": "P26",
+          "name": "Optimal α shifts toward guidance as N grows",
+          "description": "Since only σJ² grows with N, the optimal guidance weight α* shifts toward the guidance signal, satisfying α*→1 in the large-N limit."
+        },
+        {
+          "id": "P27",
+          "name": "Agent-independent sample complexity (Theorem 5.3)",
+          "description": "Given L-smoothness and the PL condition, and using the O(1) minimum variance from Theorem 5.2, DG-PG reaches an ϵ-optimal policy in a number of iterations independent of N, versus O(N/ϵ) for standard multi-agent policy gradients."
+        }
+      ],
+      "edges": [
+        {"from": "P11", "to": "P21", "evidence": ["Sec 5.1", "Theorem 5.1"]},
+        {"from": "P12", "to": "P21", "evidence": ["Sec 5.1", "Theorem 5.1"]},
+        {"from": "P22", "to": "P25", "evidence": ["Sec 5.2", "Theorem 5.2"]},
+        {"from": "P23", "to": "P25", "evidence": ["Sec 5.2", "Theorem 5.2"]},
+        {"from": "P24", "to": "P25", "evidence": ["Sec 5.2", "Eq. 16"]},
+        {"from": "P25", "to": "P26", "evidence": ["Sec 5.2"]},
+        {"from": "P21", "to": "P27", "evidence": ["Sec 5", "Summary"]},
+        {"from": "P25", "to": "P27", "evidence": ["Sec 5.3", "Theorem 5.3"]}
+      ]
+    },
+    {
+      "component_id": "C6",
+      "description": "Practical implementation and relation to prior methods",
+      "nodes": [
+        {
+          "id": "P28",
+          "name": "MAPPO advantage augmentation",
+          "description": "DG-PG is integrated into MAPPO by replacing the standard GAE advantage with an augmented advantage: Â_DG^i(t) = (1−α)Â_GAE^i(t) − α·⟨x_t−x̃_t, z_t^i⟩ (Eq. 14)."
+        },
+        {
+          "id": "P29",
+          "name": "Minimal computational overhead",
+          "description": "The reference trajectory is computed once per batch from the analytical model, and each guidance coefficient is a simple inner product, so the added computational overhead is minimal."
+        },
+        {
+          "id": "P30",
+          "name": "No architectural changes required",
+          "description": "Unlike COMA (requiring N separate critics) or QMIX (requiring mixing networks), DG-PG requires no architectural changes — only a single-line modification to the advantage estimator."
+        }
+      ],
+      "edges": [
+        {"from": "P28", "to": "P29", "evidence": ["Sec 4.3"]},
+        {"from": "P28", "to": "P30", "evidence": ["Sec 4.3"]}
+      ]
+    },
+    {
+      "component_id": "C7",
+      "description": "Experimental setup rationale",
+      "nodes": [
+        {
+          "id": "P31",
+          "name": "Cloud scheduling chosen as acute test case",
+          "description": "Heterogeneous cloud resource scheduling with up to 1500 agents is chosen because queueing-theoretic priors are available and the cross-agent noise problem is particularly acute there."
+        },
+        {
+          "id": "P32",
+          "name": "Simulator induces prior model mismatch",
+          "description": "The simulator's heterogeneous server efficiency, heavy-tailed bimodal workloads, and non-stationary arrivals violate the stationarity assumptions behind the queueing-theoretic prior, creating a deliberate model-mismatch stress test."
+        },
+        {
+          "id": "P33",
+          "name": "Mean-Field baseline excluded",
+          "description": "Mean-Field MARL methods are excluded from comparison because they assume agent homogeneity, which the heterogeneous cloud environment violates."
+        }
+      ],
+      "edges": [
+        {"from": "P31", "to": "P32", "evidence": ["Sec 6.1"]}
+      ]
+    },
+    {
+      "component_id": "C8",
+      "description": "Guidance-weight (alpha) empirical behavior",
+      "nodes": [
+        {
+          "id": "P34",
+          "name": "Trade-off between α values",
+          "description": "Across N=20 and N=50, larger α accelerates early convergence while smaller α achieves marginally superior best final performance."
+        },
+        {
+          "id": "P35",
+          "name": "Robustness to α choice",
+          "description": "The small spread in final performance across tested α values (e.g., −8.75±0.21 at α=0.2 vs. −9.04±0.12 at α=0.8, N=50) shows DG-PG is robust to the specific choice of α."
+        },
+        {
+          "id": "P36",
+          "name": "Dynamic α schedule adopted",
+          "description": "Based on the observed early-vs-final trade-off, a dynamic α schedule (starting high, decaying to 0.2) is used for N≤50, while a fixed high α=0.9 is used for N≥100 where cross-agent noise is more severe."
+        }
+      ],
+      "edges": [
+        {"from": "P34", "to": "P36", "evidence": ["Sec 6.2", "Fig. 2"]},
+        {"from": "P35", "to": "P36", "evidence": ["Sec 6.2"]}
+      ]
+    },
+    {
+      "component_id": "C9",
+      "description": "Controlled comparison against MAPPO/IPPO",
+      "nodes": [
+        {
+          "id": "P37",
+          "name": "Comparable performance at N=2",
+          "description": "At N=2, DG-PG, MAPPO, and IPPO all achieve comparable performance."
+        },
+        {
+          "id": "P38",
+          "name": "DG-PG outperforms at N=5 and N=10",
+          "description": "At N=5, DG-PG reaches −10.97±0.38 vs. −21.63±0.77 (MAPPO) and −23.04±0.29 (IPPO); at N=10 the gap widens further (−9.69±0.23 vs. −29.40±2.07 and −28.71±2.81), despite MAPPO/IPPO receiving 2.5× more training episodes."
+        },
+        {
+          "id": "P39",
+          "name": "Performance gap widens with N",
+          "description": "The performance gap between DG-PG and the MAPPO/IPPO baselines widens as N increases from 2 to 10, consistent with the cross-agent noise bottleneck predicted by the theory."
+        }
+      ],
+      "edges": [
+        {"from": "P37", "to": "P38", "evidence": ["Sec 6.3", "Fig. 3"]},
+        {"from": "P38", "to": "P39", "evidence": ["Sec 6.3"]},
+        {"from": "P3", "to": "P39", "evidence": ["Sec 3.2", "Sec 6.3"]}
+      ]
+    },
+    {
+      "component_id": "C10",
+      "description": "Scalability to N=1500",
+      "nodes": [
+        {
+          "id": "P40",
+          "name": "MAPPO/IPPO fail to converge at large N",
+          "description": "MAPPO and IPPO are excluded from the large-scale scalability experiments because they fail to converge at these scales despite extensive tuning."
+        },
+        {
+          "id": "P41",
+          "name": "Scale-invariant convergence observed",
+          "description": "From N=50 to N=1500, DG-PG reaches within 10% of its best observed reward in a bounded 6.8–17.7 episodes on average, with the required episode count not growing with N."
+        },
+        {
+          "id": "P42",
+          "name": "Empirical confirmation of Theorem 5.3",
+          "description": "The observed scale-invariant convergence (P41) is presented as the empirical counterpart of the theoretical O(1/ϵ) sample complexity bound (Theorem 5.3 / P27)."
+        },
+        {
+          "id": "P43",
+          "name": "DG-PG matches/surpasses centralized Best-Fit",
+          "description": "DG-PG matches the centralized Best-Fit scheduler at smaller scales and surpasses it from N=200 onward, despite Best-Fit having centralized information and DG-PG being fully decentralized."
+        },
+        {
+          "id": "P44",
+          "name": "Decentralized coordination is learnable",
+          "description": "DG-PG's matching/surpassing of centralized Best-Fit shows that decentralized, learned agent policies can achieve coordination comparable to (or better than) a centralized scheduler."
+        },
+        {
+          "id": "P45",
+          "name": "Bounded wall-clock convergence time",
+          "description": "Despite per-episode training time increasing sharply with N (10.5s at N=10 to 335.0s at N=1500), the bounded episode count to convergence keeps total wall-clock convergence time moderate (under ~99 minutes even at N=1500), all on CPU-only hardware."
+        },
+        {
+          "id": "P46",
+          "name": "Learned policy is standalone at execution time",
+          "description": "After training, each agent acts through its learned policy alone, without guidance or an online centralized scheduler — the analytical reference is used only during training, unlike residual-policy methods where the learned component stays tied to a base controller at deployment."
+        }
+      ],
+      "edges": [
+        {"from": "P27", "to": "P42", "evidence": ["Sec 6.4"]},
+        {"from": "P41", "to": "P42", "evidence": ["Sec 6.4", "Fig. 4a"]},
+        {"from": "P41", "to": "P45", "evidence": ["Sec 6.4"]},
+        {"from": "P43", "to": "P44", "evidence": ["Sec 6.4", "Fig. 4b", "Table 1"]},
+        {"from": "P41", "to": "P43", "evidence": ["Sec 6.4", "Table 1"]},
+        {"from": "P46", "to": "P44", "evidence": ["Sec 6.4"]}
+      ]
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P47",
+      "name": "Difference Rewards require simulator access",
+      "description": "Difference Rewards isolate per-agent marginal contribution via counterfactual simulation but require access to the reward function or a simulator."
+    },
+    {
+      "id": "P48",
+      "name": "Value decomposition structural assumptions",
+      "description": "VDN, QMIX, and QPLEX factorize the joint Q-function under additivity/monotonicity assumptions and fail when the optimal joint value violates these assumptions."
+    },
+    {
+      "id": "P49",
+      "name": "COMA centralized critic requirement",
+      "description": "COMA computes per-agent counterfactual advantages from a centralized critic conditioned on the joint action of all agents."
+    },
+    {
+      "id": "P50",
+      "name": "HAPPO sacrifices parallelism",
+      "description": "HAPPO restricts agent updates to a sequential order so each agent can obtain a marginal advantage against fixed teammates, but this sacrifices parallel execution since each agent must wait for preceding updates."
+    },
+    {
+      "id": "P51",
+      "name": "Mean-Field MARL requires homogeneity",
+      "description": "Mean-Field MARL replaces N-agent interaction with a population-level approximation, achieving scalability but requiring agent homogeneity, precluding heterogeneous settings."
+    },
+    {
+      "id": "P52",
+      "name": "Guided Policy Search / Residual RL limitations",
+      "description": "Guided Policy Search and Residual RL derive a base policy from domain knowledge and optimize from there, but still suffer from cross-agent noise at large N, limiting improvement beyond the base policy."
+    },
+    {
+      "id": "P53",
+      "name": "Physics-Informed Neural Networks use prior differently",
+      "description": "Physics-Informed Neural Networks encode prior knowledge as a loss constraint rather than as a basis for learning or an optimization direction, differing from DG-PG's use of prior knowledge as gradient guidance."
+    },
+    {
+      "id": "P54",
+      "name": "Cooperative Markov Game formalization",
+      "description": "The setting is formalized as a Cooperative Markov Game / Dec-POMDP defined by the tuple ⟨N, S, A, P, r, γ⟩ with local observations and a joint action space."
+    },
+    {
+      "id": "P55",
+      "name": "Standard policy gradient theorem",
+      "description": "Standard policy-gradient methods perform gradient ascent on the shared objective J(θ) via the Policy Gradient Theorem, using the sampled return R_t (Eq. 2)."
+    }
+  ],
+  "structural_reasoning": "The graph traces one dominant causal chain: shared-return cooperative MARL (C1) creates cross-agent noise that scales with N and defeats prior credit-decomposition and structural-simplification methods; this motivates using differentiable analytical reference models (C2) under two key assumptions (C3 — exogeneity and descent-alignment) to build a noise-free, agent-local guidance term (C4); this construction is what the theory (C5) formally certifies as Nash-invariant, variance-reducing to O(1), and yielding agent-independent sample complexity; the implementation (C6) shows this requires only a one-line advantage modification; and the experiments (C7–C10) empirically validate each theoretical claim in turn — robustness to the guidance weight, growing advantage over MAPPO/IPPO with N, scale-invariant convergence to N=1500, and a standalone decentralized deployed policy. The related-work critiques of prior methods (isolated nodes) and the base Markov-game/policy-gradient formalism are contextual/foundational rather than argumentatively chained to specific downstream result nodes, so they are listed as isolated nodes rather than embedded in the main components."
+}

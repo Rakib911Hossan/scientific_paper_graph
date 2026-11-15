@@ -1,0 +1,224 @@
+{
+ "arxiv_id": "2606.21345",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Minimal attribute-computation paths found by iterative patching show factual recall is multi-layer, non-contiguous and redundant",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Retrieval is ill-defined",
+     "description": "It is unclear whether factual retrieval is continuous accumulation across layers or a discrete state at which the entity representation can elicit the attribute, and the transformations the entity undergoes are largely unmapped."
+    },
+    {
+     "id": "P2",
+     "name": "Minimal attribute path defined",
+     "description": "A minimal attribute computation path is a subset of layers applied to the entity representation that suffices for the model to produce the target attribute and in which no layer can be removed without hurting the computation."
+    },
+    {
+     "id": "P3",
+     "name": "Lock finds the endpoint",
+     "description": "The lock operation (copying a layer's entity output to all higher layers) identifies the earliest layer l_attr after which no further computation on the entity tokens is needed."
+    },
+    {
+     "id": "P4",
+     "name": "Isolate with counterfactual patching",
+     "description": "The isolate operation feeds the clean entity embedding only through candidate path layers and passes counterfactual activations through the remaining layers, so a layer is non-essential if the prediction survives its replacement."
+    },
+    {
+     "id": "P5",
+     "name": "Greedy search for minimal path",
+     "description": "An iterative greedy search extends a path prefix by skipping as many layers as possible while remaining valid, yielding a minimal path; relaxing the upper bound to the last layer yields alternative minimal paths."
+    },
+    {
+     "id": "P6",
+     "name": "Attribute computation ends early-to-mid",
+     "description": "On 2,000 CounterFact prompts, attribute computation completes in early-to-mid layers, with average l_attr of 4.61 (LLaMA 3.1 8B) and 7.97 (Qwen3 8B)."
+    },
+    {
+     "id": "P7",
+     "name": "Paths are multi-layer and non-contiguous",
+     "description": "Almost all paths contain more than two layers (mean length 5.91 LLaMA, 7.97 Qwen), and 33.1% (LLaMA) and 78.6% (Qwen) skip at least one layer, so no single layer retrieves a fact."
+    },
+    {
+     "id": "P8",
+     "name": "Alternative paths exist",
+     "description": "Non-identical alternative functionally-equivalent paths exist in 80.1% (LLaMA) and 82.7% (Qwen) of cases."
+    },
+    {
+     "id": "P9",
+     "name": "Alternative paths are longer and deeper",
+     "description": "Alternative paths are longer (mean 9.47 LLaMA, 10.47 Qwen), use bigger jumps (mean skip 6.46 and 10.4 layers) and end deeper (mean l_attr 13.93 and 18.06), while the primary path is the most compact route."
+    },
+    {
+     "id": "P10",
+     "name": "Hybrid paths succeed",
+     "description": "Combining a primary-path prefix with an alternative-path suffix gives a working distinct path for 35.4% of LLaMA prompts and 32.8% of Qwen prompts, showing layer roles are not one-to-one across paths."
+    },
+    {
+     "id": "P11",
+     "name": "Representation at l_attr is necessary but often insufficient alone",
+     "description": "Overwriting the l_attr representation with a counterfactual disrupts prediction in over 94% of cases, but injecting it alone into higher layers restores the attribute for only about 56% of LLaMA primary paths, so intermediate path layers are also needed."
+    },
+    {
+     "id": "P12",
+     "name": "Longer paths need inter-token propagation",
+     "description": "Longer paths rely on inter-token transfer: 50.1% of LLaMA primary paths (avg length 7.4) and 80.6% of alternative paths need a propagating layer, versus shorter paths when not required; Qwen shows the same pattern."
+    },
+    {
+     "id": "P13",
+     "name": "Knowledge is distributed and redundant",
+     "description": "Factual knowledge computation is distributed and redundant: no single layer or range is responsible for a given fact, and the same fact can be computed via multiple paths."
+    },
+    {
+     "id": "P14",
+     "name": "Explains localization-editing mismatch",
+     "description": "Because attribute computation needs multiple transformations of the entity representation, editing succeeds by intervening at a necessary transformation stage rather than where the knowledge is localized, which may explain the localization-editing mismatch."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 4"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 5.2-5.3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 6.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 6.1, Fig 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.3, Sec 6.1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 6.1, Fig 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 6.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.1, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 6.1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 1, Sec 6"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 1, Sec 6"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P13",
+     "evidence": [
+      "Sec 6.1"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 1"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Entity resolution not a prerequisite",
+   "description": "Explicit entity-resolution steps (Patchscopes decoding of the full name) are detected in only 12.9% (LLaMA) and 9.1% (Qwen) of primary paths, so detectable entity resolution is not a universal prerequisite for factual recall."
+  },
+  {
+   "id": "P16",
+   "name": "Roughly 15% need Layer 0 propagation",
+   "description": "About 15% of all paths across both models require clean information propagation as early as Layer 0, which is unexpected under the paper's hypothesis."
+  },
+  {
+   "id": "P17",
+   "name": "Relation order shows no strong trend",
+   "description": "No strong effect of placing the relation before or after the entity was found, beyond paths ending later in LLaMA."
+  },
+  {
+   "id": "P18",
+   "name": "Counterfactual noise has little effect",
+   "description": "A noise-free variant of isolate leaves primary path lengths nearly unchanged (LLaMA 5.88 vs 5.91; Qwen 7.92 vs 7.97), though alternative paths terminate deeper."
+  },
+  {
+   "id": "P19",
+   "name": "Path length vs relation specificity is inconsistent",
+   "description": "Broad relations (e.g., Continent) sometimes need fewer layers than specific ones (e.g., Headquarters), but the length ranking is highly inconsistent across models and between primary and alternative paths."
+  }
+ ],
+ "structural_reasoning": "Method definitions lead to main empirical findings (early-mid completion, non-contiguity, redundancy) and then to the distributed-knowledge interpretation."
+}

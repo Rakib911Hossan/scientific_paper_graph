@@ -1,0 +1,166 @@
+{
+ "arxiv_id": "2508.09820",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Hierarchical concept model leads to task-vector retrieval theory: QA training retrieves task vectors, ICL-only training memorizes low-level features",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Task vector enables vector arithmetic in ICL",
+     "description": "LLMs form a task vector in intermediate layers during in-context learning, and factual-recall ICL follows a residual vector arithmetic f(x_query) = a_f + b_query, analogous to Word2Vec arithmetic."
+    },
+    {
+     "id": "P2",
+     "name": "Latent geometry is approximately additive",
+     "description": "In GPT2-medium embeddings, answer vectors align more strongly with the task vector than query vectors do, so x + task vector approximately equals y (Fig 1)."
+    },
+    {
+     "id": "P3",
+     "name": "Hierarchical concept data model",
+     "description": "The theory models word embeddings with high-level task concepts, low-level concepts and irrelevant concepts, where the task vector is the high-level concept component."
+    },
+    {
+     "id": "P4",
+     "name": "Gap in existing ICL theory",
+     "description": "Existing ICL theories overlook the residual stream or treat it unnaturally, rely on linearized attention or squared/hinge losses, and lack a theoretical account of why QA training data enables factual recall."
+    },
+    {
+     "id": "P5",
+     "name": "GD on residual transformer retrieves task vectors",
+     "description": "Nonlinear transformers with softmax attention, MLP, layer normalization and residual connections trained by gradient descent on cross-entropy loss can perform factual-recall ICL via vector arithmetic despite non-convexity (Thm 3.2)."
+    },
+    {
+     "id": "P6",
+     "name": "ICL-trained models memorize low-level features",
+     "description": "When training and testing on word-label ICL data, the transformer fails to reliably retrieve the high-level task vector; the output becomes a hybrid vector contaminated by low-level features (harmful memorization), as in Fig 2(d)."
+    },
+    {
+     "id": "P7",
+     "name": "QA training retrieves the task vector",
+     "description": "Models trained on QA data learn the task vector, achieving arbitrarily small test error on both word-label ICL and QA-ICL prompts, because low-level features b_k are absent from QA data (Thm 3.2, Prop 3.3, Fig 3)."
+    },
+    {
+     "id": "P8",
+     "name": "Task vector regression from demonstrations",
+     "description": "The trained transformer can approximately retrieve the task vector solely from demonstration pairs without requiring a query word."
+    },
+    {
+     "id": "P9",
+     "name": "Task vector arithmetic adds to any query",
+     "description": "The retrieved intermediate vector can be added to any query sharing the co-task concept to give the correct answer with test loss at most epsilon."
+    },
+    {
+     "id": "P10",
+     "name": "Compositional OOD generalization",
+     "description": "A QA-trained model generalizes to unseen dictionaries (new conic combinations of task vectors with new orthogonal features) and to prompts with multiple co-task concepts (fewer than 4) and varied length (Prop 3.4)."
+    },
+    {
+     "id": "P11",
+     "name": "Multi-concept prompts give weighted task vectors",
+     "description": "With multiple co-task concepts in a prompt, the model forms a softmax-weighted convex combination of task vectors, resembling Bayesian model averaging."
+    },
+    {
+     "id": "P12",
+     "name": "Simulations corroborate theory",
+     "description": "Simulations with K=2, K'=100, d=3000 show the QA-trained model avoids the persistent constant test error (0.2) of the ICL-trained model (Fig 2-3)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 2.1, Thm 3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3, Fig 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3, Prop 3.3, Fig 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Thm 3.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Thm 3.2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Prop 3.4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 3, Eq 8-9"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Fig 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Fig 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Limited to single-token settings",
+   "description": "The framework is limited to single-token settings and idealized assumptions, and does not study how task vectors emerge in deeper layers."
+  }
+ ],
+ "structural_reasoning": "Argument builds from empirical vector-arithmetic geometry to a hierarchical concept model and optimization theory showing QA-trained transformers retrieve task vectors and generalize OOD."
+}

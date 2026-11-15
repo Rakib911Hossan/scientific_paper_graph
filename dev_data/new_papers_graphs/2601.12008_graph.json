@@ -1,0 +1,231 @@
+{
+ "arxiv_id": "2601.12008",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Extreme Value Policy Optimization (EVO): EVT-based extreme quantile constraint, extreme prioritization and importance resampling for zero-violation safe RL",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Expectation constraints permit violations",
+     "description": "Expectation-based constraints in CRL only guarantee compliance on average, so even when the expected cost satisfies the threshold, extreme tail events can cause frequent constraint violations (Fig 1a)."
+    },
+    {
+     "id": "P2",
+     "name": "Existing probabilistic methods miss extremes",
+     "description": "WCSAC approximates the cost distribution with a Gaussian that fails to capture tail behaviour, and QCPO's quantile constraint neglects the high variance and the exploitation of extreme samples."
+    },
+    {
+     "id": "P3",
+     "name": "Extreme samples are scarce and informative",
+     "description": "Extreme reward samples reveal how to achieve task goals and extreme cost samples highlight critical constraints, but they are rare, making tail modelling high-variance."
+    },
+    {
+     "id": "P4",
+     "name": "EVT models tails with GPD",
+     "description": "By the Pickands-type theorem, the conditional excess distribution above a high threshold converges to a Generalized Pareto distribution, so the cost tail can be modelled by a GPD (Theorem 3.1); a GPD fits better than a Gaussian (Fig 1b, Fig 7)."
+    },
+    {
+     "id": "P5",
+     "name": "Quantile constraint formulation",
+     "description": "Constraining the mu-quantile of the cumulative discounted cost, q_mu <= d, implies P(C <= d) >= mu."
+    },
+    {
+     "id": "P6",
+     "name": "Extreme quantile constraint",
+     "description": "EVO fits a GPD to peaks C > q_mu and sets the risk boundary q_(mu+nu) = q_mu + GPD quantile, treating samples beyond it as extreme, giving an EVT-based optimization objective."
+    },
+    {
+     "id": "P7",
+     "name": "Extreme prioritization in replay",
+     "description": "Each sample's replay priority p = omega_r + omega_c sums its quantile levels under the reward GPD and cost GPD, so lower-probability high-value samples are replayed more often."
+    },
+    {
+     "id": "P8",
+     "name": "Importance resampling reduces GPD variance",
+     "description": "Reweighting stored off-policy samples by pi/pi_0 augments extreme samples and reduces the variance of the GPD fit."
+    },
+    {
+     "id": "P9",
+     "name": "Constraint violation upper bound",
+     "description": "EVO's quantile objective gives an upper bound J_C(pi_k+1) <= d - (GPD quantile term) that is tighter than the expectation objective in CPO, guaranteeing strict constraint satisfaction at a zero-violation exploitation range nu_0 (Theorem 4.1)."
+    },
+    {
+     "id": "P10",
+     "name": "Lower violation probability than expectation methods",
+     "description": "When mu is set by the expected cumulative cost, EVO has a smaller constraint violation probability than the expectation-based objective (Theorem 4.2)."
+    },
+    {
+     "id": "P11",
+     "name": "Lower variance than quantile regression",
+     "description": "The EVO quantile estimator has variance negatively correlated with sample count and lower than quantile regression methods, so more extreme samples via resampling reduce variance (Theorem 4.3)."
+    },
+    {
+     "id": "P12",
+     "name": "Zero violations on Safety Gymnasium",
+     "description": "On Safety Gymnasium with infeasible initial policies, EVO converges rapidly to the feasible domain and maintains zero constraint violations while matching CPO's return and beating Saute and WCSAC (Fig 3)."
+    },
+    {
+     "id": "P13",
+     "name": "Zero violations on Safety MuJoCo",
+     "description": "On Safety MuJoCo tasks with feasible initial policies, EVO maintains zero violations throughout training, while WCSAC shows significant violations (Fig 4)."
+    },
+    {
+     "id": "P14",
+     "name": "Ablation of EVT objective",
+     "description": "Replacing the EVT-based objective with a constant quantile constraint achieves safety only by diminishing performance (Fig 5a,b)."
+    },
+    {
+     "id": "P15",
+     "name": "Ablation of prioritization",
+     "description": "Removing extreme prioritization degrades optimization, showing it exploits the learning signal in extreme samples (Fig 5)."
+    },
+    {
+     "id": "P16",
+     "name": "Ablation of resampling",
+     "description": "Removing off-policy importance resampling for GPD fitting worsens constraint satisfaction due to inaccurate tail modelling (Fig 6)."
+    },
+    {
+     "id": "P17",
+     "name": "Sample-size sensitivity",
+     "description": "Larger GPD fitting sample sizes generally improve constraint satisfaction, and EVO stays strong with as few as 10 samples in SafetyPointCircle1-v0 and above 20 in SafetyPointGoal1-v0 (Fig 8)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3, Thm 3.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3, Sec 4.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.4, Thm 4.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.4, Thm 4.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.4, Thm 4.3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Fig 3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P12",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P13",
+     "evidence": [
+      "Sec 5, Fig 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P14",
+     "evidence": [
+      "Sec 5 ablation, Fig 5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P15",
+     "evidence": [
+      "Sec 5 ablation, Fig 5"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P16",
+     "evidence": [
+      "Sec 5 ablation, Fig 6"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P17",
+     "evidence": [
+      "Appendix, Fig 8"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P18",
+   "name": "Experimental setup",
+   "description": "Experiments run 10^7 steps with maximum trajectory length 1000 and 6 seeds on Safety Gymnasium and Safety MuJoCo, with cost threshold 25."
+  },
+  {
+   "id": "P19",
+   "name": "Prior EVT work does not address CRL",
+   "description": "EVAC uses EVT to reduce variance in extreme returns but does not address constraint satisfaction in CRL."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the failure of expectation/Gaussian constraints on tail events, through EVT/GPD tail modelling and the three EVO components, to theoretical guarantees and experimental validation."
+}

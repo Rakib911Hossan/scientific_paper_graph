@@ -1,0 +1,148 @@
+{
+ "arxiv_id": "2609.02059",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "DocHop design, construction and verification, then evaluation results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Existing benchmarks evaluate charts and documents in isolation",
+     "description": "Existing benchmarks evaluate chart and document understanding separately, overlooking the interplay where surrounding narrative provides definitions and constraints needed to interpret charts."
+    },
+    {
+     "id": "P2",
+     "name": "DocHop tests integrated chart-context reasoning",
+     "description": "DocHop is a benchmark where the document narrative specifies multi-step compositional constraints while charts supply the numerical values, requiring multi-hop reasoning rather than single-hop lookup."
+    },
+    {
+     "id": "P3",
+     "name": "Semantic reference labels prevent chart-only lookup",
+     "description": "Questions are grounded on a semantic reference label assigned in the narrative rather than explicit entity names, so models must resolve target entities from the text before aggregating chart values."
+    },
+    {
+     "id": "P4",
+     "name": "Logic-first stochastic generation",
+     "description": "Each instance starts from a sampled reasoning trace (a chain of conditional checks across charts); an LLM then generates the numerical data and document text to satisfy the trace, allowing control of reasoning depth D in {2,3,4,5} and chart count k in {2,3,4,6}."
+    },
+    {
+     "id": "P5",
+     "name": "Benchmark scale and diversity",
+     "description": "DocHop has 2,074 examples across 6 task categories, 41 question templates, 480 topics and 7 chart types."
+    },
+    {
+     "id": "P6",
+     "name": "Multi-stage quality verification",
+     "description": "Quality is ensured by programmatically executing each trace against data tables to verify answers, human verification of the narrative, and manual inspection of rendered images."
+    },
+    {
+     "id": "P7",
+     "name": "Models far below human accuracy",
+     "description": "Human annotators exceed 90% accuracy while the best model, GPT-5.2 Reasoning, reaches only 62.83% overall (Table 1)."
+    },
+    {
+     "id": "P8",
+     "name": "Reasoning variants outperform base models",
+     "description": "Reasoning-enhanced variants outperform base counterparts, e.g. GPT-5.2 improves from 40.36% to 62.83% and Gemini-2.5-Flash from 24.88% to 32.02% (Table 1)."
+    },
+    {
+     "id": "P9",
+     "name": "Accuracy degrades with depth and chart count",
+     "description": "Accuracy of GPT-5.2 Reasoning and Gemini-2.5-Pro Reasoning decreases steadily as reasoning depth and number of charts increase, highest at k=2 and D=2 (Fig 5)."
+    },
+    {
+     "id": "P10",
+     "name": "Human solving takes about five minutes",
+     "description": "Human annotators need roughly five minutes per question, indicating DocHop requires careful multi-step reasoning rather than quick lookup."
+    },
+    {
+     "id": "P11",
+     "name": "Error modes: wrong entity, global max, OCR",
+     "description": "Failure examples include attributing chart values to the wrong entity, taking the global maximum instead of the labeled entity set, and OCR errors in value extraction (Fig 4)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.3, Table 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3, Fig 5"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3, Fig 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [],
+ "structural_reasoning": "Benchmark motivation and design lead to verified dataset construction and then findings on model-human gap, reasoning and complexity."
+}

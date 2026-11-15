@@ -1,0 +1,379 @@
+{
+  "arxiv_id": "2606.19451v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "3D sensor data challenges",
+          "description": "3D sensor data (RGB-D, point clouds, voxels) is noisy, sparse, and high-dimensional; voxels scale cubically with resolution, point clouds struggle with variable density and occlusion, and dense 3D features often exceed memory budgets for real-time control."
+        },
+        {
+          "id": "P2",
+          "name": "2D object-centric methods lack 3D geometry",
+          "description": "Self-supervised 2D object-centric methods excel at complex multi-object manipulation but cannot recover occluded regions or model precise 3D geometry essential for contact-rich tasks."
+        },
+        {
+          "id": "P3",
+          "name": "Prior 3D object-centric limitations",
+          "description": "Prior 3D object-centric approaches (patch-based point-cloud methods, neural-rendering variants) typically operate on colorless or synthetic data, rely on rendering-side inverse problems, or fail to yield practical low-dimensional representations for policy learning."
+        },
+        {
+          "id": "P4",
+          "name": "3D-DLP introduction",
+          "description": "The paper introduces 3D-DLP, a self-supervised object-centric representation learning model that decomposes scene-level RGB-D or voxel observations into a set of 3D latent particles, extending the Deep Latent Particles framework."
+        },
+        {
+          "id": "P5",
+          "name": "First self-supervised colored 3D voxel decomposition",
+          "description": "3D-DLP is presented as the first self-supervised object-centric scene representation operating on colored 3D voxels, with a unified framework covering RGB-D, occupancy-voxel, and RGB-voxel inputs."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P4", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P6",
+          "name": "DLP particle-based VAE framework",
+          "description": "Deep Latent Particles (DLP) is a particle-based self-supervised object-centric VAE model whose latent space is a set of particles representing scene entities."
+        },
+        {
+          "id": "P7",
+          "name": "DLP disentangled particle attributes",
+          "description": "Each DLP foreground particle factorizes into disentangled stochastic attributes: 2D keypoint position, scale, composition order, transparency, and appearance features."
+        },
+        {
+          "id": "P8",
+          "name": "DLP restricted to 2D RGB",
+          "description": "DLP and related patch-, slot-, and particle-based self-supervised object-centric methods are restricted to 2D RGB inputs and do not account for 3D observations such as RGB-D or voxels."
+        },
+        {
+          "id": "P9",
+          "name": "3D-DLP extends DLP to 3D",
+          "description": "3D-DLP extends the particle-based DLP framework to directly process RGB-D and voxel inputs with a compact, flexible representation."
+        }
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["S3.dlp"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P8", "evidence": ["S2.related"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P9", "evidence": ["S2.related"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P10",
+          "name": "Point cloud variable cardinality problem",
+          "description": "RGB point clouds have variable cardinality and lack a canonical grid, making it difficult to batch examples, exploit translation-equivariant convolutions, and instantiate DLP's keypoint-proposal and cropping pipeline."
+        },
+        {
+          "id": "P11",
+          "name": "Voxelization as solution",
+          "description": "To address point cloud irregularity, the point cloud is voxelized into a regular grid storing aggregated color per voxel, providing a dense 3D tensor analogous to a 2D image."
+        },
+        {
+          "id": "P12",
+          "name": "Voxels enable 2D-to-3D DLP extension",
+          "description": "Voxels provide a natural substrate for extending 2D DLP to 3D by replacing 2D with 3D convolutions, extracting particle-centered crops via a 3D spatial transformer, and decoding canonical cubic particle patches placed into the global grid."
+        }
+      ],
+      "edges": [
+        {"from": "P10", "to": "P11", "evidence": ["S3.vox"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P12", "evidence": ["S3.vox"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P13",
+          "name": "SSM keypoint prior fails on sparse voxels",
+          "description": "2D DLP's spatial-softmax (SSM) based keypoint prior fails on sparse, discontinuous voxel grids, as verified in the ablation analysis."
+        },
+        {
+          "id": "P14",
+          "name": "Appearance-aware K-means prior introduction",
+          "description": "The paper introduces an appearance-aware K-means prior that forms joint appearance-geometry features (CIELAB color plus normalized 3D position) per occupied voxel to propose keypoint locations."
+        },
+        {
+          "id": "P15",
+          "name": "Lightness-weighted clustering",
+          "description": "Clustering in the joint appearance-geometry space uses weighted K-means with lightness weights, biasing toward visually informative surface regions."
+        },
+        {
+          "id": "P16",
+          "name": "K-means centers align with object surfaces",
+          "description": "The appearance-aware, lightness-weighted K-means clustering produces particle centers that align with object surfaces and color boundaries far more effectively than geometry-only clustering."
+        },
+        {
+          "id": "P17",
+          "name": "Robust object discovery in colored voxels",
+          "description": "The improved alignment of K-means-derived particle centers with object surfaces and boundaries enables robust object discovery in colored 3D voxel scenes."
+        }
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["S4.prior"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["S4.prior"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P16", "evidence": ["S4.prior"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["S4.prior"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P18",
+          "name": "MSE alone causes gray collapse",
+          "description": "Using MSE reconstruction loss alone can match brightness with gray colors (zero chrominance), causing a gray-collapse failure mode illustrated in Figure 5."
+        },
+        {
+          "id": "P19",
+          "name": "Chroma loss separates luminance and chrominance",
+          "description": "Chroma loss separates color into luminance (channel mean) and chrominance (color residual), penalizing only chrominance error on occupied voxels."
+        },
+        {
+          "id": "P20",
+          "name": "Chroma loss prevents gray collapse",
+          "description": "Because chroma loss forces true hue/saturation fidelity by penalizing chrominance error, it prevents the gray-collapse failure mode that MSE alone exhibits."
+        },
+        {
+          "id": "P21",
+          "name": "Chroma loss improves color fidelity (ablation)",
+          "description": "Ablation results confirm chroma loss significantly improves color fidelity compared to using only MSE reconstruction loss."
+        }
+      ],
+      "edges": [
+        {"from": "P18", "to": "P19", "evidence": ["S4.loss"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["S4.loss"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["S5.1.ablation"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {
+          "id": "P22",
+          "name": "3D-DLP-VC outperforms non-object-centric baselines",
+          "description": "3D-DLP-VC substantially outperforms non-object-centric AE and VAE baselines in Masked PSNR across GenericShapes, RGB-D-SD-v2, and MimicGen datasets, while remaining competitive on IoU."
+        },
+        {
+          "id": "P23",
+          "name": "VAE stochasticity trades crispness for structure",
+          "description": "The modest IoU gap relative to the deterministic AE is attributed to 3D-DLP's VAE-based sampling of noisy latents via the reparameterization trick, trading minor reconstruction crispness for a disentangled, semantically structured latent space."
+        },
+        {
+          "id": "P24",
+          "name": "Particle-based inductive bias helps with diversity",
+          "description": "As data diversity increases (more object types, locations, colors) across synthetic datasets, the particle-based inductive bias yields noticeably sharper, more faithful reconstructions compared to non-object-centric methods."
+        }
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["S5.1.recon"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P24", "evidence": ["S5.1.recon"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {
+          "id": "P25",
+          "name": "Latent particle attribute editing",
+          "description": "Perturbing particle 3D keypoints moves corresponding objects, while scaling attributes resize them, demonstrating the latent particles encode semantic, editable 3D object properties."
+        },
+        {
+          "id": "P26",
+          "name": "Controllability validates downstream utility",
+          "description": "The demonstrated controllability of latent particle attributes validates 3D-DLP representations for downstream multi-object reasoning tasks."
+        }
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["S5.1.control"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {
+          "id": "P27",
+          "name": "3D-DLP-VC tokens fed to diffusion policy",
+          "description": "3D-DLP-VC extracts particle tokens from voxelized point clouds that are fed into a diffusion-based policy (3D EC-Diffuser) for downstream robotic manipulation."
+        },
+        {
+          "id": "P28",
+          "name": "3D-DLP achieves highest mean success on MimicGen",
+          "description": "3D-DLP-VC + EC-Diffuser achieves the highest mean success rate (48.1%) on 12 MimicGen tasks, outperforming 2D-DLP single/multi-view and voxel-only EquiDiff baselines, winning 6 of 12 tasks."
+        },
+        {
+          "id": "P29",
+          "name": "3D-DLP wins majority of RLBench tasks",
+          "description": "Among matched-compute methods, 3D-DLP wins 9 of 10 RLBench tasks with large margins, and surpasses the non-matched-compute PerACT voxel policy on 7 of 10 tasks."
+        },
+        {
+          "id": "P30",
+          "name": "3D object-centric representations improve manipulation",
+          "description": "The consistent gains of 3D-DLP over matched 2D-particle and voxel-only baselines on both MimicGen and RLBench demonstrate that 3D object-centric representations improve downstream robotic manipulation performance."
+        },
+        {
+          "id": "P31",
+          "name": "Failure case: unresolved object isolation",
+          "description": "On the Coffee Preparation task, the coffee cup is not cleanly isolated in the learned decomposition, capping downstream control performance and revealing a representation limitation."
+        }
+      ],
+      "edges": [
+        {"from": "P27", "to": "P28", "evidence": ["S5.2.mimic"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P29", "evidence": ["S5.2.rlbench"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P30", "evidence": ["S5.2.mimic"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P30", "evidence": ["S5.2.rlbench"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P28", "evidence": ["S5.2.mimic"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P32",
+      "name": "3D representations vital for manipulation",
+      "description": "3D representations are increasingly vital for robotic decision-making, especially manipulation where understanding scene geometry is crucial, since explicit 3D representations preserve spatial relationships for contact reasoning unlike 2D projections."
+    },
+    {
+      "id": "P33",
+      "name": "GROOT requires costly annotations",
+      "description": "Supervised methods like GROOT show that explicit 3D object representations improve generalization over holistic scene models but require costly annotations that limit real-world scalability."
+    },
+    {
+      "id": "P34",
+      "name": "SPAIR3D memory-intensive and colorless",
+      "description": "SPAIR3D, an early 3D extension of the patch-based SPAIR method to point clouds, relies on a memory-intensive iterative pipeline limiting scalability and operates in colorless settings, and is methodologically distinct as patch-based rather than particle-based."
+    },
+    {
+      "id": "P35",
+      "name": "Neural-rendering 3D object-centric works",
+      "description": "Recent neural-rendering-based 3D object-centric methods (uOCF, DynaVol-S, GrabS) learn object-centric neural fields, dynamic voxelized scenes, or unsupervised 3D segmentation, but differ from 3D-DLP by relying on inverse rendering or continuous scene querying rather than a direct 3D reconstruction objective."
+    },
+    {
+      "id": "P36",
+      "name": "PerAct and RVT use dense 3D representations",
+      "description": "Policy-learning methods PerAct (voxel-language fusion) and RVT (multi-view rendering from point clouds for 3D action heatmaps) leverage 3D observations but typically operate on dense, unstructured representations rather than object-centric ones."
+    },
+    {
+      "id": "P37",
+      "name": "GROOT relies on pretrained supervised models",
+      "description": "3D object-centric representations like GROOT have shown promise for policy learning but typically rely on pre-trained supervised segmentation and feature extractor models, unlike the fully self-supervised 3D-DLP."
+    },
+    {
+      "id": "P38",
+      "name": "Three input modality variants",
+      "description": "3D-DLP introduces three variants for different 3D sensing modalities: 3D-DLP-D for RGB-D images, 3D-DLP-V for occupancy voxel grids, and 3D-DLP-VC for colored RGB voxel grids."
+    },
+    {
+      "id": "P39",
+      "name": "Shared three-stage architecture",
+      "description": "All 3D-DLP variants share a common three-stage architecture: a Prior proposing keypoint locations, an Encoder inferring particle attributes and appearance latents, and a Decoder that renders and composites particles into a reconstruction."
+    },
+    {
+      "id": "P40",
+      "name": "Encoder 3D adaptations from 2D DLP",
+      "description": "The encoder adapts 2D DLP with 3D CNNs, trilinear STN sampling, 3D position/scale vectors, removal of the composition-order attribute (occlusion handled by 3D rendering), and intra-cluster covariance replacing SSM variance for keypoint selection."
+    },
+    {
+      "id": "P41",
+      "name": "Volumetric compositing via foreground weights",
+      "description": "Realistic composite scenes are rendered by computing normalized foreground density weights per object and per voxel, combined with a background mask, to produce the final rendered pixel color."
+    },
+    {
+      "id": "P42",
+      "name": "ELBO training objective",
+      "description": "3D-DLP is trained as a VAE by maximizing an evidence lower bound decomposed into reconstruction loss, KL-divergence loss for particle latents, and a sparsity-encouraging particle-usage loss."
+    },
+    {
+      "id": "P43",
+      "name": "Implementation and compute details",
+      "description": "3D-DLP is implemented in PyTorch with Adam optimizer, 64-cubed voxel resolution, K-means with 5 iterations and 64 proposals, batch size 32, trained on a single Nvidia GH200 GPU for about 48 hours."
+    },
+    {
+      "id": "P44",
+      "name": "Four evaluation datasets",
+      "description": "The paper evaluates on two synthetic Blender datasets (GenericShapes, ShapeNetScenes), one robotic simulation dataset (MimicGen), and one real-world dataset (UW RGB-D Scenes Dataset v2)."
+    },
+    {
+      "id": "P45",
+      "name": "Particle count ablation optimum at M=24",
+      "description": "Ablating the number of particles shows performance peaks at M=24 on MimicGen; increasing to 40 particles yields no further gain, and the model naturally ignores redundant particles."
+    },
+    {
+      "id": "P46",
+      "name": "K-means outperforms SSM on sparse voxels",
+      "description": "Ablation results show K-means keypoint proposals substantially outperform spatial-softmax (SSM) proposals when applied to sparse voxel volumes."
+    },
+    {
+      "id": "P47",
+      "name": "3D-DLP-D outperforms slot-based RGB-D baselines",
+      "description": "For RGB-D inputs, 3D-DLP-D substantially outperforms slot-based object-centric baselines SAVi and SLATE both quantitatively (PSNR/SSIM/LPIPS) and qualitatively (avoiding slot under-utilization)."
+    },
+    {
+      "id": "P48",
+      "name": "Limitation: voxelization memory cost",
+      "description": "The voxelization approach incurs higher memory demands than point clouds, and learning directly from raw point clouds remains future work."
+    },
+    {
+      "id": "P49",
+      "name": "Limitation: scaling to dynamic diverse scenes",
+      "description": "Like 2D DLP, 3D-DLP excels on datasets with recurring object types and static backgrounds, but scaling to highly dynamic, diverse real-world scenes with novel objects and cluttered, moving backgrounds presents challenges for future research."
+    },
+    {
+      "id": "P50",
+      "name": "Future work: dynamics and world modeling",
+      "description": "Extending 3D-DLP to dynamics and world modeling is noted as promising future work."
+    }
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph coheres well within its major clusters: the motivation for extending object-centric representation learning to 3D (C1), the DLP background and its 2D limitation motivating the 3D extension (C2), the voxelization strategy bridging point clouds to a DLP-compatible grid (C3), the appearance-aware K-means keypoint prior chain (C4), the chroma loss chain addressing gray collapse (C5), the reconstruction-quality experimental results (C6), the latent controllability demonstration (C7), and the downstream imitation-learning results across two benchmarks (C8). Edge confidence is high throughout since the paper's methodological narrative explicitly motivates each design choice (prior, loss) with a stated problem-solution-validation chain, and the experimental sections explicitly connect ablation/benchmark results to broader claims. The isolated-node set is relatively large, capturing related-work positioning, architectural implementation details, and supplementary ablations/limitations that provide context but are not tightly chained into the paper's central technical narrative. No cycles or contested edge directions were identified."
+}

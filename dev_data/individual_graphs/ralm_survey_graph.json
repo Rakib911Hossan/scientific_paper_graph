@@ -1,0 +1,445 @@
+{
+  "arxiv_id": "2404.19543v2",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "LLM hallucination and knowledge limitations",
+          "description": "LLMs have catalyzed NLP advances but encounter challenges such as hallucination and the need for domain-specific knowledge, and cannot promptly update their knowledge."
+        },
+        {
+          "id": "P2",
+          "name": "Retrieval integration mitigates limitations",
+          "description": "Recent methodologies integrate information retrieved from external resources with LLMs, substantially enhancing their performance across NLP tasks."
+        },
+        {
+          "id": "P3",
+          "name": "Existing RAG surveys are incomplete",
+          "description": "Existing surveys on RAG are limited in scope: some do not cover all relevant domains or lack developmental timelines, some introduce retrievers and generators independently limiting insight into their interaction, and some focus narrowly on text generation with limited illustrative detail."
+        },
+        {
+          "id": "P4",
+          "name": "RAG surveys tell only half the story",
+          "description": "Existing surveys on RAG only address NLG-oriented retrieval augmentation, neglecting that NLU tasks also necessitate external information, leaving a scarcity of comprehensive surveys spanning the full spectrum of NLP."
+        },
+        {
+          "id": "P5",
+          "name": "Survey introduces RALM framing",
+          "description": "This survey addresses the gap by covering both Retrieval-Augmented Generation (RAG) and Retrieval-Augmented Understanding (RAU) under the unified concept of Retrieval-Augmented Language Models (RALM), aligning generation work with NLG and the rest with NLU."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P5", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P6",
+          "name": "RALM basic architecture y=F(x,z)",
+          "description": "RALM is defined by the basic architecture y = F(x, z), where x is the input, z is the retrieved message, and F is a language model or data processing function."
+        },
+        {
+          "id": "P7",
+          "name": "Sequential single interaction",
+          "description": "In sequential single interaction, a retriever finds top-K relevant documents z for input x, and the language model then receives x and z to generate output tokens."
+        },
+        {
+          "id": "P8",
+          "name": "Single interaction insufficient for long/multi-hop tasks",
+          "description": "Researchers discovered that a single retriever-LM interaction is insufficient for long dialogue generation and solving multi-hop problems."
+        },
+        {
+          "id": "P9",
+          "name": "Sequential multiple interactions",
+          "description": "To address the insufficiency of single interaction, a method with multiple interactions between retriever and language model was proposed, where the LM generates output first and the outputted content is used for subsequent retrieval steps."
+        },
+        {
+          "id": "P10",
+          "name": "Sequential structure may not be optimal",
+          "description": "The strictly sequential flow of information (retriever-to-LM or LM-to-retriever) may not be optimal in all domains and may be less extensible."
+        },
+        {
+          "id": "P11",
+          "name": "Parallel interaction",
+          "description": "As an alternative to sequential structures, researchers proposed a parallel interaction structure where the retriever and language model work independently on the input, with the output determined by weighted interpolation of their respective outputs."
+        }
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["S2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["S2.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P12",
+          "name": "Sparse retrieval simplicity",
+          "description": "Sparse retrieval's main advantage is simplicity, allowing easy integration into existing indexing systems due to fewer dimensions, and it is easier to generalise and more efficient."
+        },
+        {
+          "id": "P13",
+          "name": "Term matching insufficient, motivates sparse vectors",
+          "description": "Simple term matching methods (TF-IDF, BM25) became insufficient to meet retrieval demands, motivating the use of machine-learning-based sparse vector representations that capture semantic essence rather than exact term overlap."
+        },
+        {
+          "id": "P14",
+          "name": "Deep learning transforms retrieval toward dense methods",
+          "description": "The emergence of deep learning techniques significantly transformed retrieval, driving growing interest in dense retrieval methods that sacrifice some comprehensibility for enhanced accuracy."
+        },
+        {
+          "id": "P15",
+          "name": "Dual-encoder architecture underlies dense retrieval",
+          "description": "The dual encoder architecture, comprising two networks that independently generate dense embeddings for queries and documents, is the common design for dense retrieval models, favored for its high accuracy and suitability for RALM."
+        },
+        {
+          "id": "P16",
+          "name": "Knowledge distillation streamlines retrieval database",
+          "description": "Knowledge distillation is a technique for gradually filtering and streamlining a large retrieval database to make it more suitable for a user's query, transferring data from larger pre-trained models to smaller ones."
+        },
+        {
+          "id": "P17",
+          "name": "Internet retrieval as plug-and-play but noisy",
+          "description": "Internet retrieval offers a plug-and-play approach well-suited to open-domain generalisation without requiring real-time database updates, but the presence of irrelevant or harmful web information can significantly reduce RALM effectiveness without proper screening."
+        },
+        {
+          "id": "P18",
+          "name": "Hybrid retrieval combines technique strengths",
+          "description": "As researchers gained better understanding of individual retrieval techniques' strengths and weaknesses, they increasingly combined them into hybrid approaches to improve effectiveness and robustness of the RALM architecture."
+        }
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["S3.1", "S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P15", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S3.3", "S3.4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P19",
+          "name": "AutoEncoder LM independence assumption limitation",
+          "description": "AutoEncoder language models introduce an independence assumption during pre-training that means correlations between predicted [MASK] tokens are not considered, and the [MASK] marker creates inconsistency between pre-training and fine-tuning stages."
+        },
+        {
+          "id": "P20",
+          "name": "AutoEncoder models suited to NLU",
+          "description": "Because AutoEncoder language models are highly generalisable, unsupervised, and naturally incorporate contextual semantic information, self-encoding models are commonly used in RALM architectures for natural language understanding tasks."
+        },
+        {
+          "id": "P21",
+          "name": "AutoRegressive left-to-right prediction",
+          "description": "AutoRegressive language models predict the next word based only on preceding words (left-to-right modelling), making them well-suited to generative NLG tasks like dialogue generation and machine translation."
+        },
+        {
+          "id": "P22",
+          "name": "AutoRegressive models popular for RALM NLG",
+          "description": "Because of their left-to-right generative advantage, AutoRegressive language models are a popular choice for NLG tasks in the RALM field."
+        },
+        {
+          "id": "P23",
+          "name": "Encoder-Decoder architecture enables parallel computation",
+          "description": "The Transformer encoder-decoder architecture divides input into source and destination sequences processed by encoder and decoder respectively, enabling parallel computation and significantly increasing training and inference speed."
+        }
+      ],
+      "edges": [
+        {"from": "P19", "to": "P20", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P22", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P24",
+          "name": "Retrieved documents can harm output quality",
+          "description": "Retrieval can produce documents that not only fail to provide helpful information but can also compromise the quality of the language model output, motivating research on retrieval quality control."
+        },
+        {
+          "id": "P25",
+          "name": "Instruction-tuning improves query encoder relevance",
+          "description": "An instruction-tuning approach updates the query encoder using a generalised supervised retrieval training target, enabling the retriever to produce more contextually relevant results consistent with LLM preferences."
+        },
+        {
+          "id": "P26",
+          "name": "SELF-RAG builds on instruction-tuning idea",
+          "description": "Inspired by the instruction-tuning approach to retrieval quality, SELF-RAG proposes a more sophisticated model trained on an instruction-tracking dataset, retrieving and selecting outputs via fine-grained self-reflection."
+        },
+        {
+          "id": "P27",
+          "name": "Correction strategy improves on SELF-RAG",
+          "description": "A further method improves on SELF-RAG by designing a correction strategy that classifies retrieved information into CORRECT, INCORRECT, and AMBIGUOUS categories to address inaccurate retriever results."
+        }
+      ],
+      "edges": [
+        {"from": "P24", "to": "P25", "evidence": ["S5.1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P25", "to": "P26", "evidence": ["S5.1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P27", "evidence": ["S5.1.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {
+          "id": "P28",
+          "name": "Single-document retrieval augmentation limited",
+          "description": "The RALM architecture initially used a single document for retrieval augmentation, but performance significantly improved when the number of retrieved paragraphs was increased."
+        },
+        {
+          "id": "P29",
+          "name": "Fusion-in-Decoder (FiD) proposed",
+          "description": "Because increasing retrieved paragraphs improved performance, Fusion-in-Decoder was proposed: keeping the retriever unchanged, encoding related documents individually, then connecting them for decoder output."
+        },
+        {
+          "id": "P30",
+          "name": "FiD-Light constrains information flow",
+          "description": "An improvement on FiD constrains the information flow from encoder to decoder and tunes source pointers to improve topmost source accuracy."
+        },
+        {
+          "id": "P31",
+          "name": "FiD-KD applies knowledge distillation to FiD",
+          "description": "Knowledge distillation was applied to the FiD model (FiD-KD), using cross-attention scores from a sequence-to-sequence reader to obtain synthetic targets for the retriever."
+        }
+      ],
+      "edges": [
+        {"from": "P28", "to": "P29", "evidence": ["S5.2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P30", "evidence": ["S5.2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P31", "evidence": ["S5.2.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {
+          "id": "P32",
+          "name": "KNN-LM linear interpolation with neighbors",
+          "description": "The KNN-LM approach linearly interpolates an extended neural language model's predictions with K-nearest-neighbours in the pre-trained LM embedding space."
+        },
+        {
+          "id": "P33",
+          "name": "Not all tokens need retrieval (adaptive retrieval)",
+          "description": "It was proposed that not all generated tokens need to be retrieved; a lightweight neural network can be trained to aid KNN-LM in adaptive retrieval, improving efficiency."
+        },
+        {
+          "id": "P34",
+          "name": "RETOMATON improves on adaptive retrieval",
+          "description": "RETOMATON, an unsupervised weighted finite automaton built on the datastore using saved pointers and clustering, is more effective than the adaptive retrieval approach in improving accuracy while requiring no additional training data."
+        }
+      ],
+      "edges": [
+        {"from": "P32", "to": "P33", "evidence": ["S5.2.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P34", "evidence": ["S5.2.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {
+          "id": "P35",
+          "name": "REALM end-to-end trainable retriever",
+          "description": "REALM used masked language training in pre-training and included a retriever trainable end-to-end, targeting only the QA task with a frozen retriever during fine-tuning."
+        },
+        {
+          "id": "P36",
+          "name": "RAG uses pre-trained retriever with partial end-to-end training",
+          "description": "Unlike REALM, RAG used an already-trained retriever (DPR) and only employed BART for partial end-to-end training."
+        },
+        {
+          "id": "P37",
+          "name": "End-to-end retriever training improves performance",
+          "description": "Building on REALM's approach with an unsupervised pre-training and supervised fine-tuning pipeline, subsequent work found that using end-to-end trained retrievers resulted in significant performance improvement across tasks."
+        }
+      ],
+      "edges": [
+        {"from": "P35", "to": "P37", "evidence": ["S5.3.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C9",
+      "nodes": [
+        {
+          "id": "P38",
+          "name": "Simple prefix attacks degrade RALM",
+          "description": "Exceedingly simple prefix attacks can diminish the relevance and accuracy of RALM output and even alter the retriever's retrieval strategy, revealing poor robustness as a limitation."
+        },
+        {
+          "id": "P39",
+          "name": "Robustness limitation motivates GGPP defense",
+          "description": "In response to prefix-attack vulnerability, Gradient Guided Prompt Perturbation (GGPP) is proposed as a method to perturb RALM and detect such perturbations by prompting the internal state of the perturbed model."
+        },
+        {
+          "id": "P40",
+          "name": "Internet quality variance causes noisy retrieval",
+          "description": "When using the Internet as a retrieval tool, the quality of sources can vary widely, and merging this data without proper consideration can introduce noise or misleading information, contributing to poor retrieval-result quality."
+        },
+        {
+          "id": "P41",
+          "name": "Poor retrieval quality motivates future retrieval improvement",
+          "description": "The persistent uncertainty that retrieval outcomes fully align with the LM, and the noise introduced by variable-quality Internet sources, motivates the proposed future direction of improving retrieval quality via better datasets and re-ranking techniques."
+        },
+        {
+          "id": "P42",
+          "name": "Extensive model changes increase overhead",
+          "description": "Some existing RALMs require extensive model changes and complex pre-training/fine-tuning, increasing time and space overhead and reducing scalability as retrieval scale grows."
+        },
+        {
+          "id": "P43",
+          "name": "Overhead motivates plug-and-play and in-context solutions",
+          "description": "The overhead limitation motivates proposed future solutions such as plug-and-play intermediate modules, greater use of Internet retrieval, and in-context learning to reduce the cost of improving language models."
+        }
+      ],
+      "edges": [
+        {"from": "P38", "to": "P39", "evidence": ["S9.1.1", "S9.2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P40", "to": "P41", "evidence": ["S9.1.2", "S9.2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P42", "to": "P43", "evidence": ["S9.1.3", "S9.2.3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P44",
+      "name": "NLP multidisciplinary goal",
+      "description": "NLP is a multidisciplinary field integrating linguistics, computer science, and mathematics, aiming to enable mutual transformation between human language and computer data."
+    },
+    {
+      "id": "P45",
+      "name": "Transformer architecture rise",
+      "description": "The transformer architecture has grown significantly in popularity as a leading representative of NLP and large language models."
+    },
+    {
+      "id": "P46",
+      "name": "GPT and BERT families dominance",
+      "description": "The most prevalent language models are the GPT families and BERT families, demonstrated to excel across many NLP tasks."
+    },
+    {
+      "id": "P47",
+      "name": "Semiparametric memory concept",
+      "description": "RALM integrates the nonparametric memory acquired by the retriever with the parametric memory of the language model to create a semiparametric memory, enhancing performance."
+    },
+    {
+      "id": "P48",
+      "name": "DPR indexes passages in continuous space",
+      "description": "DPR indexes all passages in a low-dimensional continuous space using a dense encoder, allowing efficient retrieval of top-k passages associated with an input query at runtime."
+    },
+    {
+      "id": "P49",
+      "name": "Contriever uses unsupervised dual-encoder training",
+      "description": "Contriever is trained using unsupervised data with a dual-encoder architecture and average pooling to reduce reliance on manual annotation."
+    },
+    {
+      "id": "P50",
+      "name": "Multimodal retrieval bridges modalities",
+      "description": "Multimodal retrieval techniques encode textual and visual information into a shared latent space to bridge different modalities for tasks like image-text retrieval."
+    },
+    {
+      "id": "P51",
+      "name": "GPT family architecture evolution",
+      "description": "The GPT family evolved from unsupervised pre-training plus fine-tuning, to zero-shot learning, to GPT-3's scaled-up approach abandoning fine-tuning, with later variants incorporating RLHF."
+    },
+    {
+      "id": "P52",
+      "name": "Llama family design choices",
+      "description": "The Llama family introduced RMSNorm, SwiGLU activation, and rotary position embeddings, with Llama2 adding supervised fine-tuning, iterative reward modelling, RLHF, and Ghost Attention for multi-turn dialogue control."
+    },
+    {
+      "id": "P53",
+      "name": "T5 unified text-to-text framework",
+      "description": "T5 introduces a unified framework converting all text-based language problems into text-to-text format to explore transfer learning potential in NLP."
+    },
+    {
+      "id": "P54",
+      "name": "BART arbitrary noise transformations",
+      "description": "BART is an encoder-decoder model that allows arbitrary noise transformations to the input document during pre-training, including token masking, deletion, text infilling, sentence permutation, and document rotation."
+    },
+    {
+      "id": "P55",
+      "name": "FLAN systematic instruction tuning",
+      "description": "FLAN is one of the most systematic and comprehensive approaches to instruction tuning, fine-tuning on instruction-optimised datasets while scaling task count, model size, and incorporating chain-of-thought data."
+    },
+    {
+      "id": "P56",
+      "name": "Structured vs unstructured data sources",
+      "description": "RALM data sources are categorised into structured data (tables, knowledge graphs) with clearly defined fields, and unstructured data (text, images, audio, video) lacking a clearly defined structure."
+    },
+    {
+      "id": "P57",
+      "name": "RALM applications span NLG, NLU, and both",
+      "description": "RALM downstream applications are categorized by whether task completion depends primarily on generative capability (NLG, e.g., machine translation, dialogue generation), comprehension capability (NLU, e.g., slot filling, fact checking), or both (e.g., question answering, summarization)."
+    },
+    {
+      "id": "P58",
+      "name": "RAGAS evaluates faithfulness and relevance",
+      "description": "RAGAS employs the WikiEval dataset to assess RALM faithfulness, answer relevance, and context relevance, using an automated LLM-based evaluation process."
+    },
+    {
+      "id": "P59",
+      "name": "RGB evaluates robustness dimensions",
+      "description": "RGB is a bilingual Chinese-English evaluation system using accuracy, rejection rate, and error detection rate metrics to assess noise robustness, negative rejection, information integration, and counterfactual robustness."
+    },
+    {
+      "id": "P60",
+      "name": "MIRAGE targets medical domain evaluation",
+      "description": "MIRAGE integrates data from five datasets including MMLU-Med to evaluate zero-shot learning, multi-choice evaluation, retrieval-augmented generation, and question-only retrieval ideation capabilities of medical RALMs, discovering log-linear scaling and a lost-in-the-middle effect."
+    },
+    {
+      "id": "P61",
+      "name": "Few application domains limitation",
+      "description": "Despite improving LM performance, RALMs have seen limited improvement from an application perspective, still mostly performing routine tasks like question answering and summarization rather than more diverse applications."
+    }
+  ],
+  "structural_score": 6,
+  "structural_reasoning": "As a broad survey rather than a single unified technical contribution, this paper's content is naturally structured as many largely independent thematic strands (interaction paradigms, retriever categories, language model families, enhancement techniques, applications, evaluation methods, limitations) rather than one tightly chained argument. The extracted components each capture locally coherent motivation-to-solution chains within a subsection (e.g., single-interaction limitations motivating multi-interaction and parallel designs; single-document retrieval limitations motivating FiD and its extensions; prefix-attack vulnerabilities motivating GGPP). However, edges connecting across major sections (e.g., linking retriever categories to specific LM families, or linking data sources to particular applications) are largely absent from the graph because the survey treats these as a taxonomy rather than asserting causal or dependency relationships between them. This structural characteristic of survey papers, combined with the very large number of enumerated techniques described in parallel (particularly in Related Work-style catalog sections and the large summary tables), results in a substantial isolated-node set and a moderate structural score reflecting genuine catalog-style organization rather than a flaw in extraction."
+}

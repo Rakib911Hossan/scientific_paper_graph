@@ -1,0 +1,208 @@
+{
+ "arxiv_id": "2609.01195",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "CaRL-EM formulation, design, and evaluation",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Pairwise LLM EM ignores set structure",
+     "description": "Most LLM-based entity matching judges each (anchor, candidate) pair in isolation, ignoring interactions among candidates and the clean-clean constraint that at most one candidate matches."
+    },
+    {
+     "id": "P2",
+     "name": "Fixed pipelines ignore difficulty and cost",
+     "description": "Manually designed composite pipelines such as COMEM apply the same operator sequence to every anchor regardless of difficulty, so inference cost is a fixed byproduct of the architecture, and cost matters at industrial scale."
+    },
+    {
+     "id": "P3",
+     "name": "Cost-aware sequential MDP formulation",
+     "description": "Multi-candidate EM with blocking is cast as an episodic MDP per anchor, where actions invoke operators that update candidate scores and accumulate abstract cost until DECIDE or Tmax."
+    },
+    {
+     "id": "P4",
+     "name": "Four operators",
+     "description": "The controller chooses among MATCH (pairwise, lightweight Flan-T5-xl), COMPARE (champion vs challenger preference), SELECT (listwise choice over top-k shortlist) and terminal DECIDE(i)/DECIDE(None), each with a model capacity."
+    },
+    {
+     "id": "P5",
+     "name": "Abstract two-level cost model",
+     "description": "Operators carry a low/high cost label (high = rho x low, rho=2.5 by default), a relative control signal that decouples the policy from any specific pricing or model."
+    },
+    {
+     "id": "P6",
+     "name": "Reward and state design",
+     "description": "The state concatenates scores, candidate masks, COMPARE frequency, global context (cost, time, max score) and action history; rewards combine terminal correctness, a cost penalty and potential-based shaping on the score margin Phi."
+    },
+    {
+     "id": "P7",
+     "name": "PPO-trained MLP policy",
+     "description": "The policy is a 3-layer MLP (768-384-192) trained with PPO and a learned value baseline, trained once on the AB dataset."
+    },
+    {
+     "id": "P8",
+     "name": "Backend-agnostic controller",
+     "description": "Because the controller sees only abstract operators and cost labels, stronger LLMs can be plugged in at inference without retraining as long as operator interfaces and relative cost levels hold."
+    },
+    {
+     "id": "P9",
+     "name": "Competitive with supervised DITTO at low cost",
+     "description": "Zero-shot on other datasets CaRL-EM averages F1macro 76.09 versus 85.64 for in-domain DITTO (about 89%) at 5.9% of DITTO's cost."
+    },
+    {
+     "id": "P10",
+     "name": "Beats COMEM at far lower cost",
+     "description": "CaRL-EM beats the strongest hand-crafted baseline COMEM on average F1macro with about 4.5x cost reduction, and with the same GPT-4o mini backend uses only 22% of COMEM's total cost, forming a new Pareto frontier."
+    },
+    {
+     "id": "P11",
+     "name": "Better abstention on no-match",
+     "description": "CaRL-EM stops with a no-match decision more readily when evidence is weak, giving higher F1none than the fixed pipeline (e.g. 68.20 vs 60.78), which avoids false positives."
+    },
+    {
+     "id": "P12",
+     "name": "Transfers zero-shot and across backends",
+     "description": "DITTO trained on AB drops from 85.64 to 59.75 F1macro on other datasets, while CaRL-EM stays high; swapping backends without retraining usually raises F1macro and cost, with the controller adjusting MATCH/COMPARE usage."
+    },
+    {
+     "id": "P13",
+     "name": "Adaptive operator use and position robustness",
+     "description": "CaRL-EM uses fewer MATCH/COMPARE calls than COMEM, varies steps with dataset difficulty (more on AG, WA), and is more stable across gold-candidate positions than baselines."
+    },
+    {
+     "id": "P14",
+     "name": "Ablation: cost term",
+     "description": "Removing the cost term leaves F1macro unchanged (76.07) but raises cost by about 15%."
+    },
+    {
+     "id": "P15",
+     "name": "Ablation: operators matter",
+     "description": "Removing MATCH drops F1macro to 65.87 (F1none 49.86), removing COMPARE to 73.69, removing SELECT to 73.26 (cheapest but lower F1id)."
+    },
+    {
+     "id": "P16",
+     "name": "Ablation: potential shaping",
+     "description": "Removing the potential-based term Phi lowers F1id and F1macro (75.93) and makes performance less stable (Std 14.56 vs 12.24)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.1-3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2 reward"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.1, 3.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.1, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.1-5.2, Fig 3, Table 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.1, Table 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.3, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.4, Fig 4-5"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.6, Table 4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P15",
+     "evidence": [
+      "Sec 5.6, Table 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P16",
+     "evidence": [
+      "Sec 5.6, Table 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [],
+ "structural_reasoning": "Limitations of pairwise and fixed-pipeline EM motivate the MDP formulation; operators, cost model, state/reward and policy training lead to the performance, transfer, behavior and ablation results."
+}

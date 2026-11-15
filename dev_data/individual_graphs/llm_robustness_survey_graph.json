@@ -1,0 +1,195 @@
+{
+  "arxiv_id": "2505.18658v2",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/figures/tables rather than sentence indices, since a sentence-indexed source was not available for this document. This is a broad survey rather than a single-argument paper, so many nodes are definitional/categorical rather than links in one causal chain; edges are included only where the survey itself states a dependency, trade-off, or motivating relationship.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: why robustness evaluation is needed beyond accuracy",
+      "nodes": [
+        {"id": "P1", "name": "Accuracy alone is insufficient for reliability", "description": "Although accuracy is the most fundamental evaluation metric, it is insufficient to ensure reliability in real-world LLM applications."},
+        {"id": "P2", "name": "Deep models are easily fooled by imperceptible perturbations", "description": "Despite improved accuracy, deep neural network models, including LLMs, have been shown to be easily fooled by specific imperceptible input perturbations."},
+        {"id": "P3", "name": "Lack of robustness causes unintended harms in high-stakes domains", "description": "A lack of robustness may result in unintended biases, incorrect predictions, or overreliance on spurious correlations, raising reliability concerns in high-stakes domains such as healthcare, law, complex reasoning, code generation, and finance."},
+        {"id": "P4", "name": "A thorough robustness assessment beyond accuracy is required", "description": "Because of the risks in high-stakes domains, a thorough and exacting assessment of LLM robustness that goes beyond conventional accuracy criteria is required."},
+        {"id": "P5", "name": "No standardized robustness definitions/categorizations", "description": "The absence of standardized definitions and categorizations of robustness complicates cross-study comparisons, as research efforts differ in how they frame scope and components."},
+        {"id": "P6", "name": "Root causes of non-robustness are hard to disentangle", "description": "Pinpointing the root causes of non-robustness (data biases, unstable training dynamics, architectural limitations, inference inefficiencies) requires disentangling complex interactions across these factors."},
+        {"id": "P7", "name": "Mitigation effectiveness does not generalize across vulnerabilities", "description": "While numerous mitigation strategies exist, their effectiveness often depends on addressing specific vulnerabilities, making it difficult to generalize solutions."},
+        {"id": "P8", "name": "Evaluation of robustness remains fragmented", "description": "Evaluating robustness remains fragmented, with no unified metrics or benchmarks to holistically assess performance under diverse real-world conditions."},
+        {"id": "P9", "name": "Existing literature is scattered across domains", "description": "Existing literature on LLM robustness is scattered across domains, limiting cross-pollination of insights and hindering cohesive solutions."},
+        {"id": "P10", "name": "These challenges motivate this comprehensive survey", "description": "The combination of definitional fragmentation, disentangling root causes, non-generalizing mitigations, fragmented evaluation, and scattered literature motivates this survey's comprehensive overview to unify perspectives and accelerate progress."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P10", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P6", "to": "P10", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P10", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P10", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P10", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P10", "evidence": ["S1"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Defining robustness and its interdependent dimensions",
+      "nodes": [
+        {"id": "P11", "name": "Robustness is stability of output under perturbation or distribution shift", "description": "Robustness is conceptualized as the degree to which a model's output remains stable or correct when the input is perturbed or drawn from a test distribution different from the training distribution."},
+        {"id": "P12", "name": "Working definition synthesizing core themes", "description": "The survey's working definition is that LLM robustness is the model's ability to maintain consistent performance, reliability, and adherence to intended behaviour despite variations in inputs, contexts, or data distributions, encompassing resilience to noise, paraphrasing, distribution shifts, incomplete information, reasoning perturbations, instruction variations, and adversarial manipulations."},
+        {"id": "P13", "name": "Eight (overlapping) key dimensions identified", "description": "The survey delineates key dimensions of robustness: resilience to adversarial attacks, OOD generalization, sensitivity to prompt variations, handling noisy input, fairness under stress, consistency/reliability of outputs, and task-specific robustness, noting these categories overlap and interact."},
+        {"id": "P14", "name": "Spurious-correlation reliance links OOD, adversarial, and prompt sensitivity", "description": "A model prone to spurious correlations (an OOD issue) is often more vulnerable to adversarial attacks that exploit those patterns and more sensitive to prompt variations that shift these cues."},
+        {"id": "P15", "name": "Improving consistency lowers adversarial vulnerability", "description": "Enhancing consistency (e.g., reducing prompt sensitivity) can lower adversarial vulnerability."},
+        {"id": "P16", "name": "Stronger OOD generalization reduces hallucination and reinforces consistency", "description": "Stronger OOD generalization reduces hallucination risks and may indirectly reinforce consistency."},
+        {"id": "P17", "name": "Noise robustness may strengthen consistency", "description": "Robustness to noise may also strengthen consistency."},
+        {"id": "P18", "name": "Rigid consistency enforcement can limit adaptability", "description": "Enforcing consistency too rigidly may limit adaptability to novel inputs, illustrating a trade-off between dimensions."},
+        {"id": "P19", "name": "Fairness-improving alignment can weaken OOD generalization (alignment tax)", "description": "Alignment methods aimed at improving fairness may weaken OOD generalization, a phenomenon also known as the alignment tax."},
+        {"id": "P20", "name": "OOD inputs push models beyond knowledge boundaries, raising hallucination risk", "description": "OOD inputs can push models beyond their knowledge boundaries, increasing hallucination risks."},
+        {"id": "P21", "name": "Over-optimizing one dimension can undermine others", "description": "Overall, robustness requires balanced strategies, since over-optimizing a single dimension can undermine other dimensions."}
+      ],
+      "edges": [
+        {"from": "P11", "to": "P12", "evidence": ["S2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P13", "evidence": ["S2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["S2.2", "Figure3"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P21", "evidence": ["S2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P21", "evidence": ["S2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P21", "evidence": ["S2.2"], "votes": 1, "confidence": "single_run"},
+        {"from": "P18", "to": "P21", "evidence": ["S2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P19", "to": "P21", "evidence": ["S2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P20", "to": "P21", "evidence": ["S2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P14", "evidence": ["S2.2", "Figure3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Sources of non-robustness across the LLM lifecycle",
+      "nodes": [
+        {"id": "P22", "name": "Non-robustness sources span the full model lifecycle", "description": "Failures in robustness can be broadly categorized as stemming from data, model architecture, the training/learning process, or inference, spanning the entire lifecycle from data collection to deployment."},
+        {"id": "P23", "name": "Spurious correlations are a primary data-related cause", "description": "Instead of learning intended causal relationships, models learn to rely on simpler, superficial patterns (shortcuts) that correlate with correct outputs in training data but do not hold universally, causing performance collapse when such correlations are absent or altered."},
+        {"id": "P24", "name": "Dataset biases and annotation artifacts propagate into model behavior", "description": "Training data reflects societal biases and superficial annotation patterns (e.g., crowd-sourced shortcut labeling), which LLMs learn and amplify, perpetuating robustness failures across training, evaluation, and deployment."},
+        {"id": "P25", "name": "Data poisoning/backdoors can be intentionally injected", "description": "Adversaries can inject malicious examples into training or fine-tuning data to create hidden backdoors triggered by specific inputs at inference time, often without noticeably degrading general performance."},
+        {"id": "P26", "name": "Standard training objectives (NTP/ERM) optimize average performance, not robustness", "description": "Standard pre-training (next-token prediction) and fine-tuning (ERM) objectives primarily optimize average performance on the training distribution and may not explicitly encourage robustness to distribution shifts or perturbations, potentially encouraging shortcut reliance."},
+        {"id": "P27", "name": "RLHF introduces reward hacking and bias amplification risks", "description": "RLHF can cause the model to exploit weaknesses/biases in the reward model (reward hacking) and can amplify biases present in inconsistent or incomplete human feedback (bias amplification)."},
+        {"id": "P28", "name": "Alignment tax trades general capability for alignment", "description": "Improving alignment (helpfulness, harmlessness) can come at the cost of reduced performance on general knowledge benchmarks, worse calibration, or new vulnerabilities -- termed the alignment tax."},
+        {"id": "P29", "name": "Fine-tuning can reduce OOD robustness and increase noise/instruction brittleness", "description": "Fine-tuning can cause overfitting to fine-tuning-data-specific patterns (harming OOD generalization), high sensitivity to noise in instruction/preference data, and brittleness to instruction phrasing variations at test time."},
+        {"id": "P30", "name": "Transformer architecture has inherent vulnerable components", "description": "Specific Transformer components, such as the self-attention mechanism, can be points of failure, and expanding model depth can particularly disrupt attention mechanisms."},
+        {"id": "P31", "name": "Efficiency modifications (quantization, pruning) can cascade into robustness loss", "description": "Deployment modifications like quantization and pruning can induce information-loss cascades that significantly degrade robustness, with extreme cases like bit-flip attacks showing catastrophic sensitivity."},
+        {"id": "P32", "name": "Decoding strategy choice affects consistency and robustness", "description": "The algorithm used to select the next token (greedy, beam search, sampling) has a major impact on model performance and consistency, with deterministic vs. stochastic strategies offering different trade-offs and hyperparameters like temperature/beam width strongly affecting robustness."},
+        {"id": "P33", "name": "Calibration errors undermine reliable use of confidence scores", "description": "LLM confidence scores frequently fail to accurately reflect true correctness likelihood, especially after RLHF fine-tuning (overconfidence), hindering reliable decision-making based on model outputs."},
+        {"id": "P34", "name": "RAG robustness depends on retriever quality", "description": "RAG systems' robustness depends heavily on the quality and relevance of retrieved context; inaccurate or noisy retrieval can significantly compromise final output quality, sometimes worse than no retrieval at all."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["S3", "S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P24", "evidence": ["S3", "S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P25", "evidence": ["S3", "S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P26", "evidence": ["S3", "S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P26", "to": "P27", "evidence": ["S3.2"], "votes": 1, "confidence": "single_run"},
+        {"from": "P27", "to": "P28", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P29", "evidence": ["S3.2"], "votes": 1, "confidence": "single_run"},
+        {"from": "P22", "to": "P30", "evidence": ["S3", "S3.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P31", "evidence": ["S3.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P32", "evidence": ["S3", "S3.4"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P33", "evidence": ["S3.4"], "votes": 1, "confidence": "single_run"},
+        {"from": "P22", "to": "P34", "evidence": ["S3", "S3.4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Mitigation strategies organized by pipeline stage",
+      "nodes": [
+        {"id": "P35", "name": "Four-stage pipeline categorization of mitigations", "description": "Mitigation strategies are categorized by deployment stage: pre-processing (data-stage interventions), in-processing (training/fine-tuning interventions), intra-processing (inference-time adaptations), and post-processing (output validation/filtering)."},
+        {"id": "P36", "name": "Pre-processing targets data-stage vulnerabilities before training", "description": "Pre-processing strategies (data augmentation, data filtering) intervene at the data stage before training/fine-tuning, aiming to prevent the model from inheriting or amplifying data biases and vulnerabilities."},
+        {"id": "P37", "name": "In-processing builds robustness into model parameters during training", "description": "In-processing strategies (adversarial training, regularization, alignment) integrate directly into the training/fine-tuning loop, actively guiding learning to develop more robust representations and counter training-induced non-robustness."},
+        {"id": "P38", "name": "Intra-processing adapts inference without retraining", "description": "Intra-processing strategies (robust prompting, weight redistribution, modified decoding, inference-time adaptation) dynamically adjust how models interpret inputs or produce outputs during inference, addressing data/training/inference-related non-robustness without retraining, though not root causes in training data or parameters."},
+        {"id": "P39", "name": "Post-processing is the final output-stage defence", "description": "Post-processing strategies (output filtering/validation, LLM-as-a-judge) scrutinize, filter, validate, or transform generated text after generation but before delivery, catching harmful content, inaccuracies, biases, or outputs from attacks that bypassed earlier defences."},
+        {"id": "P40", "name": "Data filtering involves a harm-removal vs. diversity trade-off", "description": "Overly strict data filtering to remove toxic content or bias can inadvertently harm general performance or erase valid examples from underrepresented groups, creating a data-quality-vs-quantity trade-off."},
+        {"id": "P41", "name": "Adversarial training is a minimax optimization with scaling limitations", "description": "Adversarial training formulates an inner loop that maximizes loss via worst-case perturbations and an outer loop that minimizes loss on these examples, but scaling it to LLMs faces challenges: discrete-text gradient mismatches, high computational overhead, a robustness-utility trade-off, and attack-specific (non-transferable) robustness gains."},
+        {"id": "P42", "name": "Alignment improves robustness against certain attacks but introduces new challenges", "description": "Alignment techniques (SFT, RLHF, DPO variants) contribute to robustness against attacks eliciting harmful/biased content, but introduce challenges: over-sensitivity to prompt phrasing causing unnecessary refusals, failure to anticipate post-alignment vulnerabilities, reward hacking, and high computational/data requirements."},
+        {"id": "P43", "name": "Intra-processing trades robustness gains for coverage of root causes", "description": "Intra-processing strategies are cost-effective (avoiding retraining) and adaptable to emerging risks, but because they act at inference time, they do not address root causes in the training data or model parameters."},
+        {"id": "P44", "name": "LLM-as-a-judge introduces its own manipulation and bias risks", "description": "Using an LLM to judge another model's outputs enables scalable assessment of bias, safety, and factuality, but judge evaluations can be inconsistent due to prompt sensitivity and inherent biases, and judge models themselves can be manipulated by adversarial stylistic cues."}
+      ],
+      "edges": [
+        {"from": "P35", "to": "P36", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P37", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P38", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P39", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P36", "to": "P40", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P41", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P37", "to": "P42", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P43", "evidence": ["S4.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P39", "to": "P44", "evidence": ["S4.4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Metrics, benchmarks, and their evaluation gaps",
+      "nodes": [
+        {"id": "P45", "name": "No single metric captures robustness holistically", "description": "Effective robustness evaluation requires combining complementary metrics across multiple dimensions, since no single metric tells the whole story."},
+        {"id": "P46", "name": "Performance degradation metrics quantify clean-vs-stressed gaps", "description": "Metrics like Accuracy/F1 Drop, Attack Success Rate, and Compliance/Refusal Rate quantify how much performance or safety degrades when moving from clean to challenging (adversarial/noisy) conditions."},
+        {"id": "P47", "name": "OOD performance metrics assess generalization to shifted distributions", "description": "Metrics like OOD Accuracy/F1, ID-OOD Performance Gap, and OOD Detection (AUROC, Energy Score) assess how well models perform on and detect distribution-shifted inputs, using benchmarks such as BOSS, ANLI, Dynasent, and WANLI."},
+        {"id": "P48", "name": "Consistency metrics test output stability across equivalent inputs", "description": "Metrics like Semantic Consistency, Consistency Rate, Response Consistency, and LLM-based Consistency Score assess whether outputs remain stable under paraphrasing, sampling variation, or answer-choice reordering."},
+        {"id": "P49", "name": "Calibration metrics assess confidence-accuracy alignment", "description": "Expected Calibration Error and its OOD-shifted variant assess whether a model's predicted confidence reliably reflects actual correctness likelihood, which is particularly important given RLHF-induced overconfidence (linking to P33 in C3)."},
+        {"id": "P50", "name": "Fairness-under-stress metrics test bias amplification under adversarial prompting", "description": "Fairness metrics (e.g., FLEX-derived measures) evaluate whether disparities in ASR, refusal rate, or accuracy across demographic groups emerge specifically under bias-inducing adversarial prompts."},
+        {"id": "P51", "name": "Hallucination/factuality metrics measure stress-induced factual degradation", "description": "Metrics like FactScore, FEWL, SelfCheckGPT-style consistency checks, and Hallucination Rate Increase (HRI) measure factual correctness and how much hallucination tendency increases specifically under stress conditions relative to standard conditions."},
+        {"id": "P52", "name": "ID-OOD performance gap does not always follow from ID performance", "description": "Studies using benchmarks like BOSS show the ID-OOD performance gap can vary in complex, non-monotonic patterns depending on model scale, training steps, and task type, indicating that improving ID performance does not always guarantee better OOD performance."},
+        {"id": "P53", "name": "Adversarial benchmarks can inadvertently induce hallucinations", "description": "Adversarial benchmarks primarily focused on inducing misclassification or safety failures can inadvertently trigger hallucinations, since attacks that manipulate reasoning or push models into unusual states via jailbreaking may cause factually incorrect outputs as a byproduct."},
+        {"id": "P54", "name": "Trend toward dynamic, LLM-free benchmarks to reduce contamination/judge bias", "description": "The field is trending toward benchmarks that are dynamic (generating test cases on-the-fly, e.g., ODE, DyVal) and LLM-free (avoiding reliance on potentially unreliable LLM judges, e.g., AMBER) to improve reliability and validity of robustness evaluation."}
+      ],
+      "edges": [
+        {"from": "P46", "to": "P45", "evidence": ["S5", "S5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P47", "to": "P45", "evidence": ["S5", "S5.1.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P48", "to": "P45", "evidence": ["S5", "S5.1.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P49", "to": "P45", "evidence": ["S5", "S5.1.4"], "votes": 2, "confidence": "majority"},
+        {"from": "P50", "to": "P45", "evidence": ["S5", "S5.1.5"], "votes": 2, "confidence": "majority"},
+        {"from": "P51", "to": "P45", "evidence": ["S5", "S5.1.7"], "votes": 2, "confidence": "majority"},
+        {"from": "P47", "to": "P52", "evidence": ["S5.1.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P46", "to": "P53", "evidence": ["S5.2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P44", "to": "P54", "evidence": ["S4.4", "S5.2.6"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Persistent challenges and future research priorities",
+      "nodes": [
+        {"id": "P55", "name": "Robustness does not consistently correlate with model scale", "description": "Larger models are not inherently more robust; scaling trends for robustness often show weak or inconsistent patterns."},
+        {"id": "P56", "name": "Safety-aligned models remain vulnerable to sophisticated jailbreaks", "description": "Despite safety alignment, models remain susceptible to sophisticated jailbreaking attempts and can deteriorate sharply under minor distribution shifts or input perturbations."},
+        {"id": "P57", "name": "Robustness defences face scalability limits", "description": "Many promising defences (adversarial training, complex inference-time checks) are computationally expensive and may not scale efficiently to trillion-parameter models."},
+        {"id": "P58", "name": "Robustness-utility trade-offs remain unresolved", "description": "Aggressively optimizing for robustness often negatively impacts general capabilities or clean-task performance, exemplified by the RLHF alignment tax; balancing the two remains a critical ongoing challenge."},
+        {"id": "P59", "name": "Evaluation methodology gaps persist", "description": "Current evaluation lacks comprehensive benchmarks covering multiple robustness dimensions simultaneously and subtle failure modes, and evaluating generative-task robustness remains harder than classification-task robustness."},
+        {"id": "P60", "name": "Theoretical understanding of robustness failures is still developing", "description": "Theoretical understanding of why LLMs exhibit shortcut learning, how architecture influences vulnerabilities, and why certain defences work is still developing, limiting principled mitigation design."},
+        {"id": "P61", "name": "Static benchmark gains may not transfer to real-world deployment", "description": "Translating robustness improvements observed on static benchmarks into reliable performance under continuous real-world distribution shifts and novel threats remains a significant hurdle."},
+        {"id": "P62", "name": "These challenges motivate causal/invariant learning and adaptive evaluation as priorities", "description": "The combination of scale-independence, unresolved trade-offs, evaluation gaps, and limited theory motivates future priorities: causal/invariant learning, efficient robust training, adaptive/automated evaluation, improved benchmarks, and extending robustness research to multimodal and agentic systems."}
+      ],
+      "edges": [
+        {"from": "P55", "to": "P62", "evidence": ["S6", "S6.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P56", "to": "P62", "evidence": ["S6", "S6.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P57", "to": "P62", "evidence": ["S6.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P58", "to": "P62", "evidence": ["S6.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P59", "to": "P62", "evidence": ["S6.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P60", "to": "P62", "evidence": ["S6.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P61", "to": "P62", "evidence": ["S6.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P63", "name": "Systematic PRISMA-style search methodology", "description": "The survey conducted a systematic search across six databases (arXiv, ACL Anthology, ACM Digital Library, IEEE Xplore, OpenReview, GitHub) covering January 2020-June 2025, screening 337 records and including 209 new studies after applying inclusion/exclusion criteria and backward snowballing."},
+    {"id": "P64", "name": "Robustness as a component of broader AI Trustworthiness", "description": "Robustness is frequently discussed as a critical component within the broader framework of AI Trustworthiness, which also expects reliability, safety, fairness, transparency, and accountability."},
+    {"id": "P65", "name": "Task-specific robustness spans domain-specific failure modes", "description": "Task-specific robustness addresses unique challenges in particular applications, such as logical-consistency failures in reasoning benchmarks (e.g., FOLIO) or functionally incorrect/insecure generated code."},
+    {"id": "P66", "name": "Decision matrix maps threat models to recommended mitigations", "description": "The survey provides a decision matrix (Table 3) and actionable flowchart (Figure 6) mapping specific threat models/metric thresholds (e.g., high ASR, large OOD gap, low consistency rate, high ECE) to recommended mitigation strategies and their trade-offs, intended as practitioner guidance."},
+    {"id": "P67", "name": "Comprehensive LLM robustness pipeline diagram", "description": "Figure 5 presents a comprehensive multi-stage pipeline diagram showing how pre-, in-, intra-, and post-processing mitigation stages map onto the data collection, training/alignment, inference, and output stages of the LLM lifecycle."},
+    {"id": "P68", "name": "Specific mitigation technique catalog", "description": "The survey catalogs numerous specific techniques within each mitigation category, including ME-ADA, ACL, A3, SALAD, and HarmAug for data augmentation; rule-based filtering, Data-Juicer, and RAZOR for data filtering; ALUM, C-AdvUL, and CAPO for adversarial training; BSR, LAAT, and DBL for regularization; DPO, ORPO, KTO, and Safe RLHF variants for alignment; and self-denoising, referenced instruction tracking, and RMOD for intra-processing."},
+    {"id": "P69", "name": "Specific benchmark catalog across dimensions", "description": "The survey catalogs benchmarks by target dimension, including AdvGLUE++, PromptBench, and JailbreakBench for adversarial resilience; BOSS, ANLI, and OODRobustBench for OOD generalization; SCORE for prompt/sampling consistency; FLEX for fairness under stress; ReClor-plus and R2ATA for task-specific reasoning robustness; and TruthfulQA, HaluEval, FACTOR, DefAn, UMWP, and AMBER for hallucination/factuality."}
+  ],
+  "structural_score": 6,
+  "structural_reasoning": "As a broad survey rather than a single-thesis paper, this graph necessarily differs in character from the theoretical/empirical papers analyzed previously: most of its content is definitional and taxonomic rather than a single chain of argument, so edges are sparser relative to node count and many nodes are appropriately isolated (search methodology, technique/benchmark catalogs, pipeline diagrams). Within that constraint, the graph captures the survey's genuine argumentative structure where it exists: C1 traces the stated motivation for the survey itself; C2 captures the explicit dimension-interdependency claims from Figure 3/Section 2.2 (the survey's most causally dense passage); C3 organizes sources of non-robustness by lifecycle stage with a few explicit causal chains (e.g., RLHF -> alignment tax -> fine-tuning brittleness) the survey itself draws; C4 mirrors the four-stage mitigation taxonomy and the specific trade-offs the survey names for each stage; C5 connects metrics/benchmarks to the 'no single metric suffices' framing and highlights the two explicit gap-claims the survey makes (ID-OOD gap non-monotonicity, adversarial benchmarks inducing hallucination); C6 synthesizes the challenges section into a fan-in structure toward future priorities, matching the survey's own concluding logic. The moderate structural score (lower than the proof-driven papers, higher than a purely descriptive listing) reflects that a survey's value lies primarily in comprehensive categorization rather than a tight deductive chain, so full argumentative connectivity is not the right bar to hold it to."
+}

@@ -1,0 +1,185 @@
+{
+ "arxiv_id": "2507.17849",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "DG-PRM: from fixed-criteria limitation to reward tree, allocation, Pareto optimization and results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Heuristic PRMs generalize poorly",
+     "description": "Heuristic process rewards require objective, reference-based answers, often generalize poorly and are susceptible to reward hacking; generative process rewards still rely on a fixed set of standards that limits cross-domain adaptability."
+    },
+    {
+     "id": "P2",
+     "name": "Uniform negative rewards waste feedback",
+     "description": "Prevailing approaches assign a uniform negative reward to incorrect steps, ignoring rich LLM-judgment details such as error severity and mistake type."
+    },
+    {
+     "id": "P3",
+     "name": "Reward tree of criteria",
+     "description": "DG-PRM extracts reward criteria with a judge function over positive/negative output pairs, filters them with an automated validator, embeds them (BAAI/bge-en-icl, d=4096), and organizes them by incremental hierarchical clustering (BIRCH) into a tree of coarse parent and fine child criteria, merging criteria with cosine distance below xi=0.25."
+    },
+    {
+     "id": "P4",
+     "name": "Dynamic reward allocation",
+     "description": "For each step, DG-PRM selects relevant parent criteria from the tree using a window of the previous mu=20 steps, generates fine-grained evaluation aspects, and matches child criteria whose cosine distance to an aspect is at most zeta=0.2, scoring each selected criterion."
+    },
+    {
+     "id": "P5",
+     "name": "Pareto-based preference pairs",
+     "description": "DG-PRM computes the Pareto-optimal set over candidate steps given multi-criteria scores and forms preference pairs where Pareto-optimal steps dominate dominated ones, optimized with a step-wise DPO-style loss."
+    },
+    {
+     "id": "P6",
+     "name": "Reward quantity per step",
+     "description": "DG-PRM selects about 3.7 reward criteria per step on average (1.5 coarse and 2.3 fine); QASC needs only coarse-grained criteria while specialized ChemistryQA needs more fine-grained ones."
+    },
+    {
+     "id": "P7",
+     "name": "Pareto filtering ablation",
+     "description": "Pareto-based filtering improves accuracy over randomly pairing the highest-scoring sample, by 1.79% to 4.02% (e.g. ARC-c 90.63% to 94.65%), and over half of sampled steps are used for pair construction."
+    },
+    {
+     "id": "P8",
+     "name": "PRMBench state of the art",
+     "description": "On PRMBench, DG-PRM improves R1-Distill-Qwen-7B on PS tasks from 45.6% to 62.4%, and improves DeepSeek-R1 overall from 69.5% to 76.5%, a new state of the art with a sensitivity average above 80%; generative models beat discriminative PRMs."
+    },
+    {
+     "id": "P9",
+     "name": "Gains on general, science, commonsense",
+     "description": "DG-PRM boosts win rates on MT-Bench and Arena-Hard near human annotation, and on QASC, StrategyQA, ChemistryQA and ARC-c improves models at all sizes (1.5B-32B), even surpassing human annotation on StrategyQA; R1-Distill-Qwen-32B beats human performance on QASC and StrategyQA."
+    },
+    {
+     "id": "P10",
+     "name": "Better OOD generalization",
+     "description": "In out-of-distribution settings ORM and Critic Direct drop sharply (sometimes below baseline) and Critic CoT drops on ChemistryQA, while DG-PRM generalizes well by selecting relevant rewards."
+    },
+    {
+     "id": "P11",
+     "name": "Training efficiency",
+     "description": "DG-PRM matches Critic CoT accuracy with only 30% of the training steps, attributed to Pareto selection of representative positive and negative samples."
+    },
+    {
+     "id": "P12",
+     "name": "Lower cost than self-consistency",
+     "description": "Compared with Critic CoT-SC(50), DG-PRM needs about half the compute while achieving 4.8% higher overall PRMBench performance; reward-tree construction costs about 7,000 input and 3,000 output tokens per sample, far below manual annotation, and the tree is reusable."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P5",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 4.1-4.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.2-4.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 5.4, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 5.4, Table 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.3, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.3, Fig 3-4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.3, Fig 5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.4, Fig 6"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.4, Fig 7-8"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.4, Fig 8"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Defn: process reward model",
+   "description": "A Process Reward Model assigns a reward to each intermediate step of a model output, providing dense supervision, unlike an outcome reward model which rewards only the final result."
+  },
+  {
+   "id": "P14",
+   "name": "Limitation: LLM-built criteria need human oversight",
+   "description": "Reward criteria are constructed by LLMs and may not align with human expectations despite the validator, so human supervision is needed."
+  }
+ ],
+ "structural_reasoning": "Argument runs from limitations of existing PRMs, through reward tree, allocation and Pareto optimization design, to benchmark, generalization, efficiency and cost evidence."
+}

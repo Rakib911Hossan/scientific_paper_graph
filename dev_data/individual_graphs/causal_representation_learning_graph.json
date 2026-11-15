@@ -1,0 +1,392 @@
+{
+  "arxiv_id": "2102.11107v1",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This is a long survey/position paper; the graph covers its main structural arguments rather than every citation-level claim. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: ML's generalization gap relative to animals, and the argument that this stems from ignoring interventions/structure.",
+      "nodes": [
+        {"id": "P1", "name": "ML lags animals at strong generalization", "description": "Compared to animals, ML is limited at transfer to new problems and forms of generalization beyond sampling from the same distribution (horizontal/strong/OOD generalization)."},
+        {"id": "P2", "name": "ML disregards interventions, domain shifts, temporal structure", "description": "This shortcoming is unsurprising given that ML often disregards information animals use heavily: interventions, domain shifts, temporal structure, treating these as nuisance to be engineered away."},
+        {"id": "P3", "name": "Current ML successes reduce to i.i.d. pattern recognition", "description": "The majority of current ML successes boil down to large-scale pattern recognition on suitably collected i.i.d. data."},
+        {"id": "P4", "name": "Robustness research reveals i.i.d. models are fragile", "description": "A substantial literature on robustness (Issue 1) documents that deep networks are sensitive to distribution shifts like blur, noise, rotation, viewpoint, with no definitive consensus on solving this via augmentation/pretraining alone."},
+        {"id": "P5", "name": "Argument: generalizing OOD requires an underlying causal model", "description": "It has been argued that fixes like augmentation may not be sufficient, and generalizing well outside the i.i.d. setting requires learning not mere statistical associations but an underlying causal model, which models distribution shifts via interventions."},
+        {"id": "P6", "name": "Reusable mechanisms enable efficient adaptation (Issue 2)", "description": "Modular representations where modules correspond to physical causal mechanisms allow an agent facing a new environment to adapt only a few modules, requiring fewer examples since most knowledge/modules can be re-used without further training."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["E3"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["E4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P6", "evidence": ["E5"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Levels of causal modeling: from differential equations to statistical models, with causal models occupying a middle ground.",
+      "nodes": [
+        {"id": "P7", "name": "Differential equations are the most detailed physical model", "description": "A set of coupled differential equations describing physical mechanisms allows predicting future behavior, reasoning about interventions, and reading off causal structure — the gold standard, most detailed model."},
+        {"id": "P8", "name": "Statistical models are superficial, only valid under fixed conditions", "description": "A statistical model tells us how some variables predict others as long as experimental conditions don't change; it does not refer to dynamic processes and cannot predict intervention effects."},
+        {"id": "P9", "name": "Causal models lie in between: predict interventions, learned from data", "description": "Causal modeling lies between differential equations and statistical models: like physics, it predicts intervention effects, but causal discovery arrives at such models in a data-driven way with weak generic assumptions rather than requiring expert-derived differential equations."},
+        {"id": "P10", "name": "Taxonomy of models by capability (Table I)", "description": "A taxonomy ranks models by capability: mechanistic/structural-causal/causal-graphical models can predict under distribution shift and (for the first two) answer counterfactuals, while statistical models can only predict in the i.i.d. setting."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P9", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P9", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P10", "evidence": ["E7"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P9", "evidence": ["E8"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Predicting under i.i.d. vs. distribution shift vs. counterfactuals: three tiers of questions with increasing difficulty and requirements.",
+      "nodes": [
+        {"id": "P11", "name": "i.i.d. prediction answerable from sufficient observational data", "description": "Questions like P(Y|X) can, subject to suitable assumptions, be provably answered by observing sufficient i.i.d. data from P(X,Y)."},
+        {"id": "P12", "name": "Accurate prediction is not sufficient for decision-making", "description": "The stork/birth-rate example shows a statistical model may predict well even with no causal link, so accurate predictions may not suffice to inform decisions like interventions."},
+        {"id": "P13", "name": "Interventional questions take us out of the i.i.d. setting", "description": "Interventional questions involve actions taking us out of the usual i.i.d. setting; interventions change the joint distribution, so classical statistical learning guarantees no longer apply."},
+        {"id": "P14", "name": "Learning about interventions can yield distribution-shift-robust models", "description": "On the other hand, learning about interventions may allow training predictive models robust against the naturally occurring distribution changes in the real world."},
+        {"id": "P15", "name": "Counterfactual questions are harder than interventional ones", "description": "Counterfactual problems (reasoning about why things happened, imagining consequences of different actions in hindsight) can be more difficult to answer than interventional questions."},
+        {"id": "P16", "name": "Counterfactuals may be key for AI, especially RL", "description": "This may be a key challenge for AI since an intelligent agent may benefit from imagining action consequences and understanding retrospectively what led to outcomes; counterfactuals are especially critical in reinforcement learning."}
+      ],
+      "edges": [
+        {"from": "P11", "to": "P12", "evidence": ["E9"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P13", "evidence": ["E10"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P14", "evidence": ["E11"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P15", "evidence": ["E12"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P16", "evidence": ["E13"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P11", "evidence": ["E14"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C2"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "SCM formalism: structural assignments, causal factorization, and why it differs from arbitrary factorizations.",
+      "nodes": [
+        {"id": "P17", "name": "SCM defines each variable via a structural assignment", "description": "In the SCM viewpoint, each observable Xi is the result of a deterministic assignment Xi := fi(PAi, Ui) depending on its graph parents and an independent noise term Ui."},
+        {"id": "P18", "name": "Jointly independent noises required for causal sufficiency", "description": "The noises U1,...,Un are assumed jointly independent; if they were not, by the Common Cause Principle there should be another variable causing their dependence, meaning the model would not be causally sufficient."},
+        {"id": "P19", "name": "SCM entails the causal (disentangled) factorization", "description": "The graph structure plus joint noise independence implies a canonical causal factorization P(X1,...,Xn) = Π P(Xi|PAi), distinct from other valid but entangled factorizations like the reverse-chain one."},
+        {"id": "P20", "name": "Only the causal factorization corresponds to structural assignments", "description": "While many entangled factorizations are mathematically valid, only the causal factorization (4) is the one that decomposes the joint distribution into conditionals corresponding to the actual structural assignments — the causal mechanisms responsible for the statistical dependencies."},
+        {"id": "P21", "name": "SCMs uniquely support counterfactuals; graphs support interventions", "description": "Both causal graphical models and SCMs allow computing interventional distributions, but only SCMs (via fixing noise-variable values) allow computing counterfactuals."}
+      ],
+      "edges": [
+        {"from": "P17", "to": "P18", "evidence": ["E15"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P19", "evidence": ["E16"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["E17"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["E18"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "The Reichenbach Common Cause Principle and why more than two variables makes causal discovery from observational data tractable.",
+      "nodes": [
+        {"id": "P22", "name": "Common Cause Principle: dependence implies a common-cause explanation", "description": "Reichenbach's Common Cause Principle: if X and Y are statistically dependent, there exists a variable Z that causally influences both and renders them independent when conditioned on Z."},
+        {"id": "P23", "name": "Two-variable case is underdetermined without extra assumptions", "description": "Without additional assumptions, the three causal explanations (X→Y, X←Y, or a common confounder) cannot be distinguished using only observational data over X,Y, since they realize the same class of observational distributions."},
+        {"id": "P24", "name": "More observables yield nontrivial conditional independencies", "description": "With more than two observables, nontrivial conditional independence properties implied by causal structure become available, generalizing the Reichenbach Principle and making causal discovery surprisingly easier than the two-variable case."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["E19"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P24", "evidence": ["E20"], "votes": 2, "confidence": "majority"},
+        {"from": "P19", "to": "P24", "evidence": ["E21"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "The Independent Causal Mechanisms (ICM) Principle and its two components.",
+      "nodes": [
+        {"id": "P25", "name": "ICM Principle stated", "description": "The causal generative process is composed of autonomous modules that do not inform or influence each other; the conditional distribution of each variable given its causes does not inform or influence the other mechanisms."},
+        {"id": "P26", "name": "ICM has an influence component", "description": "Applied to the causal factorization, ICM implies changing/intervening on one mechanism P(Xi|PAi) does not change any other mechanism P(Xj|PAj) for i≠j."},
+        {"id": "P27", "name": "ICM has an information component", "description": "ICM also implies knowing some other mechanisms P(Xi|PAi) (i≠j) does not give information about mechanism P(Xj|PAj)."},
+        {"id": "P28", "name": "In non-causal factorizations, changes affect many terms simultaneously", "description": "In contrast, under a non-causal (entangled) factorization, changing a physical mechanism will typically affect many or all terms simultaneously, since the entangled factorization does not isolate mechanisms."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["E22"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P27", "evidence": ["E22"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P28", "evidence": ["E23"], "votes": 2, "confidence": "majority"},
+        {"from": "P19", "to": "P25", "evidence": ["E24"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "From ICM to the Sparse Mechanism Shift (SMS) hypothesis, and its role in learning causal models.",
+      "nodes": [
+        {"id": "P29", "name": "Any real-world distribution viewed as a product of causal mechanisms", "description": "Any real-world distribution is viewed as a product of causal mechanisms; a change in the distribution when moving to a related domain will always be due to changes in at least one of those mechanisms."},
+        {"id": "P30", "name": "SMS hypothesis stated", "description": "Sparse Mechanism Shift: small distribution changes tend to manifest in a sparse or local way in the causal/disentangled factorization, usually not affecting all factors simultaneously."},
+        {"id": "P31", "name": "SMS contrasts with entangled factorizations under change", "description": "Under a non-causal (entangled) factorization, many or all terms will be affected simultaneously as a physical mechanism changes, unlike the sparse effect seen in the causal factorization — motivating the 'disentangled' terminology."}
+      ],
+      "edges": [
+        {"from": "P26", "to": "P29", "evidence": ["E25"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P29", "to": "P30", "evidence": ["E26"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P31", "evidence": ["E27"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P31", "evidence": ["E27"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Causal discovery from observational data: why finite-sample conditional independence testing and the two-variable case require function-class assumptions.",
+      "nodes": [
+        {"id": "P32", "name": "CI testing is hard for finite data, especially with continuous conditioning sets", "description": "Although conditional independencies implied by the Markov condition hold irrespective of function complexity in principle, conditional independence testing is a notoriously difficult problem for finite datasets, especially with continuous multi-dimensional conditioning sets."},
+        {"id": "P33", "name": "Two-variable case has no nontrivial CI implications", "description": "In the two-variable case, the ternary concept of conditional independence collapses, so the Markov condition has no nontrivial implications, echoing the earlier two-variable underdetermination result."},
+        {"id": "P34", "name": "Both problems addressed by restricting function classes", "description": "Both the finite-sample CI-testing problem and the two-variable underdetermination problem can be addressed by making assumptions on function classes, analogous to how finite-sample generalization in ML requires assumptions on function classes."},
+        {"id": "P35", "name": "Additive noise models break cause-effect symmetry", "description": "Restricting to an additive noise model Y=f(X)+V (rather than allowing f to depend arbitrarily on noise) both reduces the effective function class size and, under genericity assumptions, breaks the symmetry between cause and effect: one cannot generally fit an additive noise model in the reversed direction."}
+      ],
+      "edges": [
+        {"from": "P32", "to": "P34", "evidence": ["E28"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P34", "evidence": ["E28"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P33", "evidence": ["E29"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P34", "to": "P35", "evidence": ["E30"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Using environments/contexts and function-class restrictions to identify causal structure beyond the classical two-variable setting.",
+      "nodes": [
+        {"id": "P36", "name": "SMS implies invariance across environments/contexts", "description": "By the SMS hypothesis, much causal structure is assumed to remain invariant across changing environments, so distribution shifts (from interventions, non-stationary time series, or multiple views) can significantly help identify causal structure."},
+        {"id": "P37", "name": "Environments connect to meta-learning", "description": "Contexts/environments can likewise be interpreted as different tasks, providing a connection to meta-learning."},
+        {"id": "P38", "name": "Causal invariance tied to faster meta-learning adaptation", "description": "Prior work ties generalization in meta-learning to invariance properties of causal models, using the idea that a causal model should adapt faster to interventions than purely predictive models, later extended to multiple variables and unknown interventions via continuous-optimization causal discovery."}
+      ],
+      "edges": [
+        {"from": "P30", "to": "P36", "evidence": ["E31"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P36", "to": "P37", "evidence": ["E32"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P38", "evidence": ["E33"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Motivating causal representation learning: real-world data isn't pre-structured into causal units.",
+      "nodes": [
+        {"id": "P39", "name": "Traditional causal discovery assumes units are already given", "description": "Traditional causal discovery and reasoning assume the units are random variables already connected by a causal graph."},
+        {"id": "P40", "name": "Real-world observations aren't structured into such units", "description": "Real-world observations (e.g., objects in images) are usually not structured into those causal units to begin with."},
+        {"id": "P41", "name": "Causal representation learning aims to learn the variables themselves", "description": "This gap motivates causal representation learning: learning the causal variables S1,...,Sn connecting to observations X=G(S1,...,Sn) from data, rather than assuming them given, paralleling how ML moved beyond requiring symbols be given a priori."},
+        {"id": "P42", "name": "Defining causally-interventionable coarse-grained variables is hard", "description": "It is challenging to state general conditions under which coarse-grained variables admit causal models with well-defined interventions; defining suitable units amounts to coarse-graining more detailed models (SCMs, differential equations, time series)."}
+      ],
+      "edges": [
+        {"from": "P39", "to": "P40", "evidence": ["E34"], "votes": 2, "confidence": "majority"},
+        {"from": "P40", "to": "P41", "evidence": ["E35"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P41", "to": "P42", "evidence": ["E36"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P41", "evidence": ["E37"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "Embedding SCMs into representation-learning architectures: the encoder-mechanism-decoder pipeline and its use of SMS.",
+      "nodes": [
+        {"id": "P43", "name": "Goal: embed SCM into larger ML models", "description": "To combine SCM and representation learning, one should embed an SCM into larger ML models whose inputs/outputs may be high-dimensional and unstructured but whose inner workings are partly governed by an SCM, parameterized with a neural network."},
+        {"id": "P44", "name": "Result is a modular, re-purposable architecture", "description": "The result may be a modular architecture where different modules can be individually fine-tuned and re-purposed for new tasks, with the SMS hypothesis used to enforce the appropriate sparse-change structure."},
+        {"id": "P45", "name": "Encoder-mechanism-decoder pipeline proposed", "description": "An encoder q maps observations to a noise-variable bottleneck U; a mapping f(U) determined by structural assignments produces causal variables; a decoder p reconstructs the observation, trained via reconstruction error to satisfy p∘f∘q≈id."},
+        {"id": "P46", "name": "If causal graph unknown, decoder absorbs it as an unspecified component", "description": "If the causal graph is known, the network topology implementing f can be fixed accordingly; if not, the decoder learns the composition p∘f as a single unspecified part, i.e., one only learns an autoencoder p̃∘q."}
+      ],
+      "edges": [
+        {"from": "P43", "to": "P44", "evidence": ["E38"], "votes": 2, "confidence": "majority"},
+        {"from": "P44", "to": "P45", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P45", "to": "P46", "evidence": ["E40"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P43", "evidence": ["E41"], "votes": 2, "confidence": "majority", "note": "cross-component link from C10"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C12",
+      "description": "Problem 1: Learning disentangled representations, its relation to independent factors of variation and object-centric learning, and identifiability challenges.",
+      "nodes": [
+        {"id": "P47", "name": "Standard disentanglement work assumes trivial causal graph", "description": "Much existing work on disentanglement focuses on independent factors of variation, which is the special case where the causal graph is trivial (all parent sets empty), a special case of the more general ICM Principle."},
+        {"id": "P48", "name": "Object-centric learning is a special case of disentangled factorization", "description": "Object-centric representation learning can also be viewed as a special case of disentangled factorization: objects should be building blocks of an overall causal factorization, complemented by mechanisms like orientation and lighting."},
+        {"id": "P49", "name": "Recovering exogenous noise variables is ill-defined without further assumptions", "description": "The problem of recovering exogenous noise variables is ill-defined in the i.i.d. case since there are infinitely many equivalent solutions yielding the same observational distribution; additional assumptions or biases are needed to favor certain solutions."},
+        {"id": "P50", "name": "ICM/SMS can be used to make (12) causal", "description": "To make the representation causal, one can apply the ICM Principle (statistically independent Ui, independent mechanisms via invariance across problems, sparse changes to actions, or independent intervenability); SMS is theoretically sufficient given suitable training data and can be used as a supervision signal even with nontrivial parent sets."},
+        {"id": "P51", "name": "Which factors are disentangleable depends on available interventions/supervision", "description": "Which factors of variation can be disentangled depends on which interventions can be observed, and different supervision signals can be used to identify different subsets of factors and their granularity."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P47", "evidence": ["E42"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P47", "to": "P48", "evidence": ["E43"], "votes": 2, "confidence": "majority"},
+        {"from": "P45", "to": "P49", "evidence": ["E44"], "votes": 2, "confidence": "majority", "note": "cross-component link from C11"},
+        {"from": "P49", "to": "P50", "evidence": ["E45"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P50", "evidence": ["E46"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P50", "to": "P51", "evidence": ["E47"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C13",
+      "description": "Problem 2 and Problem 3: learning transferable mechanisms and interventional world models/reasoning.",
+      "nodes": [
+        {"id": "P52", "name": "Limited resources motivate re-usable modular structure", "description": "Agents face limited training data and computational resources, motivating modular structures that mirror modularity in the world so components/mechanisms can be re-used across environments, tasks, and settings."},
+        {"id": "P53", "name": "ICM is a sensible inductive bias for such modularity", "description": "A sensible inductive bias for learning such transferable modular models is to look for independent causal mechanisms, which may help transfer modules across substantially different domains."},
+        {"id": "P54", "name": "Deep learning preserves statistical but not causal/interventional properties", "description": "Deep learning excels at learning representations preserving statistical properties, but does so without regard to interventional properties of the variables it analyzes."},
+        {"id": "P55", "name": "Causal representation learning should support intervention, planning, reasoning", "description": "Causal representation learning should move beyond statistical dependence structures towards models supporting intervention, planning, and reasoning, realizing 'thinking as acting in an imagined space.'"}
+      ],
+      "edges": [
+        {"from": "P52", "to": "P53", "evidence": ["E48"], "votes": 2, "confidence": "majority"},
+        {"from": "P6", "to": "P52", "evidence": ["E49"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P54", "to": "P55", "evidence": ["E50"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C14",
+      "description": "Implications for ML: semi-supervised learning as a case study in the ICM Principle's predictive consequences.",
+      "nodes": [
+        {"id": "P56", "name": "Causal-direction SSL: ICM implies P(X) uninformative about P(Y|X)", "description": "If the causal graph is X→Y, ICM implies P(X) contains no information about the mechanism P(Y|X), implying SSL using unlabeled data to improve estimation of P(Y|X) should be futile in the causal direction."},
+        {"id": "P57", "name": "Anticausal-direction SSL can be effective", "description": "In the anticausal direction (prediction target opposite the causal generative process), a measure of dependence between P(X) and P(Y|X) is strictly positive, implying the input distribution can be informative about the conditional, so SSL may be possible."},
+        {"id": "P58", "name": "Empirical study corroborates the causal/anticausal SSL asymmetry", "description": "This prediction was empirically corroborated, establishing a bridge between the structure of learning problems and the causal direction of real-world data-generating processes, inspiring follow-up work in ML and statistics."}
+      ],
+      "edges": [
+        {"from": "P26", "to": "P56", "evidence": ["E51"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P27", "to": "P56", "evidence": ["E51"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P56", "to": "P57", "evidence": ["E52"], "votes": 2, "confidence": "majority"},
+        {"from": "P57", "to": "P58", "evidence": ["E53"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C15",
+      "description": "Adversarial vulnerability reframed through the causal-vs-anticausal lens, and a resulting defense strategy.",
+      "nodes": [
+        {"id": "P59", "name": "Adversarial attacks violate the i.i.d. assumption", "description": "Adversarial attacks constitute minute, human-imperceptible changes to inputs that alter a classifier's output; test examples in this setting are not drawn from the training distribution."},
+        {"id": "P60", "name": "Causal setting: predictor approximating the causal mechanism should be more transferable/robust", "description": "In the causal setting, if a predictor approximates the causal mechanism (which is by definition valid under every allowed intervention), one may expect adversarial examples to be harder to find."},
+        {"id": "P61", "name": "Anticausal defense via analysis-by-synthesis / reconstruction", "description": "Recent work supports this view: a defense against adversarial attacks solves the anticausal classification problem by modeling the causal generative direction (analysis by synthesis), or reconstructs the input via an autoencoder before classification."}
+      ],
+      "edges": [
+        {"from": "P59", "to": "P60", "evidence": ["E54"], "votes": 2, "confidence": "majority"},
+        {"from": "P60", "to": "P61", "evidence": ["E55"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P60", "evidence": ["E56"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C4"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C16",
+      "description": "Robustness and strong OOD generalization formalized via worst-case risk over a causally-defined distribution class.",
+      "nodes": [
+        {"id": "P62", "name": "Autonomous-module structures should be robust to component swaps", "description": "Structures composed of autonomous modules, as given by a causal factorization, should be relatively robust to swapping out or modifying individual components."},
+        {"id": "P63", "name": "Causal features give strategic-behavior robustness", "description": "A scoring system using only causal features (e.g., debt paid off, which causally affects repayment) rather than non-causal correlates (e.g., address) can be more robust to strategic behavior by agents gaming the score."},
+        {"id": "P64", "name": "OOD risk formalized as worst case over an interventional distribution class", "description": "Restricting the test distribution P† to lie in a set PG of interventional distributions over a causal graph, worst-case OOD risk is the max expected loss over P†∈PG, and a robust predictor solves the corresponding minimax problem using a subset of environment distributions E⊂PG."},
+        {"id": "P65", "name": "Estimation error remains if observed environments don't cover the true set", "description": "If the observed environment set E does not coincide with the full possible set PG, there is an additional estimation error that may be arbitrarily large in the worst case."}
+      ],
+      "edges": [
+        {"from": "P28", "to": "P62", "evidence": ["E57"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P62", "to": "P63", "evidence": ["E58"], "votes": 1, "confidence": "single_run"},
+        {"from": "P64", "to": "P65", "evidence": ["E59"], "votes": 2, "confidence": "majority"},
+        {"from": "P36", "to": "P64", "evidence": ["E60"], "votes": 2, "confidence": "majority", "note": "cross-component link from C9"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C17",
+      "description": "Pre-training, data augmentation, and self-supervision reinterpreted as approximations to the causal minimax objective.",
+      "nodes": [
+        {"id": "P66", "name": "Enriching training distribution as one approximation strategy", "description": "Enriching the training distribution (e.g., pre-training on huge diverse corpora) is one way to approximate the minimax OOD objective, but only helps if the new distribution is diverse enough to contain information about other distributions in PG."},
+        {"id": "P67", "name": "Data augmentation specifies a set of interventions the model should be robust to", "description": "Data augmentation increases data diversity via artificially generated interventions (rotation, translation, flipping); one can view this as specifying a set of interventions E the model should be robust to."},
+        {"id": "P68", "name": "Self-supervision learns about P(X) via pretext tasks", "description": "Self-supervision learns useful representations of P(X) via pretext tasks with artificially generated labels, converting an unsupervised problem into a supervised one, aiming to extract features informative about the data-generating distribution."}
+      ],
+      "edges": [
+        {"from": "P64", "to": "P66", "evidence": ["E61"], "votes": 2, "confidence": "majority", "note": "cross-component link from C16"},
+        {"from": "P64", "to": "P67", "evidence": ["E62"], "votes": 2, "confidence": "majority", "note": "cross-component link from C16"},
+        {"from": "P64", "to": "P68", "evidence": ["E63"], "votes": 2, "confidence": "majority", "note": "cross-component link from C16"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C18",
+      "description": "Reinforcement learning as a domain especially amenable to and requiring causal reasoning.",
+      "nodes": [
+        {"id": "P69", "name": "On-policy RL directly estimates do-probabilities", "description": "RL is closer to causality than mainstream ML in that on-policy learning effectively directly estimates do-probabilities for interventions specified by the policy."},
+        {"id": "P70", "name": "Off-policy/batch RL raises subtle causal issues", "description": "As soon as off-policy learning is considered, especially in the batch/observational setting, issues of causality become subtle."},
+        {"id": "P71", "name": "Partial world models risk unobserved confounding from the environment", "description": "Many current model-based RL approaches only build partial models of the environment; since they don't observe every time step, the environment may become an unobserved confounder affecting both actions and reward, addressable via a backdoor-criterion conditioning on the policy."},
+        {"id": "P72", "name": "Causal invariances could enable generalization/fast transfer in RL", "description": "Learning invariances in a causal graph structure is proposed as a path to RL generalization; causal models may allow modeling the environment as independent mechanisms so not all mechanisms need re-learning under distribution shift."},
+        {"id": "P73", "name": "Offline RL is fundamentally a counterfactual inference problem", "description": "Offline RL learns a policy from a fixed trajectory dataset without environment interaction; succeeding requires inferring consequences of actions not seen during training, essentially a counterfactual inference problem, made harder by distribution mismatch between current and data-collection policies."}
+      ],
+      "edges": [
+        {"from": "P69", "to": "P70", "evidence": ["E64"], "votes": 2, "confidence": "majority"},
+        {"from": "P70", "to": "P71", "evidence": ["E65"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P72", "evidence": ["E66"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P16", "to": "P73", "evidence": ["E67"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C3"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C19",
+      "description": "Scientific applications: why lack of systematic experimental control makes causal understanding valuable in healthcare and astronomy.",
+      "nodes": [
+        {"id": "P74", "name": "Physics simulators may not need strong OOD generalization if conditions are controlled", "description": "Significant OOD generalization of learned physical simulators may not be necessary if experimental conditions are carefully controlled, though the simulator must be retrained if conditions change."},
+        {"id": "P75", "name": "Uncontrolled clinical settings risk models that merely mimic doctors", "description": "In healthcare, if a clinical system is trained on doctors' actions in controlled settings, it will likely provide little additional insight compared to doctors' own knowledge and may fail unexpectedly when deployed."},
+        {"id": "P76", "name": "Causal understanding needed for reliable personalized treatment recommendations", "description": "An understanding of causality may be necessary to recommend treatment options that are personalized and reliable, beyond merely automating existing decisions."},
+        {"id": "P77", "name": "Causal mediation analysis disentangles confounded effects (Covid-19 example)", "description": "Causal mediation analysis helped disentangle effects contributing to Covid-19 case fatality rates when a textbook Simpson's paradox was observed."},
+        {"id": "P78", "name": "Causal instrument-confounding removal enabled exoplanet discovery", "description": "In astronomy, causal models identifying and removing shared instrument-noise patterns across confounded stars led to the discovery of 36 planet candidates (21 later validated), including one later found to show water vapor in its atmosphere."}
+      ],
+      "edges": [
+        {"from": "P75", "to": "P76", "evidence": ["E68"], "votes": 2, "confidence": "majority"},
+        {"from": "P74", "to": "P75", "evidence": ["E69"], "votes": 1, "confidence": "single_run"},
+        {"from": "P76", "to": "P77", "evidence": ["E70"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C20",
+      "description": "Rebuttal to 'just train a huge model' objection, closing the case for integrating causality with deep learning.",
+      "nodes": [
+        {"id": "P79", "name": "Objection: why not just train a huge model over all interventions?", "description": "A critical question is why not just train a huge model that learns environment dynamics including all possible interventions, expecting a big network to generalize across them given enough diverse data."},
+        {"id": "P80", "name": "Rebuttal: undiverse data still yields arbitrarily high worst-case error", "description": "If data is not sufficiently diverse (an a priori untestable assumption), the worst-case error to unseen shifts may still be arbitrarily high, per the earlier OOD risk analysis."},
+        {"id": "P81", "name": "Causal assumptions make generalization capability explicit and aligned with cognition/physics", "description": "The causal approach makes a model's generalization-relevant assumptions more explicit and aligned with our understanding of physics and human cognition (e.g., via the ICM Principle); when these assumptions are valid, a learner using them should fare better than one that does not."},
+        {"id": "P82", "name": "ICM motivates decomposing knowledge into recomposable pieces", "description": "If a model succeeds across an environment's interventions, one may want to transfer it to different but related environments; the ICM principle points to decomposing knowledge into independent, recomposable pieces, motivating modular ML architectures."}
+      ],
+      "edges": [
+        {"from": "P79", "to": "P80", "evidence": ["E71"], "votes": 2, "confidence": "majority"},
+        {"from": "P64", "to": "P80", "evidence": ["E72"], "votes": 2, "confidence": "majority", "note": "cross-component link from C16"},
+        {"from": "P80", "to": "P81", "evidence": ["E73"], "votes": 2, "confidence": "majority"},
+        {"from": "P81", "to": "P82", "evidence": ["E74"], "votes": 2, "confidence": "majority"},
+        {"from": "P25", "to": "P81", "evidence": ["E75"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C6"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C21",
+      "description": "Future research areas identified in the conclusion.",
+      "nodes": [
+        {"id": "P83", "name": "Future area 1: learning non-linear causal relations at scale", "description": "Future work should understand under which conditions non-linear causal relations can be learned at scale, which training frameworks best exploit ML scalability for this, and provide evidence of advantages over non-causal representations on real-world tasks."},
+        {"id": "P84", "name": "Future area 2: learning causal variables (beyond fixed-format disentanglement)", "description": "Future work should address that current disentangled representations are still distributed in a fixed-format vector, unable to dynamically change representation size (e.g., number of objects), and should investigate task-dependent extraction of high-level variables."},
+        {"id": "P85", "name": "Future area 3: understanding biases of existing deep learning approaches", "description": "Future work should disentangle the benefits of individual robustness-improving components (scaling, augmentation, self-supervision) and build a taxonomy of inductive biases, understanding how pre-training design choices causally impact transfer and robustness."},
+        {"id": "P86", "name": "Future area 4: learning causally correct models of the world and the agent", "description": "Future work should address deriving abstract causal variables from high-dimensional pixel representations and recovering causal graphs in RL settings, essential for robust and versatile model-based RL."}
+      ],
+      "edges": [
+        {"from": "P41", "to": "P83", "evidence": ["E76"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C10"},
+        {"from": "P51", "to": "P84", "evidence": ["E77"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C12"},
+        {"from": "P85", "to": "P86", "evidence": ["E78"], "votes": 1, "confidence": "single_run"},
+        {"from": "P72", "to": "P86", "evidence": ["E79"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C18"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P87", "name": "Causal explanations can be viewed as reasoning-chain components", "description": "Causal relations can be viewed as components of reasoning chains providing predictions far from the observed distribution, possibly hypothetical or requiring conscious deliberation."},
+    {"id": "P88", "name": "Manipulative definition of causation", "description": "The manipulative definition of causation focuses on the fact that conditional probabilities cannot reliably predict the outcome of an active intervention (e.g., open umbrellas predict rain, but closing umbrellas does not stop it)."},
+    {"id": "P89", "name": "Algorithmic-independence formalization of mechanism independence", "description": "Independence of mechanisms can alternatively be formalized via vanishing mutual algorithmic (Kolmogorov) information between their bit-string encodings, showing causality is not intrinsically bound to statistics."},
+    {"id": "P90", "name": "Multi-task/continual learning connects to shared causal generative structure", "description": "Multi-task learning can exploit a shared underlying data-generating process modeled as a causal generative model whose components satisfy SMS, with causal models sometimes adapting faster to sparse distributional interventions."}
+  ]
+}

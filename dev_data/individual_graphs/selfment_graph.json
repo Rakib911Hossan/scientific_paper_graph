@@ -1,0 +1,225 @@
+{
+  "arxiv_id": "2602.23759v1",
+  "notes": "Claim/reasoning graph constructed in the same schema as the prior example graphs. Evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: the cost of manual annotation and the persistence of manual/pretrained-model dependence even in weakly supervised approaches.",
+      "nodes": [
+        {"id": "P1", "name": "Object segmentation traditionally relies on costly dense human annotation", "description": "Object segmentation has long relied on dense, human-annotated masks, which provide precise supervision but are costly and time-consuming to collect, limiting scalability and relying heavily on human inductive bias."},
+        {"id": "P2", "name": "Weakly supervised methods still depend on human cues and pretrained segmentation models", "description": "Recent efforts explore weakly supervised cues (points, scribbles, motion trajectories) to guide segmentation, but these methods still depend on human-provided signals and often rely on pretrained segmentation models like SAM through fine-tuning or prompt adaptation."},
+        {"id": "P3", "name": "Central question: can segmentation be learned purely from unlabeled images with no external priors?", "description": "This raises the fundamental question of whether a model can learn accurate segmentation directly from unlabeled images without any human annotations or external off-the-shelf segmentation models."},
+        {"id": "P4", "name": "Self-supervised learning, especially DINO-family models, offers a promising path", "description": "Recent self-supervised learning advances offer a promising path forward, with the DINO family particularly notable for producing strong, object-centric representations via teacher-student self-distillation that aligns features across diverse image crops."},
+        {"id": "P5", "name": "DINOv3 adds Gram Anchoring to stabilize dense features at massive scale", "description": "DINOv3 further advances this line of work by introducing Gram Anchoring to stabilize dense patch features over long training schedules, enabling scaling to 7B parameters while maintaining high-quality representations."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["E3"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["E4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Research gap: prior graph-cut approaches on DINO features are unstable and require heavy post-processing.",
+      "nodes": [
+        {"id": "P6", "name": "DINO dense features naturally encode semantic similarity between same-object patches", "description": "The dense feature maps produced by the DINO series naturally encode semantic similarity, such that patches belonging to the same object or category tend to have highly similar embeddings, providing strong priors for segmentation/discovery."},
+        {"id": "P7", "name": "Prior graph-based methods (e.g. TokenCut) apply heuristic seed expansion or NCut to this feature graph", "description": "Building on this idea, several recent works treat the feature map as a graph and apply heuristic strategies such as seed expansion or normalized graph cuts to partition it into foreground and background."},
+        {"id": "P8", "name": "Resulting bipartitions are unstable and coarse, requiring heavy post-processing", "description": "While these graph-cut methods can generate approximate object masks, the resulting bipartitions are unstable and coarse, typically requiring heavy post-processing (CRFs, bilateral solvers, morphological refinements) that undermines the goal of self-supervised segmentation."},
+        {"id": "P9", "name": "Contribution: Selfment, a fully self-supervised framework needing no annotations, priors, or post-processing", "description": "This work presents Selfment, built on DINOv3, which constructs a patch-wise affinity graph and applies Normalized Cut for an initial bipartition, then refines it via Iterative Patch Optimization, requiring no annotations, no post-processing, and no off-the-shelf segmentation models."}
+      ],
+      "edges": [
+        {"from": "P5", "to": "P6", "evidence": ["E5"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P6", "to": "P7", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P8", "evidence": ["E7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["E8"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Positioning against unsupervised object segmentation and self-supervised backbone literature specifically.",
+      "nodes": [
+        {"id": "P10", "name": "Early unsupervised segmentation relied on brittle low-level cues", "description": "Early unsupervised object segmentation methods relied heavily on low-level cues such as color contrast, texture consistency, motion boundaries, or super-pixel grouping, which limited robustness in complex scenes."},
+        {"id": "P11", "name": "SAM-based pseudo-labeling reduces true unsupervision", "description": "More recent approaches alleviate low-level-cue limitations by leveraging powerful off-the-shelf segmentation models such as SAM for pseudo labels or guidance, but this dependence introduces strong external priors and reduces the level of true unsupervision."},
+        {"id": "P12", "name": "TokenCut shows object regions emerge from self-supervised ViT attention via NCut, but needs heavy post-processing", "description": "TokenCut applies a normalized-cut formulation to self-supervised ViT feature similarities, showing object regions can emerge directly from transformer attention, but its bipartitions are often unstable and competitive quality typically requires bilateral solvers or CRFs."},
+        {"id": "P13", "name": "Selfment avoids both SAM dependence and post-processing while building directly on dense self-supervised features", "description": "In contrast to SAM-dependent and post-processing-dependent prior work, Selfment builds segmentation directly from self-supervised dense features, requires no annotated masks, no external segmentation model, and achieves high-quality segmentation without post-processing."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P10", "evidence": ["E9"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P10", "to": "P11", "evidence": ["E10"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P12", "evidence": ["E11"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P11", "to": "P13", "evidence": ["E12"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P13", "evidence": ["E12"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "The Normalized Cut stage: constructing the affinity graph and deriving the initial bipartition via the Fiedler vector.",
+      "nodes": [
+        {"id": "P14", "name": "A patch affinity graph is built with thresholded feature similarity as edge weights", "description": "Given patch features from the pretrained backbone, an undirected weighted graph is constructed where edge weight is the feature inner product if above a similarity threshold (τ=0.2), else a small constant ε to preserve connectivity."},
+        {"id": "P15", "name": "NCut objective balances low inter-group similarity against high intra-group affinity", "description": "The NCut objective partitions the graph into sets A and B minimizing the sum of cut(A,B)/cut(A,V) and cut(A,B)/cut(B,V), i.e. seeking low similarity between groups relative to each group's total connectivity."},
+        {"id": "P16", "name": "Minimizing NCut reduces to a generalized eigenvalue problem solved by the Fiedler vector", "description": "Minimizing NCut(A,B) is equivalent to solving (D-A)x=λDx; the second-smallest eigenvector (Fiedler vector) x2, excluding the trivial constant solution from the smallest eigenvalue, defines the optimal bipartition."},
+        {"id": "P17", "name": "Binary mask obtained by thresholding the Fiedler vector at its mean", "description": "The binary segmentation mask is obtained by thresholding x2 at its mean value across all patches, assigning 1 (foreground) to patches above the mean."},
+        {"id": "P18", "name": "The principal object mask is the connected component containing the seed patch", "description": "To identify the principal object, the connected component containing the seed patch (the patch with maximum absolute value in x2) is located and treated as the main object mask, yielding a coarse bipartition for the refinement stage."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["E13"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P14", "to": "P15", "evidence": ["E14"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P16", "evidence": ["E15"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["E16"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P18", "evidence": ["E17"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Iterative Patch Optimization (IPO): refining the noisy NCut bipartition via iterative feature-space clustering with orientation consistency.",
+      "nodes": [
+        {"id": "P19", "name": "NCut's binary graph construction and spectral relaxation leave the bipartition noisy and spatially inconsistent", "description": "The bipartition obtained from NCut is often noisy and spatially inconsistent due to the binary graph construction and the spectral relaxation used to solve the eigenvalue problem."},
+        {"id": "P20", "name": "IPO iteratively reclusters patches around foreground/background centroids in normalized feature space", "description": "Given L2-normalized patch embeddings and the initial NCut mask, IPO computes foreground/background centroids, then at each iteration relabels every patch by comparing its similarity to the current centroids, and recomputes centroids from the new labels, repeated for T=20 iterations."},
+        {"id": "P21", "name": "Orientation consistency prevents degenerate label flipping across iterations", "description": "To avoid label flipping between iterations, a reference vector r (the initial foreground-minus-background centroid difference) is maintained, and labels are reversed whenever the updated centroid difference has negative inner product with r, stabilizing convergence."},
+        {"id": "P22", "name": "IPO relies solely on feature similarity, requiring no external priors or annotations", "description": "This iterative optimization refines the NCut initialization purely by aligning patch assignments with semantically similar self-supervised features, producing cleaner and more coherent masks without external priors or annotations."}
+      ],
+      "edges": [
+        {"from": "P18", "to": "P19", "evidence": ["E18"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P19", "to": "P20", "evidence": ["E19"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["E20"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P22", "evidence": ["E21"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Self-supervised training of a lightweight segmentation head using IPO masks as pseudo-labels, with a combined contrastive/Dice/BCE loss.",
+      "nodes": [
+        {"id": "P23", "name": "IPO masks serve as noisy but spatially consistent pseudo-labels for a lightweight head", "description": "The refined IPO masks are used as self-supervised signals to train a lightweight two-layer projection head plus binary classifier operating on frozen backbone patch features, providing noisy but spatially consistent foreground supervision."},
+        {"id": "P24", "name": "A contrastive (InfoNCE-style) loss pulls same-region patch embeddings together and pushes different-region ones apart", "description": "Inspired by InfoNCE, a feature-level alignment loss encourages embeddings of patches sharing the same pseudo-label (foreground or background) to be close while pushing apart embeddings from opposite regions, using temperature-scaled cosine similarity."},
+        {"id": "P25", "name": "A soft Dice loss encourages segmentation consistency/compactness", "description": "A soft Dice loss is applied to the predicted foreground probabilities to further encourage segmentation consistency and spatial compactness."},
+        {"id": "P26", "name": "A per-patch BCE loss trains each patch to predict its pseudo-label", "description": "Each patch is additionally trained with a binary cross-entropy loss to predict its own pseudo-label from its foreground logit."},
+        {"id": "P27", "name": "The combined weighted loss teaches discriminative, spatially coherent objectness purely from self-supervised cues", "description": "The overall loss combines contrastive, Dice, and BCE terms with weights 0.1, 1.0, and 1.0 respectively, encouraging the model to learn discriminative, spatially coherent patch embeddings that capture objectness without any labeled data or downstream fine-tuning."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["E22"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P23", "to": "P24", "evidence": ["E23"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P25", "evidence": ["E24"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P26", "evidence": ["E25"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P27", "evidence": ["E26"], "votes": 2, "confidence": "majority"},
+        {"from": "P25", "to": "P27", "evidence": ["E26"], "votes": 2, "confidence": "majority"},
+        {"from": "P26", "to": "P27", "evidence": ["E26"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Experimental setup: DINOv3-7B frozen backbone, small training corpus, and efficient caching-based training.",
+      "nodes": [
+        {"id": "P28", "name": "DINOv3-7B is used as a frozen backbone throughout", "description": "All experiments use DINOv3-7B and keep it frozen during training; only the lightweight segmentation head is optimized."},
+        {"id": "P29", "name": "Only 1,000 DUTS training images are needed for self-supervised training", "description": "1,000 images are randomly sampled from the DUTS training set as the self-supervised training corpus, resized to 768x768, with the patch head optimized via Adam (lr=1e-3) for 3 epochs."},
+        {"id": "P30", "name": "Feature caching enables training in 27.6 minutes on 8 A100 GPUs", "description": "Backbone patch features are extracted and cached before head training to avoid redundant computation, and using 8x A100 GPUs, Selfment trains for 3 epochs in only 27.6 minutes; the head itself has only 0.54M parameters and 1.08M FLOPs per forward pass."}
+      ],
+      "edges": [
+        {"from": "P27", "to": "P28", "evidence": ["E27"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P28", "to": "P29", "evidence": ["E28"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P30", "evidence": ["E29"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Main results: state-of-the-art unsupervised saliency detection with clear, resolution-scaling margins over prior methods.",
+      "nodes": [
+        {"id": "P31", "name": "Selfment improves Fmax by 4.0-7.0% across four saliency benchmarks over prior SoTA", "description": "Selfment yields substantial Fmax improvements of 4.0%, 7.0%, 4.6%, and 5.7% over previous unsupervised saliency detection SoTA on ECSSD, DUTS, HKUIS, and PASCAL-S respectively, without any post-processing."},
+        {"id": "P32", "name": "Selfment generates detailed saliency maps even at very high resolution (2048x2048)", "description": "Selfment can generate accurate and highly detailed saliency maps at input resolution 2048x2048, purely based on the proposed self-supervised method."},
+        {"id": "P33", "name": "Selfment's performance improves with higher inference resolution, unlike competing methods", "description": "Selfment consistently benefits from increasing input image resolution during inference, whereas other models tend to experience a decline in performance as resolution increases."},
+        {"id": "P34", "name": "TokenCut's single NCut bipartition destabilizes at high resolution, degrading its predictions", "description": "TokenCut depends heavily on a single NCut bipartition, which becomes unstable on high-resolution affinity graphs, leading to noticeable degradation in its predictions as resolution grows, unlike Selfment which sharpens with resolution while maintaining coherence."},
+        {"id": "P35", "name": "Qualitatively, Selfment produces complete, precise masks versus fragmented predictions from prior methods", "description": "Benefiting from IPO and self-supervised training, Selfment produces saliency maps that are both complete and precise, whereas existing unsupervised methods tend to generate fragmented and incomplete predictions."}
+      ],
+      "edges": [
+        {"from": "P30", "to": "P31", "evidence": ["E30"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C7"},
+        {"from": "P31", "to": "P32", "evidence": ["E31"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P33", "evidence": ["E32"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P34", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P35", "evidence": ["E34"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Zero-shot camouflaged object detection results, showing generalization beyond the training domain and rivaling fully supervised methods.",
+      "nodes": [
+        {"id": "P36", "name": "Selfment outperforms all unsupervised COD methods without any task-specific fine-tuning", "description": "Without any COD-specific fine-tuning, Selfment surpasses all previous unsupervised camouflaged object detection methods by a large margin, e.g. achieving .869 Sm on CAMO, +.076 over the previous best unsupervised method."},
+        {"id": "P37", "name": "Selfment even surpasses some fully supervised COD methods", "description": "Selfment's zero-shot COD performance even surpasses strong fully supervised approaches such as FSPNet on some metrics, demonstrating unusually strong generalization for an unsupervised method."},
+        {"id": "P38", "name": "Qualitative results confirm detailed, accurate camouflaged-object masks without fine-tuning or post-processing", "description": "Without task-specific fine-tuning or post-processing, Selfment accurately detects camouflaged objects and produces detailed, high-quality saliency maps, as shown in qualitative comparisons."}
+      ],
+      "edges": [
+        {"from": "P35", "to": "P36", "evidence": ["E35"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"},
+        {"from": "P36", "to": "P37", "evidence": ["E36"], "votes": 2, "confidence": "majority"},
+        {"from": "P36", "to": "P38", "evidence": ["E37"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Ablation studies isolating the contribution of each pipeline component and backbone/resolution choice.",
+      "nodes": [
+        {"id": "P39", "name": "IPO alone improves Fmax/IoU/Acc by 4.8%/9.3%/1.6% over raw NCut", "description": "Introducing the iterative optimization stage over the NCut baseline yields significant gains: Fmax improves by 4.8%, IoU by 9.3%, and accuracy by 1.6%, with IPO converging within roughly 10 iterations to a mask closely aligned with object boundaries."},
+        {"id": "P40", "name": "Self-supervised training with BCE alone already substantially improves over the IPO-only mask", "description": "Training the lightweight head with just BCE loss on IPO pseudo-labels reaches Fmax 88.3%, a substantial improvement over 79.5% without the self-supervised training stage, showing the learned embeddings extract objectness cues from noisy pseudo-labels alone."},
+        {"id": "P41", "name": "Adding contrastive loss further improves Fmax and IoU", "description": "Incorporating the contrastive similarity loss on top of BCE improves Fmax from 88.3% to 88.9% and IoU from 80.4% to 81.4%, by pulling together same-region patch embeddings and pushing apart different-region ones."},
+        {"id": "P42", "name": "Adding Dice loss yields a further small IoU gain", "description": "Adding the Dice loss on top of BCE and contrastive loss promotes spatial compactness and boundary completeness, contributing a further +0.2% improvement in IoU."},
+        {"id": "P43", "name": "NCut is a substantially better initializer than CLS-token or K-means bipartition", "description": "Comparing initial bipartition strategies on ECSSD, the CLS token yields poor Fmax (29.2), K-means is better but still weak (59.2 Fmax), while NCut achieves 74.7 Fmax/63.9 IoU/86.2 Acc, showing the Fiedler-vector partition is a substantially more reliable initialization."},
+        {"id": "P44", "name": "Selfment generalizes across backbones (DINO-Base to DINOv3-7B) while competitors do not scale reliably", "description": "Across DINO-Base, DINOv3-Huge+, and DINOv3-7B backbones, Selfment consistently outperforms TokenCut, SelfMask, and FOUND by a clear margin at each scale, while the other methods largely fail to benefit from model scaling."},
+        {"id": "P45", "name": "FOUND fails catastrophically with DINOv3-7B due to fragmented background-seed-based pseudo-labels", "description": "FOUND exhibits instability with DINOv3-7B (IoU and Fmax both zero) because it relies on an initial background seed for similarity computation, and DINOv3's fine-grained semantics make background-seed-only similarity produce very fragmented pseudo-labels that prevent the model from learning accurate semantics."},
+        {"id": "P46", "name": "Selfment's use of IPO lets it robustly exploit patch similarity across different backbones", "description": "In contrast to FOUND's fragility, Selfment effectively leverages the semantic structure encoded in both DINO and DINOv3 through components like iterative patch optimization, enabling robust exploitation of patch-level similarity and semantic consistency regardless of backbone."}
+      ],
+      "edges": [
+        {"from": "P18", "to": "P39", "evidence": ["E38"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P39", "to": "P40", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P40", "evidence": ["E39"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C6"},
+        {"from": "P40", "to": "P41", "evidence": ["E40"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P42", "evidence": ["E41"], "votes": 2, "confidence": "majority"},
+        {"from": "P43", "to": "P39", "evidence": ["E42"], "votes": 1, "confidence": "single_run"},
+        {"from": "P42", "to": "P44", "evidence": ["E43"], "votes": 1, "confidence": "single_run"},
+        {"from": "P44", "to": "P45", "evidence": ["E44"], "votes": 2, "confidence": "majority"},
+        {"from": "P45", "to": "P46", "evidence": ["E45"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P46", "evidence": ["E45"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "Limitations and conclusion: failure modes tied to feature-similarity reliance, and the overall claim that self-supervision alone suffices for SoTA segmentation.",
+      "nodes": [
+        {"id": "P47", "name": "IPO's reliance on feature similarity causes semantically-similar distractors to be misclassified as foreground", "description": "Because IPO relies on patch-level feature similarity, the model sometimes incorrectly classifies objects semantically similar to the foreground as part of the foreground mask, and this error propagates into the pseudo-masks used for self-supervised training."},
+        {"id": "P48", "name": "Future work should develop more robust ways to leverage self-supervised backbone features downstream", "description": "Developing more robust methods to leverage self-supervised backbone features for downstream tasks, to fully exploit DINOv3's rich semantic representations, is identified as a promising future research direction."},
+        {"id": "P49", "name": "Conclusion: fully self-supervised segmentation without SAM/annotations/post-processing sets a new SoTA standard", "description": "Selfment demonstrates that high-quality segmentation can be achieved entirely through self-supervision, without human annotations, post-processing, or SAM priors, setting a new standard for fully autonomous, annotation-free segmentation, while also transferring effectively to camouflaged object detection."}
+      ],
+      "edges": [
+        {"from": "P46", "to": "P47", "evidence": ["E46"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C10"},
+        {"from": "P47", "to": "P48", "evidence": ["E47"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P49", "evidence": ["E48"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C8"},
+        {"from": "P37", "to": "P49", "evidence": ["E48"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C9"},
+        {"from": "P48", "to": "P49", "evidence": ["E48"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P50", "name": "SelfMask requires model sharding due to its scale", "description": "Because SelfMask is too large to train on a single A100 GPU, DeepSpeed Zero3 model sharding is used for it specifically, while keeping other configurations unchanged, in the backbone ablation."},
+    {"id": "P51", "name": "DINO-Huge+ features require using last-attention-layer value features instead of standard features for reliable NCut bipartition", "description": "Because feature maps from DINO-Huge+ do not exhibit reliable bipartition properties under NCut, both TokenCut and Selfment use the value features from the last self-attention layer specifically when DINO-Huge+ is the backbone."},
+    {"id": "P52", "name": "Inference remains practical at scale with feature caching", "description": "During inference, a single A100 GPU processes a 768x768 image in 2.69s with cached features versus 6.62s without caching, which is deemed practical given the scale of DINOv3-7B."}
+  ]
+}

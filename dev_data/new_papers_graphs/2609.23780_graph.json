@@ -1,0 +1,212 @@
+{
+ "arxiv_id": "2609.23780",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Falling-tree model class, objective and GRAVITree algorithm built on the FRL limitations, evaluated against baselines",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "FRL definition",
+     "description": "Falling rule lists are ordered if-then rules whose risks P(y=1|x) decrease along the sequence, so high-risk cases are decided within the first few rules."
+    },
+    {
+     "id": "P2",
+     "name": "FRL algorithms have three drawbacks",
+     "description": "Existing FRL optimizers cannot guarantee full optimality, rely on pre-generated rules (e.g. FPGrowth) too numerous for provably optimal methods, and suffer the interaction bottleneck by outputting one model per iteration."
+    },
+    {
+     "id": "P3",
+     "name": "Falling trees",
+     "description": "Falling trees are decision trees constrained so that leaf probabilities adjacent to any root-to-leaf path decrease monotonically with depth, generalizing the falling constraint from lists to trees."
+    },
+    {
+     "id": "P4",
+     "name": "Falling constraint characterization",
+     "description": "A tree satisfies the falling constraint iff at every internal node with one leaf child and one internal child, the leaf's empirical positive proportion is at least the maximum leaf proportion in the internal child's subtree (Theorem 4.1)."
+    },
+    {
+     "id": "P5",
+     "name": "Branching cost",
+     "description": "The branching cost H(T) counts internal nodes whose two children are both internal; H(T)=0 means a rule list, and the maximum 2^(d-1) corresponds to a complete tree."
+    },
+    {
+     "id": "P6",
+     "name": "Falling-tree objective",
+     "description": "GRAVITree minimizes misclassification rate plus a branching penalty mu*H(T), subject to a depth budget d, minimum leaf support alpha, and the falling constraint."
+    },
+    {
+     "id": "P7",
+     "name": "Rashomon set of falling trees",
+     "description": "The Rashomon set R(D,d,mu,eps) contains all falling trees satisfying the support constraint with loss within (1+eps) of the optimal loss."
+    },
+    {
+     "id": "P8",
+     "name": "Child subproblems are coupled",
+     "description": "Child subproblems are coupled because the branching penalty depends on whether both children are internal and the falling constraint ties each child's leaf bounds to its sibling, so GRAVITree recurses first on the higher-probability child and also tracks the best non-leaf solution."
+    },
+    {
+     "id": "P9",
+     "name": "Falling-constraint pruning",
+     "description": "If a candidate split yields a child whose positive proportion exceeds the most recent preceding leaf probability p+_recent, any tree grown from it violates falling and the feature is pruned (Theorem 4.2)."
+    },
+    {
+     "id": "P10",
+     "name": "Sorted merging and caching",
+     "description": "Rashomon sets are stored as loss-sorted heaps so the merge step can terminate early (log-linear instead of quadratic), and subproblems are cached keyed by data subset, depth and quantized p+_recent."
+    },
+    {
+     "id": "P11",
+     "name": "Interpolation between trees and rule lists",
+     "description": "As the branching cost mu increases, the normalized Colless index of the Rashomon set approaches 1 (all rule lists), while Rashomon set size and runtime tend to decrease."
+    },
+    {
+     "id": "P12",
+     "name": "Falling trees vs FRLs",
+     "description": "GRAVITree with mu=0.01 generally achieves lower test loss and lower false negative rate than mu=1 (falling rule lists), while rule lists give substantially lower decision sparsity on positive examples."
+    },
+    {
+     "id": "P13",
+     "name": "Falling trees vs TreeFARMS",
+     "description": "TreeFARMS generally has lower overall loss than GRAVITree because of its unconstrained model class, but GRAVITree is competitive on false negative rate and generally sparser on positive examples (mu=0.01, alpha=0.05, d=5, eps=0.01)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 3.2, Def 3.1-3.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 4, Thm 4.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4, Eq 1-3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4, Eq 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 4, Algorithm 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P9",
+     "evidence": [
+      "Sec 4, Thm 4.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4, Algorithm 3-4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.1, Fig 4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.1, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.1, Table 1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.1, Table 2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.1, Table 2"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Rashomon sets are useful",
+   "description": "Rashomon sets support greater trust, robust decisions, trustworthiness criteria, active learning and variable importance analysis."
+  },
+  {
+   "id": "P15",
+   "name": "Greedy trees forgo optimality",
+   "description": "Greedy decision tree induction using local heuristics such as Gini index forgoes closeness to global optimality, while dynamic-programming-with-bounds methods recover provably optimal trees."
+  },
+  {
+   "id": "P16",
+   "name": "No prior Rashomon set method handles class-probability constraints",
+   "description": "Prior Rashomon set algorithms for logical models do not consider class probabilities or constraints on class probabilities such as falling constraints."
+  },
+  {
+   "id": "P17",
+   "name": "Sparsity metric",
+   "description": "Decision sparsity beta(T,D) is the expected number of decisions needed for an example, and beta(T,D+) restricts it to positive examples."
+  },
+  {
+   "id": "P18",
+   "name": "Experimental protocol",
+   "description": "Experiments use 21 UCI/Kaggle datasets with five 80-20 splits, averaging metrics over all trees in the Rashomon set."
+  }
+ ],
+ "structural_reasoning": "Argument flows from FRL limitations to the falling-tree class, objective, theory-driven pruning and algorithm, then experiments on interpolation and comparisons."
+}

@@ -1,0 +1,183 @@
+{
+ "arxiv_id": "2507.06517",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "KV-cache bottleneck and shallow-layer gap -> redundancy observations -> SpindleKV design -> evaluation",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "KV cache is a deployment bottleneck",
+     "description": "KV cache memory grows proportionally with context length and can exceed the memory occupied by the model parameters, becoming a bottleneck for LLM deployment."
+    },
+    {
+     "id": "P2",
+     "name": "Prior reduction works better in deep layers",
+     "description": "Token eviction, merging and quantization are generally more effective for deeper layers than shallower ones, so shallow-layer KV reduction has been largely overlooked."
+    },
+    {
+     "id": "P3",
+     "name": "Deep-layer attention is sparse",
+     "description": "As layer depth increases, more tokens receive low accumulated attention scores and attention concentrates on a few tokens, supporting token eviction in deep layers."
+    },
+    {
+     "id": "P4",
+     "name": "Shallow-layer KV constituents are highly similar",
+     "description": "In shallow layers many tokens receive high attention yet their KV constituent components are highly similar (high cosine similarity), indicating inner-token compositional redundancy beyond inter-token redundancy."
+    },
+    {
+     "id": "P5",
+     "name": "GQA hinders attention-score eviction",
+     "description": "Attention-score-based eviction such as PyramidInfer and PyramidKV integrates poorly with GQA because eviction must be decided for an entire group of Q heads rather than per head, and KV heads in GQA hold higher information density."
+    },
+    {
+     "id": "P6",
+     "name": "SpindleKV balances shallow and deep layers",
+     "description": "SpindleKV combines attention-weight-based token eviction for deep layers with a learned codebook-based replacement for shallow layers, and addresses the GQA dilemma."
+    },
+    {
+     "id": "P7",
+     "name": "Eviction with linear layer allocation",
+     "description": "Deep-layer eviction follows PyramidKV's linear interpolation of per-layer reserve ratios and SnapKV's observation window, using accumulated attention scores as token importance."
+    },
+    {
+     "id": "P8",
+     "name": "Codebook replacement",
+     "description": "In prefill, SpindleKV builds K and V codebooks greedily so every token has a codebook entry with cosine similarity above a threshold, storing only indices and per-vector magnitudes."
+    },
+    {
+     "id": "P9",
+     "name": "Magnitude reconstruction",
+     "description": "Because cosine similarity captures direction but not magnitude, SpindleKV records each vector's magnitude and rescales after codebook lookup, which effectively preserves model capability with slight memory cost."
+    },
+    {
+     "id": "P10",
+     "name": "GQA ablation",
+     "description": "On LLaMA3-8b-instruct, SpindleKV's GQA handling outperforms the PyramidInfer-style averaged-attention eviction approach, addressing the GQA dilemma."
+    },
+    {
+     "id": "P11",
+     "name": "Codebook alone halves the cache losslessly",
+     "description": "With eviction removed, codebook replacement on LLaMA2-7b-chat compresses half the KV cache without accuracy impact and retains most capability at 30% KV cache."
+    },
+    {
+     "id": "P12",
+     "name": "LongBench results",
+     "description": "On LongBench with LLaMA2-7b, LLaMA3-8b and Mistral-7b, SpindleKV achieves higher reduction at comparable performance than PyramidInfer and PyramidKV, in some settings reducing KV cache size 50% without performance loss, and beats PyramidKV on 13 Mistral datasets."
+    },
+    {
+     "id": "P13",
+     "name": "Needle-in-a-Haystack results",
+     "description": "With only 15% KV cache reserved, SpindleKV maintains retrieval recall significantly better than PyramidInfer and PyramidKV."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2, Fig 3a"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2, Sec 3.4, Fig 3b"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3, Table 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3, Table 5"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2, Fig 5, Table 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2, Table 4, Fig 6"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Needed model setup",
+   "description": "Experiments use LLaMA2-7b-chat (MHA), LLaMA3-8b-instruct and Mistral-7b-instruct-v0.2 (GQA, 8 KV heads, 4 Q heads per KV head) on LongBench's 16 subsets and Needle-in-a-Haystack."
+  },
+  {
+   "id": "P15",
+   "name": "Merging and RoPE overhead",
+   "description": "The codebook is built on pre-RoPE keys so RoPE must be re-applied after reconstruction, which adds no substantial time overhead."
+  }
+ ],
+ "structural_reasoning": "Motivation and observations on layer-wise redundancy lead to the hybrid design; each design component is validated by ablations and benchmarks."
+}

@@ -1,0 +1,359 @@
+{
+  "arxiv_id": "2604.07125v2",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "DP noise-accuracy limitation",
+          "description": "Differential privacy obscures client updates with randomized noise, but stronger privacy requires larger noise magnitudes that significantly degrade model performance."
+        },
+        {
+          "id": "P2",
+          "name": "MPC overhead limitation",
+          "description": "MPC-based secure aggregation protocols cryptographically ensure the server learns only aggregated results, but often incur substantial computational and communication overhead."
+        },
+        {
+          "id": "P3",
+          "name": "DDP-SA proposal",
+          "description": "Motivated by the limitations of using DP or MPC alone, the paper proposes DDP-SA, integrating client-side local differential privacy with full-threshold additive secret sharing."
+        },
+        {
+          "id": "P4",
+          "name": "DDP-SA dual privacy guarantee",
+          "description": "DDP-SA achieves formal (epsilon, delta) differential privacy at the client level while cryptographically hiding individual updates from both the server and all communication paths."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P3", "evidence": ["S1.intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["S1.intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["S1.intro"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P5",
+          "name": "Multi-server architecture",
+          "description": "DDP-SA is designed with n clients and m intermediate servers to support scalability, achieving linear communication complexity and generalizing to arbitrary m."
+        },
+        {
+          "id": "P6",
+          "name": "Client-side perturbation and encoding",
+          "description": "Clients first perturb their gradients with calibrated Laplace noise, then encode the noisy gradients into additive secret shares distributed among intermediate servers."
+        },
+        {
+          "id": "P7",
+          "name": "Intermediate server aggregation",
+          "description": "Intermediate servers aggregate the received shares and forward only the combined result to the parameter server."
+        },
+        {
+          "id": "P8",
+          "name": "Parameter server reconstructs only aggregate",
+          "description": "The parameter server reconstructs only the aggregated noisy gradient and updates the global model, never any client-specific contribution."
+        },
+        {
+          "id": "P9",
+          "name": "No single server/channel reveals client info",
+          "description": "The two-stage protection mechanism ensures no single compromised server or communication channel can reveal any information about individual client updates."
+        }
+      ],
+      "edges": [
+        {"from": "P5", "to": "P6", "evidence": ["S1.intro", "S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P7", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P8", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P9", "evidence": ["S1.intro"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P9", "evidence": ["S1.intro"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P10",
+          "name": "ASS strict-subset randomness",
+          "description": "Additive secret sharing splits a secret into shares such that each share is uniformly random and reveals no information about the secret on its own."
+        },
+        {
+          "id": "P11",
+          "name": "Semi-honest security interpretation",
+          "description": "Under the semi-honest model, any strict subset of additive shares is uniformly random and independent of the secret, so an adversary controlling fewer than all servers learns nothing about any individual client update."
+        },
+        {
+          "id": "P12",
+          "name": "Lemma 1 strict-subset indistinguishability",
+          "description": "Lemma 1 formalizes that mutual information between the client update and any strict subset of its ASS shares is zero, and reconstruction probability decreases exponentially in the number of servers m under independent compromise."
+        },
+        {
+          "id": "P13",
+          "name": "Failure condition: all servers/links compromised",
+          "description": "Confidentiality fails only if an adversary controls all m intermediate servers or observes all share-carrying communication links simultaneously."
+        }
+      ],
+      "edges": [
+        {"from": "P10", "to": "P11", "evidence": ["S3.C", "S4.B"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P12", "evidence": ["S6.E"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P13", "evidence": ["S4.B"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P14",
+          "name": "Theorem 1 end-to-end privacy",
+          "description": "Theorem 1 states that DDP-SA, applying an (epsilon, delta)-LDP mechanism per client before ASS-based secure aggregation, satisfies (epsilon, delta)-differential privacy end-to-end."
+        },
+        {
+          "id": "P15",
+          "name": "Post-processing invariance argument",
+          "description": "The proof of Theorem 1 relies on post-processing invariance of DP, since ASS-based aggregation is a deterministic function applied to the noisy gradients."
+        },
+        {
+          "id": "P16",
+          "name": "Corollary 1 no additional privacy loss",
+          "description": "Corollary 1 states that the privacy budget of DDP-SA equals that of the underlying LDP mechanism, since secure aggregation via ASS introduces zero additional privacy loss."
+        },
+        {
+          "id": "P17",
+          "name": "ASS information-theoretic security",
+          "description": "ASS provides information-theoretic security since any strict subset of secret shares is uniformly random and independent of the underlying secret."
+        }
+      ],
+      "edges": [
+        {"from": "P15", "to": "P14", "evidence": ["S5.A"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P16", "evidence": ["S5.A"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P16", "evidence": ["S5.A"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P18",
+          "name": "Theorem 2 multi-round guarantee",
+          "description": "Theorem 2 provides basic and advanced composition bounds for the cumulative (epsilon, delta) privacy loss of DDP-SA run over T training rounds."
+        },
+        {
+          "id": "P19",
+          "name": "Advanced composition tighter bound",
+          "description": "The advanced composition bound gives a significantly tighter total epsilon than the basic composition bound when T is large (e.g., ~24.09 vs 100 for T=1000, epsilon=0.1)."
+        },
+        {
+          "id": "P20",
+          "name": "Privacy budget allocation strategies",
+          "description": "To manage cumulative privacy loss across rounds, uniform allocation divides the total budget equally, while adaptive allocation assigns more budget to early rounds via exponential decay."
+        }
+      ],
+      "edges": [
+        {"from": "P18", "to": "P19", "evidence": ["S5.B"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["S5.B"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {
+          "id": "P21",
+          "name": "Intermediate servers reduce PS bandwidth",
+          "description": "The intermediate server layer converts n client uplinks into m intermediate server uplinks, reducing the parameter server's ingress bandwidth from 4nd to 4md."
+        },
+        {
+          "id": "P22",
+          "name": "Improved scalability vs LDP",
+          "description": "Because m is much smaller than n, DDP-SA improves scalability compared to LDP, enabling scalability to many clients and long training horizons."
+        },
+        {
+          "id": "P23",
+          "name": "MPC/DDP-SA communication scales with m",
+          "description": "MPC and DDP-SA upload 3m parameters per client since each gradient component is split into m secret shares, so communication cost scales linearly with m."
+        },
+        {
+          "id": "P24",
+          "name": "Gradient clipping dominates computation",
+          "description": "The computational overhead breakdown shows gradient clipping (scaling O(d)) dominates per-client per-round computation, accounting for over 92% of total time, more than secret sharing or noise addition."
+        },
+        {
+          "id": "P25",
+          "name": "DDP-SA overhead acceptable and controllable",
+          "description": "DDP-SA incurs slightly higher communication and computation overhead than standalone LDP or MPC, but the overhead remains acceptable and controllable for practical settings."
+        }
+      ],
+      "edges": [
+        {"from": "P21", "to": "P22", "evidence": ["S6.B"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P25", "evidence": ["S6.B", "S6.C"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P25", "evidence": ["S6.C"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {
+          "id": "P26",
+          "name": "DDP-SA higher test R2 than LDP",
+          "description": "DDP-SA achieves a higher test R2 (0.9666) than standalone LDP (0.9357), while both are slightly lower than No-Private/MPC (0.9999)."
+        },
+        {
+          "id": "P27",
+          "name": "DDP-SA smaller effective privacy budget",
+          "description": "For a fixed target accuracy, DDP-SA can operate with a smaller privacy budget than LDP, indicating stronger privacy protection at equal utility."
+        },
+        {
+          "id": "P28",
+          "name": "MPC as infinite-budget special case",
+          "description": "MPC can be viewed as a special case of DDP-SA where the privacy budget is effectively infinite (no noise added) and clipping has no practical effect."
+        },
+        {
+          "id": "P29",
+          "name": "DDP-SA stronger privacy than pure MPC",
+          "description": "Because MPC is a degenerate special case of DDP-SA with no noise, DDP-SA can also provide stronger privacy protection than pure MPC."
+        }
+      ],
+      "edges": [
+        {"from": "P26", "to": "P27", "evidence": ["S6.E.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P29", "evidence": ["S6.E.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {
+          "id": "P30",
+          "name": "Noise masks record contribution",
+          "description": "Adding noise to client updates under LDP masks the contribution of individual records, mitigating membership inference attacks."
+        },
+        {
+          "id": "P31",
+          "name": "Perturbation hides fine-grained patterns",
+          "description": "Perturbing gradients before aggregation hides fine-grained patterns that might reveal sensitive properties of training data, reducing property inference attack effectiveness."
+        },
+        {
+          "id": "P32",
+          "name": "Secure aggregation prevents attribution",
+          "description": "Secure aggregation ensures model updates visible to the parameter server are aggregated and not attributable to any single client, making training data or label inference harder."
+        },
+        {
+          "id": "P33",
+          "name": "DDP-SA mitigates broad attack range",
+          "description": "By combining local differential privacy with secure aggregation, DDP-SA mitigates a wide range of privacy inference attacks, including membership, property, training-data, and class representative attacks."
+        }
+      ],
+      "edges": [
+        {"from": "P30", "to": "P33", "evidence": ["S6.E.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P33", "evidence": ["S6.E.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["S6.E.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P34",
+      "name": "FL avoids raw data upload",
+      "description": "Federated learning allows clients to collaboratively train a global model by transmitting only local updates, keeping raw data on-device."
+    },
+    {
+      "id": "P35",
+      "name": "FL remains vulnerable to inference attacks",
+      "description": "Despite keeping raw data local, FL remains vulnerable to privacy leakage through inference attacks that exploit shared updates."
+    },
+    {
+      "id": "P36",
+      "name": "Gradient sharing enables data reconstruction",
+      "description": "Prior work demonstrated adversaries can recover original training data from shared model gradients during deep learning training."
+    },
+    {
+      "id": "P37",
+      "name": "GAN-based reconstruction attack",
+      "description": "Prior work showed adversaries can use GANs to reconstruct private training data of other participants by exploiting shared model updates."
+    },
+    {
+      "id": "P38",
+      "name": "FedAvg gradient averaging variant",
+      "description": "The gradient averaging variant of FedAvg has clients send gradients rather than model parameters, forming the target mechanism protected by DDP-SA."
+    },
+    {
+      "id": "P39",
+      "name": "Laplace mechanism definition",
+      "description": "The Laplace mechanism adds i.i.d. noise drawn from a Laplace distribution scaled by sensitivity over epsilon to achieve differential privacy."
+    },
+    {
+      "id": "P40",
+      "name": "Post-processing proposition",
+      "description": "If a mechanism is (epsilon, delta)-differentially private, applying any further randomized mapping to its output preserves the same privacy guarantee."
+    },
+    {
+      "id": "P41",
+      "name": "Quantization error bound",
+      "description": "Fixed-point encoding with a sufficiently large scaling factor keeps the decoding error negligible and avoids wrap-around in the modular field, provided the prime is chosen larger than the maximum aggregated magnitude."
+    },
+    {
+      "id": "P42",
+      "name": "Threat model adversary bounds",
+      "description": "The threat model assumes a semi-honest adversary that may corrupt at most f intermediate servers, collude with a bounded number of clients, and eavesdrop on a subset (not all) of communication links."
+    },
+    {
+      "id": "P43",
+      "name": "Two-client MPC vulnerability",
+      "description": "In a two-client scenario under MPC alone, a client could infer the other client's gradient from the difference between the global and its own gradient, though this is mitigated with more clients."
+    },
+    {
+      "id": "P44",
+      "name": "MPC and No-Private near-identical accuracy",
+      "description": "MPC and No-Private achieve essentially identical test loss and test R2, indicating that MPC computation and fixed-point encoding are effectively lossless."
+    },
+    {
+      "id": "P45",
+      "name": "More clients reduce effective noise",
+      "description": "As the number of clients increases, the average of the added noise tends to zero, so the average noisy gradient approaches the true average gradient, reducing test loss and increasing test R2."
+    },
+    {
+      "id": "P46",
+      "name": "Noise increases convergence rounds",
+      "description": "The randomness introduced by added noise in LDP and DDP-SA requires more communication rounds to reach a stable, converged solution compared to No-Private or MPC."
+    }
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph is coherent across its major thematic clusters: the motivation for combining DP and MPC (C1), the system architecture and two-stage protection design (C2), the information-theoretic security of additive secret sharing (C3), the single-round and multi-round formal privacy theorems (C4, C5), scalability and overhead analysis (C6), the empirical accuracy/privacy trade-off comparing DDP-SA, LDP, and MPC (C7), and the qualitative mitigation of specific privacy inference attacks (C8). Edge confidence is generally high since most claims in this paper are stated as direct causal or evidentiary chains (e.g., theorem statements and their proof sketches, or specific quantitative comparisons in the experimental sections) rather than requiring inference across distant passages. Isolated nodes largely capture background motivation (prior attacks, FedAvg definition, DP/ASS preliminaries) and secondary experimental observations that support but are not tightly chained to the paper's central claims. No cycles or contested edge directions were identified in this construction."
+}

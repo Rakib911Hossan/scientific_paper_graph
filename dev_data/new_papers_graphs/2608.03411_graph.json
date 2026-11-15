@@ -1,0 +1,240 @@
+{
+ "arxiv_id": "2608.03411",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "DUD: decoupled causal tracing, discovered fragility patterns, and probe performance",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Output probabilities miss epistemic state",
+     "description": "Logit- and sampling-based uncertainty metrics focus on final output distributions, capture mainly aleatoric ambiguity, and can give high confidence while internal reasoning is unstable."
+    },
+    {
+     "id": "P2",
+     "name": "Aggregation hides module conflict",
+     "description": "Existing mechanistic UQ methods (SAPLMA, Lookback Lens, DoLa, ICR Probe) merge memory and context signals into unified representations, obscuring conflicts between parametric memory and contextual cues that signal failure."
+    },
+    {
+     "id": "P3",
+     "name": "FFN and MHSA play distinct roles",
+     "description": "FFNs act as key-value memories for parametric knowledge while multi-head self-attention routes contextual information."
+    },
+    {
+     "id": "P4",
+     "name": "Decoupled causal tracing",
+     "description": "DUD runs a clean pass, a corrupted pass (Gaussian noise added to input embeddings, Total Effect TE = mean drop in token probability), and patch runs that restore only the Attention or only the FFN output at each layer."
+    },
+    {
+     "id": "P5",
+     "name": "Restoration scores and 2L profile",
+     "description": "Each module's layer-wise restoration score (probability recovered divided by TE) forms a 2L-dimensional dynamic profile used as the feature vector of the DUD-Probe."
+    },
+    {
+     "id": "P6",
+     "name": "Early-layer attention fluctuation",
+     "description": "Across datasets, restoration scores in early layers (0-5) fluctuate strongly between correct and incorrect predictions for both Attention and FFN, indicating encoding-phase routing instability."
+    },
+    {
+     "id": "P7",
+     "name": "Late-layer FFN collapse",
+     "description": "In late layers (20-28) FFN restoration scores collapse while Attention stays stable, marking a parametric-memory failure that indicates uncertainty."
+    },
+    {
+     "id": "P8",
+     "name": "Task-dependent patterns",
+     "description": "Context-rich HaluEval shows larger early-layer instability, whereas knowledge-intensive HotpotQA shows larger late-layer FFN shifts."
+    },
+    {
+     "id": "P9",
+     "name": "Layer-wise AUROC signal",
+     "description": "On LLaMA3.1-8B, individual layers discriminate correct from incorrect outputs, with best FFN layer 24 (AUROC 0.767) and best Attention layer 20 (0.745)."
+    },
+    {
+     "id": "P10",
+     "name": "Instability predicts errors",
+     "description": "On SQuAD (layer 24), error rate rises from 16.8% in the robust quadrant (both modules within bounds) to 72.0% in the dual-deviant quadrant."
+    },
+    {
+     "id": "P11",
+     "name": "Confidence inversion",
+     "description": "Logit confidence fails to track mechanistic risk: stubborn errors stay confident in stable states while correct answers in deviant states have low confidence."
+    },
+    {
+     "id": "P12",
+     "name": "DUD-Probe beats baselines",
+     "description": "The DUD-Probe achieves state-of-the-art AUROC over three LLMs and four datasets, e.g. +17.4% over Semantic Entropy on LLaMA-3.1 HaluEval and +5.0% over the aggregated ICR Probe on Qwen2.5, with AUROC 0.949 on LLaMA-3.1 HaluEval."
+    },
+    {
+     "id": "P13",
+     "name": "Strong cross-dataset transfer",
+     "description": "DUD-Probe degrades under 5% out-of-distribution versus 15-20% for baselines, e.g. TriviaQA->SQuAD 0.868 vs ICR 0.613 and TriviaQA->HaluEval 0.930."
+    },
+    {
+     "id": "P14",
+     "name": "Both streams needed",
+     "description": "On Llama-3.1-8B, Attn Only and FFN Only probes beat random, but the full dual-stream probe is best on all datasets (e.g. HaluEval 0.9487 vs 0.9144 and 0.8968)."
+    },
+    {
+     "id": "P15",
+     "name": "No single golden layer",
+     "description": "Removing early, middle or deep layer groups each lowers AUROC (w/o early layers drops HaluEval 0.95 -> 0.85), so uncertainty signals are distributed across depth."
+    },
+    {
+     "id": "P16",
+     "name": "Case studies of faithfulness",
+     "description": "DUD gives a low score (0.08) to a confident wrong answer (logit confidence 0.96) and a high score (0.72) to a hesitant correct one (logit confidence 0.35)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 2.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 2.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 2.2, Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2-3.3, Eq 4, Fig 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.1, Fig 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.1, Fig 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Fig 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Fig 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.2, Table 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.1 (signals guide probe training)"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.1 (signals guide probe training)"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.2, Fig 5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.3, Table 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P15",
+     "evidence": [
+      "Sec 5.3, Table 3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P16",
+     "evidence": [
+      "Sec 5.4, Table 4"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P16",
+     "evidence": [
+      "Sec 5.4, Table 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P17",
+   "name": "White-box and latency limits",
+   "description": "DUD is inapplicable to closed-source API models and its multiple forward passes (clean, corrupted, patched) add inference latency over logit-based methods."
+  },
+  {
+   "id": "P18",
+   "name": "Robust to labeling threshold",
+   "description": "DUD outperforms baselines on Qwen2.5-7B across varying ROUGE-L correctness thresholds (Table 2), showing robustness to labeling criteria."
+  }
+ ],
+ "structural_reasoning": "Limitations of output-based and aggregated UQ motivate decoupled tracing; the restoration profile reveals fragility patterns that feed the probe, whose performance, transfer, and ablations validate the decoupling."
+}

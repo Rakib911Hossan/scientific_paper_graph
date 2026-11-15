@@ -1,0 +1,42 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claim graphs</title>
+<style>
+body{margin:0;font:15px/1.45 system-ui,sans-serif;background:#fff;color:#1c2330}
+#top{padding:14px 16px 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0}
+button{font:inherit;border:1px solid #c5cde0;background:#fff;border-radius:6px;padding:5px 10px;cursor:pointer}
+button:disabled{opacity:.45;cursor:default}
+button.on,button.primary{background:#e5484d;border-color:#e5484d;color:#fff}
+#papers button{font-size:13px}
+input[type=text]{font:inherit;padding:5px 8px;border:1px solid #c5cde0;border-radius:6px}
+#prog{height:8px;background:#e8ebf2;border-radius:4px;overflow:hidden;margin:6px 0}
+#prog div{height:100%;background:#e5484d;width:0}
+details{border:1px solid #dde2ec;border-radius:8px;margin:8px 16px;padding:6px 10px}
+iframe{width:100%;height:900px;border:0}
+#main{display:flex;gap:16px;padding:0 16px 24px;flex-wrap:wrap}
+#info{flex:3 1 480px}#qa{flex:2 1 360px;align-self:flex-start;position:sticky;top:8px;max-height:calc(100vh - 16px);overflow:auto;padding-right:6px}
+.q{background:#fff8dc;border-left:3px solid #d9a400;border-radius:4px;padding:8px 10px;margin:10px 0 2px}
+.q b{display:block;font-size:12px;color:#7a5c00;margin-bottom:2px}
+.ctx{font-size:13px;color:#555;margin:2px 0 6px 13px}.ctx .me{color:#7a5c00}
+.ab{border:1px solid #d8dbe3;border-radius:6px;padding:8px 10px;margin:0 0 10px;font-size:14px;background:#f7f8fb}
+.ab p{margin:0}.ab .ar{text-align:center;color:#556;margin:3px 0;font-size:13px}.ab .pdf{float:right;font-size:13px}
+.hlp{font-size:14px;color:#444}.cap{font-size:13px;color:#444;margin:6px 0}
+.opt{margin-right:14px}.skip{color:#999;margin:8px 0}
+.v{padding:10px;border-radius:6px;margin:10px 0}.v.i{background:#e8f1fb}.v.ok{background:#e3f6e8}.v.bad{background:#fde8e8}
+.hide{display:none}
+</style></head><body>
+<div id="top">
+ <div class="row"><b>Paper</b><a id="pdf" target="_blank"></a></div>
+ <div class="row" id="papers"></div>
+ <div class="row"><label>Your name <input type="text" id="reviewer"></label>
+  <label>Continue from a saved review file (optional) <input type="file" id="up" accept=".csv"></label></div>
+ <div id="prog"><div></div></div><div class="cap" id="progtxt"></div>
+</div>
+<details id="gd"><summary>Claim graph (only groups with a chain of 3+ claims)</summary><iframe id="gf"></iframe></details>
+<div id="msg" class="cap" style="margin:0 16px"></div>
+<div id="main" class="hide">
+ <div id="info"></div>
+ <div id="qa"></div>
+</div>
+<script src="/static/review.js"></script>
+</body></html>

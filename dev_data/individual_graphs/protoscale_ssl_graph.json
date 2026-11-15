@@ -1,0 +1,246 @@
+{
+  "arxiv_id": "2508.19864v1",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: SSL's success in language transfers to vision, but existing vision-SSL methods struggle with structured/compositional understanding.",
+      "nodes": [
+        {"id": "P1", "name": "SSL underlies LLM success via representation learning without annotation", "description": "LLMs like GPT, BERT, and LLaMA demonstrate remarkable performance largely due to self-supervised learning, training models to predict parts of input from other parts without human annotations."},
+        {"id": "P2", "name": "Vision SSL methods learn global representations via auxiliary similarity tasks", "description": "SSL approaches like DINO, iBOT, and BEiT extend these ideas to vision, mostly using large Transformer (ViT) architectures and learning global representations by solving auxiliary tasks like predicting similarities between augmented views."},
+        {"id": "P3", "name": "These global methods struggle to capture compositional object structure", "description": "While effective for image classification and matching, these global-representation methods often struggle to capture the compositional structure of objects in scenes."},
+        {"id": "P4", "name": "Existing grouping methods have partial coverage: single-object or implicit-only", "description": "Methods like CutLER typically identify only a single dominant foreground region and struggle to isolate multiple objects without costly iterative training, while Slot Attention/SlotCon produce structured representations via implicit grouping but lack explicit hierarchical organization and instance-level decomposition."},
+        {"id": "P5", "name": "Limitation 1: representations lack multi-level structure", "description": "Current methods tend to produce whole-scene representations with limited capacity for structured object understanding, even though an image contains objects, parts, and spatial relationships that a meaningful representation should reflect at local, intermediate, and global scales."},
+        {"id": "P6", "name": "Limitation 2: dense-prediction fine-tuning is resource-intensive", "description": "Fine-tuning these SSL models for dense prediction tasks often demands substantial computational resources and extensive annotated data, making deployment challenging in resource-constrained settings."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["E3"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["E4"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P6", "evidence": ["E5"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Design response: ProtoScale's guiding intuition and the resulting deviations from SOTA practice.",
+      "nodes": [
+        {"id": "P7", "name": "ProtoScale introduced to progressively build structured representations", "description": "An SSL approach based on a new ProtoScale module is introduced, designed to overcome these limitations by progressively constructing a structured visual representation combining semantic abstraction, instance separation, and hierarchical organization."},
+        {"id": "P8", "name": "Three-part guiding intuition: group, separate instances, organize", "description": "The approach builds on the intuition that an effective representation should be able to (i) group pixels by semantic meaning, (ii) identify distinct instance parts, and (iii) organize them coherently into complete objects."},
+        {"id": "P9", "name": "Object detection chosen as the evaluation task", "description": "Object detection is chosen as the evaluation task because it offers a good balance between local and global scene complexity for testing this hypothesis."},
+        {"id": "P10", "name": "Full scene context preserved instead of disruptive cropping", "description": "Unlike SOTA methods that rely on disruptive cropping strategies, the full scene context is preserved across views to ensure instance consistency while maintaining spatial structure."},
+        {"id": "P11", "name": "Lightweight hybrid encoder adopted for computational efficiency", "description": "A lightweight hybrid CNN/Transformer encoder is adopted to reduce computational cost and improve feature scalability."},
+        {"id": "P12", "name": "DETR-like architecture chosen over Mask R-CNN for evaluation", "description": "Unlike traditional downstream pipelines based on Mask R-CNN (which rely on NMS post-processing and are often less efficient), a DETR-like architecture is adopted for a fully end-to-end, NMS-free formulation better aligned with evaluating structured object-centric representations."}
+      ],
+      "edges": [
+        {"from": "P5", "to": "P7", "evidence": ["E6"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P7", "to": "P8", "evidence": ["E7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["E8"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P9", "evidence": ["E9"], "votes": 1, "confidence": "single_run"},
+        {"from": "P6", "to": "P11", "evidence": ["E10"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P9", "to": "P12", "evidence": ["E11"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Positioning within related work: contrastive, dense, and slot-based SSL each fall short in a specific way.",
+      "nodes": [
+        {"id": "P13", "name": "Contrastive SSL maximizes cross-view similarity for a global vector", "description": "Contrastive methods (SimCLR, MoCo) maximize similarity between two views' representations in latent space; DINO extends this with a teacher-student EMA framework leading to spontaneous emergence of structured patterns like foreground/background."},
+        {"id": "P14", "name": "Contrastive methods target a global image vector, unsuitable for dense prediction", "description": "Their primary goal is to encode an entire image as a global vector, suitable for image-level tasks like classification but falling short for dense prediction."},
+        {"id": "P15", "name": "Unsupervised object-discovery methods limited by pseudo-label quality and single-object focus", "description": "Object-discovery methods (MOST via clustering, CutLER via iterative supervised loops) are effective at discovering salient regions but remain limited by initial pseudo-label quality and often focus on a single dominant object per image."},
+        {"id": "P16", "name": "Dense SSL methods align features spatially but don't structure objects explicitly", "description": "Dense SSL methods (DetCon, SoCo) learn features preserving spatial coherence and local consistency, but do not explicitly structure objects."},
+        {"id": "P17", "name": "Slot-based methods offer structure but lack explicit hierarchy", "description": "Slot Attention assigns pixels to abstract instances via iterative attention; SlotCon combines semantic grouping with contrastive learning for object-centric representations — but ProtoScale extends SlotCon's formulation by modifying semantic grouping and explicitly modeling hierarchical relationships between instances."},
+        {"id": "P18", "name": "Pure ViT architectures are computationally costly and fragment local spatial continuity", "description": "Most recent SSL methods rely on pure ViT architectures, which are computationally expensive and whose patch-based processing fragments the input, limiting the ability to capture small or occluded objects."},
+        {"id": "P19", "name": "Overall gap: no method combines modularity, hierarchy, and generalization", "description": "Contrastive methods yield effective global/local representations but lack grouping; latent slot models offer encouraging directions but still fall short on hierarchy, modularity, and generalization — this gap is what ProtoScale's modular, hierarchical, shared-prototype grouping mechanism addresses."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["E12"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P19", "evidence": ["E13"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P19", "evidence": ["E13"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P19", "evidence": ["E13"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P19", "evidence": ["E13"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P19", "evidence": ["E14"], "votes": 1, "confidence": "single_run"},
+        {"from": "P19", "to": "P7", "evidence": ["E15"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "Student-teacher framework: architecture and the multi-scale encoder that underlies ProtoScale's multi-level operation.",
+      "nodes": [
+        {"id": "P20", "name": "Shared encoder, asymmetric roles: student trained, teacher EMA-updated", "description": "Both student and teacher networks share the same encoder architecture but differ in input processing and training role; the teacher's parameters are updated via exponential moving average (EMA) of the student weights and serves as a stable label generator."},
+        {"id": "P21", "name": "Three losses align student predictions across views to the teacher output", "description": "Training encourages student predictions across all views to align with the teacher output using three loss terms, promoting view-consistent grouping, tightly integrated with the ProtoScale module."},
+        {"id": "P22", "name": "Shared multi-scale encoder enables ProtoScale to operate at three resolutions", "description": "Both models share a multi-scale encoder extracting feature maps at three spatial resolutions, enabling ProtoScale to operate simultaneously at fine, intermediate, and global scales, helping discover small object parts, full objects, and global scene structure in a unified representation."}
+      ],
+      "edges": [
+        {"from": "P8", "to": "P20", "evidence": ["E16"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P20", "to": "P21", "evidence": ["E17"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P22", "evidence": ["E18"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Multi-view learning strategy: asymmetric augmentation designed to preserve spatial structure while introducing appearance variability.",
+      "nodes": [
+        {"id": "P23", "name": "Teacher sees a single strongly-augmented global view", "description": "The teacher processes a single globally augmented image (random cropping, zoom out, horizontal flip, photometric distortions), serving as the stable training target and base input for generating student views."},
+        {"id": "P24", "name": "Student sees four spatially-coherent, appearance-varied views", "description": "The student is exposed to four distinct views from a different transformation pipeline (Gaussian blur, random spatial masking, color jitter) designed to be spatially coherent, preserving object layout and relative positioning while introducing appearance variability."},
+        {"id": "P25", "name": "SOTA cropping strategies disrupt spatial distribution and dense-prediction performance", "description": "SOTA methods relying heavily on random cropping strategies disrupt the spatial distribution of objects and degrade dense prediction performance."},
+        {"id": "P26", "name": "Full-context preservation promotes instance consistency without sacrificing structure", "description": "By adopting a strategy that preserves full scene context across views instead, instance consistency is promoted without compromising the underlying spatial structure."}
+      ],
+      "edges": [
+        {"from": "P10", "to": "P23", "evidence": ["E19"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P10", "to": "P24", "evidence": ["E19"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P25", "to": "P26", "evidence": ["E20"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P26", "evidence": ["E21"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Hybrid CNN-Transformer pyramid encoder: how global attention and local convolution are fused for efficient dense representation.",
+      "nodes": [
+        {"id": "P27", "name": "Hybrid encoder adopted, inspired by RT-DETR", "description": "Unlike previous SSL methods, a hybrid CNN/Transformer encoder inspired by RT-DETR is employed, processing multi-scale features extracted from a ResNet backbone."},
+        {"id": "P28", "name": "Lowest-resolution map gets full self-attention for global guidance", "description": "The lowest resolution feature map is passed through a full self-attention transformer, capturing long-range spatial dependencies and providing coarse guidance on where the model should focus."},
+        {"id": "P29", "name": "Low-res attention fused top-down/bottom-up with CNN features", "description": "The resulting low-resolution attention is progressively fused with intermediate and high-resolution convolution features through top-down and bottom-up fusion paths, relying on CNN local precision to determine what is present in the identified regions."},
+        {"id": "P30", "name": "Hybrid design balances accuracy and computational cost", "description": "This hybrid design enables accurate dense representation while reducing the computational cost associated with full-resolution attention."}
+      ],
+      "edges": [
+        {"from": "P11", "to": "P27", "evidence": ["E22"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P18", "to": "P27", "evidence": ["E23"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P27", "to": "P28", "evidence": ["E24"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P29", "evidence": ["E25"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P30", "evidence": ["E26"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "ProtoScale module internals: the three sequential grouping stages (semantic, instance, hierarchical).",
+      "nodes": [
+        {"id": "P31", "name": "ProtoScale has three sequential components", "description": "ProtoScale consists of three sequential components: semantic clustering per feature map, aggregation into shared instance-level prototypes across the batch, and a hierarchical module inferring relationships between instances."},
+        {"id": "P32", "name": "Semantic grouping via learnable-prototype attention", "description": "At each encoder scale, spatial features are fed into a semantic grouping module computing softmax dot-product attention between 256 learnable semantic prototypes and spatial features, each prototype aggregating features into semantic queries via weighted attention."},
+        {"id": "P33", "name": "Centered Gaussian prior and auxiliary noise-absorbing prototypes prevent collapse", "description": "A centered Gaussian prior (μ=0.5, σ=0.7) is applied to attention maps to reduce collapse and bias toward generic representations (encouraging local-structure focus), and a set of auxiliary prototypes R, excluded from the loss, absorb noisy activations to stabilize learning."},
+        {"id": "P34", "name": "Semantic grouping alone fails in crowded/occluded scenes", "description": "While semantic grouping isolates regions, it fails in crowded or occluded scenes, motivating a differentiable instance grouping stage."},
+        {"id": "P35", "name": "Instance grouping via shared latent prototypes across the batch", "description": "Instance grouping introduces shared latent prototypes I_k learned across the batch; each semantic slot is softly assigned to 32 learnable instance prototypes, scaling the corresponding attention map before summation over semantic prototypes, trained with consistency and sparsity regularization to encourage specialization and spatial diversity."},
+        {"id": "P36", "name": "Hierarchical relations modeled via prototype affinity matrix", "description": "Beyond instance-level attention, ProtoScale models object relationships via a relation (affinity) matrix between instance prototypes, predicted by a shallow MLP with sigmoid activation; thresholding low-affinity pairs at 0.5 lets the model merge overlapping/related instances, capturing part-whole and object-group structure."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P31", "evidence": ["E27"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P31", "to": "P32", "evidence": ["E28"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["E29"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P34", "evidence": ["E30"], "votes": 2, "confidence": "majority"},
+        {"from": "P34", "to": "P35", "evidence": ["E31"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P36", "evidence": ["E32"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P31", "evidence": ["E33"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2: three-stage design directly instantiates the group/separate/organize intuition"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "The self-supervised training objective combining the three ProtoScale stages.",
+      "nodes": [
+        {"id": "P37", "name": "Weighted three-term loss trains student to match teacher", "description": "The student is trained via a weighted objective L_total = λ_sem L_sem + λ_inst L_inst + λ_hier L_hier, with (λ_sem, λ_inst, λ_hier) = (1, 2, 1) found to yield the best experimental results."},
+        {"id": "P38", "name": "Each loss term uses KL divergence between attention maps", "description": "Each loss term includes a KL-divergence term computed between corresponding student and teacher attention maps, chosen to encourage matching the entire probability distribution rather than only the highest-probability regions."},
+        {"id": "P39", "name": "All modules operate across three spatial scales for object-centric reasoning", "description": "All modules operate at three spatial scales, enabling rich object-centric reasoning across fine, intermediate, and global resolutions."}
+      ],
+      "edges": [
+        {"from": "P36", "to": "P37", "evidence": ["E34"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P37", "to": "P38", "evidence": ["E35"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P39", "evidence": ["E36"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Experimental design: baseline/framework choice and low-resource evaluation setup.",
+      "nodes": [
+        {"id": "P40", "name": "RT-DETR chosen over Mask R-CNN for evaluation", "description": "SSL encoders are typically evaluated via downstream fine-tuning using Mask R-CNN, but this work adopts RT-DETR, an end-to-end detection pipeline without NMS post-processing that achieves significantly better performance than Mask R-CNN."},
+        {"id": "P41", "name": "RT-DETR's lack of instance segmentation restricts scope to detection", "description": "Because RT-DETR does not support instance segmentation, evaluation focuses exclusively on object detection as the downstream task."},
+        {"id": "P42", "name": "Strong SSL baselines selected and integrated fairly", "description": "A set of strong SSL baselines (DINOv1, DINOv2, iBOT, TEC, SlotCon) are selected, with each method's encoder backbone attached to a shared projection module outputting multi-scale features, integrated into the same student-teacher method for fair comparison under identical training configurations; a fully supervised RT-DETR baseline is also included as reference."},
+        {"id": "P43", "name": "Two datasets chosen for complementary diversity/density characteristics", "description": "COCO (high scene diversity) and UA-DETRAC (high object density) are used, with class labels redefined into a fine-grained 17-class taxonomy and images filtered to those containing at least two such classes, yielding 50,022 combined training and 5,555 combined validation images."},
+        {"id": "P44", "name": "Low-resource evaluation simulates realistic deployment constraints", "description": "Evaluation varies fine-tuning epoch count and the proportion of labeled training data (always testing on the full validation set), reflecting realistic conditions where high computing infrastructure and large annotated datasets are often unavailable."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P40", "evidence": ["E37"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P40", "to": "P41", "evidence": ["E38"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P40", "to": "P42", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P6", "to": "P44", "evidence": ["E40"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P43", "to": "P44", "evidence": ["E41"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Results: sensitivity to fine-tuning epochs, showing ProtoScale's efficiency advantage.",
+      "nodes": [
+        {"id": "P45", "name": "ProtoScale outperforms SOTA SSL and supervised baseline across epochs", "description": "ProtoScale significantly outperforms current SOTA SSL approaches and the supervised RT-DETR (random init) baseline, consistently achieving higher performance even versus models pretrained on much larger datasets (ImageNet-1K, LVD-142M)."},
+        {"id": "P46", "name": "ProtoScale needs far fewer pretraining epochs than comparable methods", "description": "ProtoScale, pretrained for only 35 epochs on COCO, outperforms methods like SlotCon which requires up to 800 pretraining epochs to achieve competitive results."},
+        {"id": "P47", "name": "ProtoScale is especially strong on small/medium objects", "description": "The method demonstrates strong performance specifically on small and medium objects, even with fewer fine-tuning epochs."},
+        {"id": "P48", "name": "DINOv2 slightly outperforms on large objects, plausibly due to scale of pretraining data", "description": "DINOv2 slightly outperforms ProtoScale on large objects, likely due to the strong generalization capabilities of transformer architectures trained on a massive 142-million-image dataset."}
+      ],
+      "edges": [
+        {"from": "P39", "to": "P45", "evidence": ["E42"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"},
+        {"from": "P44", "to": "P45", "evidence": ["E42"], "votes": 2, "confidence": "majority", "note": "cross-component link from C9"},
+        {"from": "P45", "to": "P46", "evidence": ["E43"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P45", "to": "P47", "evidence": ["E44"], "votes": 2, "confidence": "majority"},
+        {"from": "P42", "to": "P48", "evidence": ["E45"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C9"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "Results: influence of labeled data availability, comparing ProtoScale against the strongest baseline (DINOv2) under data scarcity.",
+      "nodes": [
+        {"id": "P49", "name": "Data-fraction sweep compares the two best methods from the epoch experiment", "description": "Different training-set fractions (10%, 30%, 50%, 70%) are used to simulate low-resource scenarios, comparing the two best-performing methods (ProtoScale and DINOv2) for robustness under varying data availability."},
+        {"id": "P50", "name": "ProtoScale requires less labeled data for competitive performance", "description": "Although overall performance decreases relative to 100%-data fine-tuning for both methods, results show ProtoScale requires less labeled data to achieve competitive performance."},
+        {"id": "P51", "name": "ProtoScale outperforms DINOv2 on small/medium objects across data fractions", "description": "ProtoScale consistently outperforms DINOv2 on small and medium objects across the tested data fractions, while DINOv2 performs slightly better on large objects."},
+        {"id": "P52", "name": "ProtoScale achieves this with fewer parameters than DINOv2's encoder", "description": "The performance advantage is achieved despite ProtoScale using only about 12 million parameters, compared to DINOv2's ViT-Small encoder's approximately 21 million parameters."}
+      ],
+      "edges": [
+        {"from": "P45", "to": "P49", "evidence": ["E46"], "votes": 2, "confidence": "majority", "note": "cross-component link from C10"},
+        {"from": "P49", "to": "P50", "evidence": ["E47"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P50", "to": "P51", "evidence": ["E48"], "votes": 2, "confidence": "majority"},
+        {"from": "P51", "to": "P52", "evidence": ["E49"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C12",
+      "description": "Contribution summary chain.",
+      "nodes": [
+        {"id": "P53", "name": "Contribution 1: annotation-free SSL combining grouping, instance clustering, hierarchy", "description": "An SSL approach is proposed that combines semantic grouping, instance-level clustering, and hierarchical reasoning to build structured visual representations without any annotations."},
+        {"id": "P54", "name": "Contribution 2: ProtoScale multi-scale grouping module", "description": "ProtoScale, a modular grouping module operating at multiple spatial scales, is introduced, capable of organizing pixels into instances and instances into structured groups."},
+        {"id": "P55", "name": "Contribution 3: full-scene-context preservation for dense-prediction consistency", "description": "Full scene context is preserved across views by avoiding disruptive cropping, improving consistency in dense prediction tasks."},
+        {"id": "P56", "name": "Contribution 4: lightweight hybrid encoder", "description": "A lightweight hybrid CNN/Transformer encoder, adapted from RT-DETR, is leveraged to balance feature precision and reduce computational overhead."},
+        {"id": "P57", "name": "Contribution 5: validation against SOTA under realistic low-resource constraints", "description": "The proposed approach is validated through downstream object detection experiments, comparing against SOTA methods and evaluating under realistic constraints of small annotated datasets and limited training epochs."}
+      ],
+      "edges": [
+        {"from": "P53", "to": "P54", "evidence": ["E50"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P54", "to": "P55", "evidence": ["E51"], "votes": 2, "confidence": "majority"},
+        {"from": "P55", "to": "P56", "evidence": ["E52"], "votes": 2, "confidence": "majority"},
+        {"from": "P56", "to": "P57", "evidence": ["E53"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P58", "name": "Under review at ISVC since August 20, 2025", "description": "The manuscript has been submitted to the International Symposium on Visual Computing (ISVC) and has been under review since August 20, 2025."},
+    {"id": "P59", "name": "Future work: scale to larger datasets and other dense-prediction tasks", "description": "Future work will investigate the effectiveness of the method on larger datasets and explore applicability to other dense prediction tasks."},
+    {"id": "P60", "name": "Future work: SSL decoder for human-interpretable representations", "description": "Future work aims to design an SSL decoder to enhance the interpretability of the learned representations in a human-understandable manner."}
+  ]
+}

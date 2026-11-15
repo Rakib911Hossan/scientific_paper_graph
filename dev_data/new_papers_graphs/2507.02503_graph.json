@@ -1,0 +1,166 @@
+{
+ "arxiv_id": "2507.02503",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "LoRA's expressiveness/stability limits motivate GORP's low-rank gradient subspace design and its evidence",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "LoRA constrains expressiveness",
+     "description": "LoRA's low-rank matrices constrain the parameter space and expressiveness, giving suboptimal performance versus full fine-tuning, with a gap that often widens in continual learning."
+    },
+    {
+     "id": "P2",
+     "name": "Explicit constraints are limited",
+     "description": "Methods imposing explicit constraints on LoRA parameters (O-LoRA, MIGU, N-LoRA) can only approximate the ideal parameter space, cannot adapt to dynamically evolving gradient spaces, and struggle to capture shared features across tasks."
+    },
+    {
+     "id": "P3",
+     "name": "Gradients are low-rank",
+     "description": "Gradients tend to adopt a low-rank structure during training, so full-rank parameter gradients can be projected into a low-rank space while keeping efficiency."
+    },
+    {
+     "id": "P4",
+     "name": "Moment-based gradient subspace",
+     "description": "GORP builds the gradient shared space from Adam's first-order moment (SVD plus a k-rank approximation under threshold epsilon), since sampled hidden features may not represent the overall gradient direction."
+    },
+    {
+     "id": "P5",
+     "name": "Orthogonal subspace update across tasks",
+     "description": "For tasks 2..T, GORP takes the part of the first-order moment orthogonal to the existing space, applies SVD/k-rank approximation, appends new vectors, and truncates small singular values to keep the space fixed in size."
+    },
+    {
+     "id": "P6",
+     "name": "GORP combines full and LoRA parameters",
+     "description": "GORP trains both LoRA and full-rank parameters in a unified low-rank gradient subspace: LoRA parameter A's gradient is projected away from the old-task space, and full-rank gradients are updated in low-rank form."
+    },
+    {
+     "id": "P7",
+     "name": "GORP beats baselines on CL benchmarks",
+     "description": "With T5-Large GORP gets Table 2 averages of 79.8 (standard CL) and 76.0 (large number of tasks), above O-LoRA, MIGU and N-LoRA, about 4% and 6.1% over baselines and near MTL; on LLaMA2-7B it reaches 78.6 (+2.5%)."
+    },
+    {
+     "id": "P8",
+     "name": "GORP forgets far less",
+     "description": "GORP's forgetting rate (BWT) is 0.8% versus 7.8% for the baseline, a 7.0% reduction on T5 standard CL benchmarks."
+    },
+    {
+     "id": "P9",
+     "name": "Stable gradient orthogonality",
+     "description": "GORP keeps gradient orthogonality stable across tasks (Fig 2) while parameter orthogonality is only slightly weaker than the baseline (Fig 5), giving better gradient direction control with larger parameter freedom."
+    },
+    {
+     "id": "P10",
+     "name": "Better generalization to unseen tasks",
+     "description": "On unseen tasks GORP improves average performance over N-LoRA by 7.0% and over O-LoRA by 26.2% across task orders."
+    },
+    {
+     "id": "P11",
+     "name": "Each component helps",
+     "description": "Ablation shows low-rank projection on LoRA adds 0.7% over baseline, adding full-rank parameters with projection gives 2.0%, and the full GORP reaches 3.9%."
+    },
+    {
+     "id": "P12",
+     "name": "Efficient compared with O-LoRA",
+     "description": "GORP needs nearly the same time as O-LoRA (0.99x) but far fewer FLOPs (about 1.8e-3x), whereas N-LoRA is faster but costs 1.23x FLOPs."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.1-3.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2, Tables 2-3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.4, Table 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.4, Fig 2, Fig 5"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.5, Table 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Task growth limitation",
+   "description": "As task sequences grow, capturing increasing task diversity in the fixed-size gradient subspace is a key challenge, and effectiveness in complex real-world scenarios remains unvalidated."
+  }
+ ],
+ "structural_reasoning": "Argument runs from LoRA and explicit-constraint limitations through GORP's gradient-subspace construction and projection to the empirical results."
+}

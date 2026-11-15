@@ -1,0 +1,210 @@
+{
+ "arxiv_id": "2510.11168",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Classifier-layer bottleneck motivates pure low-precision training with peak-memory optimizations",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Classifier layer is the XMC bottleneck",
+     "description": "In extreme multilabel classification the linear classification head, rather than the encoder, dominates parameters and memory; with embedding dimension 768 and 3 million labels the weights alone take about 8 GiB, and about 32 GiB with gradients and optimizer states."
+    },
+    {
+     "id": "P2",
+     "name": "Renee fixes activation memory only",
+     "description": "Renee computes classifier gradients directly without materializing the loss, which reduces activation memory and enables end-to-end training that beats negative-sampling approaches."
+    },
+    {
+     "id": "P3",
+     "name": "Renee mixed precision keeps extra copies",
+     "description": "Renee's mixed-precision training keeps a full-precision parameter copy, a second FP16 copy of the classifier weights that persists for the whole step, and upcasts classifier gradients to FP32, inflating memory."
+    },
+    {
+     "id": "P4",
+     "name": "FP16 gradients are unstable at large label counts",
+     "description": "Classifier-input gradient accumulation over the label dimension often overflows the FP16 range while classifier-weight gradients do not grow with label count, making Renee's training unstable and sensitive to encoder and label-space size."
+    },
+    {
+     "id": "P5",
+     "name": "Renee peaks at about 40 GiB",
+     "description": "Renee's peak training memory is 39.7 GiB at 3 million labels, because the FP16 weight copy (4 GiB), gradients (4 GiB) and their FP32 upcast (8 GiB) stack up."
+    },
+    {
+     "id": "P6",
+     "name": "Pure BF16 training replaces mixed precision",
+     "description": "ELMO uses BF16 instead of FP16 to avoid overflow because BF16 has the dynamic range of FP32, removing the extra high-precision copy of classifier gradients."
+    },
+    {
+     "id": "P7",
+     "name": "Naive BF16 updates stall training",
+     "description": "Replacing 32-bit optimizer weights with BF16 weights stops training progress because round-to-nearest cancels updates smaller than half the gap to the next representable number."
+    },
+    {
+     "id": "P8",
+     "name": "Kahan summation and stochastic rounding compensate",
+     "description": "ELMO uses Kahan summation for the encoder optimizer and stochastic rounding for the classifier optimizer to compensate for BF16 rounding error."
+    },
+    {
+     "id": "P9",
+     "name": "FP8 classifier works without scaling",
+     "description": "Classifier weights can be trained in pure FP8 (E4M3) without loss scaling or mixed precision as long as gradients stay in BF16; 3 exponent bits suffice and mantissa degradation below 6 bits is recovered by stochastic rounding."
+    },
+    {
+     "id": "P10",
+     "name": "Chunking and fused kernel cut transient memory",
+     "description": "Chunking the classifier update (3 to 8 chunks), decoupling encoder and classifier updates, and fusing classifier gradient computation with the optimizer step in a Triton kernel avoids storing classifier gradients and reduces peak memory."
+    },
+    {
+     "id": "P11",
+     "name": "ELMO memory for 3M labels",
+     "description": "ELMO needs only 10.3 GiB (BF16) or 6.6 GiB (FP8) of peak memory for a 3-million-label model versus 39.7 GiB for Renee, a 4x-6x reduction."
+    },
+    {
+     "id": "P12",
+     "name": "Accuracy is preserved",
+     "description": "ELMO's precision is comparable to Renee and competitive with existing XMC baselines on most public datasets despite pure low-precision training."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 4, Fig 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 4, Fig 1, Fig 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 4, Fig 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4, Fig 2(a)"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 6, Table 2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 4, Fig 3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4, Fig 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P11",
+     "evidence": [
+      "Sec 4, Fig 3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 6, Table 2"
+     ]
+    }
+   ]
+  },
+  {
+   "component_id": "C2",
+   "description": "Low-precision training enables a new 8.6M-label benchmark",
+   "nodes": [
+    {
+     "id": "P13",
+     "name": "Public XMC benchmarks too small",
+     "description": "The largest public XMC dataset has 3 million labels, so recent large-scale experiments used proprietary data."
+    },
+    {
+     "id": "P14",
+     "name": "LF-Paper2Keywords-8.6M dataset",
+     "description": "The authors curate LF-Paper2Keywords-8.6M from DBLP-Citation-network V14, using paper titles and abstracts with keywords as 8.6 million labels."
+    },
+    {
+     "id": "P15",
+     "name": "Other XMC baselines do not scale to 8.6M",
+     "description": "Other XMC baselines do not scale to 8.6 million labels, while ELMO's low-precision training yields significant memory and computational savings on it."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P14",
+     "to": "P15",
+     "evidence": [
+      "Sec 5, Table 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P16",
+   "name": "Wiki-500K memory",
+   "description": "On Wiki-500K, Renee's peak memory is 105.64 GiB versus 18.8 GiB for ELMO BF16 and 9.02 GiB for ELMO FP8."
+  }
+ ],
+ "structural_reasoning": "Argument moves from classifier-bottleneck and Renee's remaining memory/stability problems, to the pure BF16/FP8 recipe with compensation techniques, to measured memory and accuracy; the dataset contribution is a related branch."
+}

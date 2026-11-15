@@ -1,0 +1,174 @@
+{
+ "arxiv_id": "2507.11882",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Localized multilingual IFEval extension and what its evaluation reveals",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "IFEval is English-centric",
+     "description": "IFEval and Multi-IF are predominantly monolingual (English) or merely machine-translated, limiting use in multilingual and culturally diverse contexts."
+    },
+    {
+     "id": "P2",
+     "name": "Constraints need localization",
+     "description": "Instruction constraints and prompts need adaptation to language and culture, e.g. capitalization constraints do not apply to Chinese or Greek, passive voice differs in Japanese and Turkish, and Thanksgiving prompts should become Diwali for India."
+    },
+    {
+     "id": "P3",
+     "name": "Marco-Bench-MIF construction",
+     "description": "Marco-Bench-MIF extends IFEval to 30 languages from 6 families, with 541 instruction-response pairs per language, via preprocessing, translation localization and post-processing with two rounds of human verification."
+    },
+    {
+     "id": "P4",
+     "name": "Keyword translation needs manual fixes",
+     "description": "Keyword-frequency constraints (e.g. the word 'sneaker' at least 10 times) required manual adjustment of translated keywords across the 30 languages."
+    },
+    {
+     "id": "P5",
+     "name": "Evaluation of 20+ LLMs",
+     "description": "More than 20 open and proprietary LLMs are evaluated on Marco-Bench-MIF with strict and loose prompt-level and instruction-level accuracy."
+    },
+    {
+     "id": "P6",
+     "name": "Instruction-level exceeds prompt-level",
+     "description": "Instruction-level accuracy exceeds prompt-level accuracy by 10-20% across all models (21.74 vs 46.45 points difference for Ministral-8B), showing compositional constraint adherence is hard."
+    },
+    {
+     "id": "P7",
+     "name": "Loose beats strict",
+     "description": "Loose metrics score 3-5% higher than strict ones, indicating models often fail on superficial formatting deviations rather than semantics."
+    },
+    {
+     "id": "P8",
+     "name": "Scale correlates with performance",
+     "description": "Models of 70B+ parameters achieve 45-60% higher absolute accuracy than 8B models, though at instruction level even Qwen2.5-7B reaches 64.42% strict accuracy."
+    },
+    {
+     "id": "P9",
+     "name": "Resource-level gap",
+     "description": "High-resource languages (de, fr, zh, ja) reach 75-85% accuracy for top models while low-resource languages (yo, ne, kk) reach 50-60% even for Claude3.5-Sonnet, a 25-35 point gap persisting across scales."
+    },
+    {
+     "id": "P10",
+     "name": "Script-specific disparities",
+     "description": "Most LLMs show 15-20 point disparities between languages of the same script family, and right-to-left scripts are sensitive (LLaMA3.3-70B scores 78.5 in Hebrew vs 54.7 in Urdu)."
+    },
+    {
+     "id": "P11",
+     "name": "MT data underestimates accuracy",
+     "description": "Evaluations on machine-translated data underestimate accuracy by 7-22% versus localized data, e.g. Claude3.5-Sonnet in Yoruba is underestimated by 7.1%."
+    },
+    {
+     "id": "P12",
+     "name": "Localized evaluation needed",
+     "description": "Culturally grounded, localized evaluation is necessary because MT data cannot capture fine-grained linguistic and cultural complexity of instruction following."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3, Table 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3, Table 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3.4, Fig 3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.3.4, Conclusion"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Multilingual-specialized models best at response language",
+   "description": "Aya-expanse models outperform proprietary models on the Response Language instruction, with Aya-expanse-32B at 95.69, and Gemma 9B/27B score 91+ (Table 4)."
+  },
+  {
+   "id": "P14",
+   "name": "Top models still fail response language",
+   "description": "Even GPT-4o and Claude fail to respond in the specified language about 5% of the time."
+  },
+  {
+   "id": "P15",
+   "name": "General models win most languages",
+   "description": "Despite Aya-expanse-32B being best for mid-resource languages (hi 56.2, sw 39.8), Qwen2.5-72B outperforms it in 22 of 30 languages through scale."
+  },
+  {
+   "id": "P16",
+   "name": "Turkic transfer",
+   "description": "Turkish accuracy strongly predicts Kazakh accuracy (r=0.89), but this correlation does not hold for Slavic languages where Ukrainian scores unexpectedly low relative to Russian."
+  }
+ ],
+ "structural_reasoning": "Gap motivation and localization requirements lead to the benchmark, whose evaluation yields scale, resource, script and MT-vs-localized findings; side observations are isolated."
+}

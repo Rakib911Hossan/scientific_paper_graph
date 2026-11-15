@@ -1,0 +1,233 @@
+{
+ "arxiv_id": "2601.11953",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Memory-driven Intrinsic Cost Estimation (MICE): correcting cost-value underestimation to reduce constraint violations in CRL",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "CRL methods violate constraints in training",
+     "description": "Existing CRL algorithms often exhibit persistent constraint violations during training, limiting their use in safety-critical scenarios."
+    },
+    {
+     "id": "P2",
+     "name": "Noise causes cost underestimation",
+     "description": "Function-approximation noise breaks the zero-mean assumption under a minimization objective, causing underestimation of the cost value, so high-cost states appear deceptively safe (Fig 2)."
+    },
+    {
+     "id": "P3",
+     "name": "Underestimation drives violations",
+     "description": "Underestimating the cost value in high-cost regions leads agents to over-explore unsafe states and produces frequent constraint violations during training even when a safe optimal policy exists."
+    },
+    {
+     "id": "P4",
+     "name": "Bias can be useful if shaped",
+     "description": "Underestimation encourages exploration and overestimation discourages it, so in high-cost regions overestimation helps prevent unsafe exploration, and the challenge is to shape the bias rather than remove it."
+    },
+    {
+     "id": "P5",
+     "name": "Flashbulb memory module",
+     "description": "MICE stores previously explored unsafe states (positive extrinsic cost) from the previous iteration's policy, embedded by random projection, to identify high-cost regions."
+    },
+    {
+     "id": "P6",
+     "name": "Intrinsic cost as pseudo-count",
+     "description": "The intrinsic cost is the kernel-similarity-based pseudo-count of the current state visiting high-cost regions in memory, normalized for stability."
+    },
+    {
+     "id": "P7",
+     "name": "Extrinsic-intrinsic cost value update",
+     "description": "The extrinsic-intrinsic cost value function adds the intrinsic cost to the target, raising the cost estimate and mitigating underestimation in high-cost regions."
+    },
+    {
+     "id": "P8",
+     "name": "Balancing factor controls bias",
+     "description": "A balancing intrinsic factor beta, updated from the previous update's estimated bias, raises the intrinsic cost when underestimating and lowers it when overestimating."
+    },
+    {
+     "id": "P9",
+     "name": "Trust-region objective keeps memory relevant",
+     "description": "A trust-region objective keeps the updated policy close to the policy that generated the memory, so stored unsafe states stay relevant and the intrinsic cost reflects the updated policy's risk."
+    },
+    {
+     "id": "P10",
+     "name": "Constraint bounds and worst-case violation",
+     "description": "The extrinsic-intrinsic cost admits constraint bounds (Theorem 4.3), and the MICE update has a worst-case constraint violation bound tighter than CPO's (Theorem 4.4)."
+    },
+    {
+     "id": "P11",
+     "name": "Convergence guarantee",
+     "description": "Under assumptions similar to TD3 and Double Q-learning, the extrinsic-intrinsic cost value function converges to the optimal Q_C (Theorem 4.5)."
+    },
+    {
+     "id": "P12",
+     "name": "Reduces violations with comparable return",
+     "description": "On Safety Gym and Safety MuJoCo, MICE significantly reduces constraint violations while maintaining policy performance similar or superior to baselines, matching Saute and SimmerPID's constraint satisfaction with better return (Figs 3-4)."
+    },
+    {
+     "id": "P13",
+     "name": "MICE corrects estimation bias",
+     "description": "Validation shows MICE mitigates underestimation, its estimation bias approaches zero, and its cost value converges to the true value (Fig 5)."
+    },
+    {
+     "id": "P14",
+     "name": "Fixed intrinsic constants are worse",
+     "description": "Replacing the memory-driven intrinsic cost with fixed constants (3, 5, 15) reduces return, and a larger constant (5 vs 3) does not necessarily reduce violations (Fig 6a,b)."
+    },
+    {
+     "id": "P15",
+     "name": "Robust to thresholds",
+     "description": "On SafetyPointGoal1-v0, MICE adapts to cost thresholds 0, 15 and 25, enforcing compliance even at threshold 0 (Fig 6c,d)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 1, Sec 4"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 4.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3, Thm 4.3-4.4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.4, Thm 4.5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Figs 3-4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 5, Fig 5"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P13",
+     "evidence": [
+      "Sec 5, Fig 5"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P14",
+     "evidence": [
+      "Sec 5 ablation, Fig 6"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P15",
+     "evidence": [
+      "Sec 5, Fig 6c,d"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P16",
+   "name": "Experimental setup",
+   "description": "Experiments run 10^7 steps, max trajectory length 1000, 6 seeds, on four Safety Gym navigation tasks and Safety MuJoCo with cost threshold 25."
+  },
+  {
+   "id": "P17",
+   "name": "Bias handling in prior RL",
+   "description": "TD3, Double Q-learning and AdaEQ address overestimation, while Maxmin and Balanced Q-learning show estimation bias can be controlled to enhance learning."
+  },
+  {
+   "id": "P18",
+   "name": "Random projection cheapens computation",
+   "description": "Ablation of the random projection layer shows it significantly reduces computational complexity without degrading performance or increasing violations (Appendix C.3.4)."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the underestimation diagnosis, through the flashbulb memory and intrinsic cost design, to the trust-region update with theoretical guarantees, then experimental validation."
+}

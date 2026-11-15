@@ -1,0 +1,236 @@
+{
+ "arxiv_id": "2609.05539",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Long-horizon forgetting motivates dual latent memories, router and training, validated by results and ablations",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Performance degrades with generation length",
+     "description": "MLLMs' vision-language reasoning performance degrades as generations grow longer."
+    },
+    {
+     "id": "P2",
+     "name": "Single growing context",
+     "description": "Most MLLMs rely on a single growing context: the image is encoded once as a prefix and later states are carried only through generated text."
+    },
+    {
+     "id": "P3",
+     "name": "Image attention decays",
+     "description": "Attention to image tokens steadily decays as generation proceeds; under a growing context the total attention mass on the fixed image-token set shrinks as n_t grows."
+    },
+    {
+     "id": "P4",
+     "name": "Prior revisiting methods stay bound to growing context",
+     "description": "Prompting-based guidance and training-based alignment for revisiting information remain bound to the same growing-context mechanism and do not fundamentally prevent long-horizon forgetting."
+    },
+    {
+     "id": "P5",
+     "name": "Dual latent memories",
+     "description": "DLMR maintains two learnable input-agnostic latent memories, a visual memory Z(v) compressing image evidence and a reasoning memory Z(r) tracking intermediate conclusions and constraints, on a frozen backbone."
+    },
+    {
+     "id": "P6",
+     "name": "Memory injector",
+     "description": "A lightweight memory injector (LoRA on a replica of the frozen MLLM) contextualizes the selected latents into k memory tokens appended to the context."
+    },
+    {
+     "id": "P7",
+     "name": "Discrete router",
+     "description": "A discrete LoRA-head router selects at each delimiter-eligible step a memory type s in {v,r} and a token budget k in {4,8,16} (or no injection), with a per-sample cap on injections."
+    },
+    {
+     "id": "P8",
+     "name": "Three-stage training",
+     "description": "DLMR is trained in three stages with the backbone frozen: latent memory pre-warm via two-teacher alignment, injector training (SFT or GRPO), and router learning with GRPO under a cost-aware reward."
+    },
+    {
+     "id": "P9",
+     "name": "DLMR sustains visual attention and fewer tokens",
+     "description": "Compared to vanilla Qwen2.5-VL-7B on MathVision, DLMR preserves substantially more visual attention in later decoding and often needs fewer reasoning tokens."
+    },
+    {
+     "id": "P10",
+     "name": "Main benchmark gains",
+     "description": "DLMR consistently outperforms CoT, CCoT, SFT, GRPO, Visual-RFT and RCTS-RAG baselines on 3 general and 4 reasoning benchmarks with Qwen2.5-VL-7B and InternVL-3-8B; e.g. DLMR RL raises Qwen2.5-VL-7B MathVision from 22.37 to 39.34."
+    },
+    {
+     "id": "P11",
+     "name": "SFT vs RL variants",
+     "description": "DLMR (SFT) performs best on general benchmarks while DLMR (RL) achieves the strongest reasoning results."
+    },
+    {
+     "id": "P12",
+     "name": "Disentanglement ablation",
+     "description": "Collapsing the dual memories into a single shared memory lowers the six-benchmark average from 59.73 to 52.05 and MathVision from 35.32 to 22.37."
+    },
+    {
+     "id": "P13",
+     "name": "Injector ablation",
+     "description": "Freezing the injector lowers the Qwen2.5-VL-7B reasoning average from 72.10 to 69.96 (MMMU 61.00 to 58.14), showing a trainable injector is necessary."
+    },
+    {
+     "id": "P14",
+     "name": "Adaptive routing beats fixed budget",
+     "description": "Full adaptive DLMR reaches 53.84 average reasoning accuracy with 677 average tokens, above fixed k=4/8/16 (51.55, 52.71, 52.04) whose average length rises 664 to 732 to 765."
+    },
+    {
+     "id": "P15",
+     "name": "Cross-backbone generalization",
+     "description": "DLMR improves LLaVA-OV-1.5-4B, Qwen2.5-VL-3B and InternVL-3-2B, with reasoning-average gains of +7.2, +7.9 and +6.9 and general-average gains of +6.8, +6.2 and +5.1."
+    },
+    {
+     "id": "P16",
+     "name": "Text-only transfer",
+     "description": "Applied to text-only benchmarks, DLMR improves GSM8K from 68.08 to 83.47 and ARC-Challenge from 44.11 to 55.19 on Qwen2.5-VL-7B."
+    },
+    {
+     "id": "P17",
+     "name": "Improved token efficiency",
+     "description": "DLMR reduces average generated tokens by 9.7% versus Visual-RFT and by 4.2% versus SFT on four reasoning benchmarks, counting memory-generation tokens."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3, Eq 2-3, Fig 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P1",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3 end"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.3 Stage 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.2, Table 1"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.2, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.2 Abl.1, Fig 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.2 Abl.2, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.2 Abl.3, Table 4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P15",
+     "evidence": [
+      "Sec 5.3 Ana.1, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P16",
+     "evidence": [
+      "Sec 5.3 Ana.2, Fig 5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P17",
+     "evidence": [
+      "Sec 5.3 Ana.3, Fig 6"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P18",
+   "name": "Gain pattern on long-horizon tasks",
+   "description": "Improvements are largest on long-horizon reasoning benchmarks such as MathVision and MathVista, and DLMR also improves general VQA, indicating no trade-off with perception."
+  },
+  {
+   "id": "P19",
+   "name": "Diminishing returns of larger fixed budgets",
+   "description": "k=16 gives longer outputs but slightly lower accuracy (52.04) than k=8 (52.71), indicating diminishing returns from over-injection."
+  },
+  {
+   "id": "P20",
+   "name": "Budget cap differs by task family",
+   "description": "General benchmarks reach their best trade-off at kmax=16 while reasoning benchmarks peak at kmax=32."
+  }
+ ],
+ "structural_reasoning": "Argument goes from the attention-decay problem to the dual-memory/injector/router design and training, then to benchmark results, ablations tied to each component, and transfer analyses."
+}

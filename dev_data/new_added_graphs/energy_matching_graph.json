@@ -1,0 +1,277 @@
+{
+  "arxiv_id": "2504.10612v5",
+  "note": "Single-pass extraction (no sentence-level indexing available for this document). Evidence fields reference sections/tables/figures/equations instead of indexed sentences (S#). Votes/confidence/fidelity fields from the reference schema are omitted since no multi-run validation was performed.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: flow/diffusion models lack tractable likelihood; EBMs have it but underperform",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Flow/diffusion models cannot readily integrate priors or partial observations",
+          "description": "Flow- and diffusion-based generative models map noise to data via optimal transport or iterative noising/denoising, and while effective for generation and as priors for inverse problems, they do not explicitly capture the unconditional data score, only the score of smoothed manifolds at different noise levels, leaving the measurement likelihood intractable on these noised manifolds."
+        },
+        {
+          "id": "P2",
+          "name": "This intractability forces crude approximations when solving inverse problems",
+          "description": "Because flow/diffusion approaches shuttle between noised and data distributions without a tractable likelihood, existing methods (e.g., DPS approximating an intractable integral with a single sample, D-Flow differentiating through simulated trajectories) resort to crude approximations and lack a direct way to navigate the data manifold in search of the optimal solution."
+        },
+        {
+          "id": "P3",
+          "name": "EBMs explicitly model an unnormalized density but historically underperform",
+          "description": "Energy-based models (EBMs) learn a scalar function E(x) defining an unnormalized density exp(-E(x)), explicitly retaining likelihood information usable for conditional generation and additive priors, and enabling direct curvature-based analysis (e.g., local intrinsic dimension) unlike diffusion models — but practical EBMs have historically suffered from poor generation quality due to training instabilities like mode collapse."
+        },
+        {
+          "id": "P4",
+          "name": "Prior EBM fixes (ensembles, cooperative generators) add substantial complexity",
+          "description": "To overcome instability, many EBM methods resort to time-conditioned ensembles, hierarchical latent ensembles, or cooperative training with separate generator networks, requiring significantly higher parameter counts and training complexity."
+        },
+        {
+          "id": "P5",
+          "name": "Energy Matching proposed: unify flow matching and EBMs via a two-regime scalar potential",
+          "description": "The paper proposes Energy Matching, a two-regime training strategy combining flow matching's efficient long-range transport with EBMs' explicit likelihood modeling, learning a single time-independent scalar potential without auxiliary generators, time conditioning, or additional networks."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["Sec 1"]},
+        {"from": "P3", "to": "P4", "evidence": ["Sec 1"]},
+        {"from": "P2", "to": "P5", "evidence": ["Sec 1"]},
+        {"from": "P4", "to": "P5", "evidence": ["Sec 1"]}
+      ]
+    },
+    {
+      "component_id": "C2",
+      "description": "Theoretical foundation: the JKO scheme with time-dependent entropic regularization",
+      "nodes": [
+        {
+          "id": "P6",
+          "name": "JKO scheme describes energy-minimizing distribution evolution in Wasserstein space",
+          "description": "The Jordan-Kinderlehrer-Otto (JKO) scheme, the basis of many recent generative models, describes discrete-time evolution of a probability distribution along trajectories minimizing a sum of transport cost (Wasserstein distance), potential energy, and an entropic internal-energy term weighted by a temperature-like parameter ε(t) (Eq. 1)."
+        },
+        {
+          "id": "P7",
+          "name": "ε(t) is made time-dependent, following a linear schedule from 0 to a maximum",
+          "description": "Departing from most literature treating ε as constant, the paper considers ε(t) dependent on time and studies the behavior of the JKO objective as t→∞, using a linear schedule that keeps ε=0 before a threshold time τ*, then linearly increases to εmax (Eq. 3)."
+        }
+      ],
+      "edges": [
+        {"from": "P5", "to": "P6", "evidence": ["Sec 2", "Eq. 1"]},
+        {"from": "P6", "to": "P7", "evidence": ["Sec 2", "Eq. 3"]}
+      ]
+    },
+    {
+      "component_id": "C3",
+      "description": "Derivation: first-order optimality conditions reveal two limiting regimes",
+      "nodes": [
+        {
+          "id": "P8",
+          "name": "First-order optimality conditions characterize the JKO solution at each time t",
+          "description": "Analyzing the JKO objective via its first-order optimality conditions yields a coupling equation relating transport displacement, the potential gradient, and the entropic score term, which must hold for all OT-coupled point pairs (Eq. 4)."
+        },
+        {
+          "id": "P9",
+          "name": "For t < τ*, the system reduces to a pure optimal-transport flow regime",
+          "description": "When ε(t)=0 (i.e., t<τ*), the optimality condition simplifies to a pure OT flow-like regime where displacement is governed solely by the potential's gradient (Eq. 5)."
+        },
+        {
+          "id": "P10",
+          "name": "Near the data manifold, the equilibrium distribution becomes an EBM Boltzmann distribution",
+          "description": "As t becomes large and the distribution approaches equilibrium (x≈y for coupled points), the optimality condition simplifies to show the equilibrium distribution is proportional to exp(-Vθ(x)/εmax), i.e., an EBM with energy E(x)=Vθ(x)/εmax."
+        },
+        {
+          "id": "P11",
+          "name": "Combining both regimes yields the Energy Matching framework",
+          "description": "Combining the OT-flow insight (P9) and the EBM-equilibrium insight (P10), the paper proposes learning a single time-independent scalar potential Vθ(x) whose Boltzmann distribution matches the data distribution, transported via two regimes: near-zero ε for rapid deterministic OT-like movement away from the manifold, and ε≈εmax for stable Boltzmann diffusion near the manifold (Eq. 6)."
+        }
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["Sec 2", "Eq. 4"]},
+        {"from": "P8", "to": "P9", "evidence": ["Sec 2", "Eq. 5"]},
+        {"from": "P8", "to": "P10", "evidence": ["Sec 2"]},
+        {"from": "P9", "to": "P11", "evidence": ["Sec 2", "Eq. 6"]},
+        {"from": "P10", "to": "P11", "evidence": ["Sec 2", "Eq. 6"]}
+      ]
+    },
+    {
+      "component_id": "C4",
+      "description": "Method: flow-like OT training objective (Phase 1 warm-up)",
+      "nodes": [
+        {
+          "id": "P12",
+          "name": "Global velocity field constructed as the gradient of the scalar potential",
+          "description": "The method constructs a global velocity field -∇Vθ(x) carrying noise samples to data samples via geodesics in Wasserstein space, computing an OT coupling between empirical noise and data mini-batches (using the POT solver), guaranteed to yield a transport map T under uniform empirical distributions of equal cardinality."
+        },
+        {
+          "id": "P13",
+          "name": "OT loss trains the potential's gradient to match the constant-speed geodesic velocity",
+          "description": "For each data point, an interpolation along the OT geodesic is defined, with constant velocity (xdata - T(xdata)); the flow-like loss L_OT trains -∇Vθ(xt) to match this velocity, interpretable as flow matching under an irrotational (gradient-field) constraint consistent with OT's irrotational velocity fields."
+        },
+        {
+          "id": "P14",
+          "name": "Phase 1 (Algorithm 1) warms up the potential using only the OT objective",
+          "description": "Because the later contrastive phase requires high-quality negative samples, training begins with Phase 1, optimizing only L_OT via mini-batch OT coupling and interpolation sampling, ensuring stable initial mixing before the contrastive phase begins."
+        }
+      ],
+      "edges": [
+        {"from": "P11", "to": "P12", "evidence": ["Sec 2.1.1"]},
+        {"from": "P12", "to": "P13", "evidence": ["Sec 2.1.1", "Eq. Local"]},
+        {"from": "P13", "to": "P14", "evidence": ["Sec 2.1.3", "Algorithm 1"]}
+      ]
+    },
+    {
+      "component_id": "C5",
+      "description": "Method: contrastive divergence objective for shaping the equilibrium density (Phase 2)",
+      "nodes": [
+        {
+          "id": "P15",
+          "name": "Contrastive divergence loss refines Vθ so its Boltzmann distribution matches the data",
+          "description": "Near the data manifold, Vθ(x) is refined using a contrastive divergence loss (following Hinton) that contrasts the potential's value at real data samples against its value at negative samples drawn from the induced equilibrium distribution, with a stop-gradient on the negative-sample path."
+        },
+        {
+          "id": "P16",
+          "name": "Negative samples approximated via MCMC Langevin chains with mixed initialization",
+          "description": "Negative samples are approximated using an MCMC Langevin chain, with half the chains initialized from real data and half from the noise distribution, so Vθ forms well-defined basins around high-density regions while also shaping regions away from the manifold."
+        },
+        {
+          "id": "P17",
+          "name": "Dual objective combines L_OT and L_CD with a dataset-specific weighting hyperparameter",
+          "description": "The overall training combines the OT loss and the contrastive divergence loss weighted by a dataset-specific hyperparameter λ_CD, following the linear ε(t) schedule to balance the deterministic flow-like regime away from the manifold and the stochastic Boltzmann regime near equilibrium (Algorithm 2)."
+        }
+      ],
+      "edges": [
+        {"from": "P14", "to": "P15", "evidence": ["Sec 2.1.2"]},
+        {"from": "P15", "to": "P16", "evidence": ["Sec 2.1.2"]},
+        {"from": "P16", "to": "P17", "evidence": ["Sec 2.1.3", "Algorithm 2"]}
+      ]
+    },
+    {
+      "component_id": "C6",
+      "description": "Finding: Energy Matching substantially outperforms prior EBMs on unconditional image generation",
+      "nodes": [
+        {
+          "id": "P18",
+          "name": "Energy Matching reduces FID by more than 50% versus state-of-the-art EBMs on CIFAR-10 and ImageNet32",
+          "description": "Evaluated against diffusion models, flow-based models, EBMs, and diffusion+EBM ensembles on CIFAR-10 and ImageNet32x32, Energy Matching outperforms state-of-the-art EBMs, reducing FID score by more than 50% (Tables 1-2), while using a comparable or smaller parameter count (50M) than some baselines."
+        },
+        {
+          "id": "P19",
+          "name": "Energy Matching compares favorably even to flow-matching/diffusion models without their added complexity",
+          "description": "Energy Matching achieves FID scores that compare favorably to flow-matching and diffusion models, and to complex diffusion+EBM ensembles, despite using a single time-independent scalar field without auxiliary generators or time-conditioned EBM ensembles."
+        }
+      ],
+      "edges": [
+        {"from": "P17", "to": "P18", "evidence": ["Sec 3.1", "Tables 1-2"]},
+        {"from": "P18", "to": "P19", "evidence": ["Sec 3.1", "Tables 1-2"]}
+      ]
+    },
+    {
+      "component_id": "C7",
+      "description": "Method extension: inverse problems via the learned energy as a prior",
+      "nodes": [
+        {
+          "id": "P20",
+          "name": "The learned potential serves as a tractable prior in Bayesian inverse problems",
+          "description": "For recovering data x from noisy measurements y=A(x)+w, the posterior factorizes into a measurement-fidelity term and the learned EBM prior exp(-Eθ(x)) where Eθ(x)=Vθ(x)/εmax (Eq. 7), obtained directly from the Energy-Matching-trained potential."
+        },
+        {
+          "id": "P21",
+          "name": "Posterior sampling via Langevin dynamics balancing fidelity and prior",
+          "description": "Samples from the posterior are drawn via a Langevin update starting from random noise, combining the prior gradient, a measurement-fidelity gradient term weighted by ζ, and an optional interaction energy term between multiple simultaneously sampled chains (Algorithm 3)."
+        },
+        {
+          "id": "P22",
+          "name": "Repulsive interaction energy encourages diverse posterior mode exploration",
+          "description": "An additional interaction energy term W(x1,x2) can be incorporated to encourage diversity between simultaneously generated samples, giving high probability to pairs that lie far apart in a specified region of interest, encouraging exploration of posterior edges rather than only its modes."
+        }
+      ],
+      "edges": [
+        {"from": "P17", "to": "P20", "evidence": ["Sec 3.2", "Eq. 7"]},
+        {"from": "P20", "to": "P21", "evidence": ["Sec 3.2", "Algorithm 3"]},
+        {"from": "P21", "to": "P22", "evidence": ["Sec 3.2"]}
+      ]
+    },
+    {
+      "component_id": "C8",
+      "description": "Finding: controlled inpainting demonstrates diverse, high-fidelity reconstructions",
+      "nodes": [
+        {
+          "id": "P23",
+          "name": "Interaction energy enables generating two distinct high-fidelity completions from a masked image",
+          "description": "Applying the interaction-energy-augmented posterior to a CelebA 64x64 inpainting task, the method reconstructs two distinct high-fidelity completions from a partially observed face, with the interaction term encouraging the two reconstructions to differ specifically within the region of interest while preserving overall fidelity (Fig. 2)."
+        }
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["Sec 3.2", "Fig. 2"]}
+      ]
+    },
+    {
+      "component_id": "C9",
+      "description": "Finding: protein inverse design shows improved fitness-diversity trade-off",
+      "nodes": [
+        {
+          "id": "P24",
+          "name": "Energy Matching applied to AAV capsid protein inverse design with tunable repulsion",
+          "description": "Using the latent-space representation of VLGPO, an Energy-Matching Langevin sampler with an inference-time tunable repulsion term is applied to designing AAV capsid protein segments targeting a desired fitness (predicted viral packaging efficiency), evaluated on medium and hard benchmark splits."
+        },
+        {
+          "id": "P25",
+          "name": "Tunable repulsion enables flexible fitness-diversity trade-off with strong results",
+          "description": "The inference-time repulsion term allows explicit control over designed-protein diversity, enabling a flexible trade-off between fitness and diversity that results in high fitness scores alongside substantially improved sequence diversity compared to flow-based, score-based, and other non-likelihood baseline methods (Fig. 3)."
+        }
+      ],
+      "edges": [
+        {"from": "P22", "to": "P24", "evidence": ["Sec 3.2", "Fig. 3"]},
+        {"from": "P24", "to": "P25", "evidence": ["Sec 3.2", "Fig. 3"]}
+      ]
+    },
+    {
+      "component_id": "C10",
+      "description": "Method/Finding: local intrinsic dimension (LID) estimation via Hessian spectral analysis",
+      "nodes": [
+        {
+          "id": "P26",
+          "name": "Diffusion-based LID estimation is unreliable exactly at the data manifold",
+          "description": "Recent diffusion-based LID estimation methods examine the learned score function, but since diffusion models do not learn the score exactly at the data manifold (t=1), their estimates become unreliable there, forcing reliance on approximations near but not on the manifold."
+        },
+        {
+          "id": "P27",
+          "name": "EBM's explicit likelihood parametrization enables Hessian-based LID estimation directly on the manifold",
+          "description": "Because EBMs explicitly parametrize the relative data likelihood, the Hessian matrix of the learned potential at a data point can be computed and spectrally decomposed; the count of near-zero eigenvalues (within a threshold τ) reflects the number of flat directions, revealing the local intrinsic dimension directly on the data manifold."
+        },
+        {
+          "id": "P28",
+          "name": "Energy Matching's LID estimates correlate more strongly with PNG compression size than diffusion-based methods",
+          "description": "Energy Matching's Hessian-based LID estimates achieve the strongest Spearman correlation with PNG compression rate on both MNIST (0.877) and CIFAR-10 (0.901) compared to ESS, FLIPD, and NB baselines (Table 3), attributed to relying on fewer approximations by computing exactly on the manifold rather than near it."
+        }
+      ],
+      "edges": [
+        {"from": "P3", "to": "P26", "evidence": ["Sec 3.3"]},
+        {"from": "P26", "to": "P27", "evidence": ["Sec 3.3"]},
+        {"from": "P27", "to": "P28", "evidence": ["Sec 3.3", "Table 3"]}
+      ]
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P29",
+      "name": "Contrast with Action Matching and Flow Matching trajectory behavior",
+      "description": "Action Matching and Flow Matching learn time-dependent transports not trained for traversing the data manifold, whereas EBMs and Energy Matching use time-independent fields that can be iterated indefinitely, letting trajectories navigate across modes, though EBM samples often require additional equilibration steps exhibiting visible mode collapses that Energy Matching avoids via straighter paths (Fig. 1)."
+    },
+    {
+      "id": "P30",
+      "name": "OT solver implementation details",
+      "description": "The paper uses the POT solver to compute OT couplings and did not observe benefits from using a noise sample size different from the mini-batch size B, consistent with prior flow-matching approaches; when coupling does not yield an explicit map, a threshold on coupling values can be used to define valid pairs."
+    },
+    {
+      "id": "P31",
+      "name": "Implementation and sampling details",
+      "description": "Training is implemented via explicit Euler-Maruyama updates, sampling via an Euler-Heun predictor-corrector scheme; sample quality (FID) plateaus by sampling time τs=3.25 on CIFAR-10; the constant factor 1/εmax in the contrastive loss is absorbed into the weighting hyperparameter λ_CD."
+    },
+    {
+      "id": "P32",
+      "name": "Limitations of the method",
+      "description": "The method requires an additional gradient computation with respect to the input, increasing GPU memory usage by 20-40% particularly during training; computing the full Hessian spectrum for LID estimation on very high-dimensional datasets has O(d^3) complexity and may require partial-spectrum approximations like random projections or iterative solvers."
+    }
+  ],
+  "structural_reasoning": "The graph follows a theory-to-method-to-applications structure typical of a generative modeling paper. C1 (motivation: the complementary limitations of flow/diffusion models and EBMs) motivates the unification goal, formalized through C2 (the time-dependent JKO scheme) and C3 (the first-order optimality analysis revealing the OT-flow and EBM-equilibrium limiting regimes) — this derivation is the theoretical core justifying why a single scalar potential can serve both roles. C4 and C5 translate this theory into the two-phase training method (OT warm-up, then contrastive divergence refinement), unified by the dual objective in C5's final node. C6 reports the flagship unconditional-generation result validating the core method. From there, C7 extends the method to inverse problems by reusing the learned potential as a Bayesian prior, which application components C8 (controlled inpainting) and C9 (protein inverse design) both build on to demonstrate qualitative and quantitative benefits of the interaction-energy extension. C10 develops a separate but structurally parallel application — LID estimation — exploiting the same core property (explicit likelihood parametrization) that underlies C7's inverse-problem capability, contrasting favorably with diffusion-based alternatives for the same reason (exact evaluation on the manifold vs. approximations near it). Trajectory-behavior contrasts, OT solver details, implementation/sampling specifics, and stated limitations are treated as isolated nodes since they provide supporting context or caveats rather than links in the core theoretical/experimental chain."
+}

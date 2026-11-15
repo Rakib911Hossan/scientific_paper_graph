@@ -1,0 +1,209 @@
+{
+ "arxiv_id": "2610.15681",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Intent-to-CAD problem, HiCAD dataset and two-stage framework (CMTA then SARL), with empirical validation",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Reconstruction pipelines presuppose a CAD model",
+     "description": "Existing Image-to-CAD and Point Cloud-to-CAD pipelines use renderings, photos or 3D scans as input, which presuppose the target CAD model already exists in the physical or virtual domain."
+    },
+    {
+     "id": "P2",
+     "name": "Conceptual design lacks existing models",
+     "description": "In early conceptual design CAD models do not exist and design intent is unstructured and incomplete, a generative demand that reconstruction pipelines do not address."
+    },
+    {
+     "id": "P3",
+     "name": "Three core challenges",
+     "description": "Mapping hand-drawn sketches and text to CAD code faces asymmetric alignment between sketches and text, logical consistency (minor deviations cause compile failures or geometric distortion), and sparse feedback where cross-entropy fails to capture geometric fidelity."
+    },
+    {
+     "id": "P4",
+     "name": "No dataset covers all three modalities",
+     "description": "No publicly available dataset jointly contains CadQuery code, hand-drawn sketches and textual descriptions."
+    },
+    {
+     "id": "P5",
+     "name": "HiCAD dataset built from DeepCAD",
+     "description": "HiCAD restructures DeepCAD, using CAD-Recode CadQuery code, synthetic hand-drawn style sketches, partial and complete text generated with Qwen3-VL-32B from code, render and geometric parameters, and removes duplicates with DINOv3 sketch similarity above 0.99."
+    },
+    {
+     "id": "P6",
+     "name": "Four intent-to-CAD tasks",
+     "description": "Four tasks cover unimodal to multimodal intent and low to high information density: sketch-to-CAD, complete-text-to-CAD, sketch plus partial text, and sketch plus complete text."
+    },
+    {
+     "id": "P7",
+     "name": "CMTA stage",
+     "description": "Cooperative Multi-Task Alignment fine-tunes a pre-trained VLM (Qwen3-VL-4B-Instruct) with cross-entropy on interleaved data from the four tasks, mitigating single-task overfitting and promoting cross-modal alignment and positive transfer."
+    },
+    {
+     "id": "P8",
+     "name": "SARL stage",
+     "description": "Spatial-Aware Reinforcement Learning initializes from the CMTA model and optimizes a spatial-aware reward jointly for geometric and topological consistency with GSPO, across multiple tasks."
+    },
+    {
+     "id": "P9",
+     "name": "HiCAD outperforms baselines",
+     "description": "HiCAD outperforms general-purpose VLMs (GPT-4o, GPT-5-mini, Gemini-2.5, Claude-3.7, Qwen-VL-Max) and CAD-specific models (CAD-Coder, Cadrille) across all four tasks, with performance improving as inputs go from single to multiple modalities."
+    },
+    {
+     "id": "P10",
+     "name": "CMTA improves over single-task SFT",
+     "description": "Replacing independent single-task SFT with CMTA improves all tasks, e.g. IoU on sketch plus partial text rises from 66.61% to 72.39%."
+    },
+    {
+     "id": "P11",
+     "name": "SARL improves validity and accuracy",
+     "description": "Adding SARL reduces invalid rate (IR) to about 0.2%-0.4% across tasks while IoU continues to increase (e.g. sketch-only IoU 66.87% to 69.09%)."
+    },
+    {
+     "id": "P12",
+     "name": "Joint multi-task SARL is essential",
+     "description": "Applying SARL jointly across tasks substantially outperforms single-task SARL on all metrics."
+    },
+    {
+     "id": "P13",
+     "name": "Generalizes to real human sketches",
+     "description": "On 100 real human-drawn sketches, general-purpose VLMs achieve IoU below 10%, showing poor ability to handle real sketches, which motivates the robustness comparison."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P7",
+     "evidence": [
+      "Sec 1, Sec 4.2.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P8",
+     "evidence": [
+      "Sec 1, Sec 4.2.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.2.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2.1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2.2, Fig 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.2, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.2, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.3, Table 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.3, Table 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.3, Fig 6"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.2, Table 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.2, Table 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Baseline qualitative failures",
+   "description": "General VLMs hallucinate geometries violating topological rules, while Cadrille is structurally coherent but misses fine details such as cut depths or symmetry (Fig 5)."
+  },
+  {
+   "id": "P15",
+   "name": "CadQuery chosen as representation",
+   "description": "CadQuery is used as the unified CAD representation because it is modular and interpretable for LLM code generation and has several high-quality public datasets."
+  },
+  {
+   "id": "P16",
+   "name": "Text2CAD descriptions unsuitable",
+   "description": "Text2CAD's descriptions are generated from command sequences and are therefore unsuitable as direct inputs for generating CadQuery code, so a new description pipeline was designed."
+  }
+ ],
+ "structural_reasoning": "Problem framing and challenges lead to the dataset and two-stage framework; each stage is then validated by ablation and comparison. Dataset-choice rationale items isolated."
+}

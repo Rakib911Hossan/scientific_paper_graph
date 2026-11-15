@@ -1,0 +1,204 @@
+{
+  "arxiv_id": "2109.09774v1",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Background and motivation for the original 2014 NeurIPS experiment.",
+      "nodes": [
+        {"id": "P1", "name": "Growing conference size raised reviewing-quality concerns", "description": "Since around 2010, increased interest in AI significantly increased conference size, and already in 2014 questions were raised about reviewing quality given the increased load on reviewers."},
+        {"id": "P2", "name": "Experiment designed to test decision consistency", "description": "As Program Chairs, the authors implemented the 2014 NeurIPS experiment, designed to assess the consistency of the conference peer reviewing process by having 10% of papers reviewed by two independent committees."},
+        {"id": "P3", "name": "Original result: better than random but surprisingly low agreement", "description": "The original results showed committee decisions were better than random but surprised the community by how low agreement was, particularly regarding which papers were selected to appear."},
+        {"id": "P4", "name": "Original headline: ~half of accepted papers would differ on rerun", "description": "A particular focus of concern was that if the review process were independently rerun, about half the papers published at the conference would have been different."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["E3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "The present paper's three-pronged revisiting strategy and the raw experimental results it builds on.",
+      "nodes": [
+        {"id": "P5", "name": "Approach 1: use calibration process to quantify subjectivity", "description": "The paper uses the fact that reviewer scores underwent a calibration process (designed to eliminate scale-interpretation bias) to quantify the subjectivity of individual reviewer scores, and tests via simulation whether this subjectivity explains inconsistency."},
+        {"id": "P6", "name": "Approach 2: correlate scores with citation impact for accepted papers", "description": "The paper collects citation counts (via Semantic Scholar) for ~400+ published papers, using citations as a proxy for impact, to test whether quality scores correlate with eventual impact."},
+        {"id": "P7", "name": "Approach 3: trace rejected papers' eventual outlets and citations", "description": "The paper searches Semantic Scholar for similar titles by the same lead authors to track 680 of 1,264 rejected papers to their eventual publication venue and citation counts."},
+        {"id": "P8", "name": "166 papers completed the experiment; 25.0% disagreement", "description": "Of 170 papers selected, 4 were withdrawn/rejected without completing review, leaving 166; the two committees disagreed on 43 (25.0%) of them, broadly in line with pre-experiment community speculation."},
+        {"id": "P9", "name": "Only ~50% overlap among accepted papers between committees", "description": "Of the papers each committee accepted, the other committee would only have accepted about 50-51% of them, meaning a rerun with a different committee would have produced roughly half different accepted papers."}
+      ],
+      "edges": [
+        {"from": "P2", "to": "P5", "evidence": ["E4"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P2", "to": "P6", "evidence": ["E4"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P2", "to": "P7", "evidence": ["E4"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P8", "to": "P9", "evidence": ["E5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P9", "evidence": ["E6"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Contextualizing the inconsistency against a random-committee baseline and the acceptance-rate-driven statistical power limits.",
+      "nodes": [
+        {"id": "P10", "name": "Observed agreement exceeds a random baseline", "description": "With a typical NeurIPS acceptance rate of 23.5%, two purely random committees would agree on accept decisions only about 23.5% of the time (or ~64% overall agreement), so the observed result, while low, is better than random."},
+        {"id": "P11", "name": "Low accept rate limits statistical power of the accept-precision estimate", "description": "Because the number of samples for exploring consistency across committees is given by accept rate × experiment sample size, the low 23% accept rate combined with n=166 yields effectively only ~40 relevant samples, producing a large standard error (~8%)."},
+        {"id": "P12", "name": "50% accept-precision headline figure is statistically unreliable", "description": "The unreliability from low statistical power means the headline 50% accept-precision figure should be read cautiously; a Bayesian analysis suggests the true figure lies between 38% and 64% (later refined to 38-62%)."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P10", "evidence": ["E7"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P11", "to": "P12", "evidence": ["E8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P11", "evidence": ["E9"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "Reviewer score calibration model and the resulting subjectivity decomposition.",
+      "nodes": [
+        {"id": "P13", "name": "Likert scales are interpreted differently by different reviewers", "description": "A classical challenge with 10-point Likert scales is that they may be interpreted differently by different reviewers, motivating a calibration process used by NeurIPS chairs since at least 2005."},
+        {"id": "P14", "name": "Score decomposed into paper quality, reviewer offset, and subjective residual", "description": "The paper's Bayesian Gaussian-process variant of the Platt-Burges calibration model decomposes each review score y_ij = f_i + b_j + ε_ij: objective paper quality (f_i), reviewer-specific offset/bias (b_j), and a subjective residual (ε_ij) reflecting individual reviewer opinion."},
+        {"id": "P15", "name": "Model is over-parameterized, requiring a probabilistic treatment", "description": "The model has n+m+n·k̂ parameters against nk̂ reviewing scores, making it over-parameterized; rather than regularization (as in the original Platt-Burges model), the paper allocates the extra parameters a Gaussian probability distribution, yielding a jointly Gaussian marginal likelihood."},
+        {"id": "P16", "name": "Fitted variances split roughly equally between objective and subjective components", "description": "The fitted parameters (α_f=1.28, α_b=0.24, σ²=1.27) show that once reviewer offset is removed, calibrated score is made up of objective quality (f_i) and subjective opinion (ε_ij) in roughly equal proportion (~50/50)."},
+        {"id": "P17", "name": "50% subjectivity is consistent with the observed inter-committee correlation", "description": "The calibration model's implied correlation (1.28/(1.28+1.27) ≈ 0.50) between two independent committees is consistent with the directly computed correlation between committees, ρ=0.55±0.065."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["E10"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P15", "evidence": ["E11"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P16", "evidence": ["E12"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["E13"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P14", "evidence": ["E14"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Simulation study linking the 50% subjectivity estimate to the observed accept inconsistency.",
+      "nodes": [
+        {"id": "P18", "name": "Simulation built on the calibration model's subjectivity estimate", "description": "A simulation study scores each paper according to the fitted calibration model (with its 50% subjectivity split) and estimates accept consistency by averaging across 100,000 samples."},
+        {"id": "P19", "name": "Simulation predicts ~63% accept consistency at 3 reviewers/50% subjectivity", "description": "For three reviewers and 50% subjectivity, the simulation suggests an expected accept consistency of around 63%."},
+        {"id": "P20", "name": "Predicted consistency exceeds observed, but within statistical error bounds", "description": "The 63% predicted consistency is higher than what was actually observed, but this falls within the bounds of statistical error from the low-power accept-precision estimate."},
+        {"id": "P21", "name": "Simplified simulation likely introduces optimistic bias", "description": "The simulation oversimplifies the actual decision process (which involved detailed discussion among reviewers, authors, and program committee), likely introducing some optimistic bias in the simulated accept precision."},
+        {"id": "P22", "name": "Subjectivity is a plausible major source of the observed inconsistency", "description": "Despite these caveats, the simulation suggests a major source of inconsistency in the conference can be traced back to subjectivity in the reviews, with combined calibration+simulation suggesting an accept precision around 61%, consistent with the upper end of the direct estimate's 38-64% range."}
+      ],
+      "edges": [
+        {"from": "P16", "to": "P18", "evidence": ["E15"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P18", "to": "P19", "evidence": ["E16"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["E17"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P20", "evidence": ["E18"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P18", "to": "P21", "evidence": ["E19"], "votes": 2, "confidence": "majority"},
+        {"from": "P20", "to": "P22", "evidence": ["E20"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "The consistency-vs-correctness distinction that motivates the citation-impact analysis.",
+      "nodes": [
+        {"id": "P23", "name": "Inconsistency implies incorrectness, but consistency does not imply correctness", "description": "While inconsistency between committees implies at least one is incorrect, the converse does not hold: consistent decisions are not necessarily correct (e.g., consistently accepting by reference count would be consistent but not correct)."},
+        {"id": "P24", "name": "Given inevitable errors, inconsistent errors may be preferable", "description": "Since errors will be made regardless, the paper argues variation in decision-making may be beneficial, as it could prevent a particular type of paper from being consistently discriminated against."},
+        {"id": "P25", "name": "This motivates asking how good committees are at selecting the 'right' papers", "description": "Because consistency alone is an insufficient goal, a follow-up question is how good the committee is at selecting the right papers, motivating the citation-impact analysis as an (imperfect) proxy for ground truth."}
+      ],
+      "edges": [
+        {"from": "P23", "to": "P24", "evidence": ["E21"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P25", "evidence": ["E22"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P25", "evidence": ["E23"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Impact analysis of accepted papers: quality score uncorrelated with citation impact.",
+      "nodes": [
+        {"id": "P26", "name": "Citation counts transformed to reduce heavy-tailedness", "description": "Citation impact is defined as log10(1 + number of citations), a monotonic transformation that eliminates heavy tails, making the distribution closer to Gaussian and enabling use of Pearson's correlation coefficient."},
+        {"id": "P27", "name": "No significant correlation between quality score and citation impact for accepted papers", "description": "Across 414 accepted papers, the correlation between average calibrated quality score and citation impact was ρ=0.051±0.049, indicating no significant correlation."},
+        {"id": "P28", "name": "This is surprising since quality score drives accept/reject decisions", "description": "Because the quality score is the main criterion for accept/reject decisions, its lack of correlation with eventual influence should give pause for thought about what the reviewing process is actually optimizing for."},
+        {"id": "P29", "name": "Separate binary impact-indicator score shows small but significant correlation", "description": "A separately introduced binary 'potential impact' score (independent of quality score) shows a statistically significant but small correlation with citation impact (ρ=0.16±0.049); correlation was lower (0.27±0.075) within the duplicated experiment papers specifically."},
+        {"id": "P30", "name": "Confidence score is the most predictive of citation impact", "description": "Although reviewer confidence scores are meant to reflect individual reviewer expertise/certainty rather than paper quality, they turned out to be the most predictive of a paper's eventual citation impact (ρ=0.25±0.048)."},
+        {"id": "P31", "name": "Confidence-impact link plausibly reflects paper clarity", "description": "The authors speculate the confidence score's predictive power reflects an underlying clarity of the paper: reviewers are likely more confident about well-written papers that clearly express core ideas, and clarity likely also drives citation impact."},
+        {"id": "P32", "name": "Cross-committee confidence correlation supports the clarity interpretation", "description": "Further evidence for the clarity interpretation comes from the correlation of confidence scores across the two independent committees in the original experiment (0.39±0.072), suggesting confidence tracks a real, paper-intrinsic property rather than pure reviewer idiosyncrasy."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["E24"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P26", "to": "P27", "evidence": ["E25"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["E26"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P29", "evidence": ["E27"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P30", "evidence": ["E28"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P31", "evidence": ["E29"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P32", "evidence": ["E30"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Fate-tracing of rejected papers and the resulting correlation pattern.",
+      "nodes": [
+        {"id": "P33", "name": "680 of 1,264 rejected papers tracked via Semantic Scholar", "description": "Searching for similar titles with the same contact author, the authors tracked 680 of 1,264 rejected papers, finding 177 only on arXiv, 76 as unaffiliated PDFs, and 427 published at other identifiable venues (many at top-tier ML venues like AAAI, AISTATS, ICML)."},
+        {"id": "P34", "name": "Weak but present correlation between rejected papers' quality scores and citation impact", "description": "For rejected papers, correlation between quality score and citation impact was ρ=0.22±0.038, a weak but real correlation, in contrast to the null result for accepted papers."},
+        {"id": "P35", "name": "Some highly-cited papers were rejected", "description": "Among rejected papers are some with hundreds to thousands of citations; the most highly cited rejected paper has more citations than all but two of the accepted papers."},
+        {"id": "P36", "name": "Reviewing is better at identifying weak papers than strong ones", "description": "Together, the null correlation among accepted papers and the weak positive correlation among rejected papers suggest reviewers are better at judging which papers are weak (in terms of eventual impact) than at judging which are strong."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P33", "evidence": ["E31"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P33", "to": "P34", "evidence": ["E32"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P35", "evidence": ["E33"], "votes": 1, "confidence": "single_run"},
+        {"from": "P27", "to": "P36", "evidence": ["E34"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P34", "to": "P36", "evidence": ["E34"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Diagnosis: 'quality' may conflate distinct underlying dimensions, motivating a scoring redesign.",
+      "nodes": [
+        {"id": "P37", "name": "Reviewers appear to track at least three distinct paper dimensions", "description": "Reviewers are picking up on at least three different components of a paper: 'quality' (uncorrelated with citation impact in its upper range), 'impact' (weakly correlated), and 'clarity' (inferred via confidence, more strongly correlated)."},
+        {"id": "P38", "name": "Quality score instructions bundle rigour with other criteria", "description": "The 'Quality' score may be conflating separate ideas since reviewer instructions indicate rigour is also a component of the quality score, alongside novelty and other criteria."},
+        {"id": "P39", "name": "Structural mismatch between qualitative and quantitative instructions", "description": "There is an inconsistency between the 'Qualitative Evaluation' instructions, which are neatly partitioned into Quality, Clarity, Originality, and Significance, and the 'Quantitative Evaluation,' which collapses these into a single score."},
+        {"id": "P40", "name": "Differing reviewer weightings of sub-criteria may drive subjective variance", "description": "Some of the subjective variance in scoring may arise from different reviewers placing different implicit weightings on quality, clarity, originality, and significance when producing a single combined score."},
+        {"id": "P41", "name": "Recommendation: separate the scoring dimensions", "description": "For future conferences, the authors suggest scores be separated (e.g., clarity, rigour, significance, originality individually), with final rankings determined by a program-committee-agreed combination rather than left to individual reviewer discretion."}
+      ],
+      "edges": [
+        {"from": "P36", "to": "P37", "evidence": ["E35"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"},
+        {"from": "P37", "to": "P38", "evidence": ["E36"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P39", "evidence": ["E37"], "votes": 2, "confidence": "majority"},
+        {"from": "P39", "to": "P40", "evidence": ["E38"], "votes": 2, "confidence": "majority"},
+        {"from": "P40", "to": "P41", "evidence": ["E39"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P40", "evidence": ["E40"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5: subjectivity in scoring links to differing sub-criteria weighting"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Broader implication: caution against over-relying on top-tier publication counts as a proxy for researcher quality.",
+      "nodes": [
+        {"id": "P42", "name": "Growing community reduces familiarity with individual contributions", "description": "As the ML community has grown, researchers are becoming less familiar with each other's individual contributions, creating a risk that publication counts at 'top-tier' venues become a proxy for researcher quality."},
+        {"id": "P43", "name": "Early-career researchers especially exposed to this proxy's noise", "description": "For early-career researchers who have had less time to establish themselves, this publication-count proxy will be highly sensitive to inconsistency in reviewing processes."},
+        {"id": "P44", "name": "Publication counts increasingly used in corporate performance review", "description": "With rising commercial interest in ML, 'top-tier' conference publication has also begun to be used in corporate performance review processes, which are often even shorter-term and thus even more sensitive to reviewing inconsistency."},
+        {"id": "P45", "name": "Conclusion: community should de-emphasize top-tier publication counts", "description": "Given the demonstrated inconsistency in the reviewing process, the paper concludes the community should place less onus on the notion of 'top-tier conference publications' when assessing individual researcher quality."}
+      ],
+      "edges": [
+        {"from": "P42", "to": "P43", "evidence": ["E41"], "votes": 2, "confidence": "majority"},
+        {"from": "P43", "to": "P44", "evidence": ["E42"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P45", "evidence": ["E43"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2: the underlying inconsistency motivates the recommendation"},
+        {"from": "P44", "to": "P45", "evidence": ["E43"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P46", "name": "Pre-experiment community forecasts roughly matched the eventual outcome", "description": "A pre-results SciCast forecasting question and the authors' own personal predictions (25% and 20%) suggested a median expected inconsistency around 30%, roughly in line with the eventual 25% disagreement figure."},
+    {"id": "P47", "name": "Late-submitted reviews showed a quality/confidence trade-off, but underpowered to assess correlation impact", "description": "Reviews submitted after the deadline were shorter and gave higher quality scores but lower confidence, though there was insufficient statistical power to determine whether this affected cross-committee correlation."},
+    {"id": "P48", "name": "Rejected-paper venue destinations show a plausible deadline-timing bias", "description": "There is likely a bias toward outlets with submission deadlines shortly after NeurIPS decisions were released (e.g., AAAI's deadline was six days later), which may inflate the apparent popularity of those venues among rejected-paper destinations."},
+    {"id": "P49", "name": "The 2021 NeurIPS chairs are repeating the experiment", "description": "The 2021 NeurIPS Program Chairs are independently repeating the original consistency experiment, and the authors look forward to comparing results."}
+  ]
+}

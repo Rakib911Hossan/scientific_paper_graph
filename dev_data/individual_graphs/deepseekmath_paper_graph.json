@@ -1,0 +1,263 @@
+{
+  "arxiv_id": "2402.03300v3",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections (e.g. 'S2.2', 'S4.1.1') rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Pre-training corpus construction and quality",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Iterative fastText recall pipeline",
+          "description": "DeepSeekMath uses an iterative pipeline: train a fastText classifier on a seed corpus (OpenWebMath), recall math web pages from deduplicated Common Crawl, discover math-related domains, manually annotate math URL paths, and add newly found pages back to the seed corpus."
+        },
+        {
+          "id": "P2",
+          "name": "Iteration yields 120B token corpus",
+          "description": "After four iterations of data collection, the pipeline yields 35.5M mathematical web pages totaling 120B tokens, at which point collection is stopped because ~98% of data was already collected in the prior iteration."
+        },
+        {
+          "id": "P3",
+          "name": "Benchmark decontamination",
+          "description": "Web pages containing 10-gram (or 3-gram for short texts) overlaps with English/Chinese evaluation benchmarks (GSM8K, MATH, CMATH, AGIEval) are filtered out of the training corpus."
+        },
+        {
+          "id": "P4",
+          "name": "DeepSeekMath Corpus outperforms other math corpora",
+          "description": "DeepSeek-LLM 1.3B trained on the DeepSeekMath Corpus outperforms models trained on MathPile, OpenWebMath, and Proof-Pile-2 across GSM8K, MATH, CMATH, and BBH."
+        },
+        {
+          "id": "P5",
+          "name": "Corpus is multilingual and large-scale",
+          "description": "The DeepSeekMath Corpus is several times larger than prior math corpora and contains substantial English and Chinese content, improving performance in both languages, whereas prior English-centric corpora show limited or negative Chinese performance."
+        },
+        {
+          "id": "P6",
+          "name": "DeepSeekMath-Base 7B strong benchmark results",
+          "description": "DeepSeekMath-Base 7B (initialized from DeepSeek-Coder-Base-v1.5 7B and trained on the corpus) achieves 64.2% on GSM8K and 36.2% on MATH, leading all open-source base models on 8 English/Chinese benchmarks."
+        },
+        {
+          "id": "P7",
+          "name": "Base model rivals Minerva 540B",
+          "description": "DeepSeekMath-Base 7B is competitive with the much larger closed-source Minerva 540B model on mathematical benchmarks."
+        },
+        {
+          "id": "P8",
+          "name": "Parameter count is not the sole factor",
+          "description": "The comparable performance of a 7B model against a 540B model indicates that model scale alone does not determine mathematical reasoning capability; high-quality pre-training data is also a key factor."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["S2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P4", "evidence": ["S2.2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S2.2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P6", "evidence": ["S2.2.2", "S2.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P7", "evidence": ["S2.3", "Table2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P8", "evidence": ["S1", "S1.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Effect of code and arXiv training on math reasoning",
+      "nodes": [
+        {
+          "id": "P9",
+          "name": "Code training benefits tool-based math reasoning",
+          "description": "Two-stage training with code tokens before math tokens significantly enhances the ability to solve GSM8K/MATH problems using Python compared to general-token pretraining."
+        },
+        {
+          "id": "P10",
+          "name": "Code training benefits non-tool math reasoning",
+          "description": "Code training also moderately improves chain-of-thought (non-tool) mathematical reasoning and boosts the efficiency of subsequent math training."
+        },
+        {
+          "id": "P11",
+          "name": "One-stage mixed training trade-off",
+          "description": "Mixing code and math tokens in one-stage training mitigates catastrophic forgetting of coding ability but compromises non-tool mathematical reasoning, plausibly due to limited model capacity at 1.3B scale."
+        },
+        {
+          "id": "P12",
+          "name": "ArXiv-only training tested",
+          "description": "DeepSeek-LLM 1.3B and DeepSeek-Coder-Base-v1.5 7B were separately trained on MathPile and ArXiv-RedPajama arXiv corpora."
+        },
+        {
+          "id": "P13",
+          "name": "ArXiv papers show no benefit",
+          "description": "Training on arXiv-only corpora shows no notable improvement, and sometimes deterioration, across quantitative reasoning, multiple-choice, and formal math benchmarks."
+        }
+      ],
+      "edges": [
+        {"from": "P9", "to": "P10", "evidence": ["S5.1.1", "Table6"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P11", "evidence": ["S5.1.1", "Table6", "Table7"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P13", "evidence": ["S5.1.2", "Table8", "Table9"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "GRPO algorithm design",
+      "nodes": [
+        {
+          "id": "P14",
+          "name": "PPO value-function burden",
+          "description": "PPO requires training a value function typically as large as the policy model, creating substantial memory and computational burden, complicated further because usually only the last token receives a reward score."
+        },
+        {
+          "id": "P15",
+          "name": "GRPO removes the value function",
+          "description": "GRPO obviates the need for a separate value function by using the average reward of a group of sampled outputs for the same question as the baseline."
+        },
+        {
+          "id": "P16",
+          "name": "GRPO reduces training resources",
+          "description": "By removing the value model, GRPO significantly reduces the training resources required compared to PPO."
+        },
+        {
+          "id": "P17",
+          "name": "GRPO group-relative advantage aligns with reward model training",
+          "description": "The group-relative way GRPO computes advantages aligns with the comparative nature of reward models, which are typically trained on pairwise/group comparisons of outputs to the same question."
+        },
+        {
+          "id": "P18",
+          "name": "GRPO regularizes via direct KL term in loss",
+          "description": "Instead of folding a KL penalty into the per-token reward as PPO does, GRPO adds the KL divergence between policy and reference model directly to the loss, avoiding complications in advantage estimation."
+        },
+        {
+          "id": "P19",
+          "name": "Outcome supervision variant",
+          "description": "Outcome-supervised GRPO normalizes the group's rewards and assigns the same normalized reward as the advantage to every token in an output."
+        },
+        {
+          "id": "P20",
+          "name": "Process supervision variant",
+          "description": "Process-supervised GRPO scores each reasoning step and assigns a token's advantage as the sum of normalized rewards from subsequent steps, providing finer-grained supervision."
+        },
+        {
+          "id": "P21",
+          "name": "Iterative GRPO with reward model replay",
+          "description": "In iterative GRPO, the reward model is continually retrained on new samples from the policy (with a replay mechanism retaining historical data), and the reference model is periodically reset to the current policy."
+        }
+      ],
+      "edges": [
+        {"from": "P14", "to": "P15", "evidence": ["S4.1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P16", "evidence": ["S4.1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P17", "evidence": ["S4.1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P18", "evidence": ["S4.1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P19", "evidence": ["S4.1.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["S4.1.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P21", "evidence": ["S4.1.4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "RL (GRPO) results on DeepSeekMath-Instruct",
+      "nodes": [
+        {
+          "id": "P22",
+          "name": "GRPO training setup",
+          "description": "GRPO is applied to DeepSeekMath-Instruct 7B using ~144K chain-of-thought GSM8K/MATH questions, excluding other SFT data to isolate the effect of RL on out-of-domain benchmarks."
+        },
+        {
+          "id": "P23",
+          "name": "In-domain gains: GSM8K and MATH",
+          "description": "GRPO improves DeepSeekMath-Instruct from 82.9% to 88.2% on GSM8K and from 46.8% to 51.7% on MATH."
+        },
+        {
+          "id": "P24",
+          "name": "Out-of-domain gains: CMATH",
+          "description": "GRPO also improves out-of-domain performance, e.g. CMATH improves from 84.6% to 88.8%, despite RL training data being restricted to GSM8K/MATH."
+        },
+        {
+          "id": "P25",
+          "name": "DeepSeekMath-RL 7B beats larger open-source models",
+          "description": "DeepSeekMath-RL 7B surpasses all open-source models from 7B to 70B and the majority of closed-source models on the evaluated benchmarks."
+        }
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["S4.2", "Table5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P24", "evidence": ["S4.2", "Table5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P25", "evidence": ["S4.2", "Table5"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P25", "evidence": ["S4.2", "Table5"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Unified RL paradigm and comparative training-method analysis",
+      "nodes": [
+        {
+          "id": "P26",
+          "name": "Unified paradigm: data source, reward function, algorithm",
+          "description": "SFT, RFT, DPO, Online RFT, PPO, and GRPO can all be described within a single gradient formulation composed of a data source, a reward function, and an algorithm producing a gradient coefficient."
+        },
+        {
+          "id": "P27",
+          "name": "Online sampling outperforms offline sampling",
+          "description": "Online RFT significantly outperforms offline RFT on GSM8K and MATH, with the advantage growing in later training stages as the policy diverges further from the original SFT model."
+        },
+        {
+          "id": "P28",
+          "name": "GRPO surpasses Online RFT",
+          "description": "GRPO outperforms Online RFT because it adjusts its gradient coefficient based on the reward model's magnitude (differential reinforcement/penalization), whereas Online RFT uniformly reinforces all correct responses."
+        },
+        {
+          "id": "P29",
+          "name": "Process supervision outperforms outcome supervision",
+          "description": "GRPO with process supervision (GRPO+PS) shows superior performance to GRPO with outcome supervision (GRPO+OS), indicating the benefit of fine-grained, step-aware gradient coefficients."
+        },
+        {
+          "id": "P30",
+          "name": "Iterative RL further improves performance",
+          "description": "Across two rounds of iterative RL, performance improves further, with the largest gain observed at the first iteration."
+        }
+      ],
+      "edges": [
+        {"from": "P26", "to": "P27", "evidence": ["S5.2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P28", "evidence": ["S5.2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P29", "evidence": ["S5.2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P30", "evidence": ["S5.2.1"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Why RL works",
+      "nodes": [
+        {
+          "id": "P31",
+          "name": "RL improves Maj@K but not Pass@K",
+          "description": "Evaluating Maj@K and Pass@K for Instruct vs RL models shows RL improves Maj@K accuracy but not Pass@K accuracy on GSM8K and MATH."
+        },
+        {
+          "id": "P32",
+          "name": "RL reshapes output distribution rather than adding capability",
+          "description": "Because RL boosts Maj@K but not Pass@K, the improvement is attributed to making correct responses more likely to surface from the TopK candidates (a more robust output distribution), rather than to an enhancement of the model's fundamental reasoning capability."
+        }
+      ],
+      "edges": [
+        {"from": "P31", "to": "P32", "evidence": ["S5.2.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P33", "name": "GRPO removes KL penalty from reward", "description": "GRPO uses an unbiased KL divergence estimator added directly to the loss, guaranteed to be positive, rather than an approximate per-token penalty folded into the reward."},
+    {"id": "P34", "name": "Reward model over-optimization risk", "description": "A per-token KL penalty (in PPO) or loss-level KL term (in GRPO) is used to prevent the policy from over-optimizing against the reward model and drifting too far from the reference model."},
+    {"id": "P35", "name": "SFT instruction data scale", "description": "The mathematical instruction-tuning dataset used for DeepSeekMath-Instruct totals 776K examples spanning CoT, PoT, and tool-integrated formats in English and Chinese."},
+    {"id": "P36", "name": "Reward signal noise", "description": "Even carefully human-annotated reward datasets like PRM800K contain roughly 20% incorrect annotations, motivating research into RL algorithms robust to noisy reward signals."},
+    {"id": "P37", "name": "Future direction: advanced sampling", "description": "The paper suggests exploring RL with out-of-distribution prompts and advanced/tree-search-based sampling strategies as a future direction for more effective RL."},
+    {"id": "P38", "name": "Geometry and theorem-proving weakness", "description": "DeepSeekMath's capability on geometry and theorem-proving is relatively weaker than closed models, e.g. it struggles with problems involving triangles and ellipses."},
+    {"id": "P39", "name": "Weaker few-shot gains than GPT-4", "description": "Restricted by model scale, DeepSeekMath shows similar performance in zero-shot and few-shot settings, unlike GPT-4 which improves substantially with few-shot prompting."}
+  ],
+  "structural_score": 7,
+  "structural_reasoning": "The graph is coherent within each thematic component: corpus construction cleanly leads to corpus quality and base-model results (C1); the code/arXiv ablation findings form a clear chain (C2); the GRPO design rationale (removing the value function, enabling group-relative advantages, and its supervision variants) is logically sequenced (C3); the RL results and unified-paradigm comparison sections (C4, C5) follow the paper's own narrative of increasingly refined methods (RFT -> Online RFT -> GRPO -> GRPO+PS -> iterative GRPO); and the Maj@K/Pass@K analysis (C6) is a tight two-node causal claim. Cross-component links (e.g., between GRPO's design in C3 and its measured results in C4, or between C1's corpus-quality claims and downstream RL in C4) are implicit in the paper but were not asserted as edges here since they involve different sections/experiments joined only by general narrative flow rather than direct evidentiary sentences, so the graph is intentionally left as separate components rather than force-connected."
+}

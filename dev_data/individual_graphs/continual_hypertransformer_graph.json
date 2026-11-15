@@ -1,0 +1,174 @@
+{
+  "arxiv_id": "2301.04584v3",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/figures/tables/equations rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Problem framing: continual few-shot learning via recursive weight reuse",
+      "nodes": [
+        {"id": "P1", "name": "HyperTransformer generates specialized CNN weights from a support set", "description": "HyperTransformer (HT) is a Transformer-based hypernetwork that meta-learns from few-shot episodes and generates the weights of a smaller, specialized CNN directly from the support set, decoupling the domain-knowledge model (Transformer) from the learner (CNN)."},
+        {"id": "P2", "name": "For T=1, continual learning reduces to standard few-shot learning solvable by HT", "description": "When there is only a single task, the continual few-shot learning problem reduces to a standard few-shot learning problem, which HT is already effective at solving."},
+        {"id": "P3", "name": "Proposal: recursively reuse generated weights as input for the next task", "description": "To extend HT to a continual sequence of tasks, the paper proposes recursively re-using the CNN weights generated for previous tasks as input to the HT when generating weights for the next task."},
+        {"id": "P4", "name": "Generated weights themselves become the representation of past tasks", "description": "Because the previous task's generated weights are fed back in as input, the generated CNN weights themselves act as a representation of previously learned tasks, with the HT trained to update these weights so the new task is learned without forgetting past tasks."},
+        {"id": "P5", "name": "This differs from replay-buffer, regularization, or architectural continual learning methods", "description": "This weight-reuse approach is different from most continual learning algorithms, which typically rely on replay buffers, weight regularization, or task-dependent architectural changes, requiring the least additional conceptual overhead since it imposes no explicit anti-forgetting constraint."},
+        {"id": "P6", "name": "The Continual HyperTransformer (CHT) architecture results from this proposal", "description": "The recursive weight-reuse mechanism, applied to the HT architecture, constitutes the proposed Continual HyperTransformer (CHT)."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["S1", "S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["S1", "S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1", "S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P6", "evidence": ["S1", "S4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "CHT mechanism: recurrent weight generation and preemptive training objective",
+      "nodes": [
+        {"id": "P7", "name": "Weight generation defined recursively across tasks", "description": "For each task t, the CHT generates weights theta_t as a function a_psi of the current support set S(t) and the previous task's weights theta_(t-1), such that theta_t is suited for all tasks 0 through t."},
+        {"id": "P8", "name": "The learner has no direct access to past support sets", "description": "When learning from task t, the learner does not have access to the support set of past tasks and must rely solely on the input weights theta_(t-1) as its source of information about previous tasks."},
+        {"id": "P9", "name": "Objective sums losses over all previously seen query sets at each step", "description": "At each step t, the loss J_t(psi) sums the individual losses of the generated weights theta_t evaluated on the query sets of every task 0 through t, and the overall training objective sums J_t over all steps up to T."},
+        {"id": "P10", "name": "This yields a preemptive sequence of increasingly capable weights", "description": "The CHT generates a sequence of weights {theta_tau} such that each is suited for all tasks up to that point (theta_0 works only on task 0, theta_1 on tasks 0-1, etc.), enabling a 'preemptive' approach where the model can be run for any number of tasks up to T without needing the exact final task count specified in advance."},
+        {"id": "P11", "name": "CHT parameters are independent of task identity, enabling recurrence", "description": "Because the HT's parameters do not depend on task information and only take the weights theta and support set as input, the CHT can operate as a recurrent system, extending to generate weights for additional tasks beyond those it was originally trained on."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["S3", "Eq1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P9", "evidence": ["S4", "Eq2", "Eq3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P11", "evidence": ["S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P10", "evidence": ["S4"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "From cross-entropy to prototypical loss: solving the continual-classification-head problem",
+      "nodes": [
+        {"id": "P12", "name": "Cross-entropy loss ties predicted class count to head-layer parameter count", "description": "The original HT used cross-entropy loss, which is unsuited for continual learning because the number of classes it predicts is tied to the number of parameters in the head layer of the generated weights."},
+        {"id": "P13", "name": "This would require growing CNN architecture as tasks accumulate", "description": "Because more tasks mean more total classes, using cross-entropy would require the CNN architecture to be adjusted as the number of tasks increases, violating the design principle of a fixed, recurrent CHT architecture."},
+        {"id": "P14", "name": "Fixing the head to K-way and predicting within-task only causes label collisions", "description": "An alternative of fixing the head layer to K-way classification and only predicting within-task class information (domain-incremental learning) causes classes with the same label but different tasks to collide in the embedding space, especially since labels are randomly assigned per episode."},
+        {"id": "P15", "name": "This collision-prone approach degrades sharply with more tasks", "description": "The Appendix shows that this fixed-head, within-task approach's accuracy decreases dramatically as the number of tasks increases, becoming impractical even for just two tasks."},
+        {"id": "P16", "name": "A fixed arrangement of class points in embedding space is also suboptimal", "description": "Coming up with a fixed arrangement of T*K points is also suboptimal since it is not possible to place that many points equidistant from each other in a fixed-dimensional space for large T."},
+        {"id": "P17", "name": "Solution: learn class prototypes from the support set itself", "description": "A more elegant solution is to learn the location of class prototypes directly from the support set using a prototypical loss, computing each class/task prototype as the average embedding of its support samples."},
+        {"id": "P18", "name": "Prototypes enable both task-incremental and class-incremental prediction", "description": "Prototypes support two prediction modes: task-incremental (softmax over ell-2 distances to prototypes within the known task) and class-incremental (softmax over distances to prototypes across all classes for all seen tasks)."},
+        {"id": "P19", "name": "Class-incremental training generalizes better than task-incremental training", "description": "Empirically, CHT models trained with the class-incremental objective perform well in both class-incremental and task-incremental settings, while models trained with the task-incremental objective perform well only in the task-incremental setting and rarely outperform class-incremental-trained models."},
+        {"id": "P20", "name": "Frozen prototypes are used as a practical solution consistent with continual learning constraints", "description": "Because true continual learning should not reuse support samples after a task is processed, prototypes are frozen after being computed rather than recomputed at every subsequent step, with only marginal performance difference compared to recomputing."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P13", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P15", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P16", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P17", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S4.1", "Eq4", "Eq5", "Eq6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P20", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Theoretical connection: prototypical loss as one-step MAML",
+      "nodes": [
+        {"id": "P21", "name": "MAML seeks initial weights adaptable via few gradient steps", "description": "MAML identifies initial weights phi_0 such that any task tau, adapted via a few gradient descent steps from phi_0, reaches a task-specific local optimum of the task loss."},
+        {"id": "P22", "name": "Label-independent initial logit weights are the natural starting point", "description": "If any label assignment in training tasks is equally likely, it is natural for the initial model to not prefer any particular label, motivating choosing label-independent initial logit weights W_0, b_0."},
+        {"id": "P23", "name": "First-order correction only adjusts the final logits layer", "description": "Expanding the model around phi_0, the lowest-order label-dependent correction is given purely by adjustments to the final logits layer (delta W, delta b), i.e., in lowest order the model only adjusts the final layer to adapt the pretrained embedding to a new task."},
+        {"id": "P24", "name": "One gradient step on cross-entropy yields prototype-like logit updates", "description": "Deriving a single gradient-descent step on cross-entropy loss for the logit weight and bias shows that the resulting label assignment effectively relies on computing a dot-product of the embedding with per-class 'prototypes' -- the same averaged-embedding quantity used in the prototypical loss."},
+        {"id": "P25", "name": "This establishes prototypical loss as a special case of one-step MAML", "description": "Because the first-order MAML update on cross-entropy loss naturally produces prototype-like class representations, the prototypical loss approach can be viewed as a special case of a simple one-step MAML-like learning algorithm."}
+      ],
+      "edges": [
+        {"from": "P21", "to": "P22", "evidence": ["S5"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P23", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P24", "evidence": ["S5", "Eq7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P25", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Experiment: learning from mini-batches (same classes across tasks)",
+      "nodes": [
+        {"id": "P26", "name": "Sequential recursive batch processing matches single-pass performance", "description": "Comparing weights generated from all four batches at once, from two recursive halves, and from four fully sequential recursive steps, all three configurations achieve statistically indistinguishable test accuracy (67.9%, 68.0%, 68.3%, within +/-0.4% error)."},
+        {"id": "P27", "name": "Sequential recursive processing greatly outperforms using only partial data in one pass", "description": "HT trained with just the first batch or first two batches (i.e., without the recursive mechanism providing later batches) performs significantly worse (56.2% and 62.9% respectively) than the full sequential recursive processing."},
+        {"id": "P28", "name": "This demonstrates the recursive weight-update mechanism matches single-pass performance without needing simultaneous access to all data", "description": "Because sequential recursive updating matches performance achievable only by processing all samples in a single pass with the original HT, this validates that the proposed weight-update mechanism can incrementally absorb information from multiple batches as effectively as seeing them all at once."}
+      ],
+      "edges": [
+        {"from": "P26", "to": "P28", "evidence": ["S6.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["S6.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Experiment: learning within a single domain, avoiding catastrophic forgetting",
+      "nodes": [
+        {"id": "P29", "name": "No catastrophic forgetting observed in task-incremental learning on Omniglot", "description": "For task-incremental learning on Omniglot, no signs of catastrophic forgetting were observed for CHT."},
+        {"id": "P30", "name": "Positive backward transfer observed on Omniglot", "description": "CHT exhibits positive backward knowledge transfer on Omniglot: performance on earlier tasks (e.g., theta_1) is often higher than on theta_0, and theta_2 higher still, with overall performance increasing as the number of trained tasks T increases."},
+        {"id": "P31", "name": "tieredImageNet shows no forgetting but weaker backward transfer", "description": "On tieredImageNet, results were better than the ConstPN baseline and performance for every training task remained roughly stable across generated weights (no catastrophic forgetting), but the positive backward-transfer effect was less pronounced than on Omniglot."},
+        {"id": "P32", "name": "CHT outperforms ConstPN baseline within its trained task range", "description": "CHT consistently outperformed the ConstPN (task-agnostic, no-memory) baseline, particularly when applied to the same or fewer tasks than it was trained on."},
+        {"id": "P33", "name": "Extrapolation beyond trained task count causes only minor degradation", "description": "Although CHT accuracy decreased slightly when applied to more tasks than it was trained on, the decrease was not significant; even a model trained on only T=3 tasks still outperformed ConstPN when extended to one or two additional tasks."},
+        {"id": "P34", "name": "In class-incremental learning, accuracy decreases as more tasks are included, as expected", "description": "In the class-incremental setting, accuracy decreases as more tasks are included in the prediction, which is expected since the generated CNN size stays fixed while the number of classes to predict grows."},
+        {"id": "P35", "name": "Positive backward transfer and preemptive-performance consistency also hold for class-incremental Omniglot", "description": "For Omniglot in the class-incremental setting, positive backward transfer again occurs (CHT models trained on more tasks perform better overall), and for a fixed trained T, performance across different evaluated task-ranges is comparable, demonstrating CHT's preemptive property."},
+        {"id": "P36", "name": "At T=5, CHT even outperforms the MergedHT oracle-like baseline on Omniglot", "description": "For T=5 on Omniglot, CHT outperforms even the MergedHT baseline (which has access to all task information from the start), suggesting that having more classes to jointly classify makes the learning problem harder for the original HT's image embeddings, particularly evident in tieredImageNet where MergedHT's performance falls below 60% even for just two tasks."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P30", "evidence": ["S6.2", "Figure3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P32", "evidence": ["S6.2", "Figure3"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P33", "evidence": ["S6.2", "Figure3"], "votes": 2, "confidence": "majority"},
+        {"from": "P34", "to": "P35", "evidence": ["S6.2", "Figure4"], "votes": 2, "confidence": "majority"},
+        {"from": "P35", "to": "P36", "evidence": ["S6.2", "Figure4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Experiment: comparison against traditional few-shot and continual-learning baselines",
+      "nodes": [
+        {"id": "P37", "name": "MAML++ learns the first task well but forgets subsequent ones", "description": "MAML++ performed well on the first task but was unable to retain knowledge for subsequent tasks due to catastrophic forgetting."},
+        {"id": "P38", "name": "Pretraining and EWC fail even on the first task", "description": "Pretraining-based methods and EWC were not able to learn sufficiently well even the first task, because they could not learn effectively from few examples."},
+        {"id": "P39", "name": "CHT substantially outperforms all three traditional baselines across the task sequence", "description": "Table 1 shows CHT achieves 87.2% on task 0 and maintains 69.3% by task range 0-4, far exceeding Pretraining, MAML++, and EWC at every task range, since CHT combines few-shot competence with resistance to forgetting that these baselines individually lack."}
+      ],
+      "edges": [
+        {"from": "P37", "to": "P39", "evidence": ["S6.2", "Table1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P38", "to": "P39", "evidence": ["S6.2", "Table1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "name": "Experiment: learning across multiple heterogeneous domains",
+      "nodes": [
+        {"id": "P40", "name": "Task-agnostic ConstPN is expected to suffer under cross-domain heterogeneity", "description": "When tasks are drawn from different distributions and image domains, the task-agnostic ConstPN approach is expected to suffer in accuracy because it must find a single universal representation that works well across all image domains."},
+        {"id": "P41", "name": "CHT is expected to adapt its representation per detected domain", "description": "In contrast to ConstPN, CHT could adapt its sample representations differently for different detected image domains, potentially leading to improved performance under cross-domain heterogeneity."},
+        {"id": "P42", "name": "Multi-domain experiment confirms a larger CHT-over-ConstPN accuracy gap than in single-domain settings", "description": "Using a multi-domain generator spanning six datasets (Omniglot, Caltech101, CaltechBirds2011, Cars196, OxfordFlowers102, StanfordDogs), CHT outperforms ConstPN by close to 3 percentage points on combined tasks, a larger gap than observed in the single-domain Omniglot/tieredImageNet experiments, confirming CHT's superior adaptation to multi-domain task distributions."}
+      ],
+      "edges": [
+        {"from": "P40", "to": "P41", "evidence": ["S6.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P42", "evidence": ["S6.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P43", "name": "Metric-based few-shot methods have no memory of past tasks", "description": "Metric-based few-shot learning methods train a fixed universal embedding network and predict via distances to support-set embeddings, but treat every task independently with no memory of past tasks, unlike CHT."},
+    {"id": "P44", "name": "Optimization-based few-shot methods suffer catastrophic forgetting when adapted continually", "description": "Optimization-based few-shot methods (e.g., MAML) adapt a fixed initial embedding via gradient steps per task, but simply adapting the embedding for a new task causes catastrophic forgetting of previously learned information, and require second-order derivatives that CHT avoids."},
+    {"id": "P45", "name": "Three traditional categories of continual learning methods", "description": "Most continual learning methods fall into rehearsal (replay data from past tasks), regularization (explicit penalty terms to preserve old-task performance), or architectural (task-specific modules, ensembles, or adapters) categories, all of which CHT avoids using."},
+    {"id": "P46", "name": "Analogy to slow and fast weights", "description": "The closest conceptual analogy to the CHT approach is slow and fast weights, with the Transformer weights (psi) analogous to slow weights accumulating knowledge, and the generated CNN weights (theta) analogous to fast, task-specific weights."},
+    {"id": "P47", "name": "Incremental few-shot learning requires an existing base classifier and per-sequence retraining", "description": "Incremental few-shot learning methods adapt a few-shot task to an existing base classifier without forgetting original data, but require an already-available base classifier and must be retrained for each new task sequence, severely limiting practical deployment compared to CHT's train-once, deploy-many approach."},
+    {"id": "P48", "name": "Privacy-preserving deployment use case", "description": "Because CHT is meta-trained once on a large public dataset and can then generate or update user-specific models on the fly without retraining, it enables a privacy-preserving deployment scenario where private user data never leaves the device and only weights are shared."},
+    {"id": "P49", "name": "Three task-distribution scenarios evaluated", "description": "CHT is evaluated in three scenarios: mini-batch (same classes across all tasks), lifelong/single-domain (different classes drawn from the same overall distribution), and heterogeneous/multi-domain (each task with its own unique class distribution)."},
+    {"id": "P50", "name": "Architecture and training hyperparameter details", "description": "Generated CNN weights consist of four convolutional blocks plus a dense layer; Omniglot uses 8 filters and a 3-layer 2-head Transformer, tieredImageNet uses 64 filters and a 1-layer 8-head Transformer; models were trained via SGD with exponential learning-rate decay for 4M steps, with learning rate reduced for stability at higher task counts."},
+    {"id": "P51", "name": "One-time hypernetwork training cost vs. fast per-user inference", "description": "While training the hypernetwork has a substantial one-time computational cost on the meta-training distribution, once trained it can generate target CNN architectures for new task sets in a matter of seconds, a key practical advantage in dynamic task environments."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph closely mirrors the paper's own structure. C1 establishes the core proposal (recursive weight reuse extending HT) as a motivated design choice contrasted with standard continual-learning approaches. C2 formalizes the recurrent mechanism and preemptive training objective exactly as the paper's Equations 1-3 define them. C3 traces the paper's own argument for why cross-entropy fails and why prototypical loss is the necessary fix, following a genuine problem-elimination sequence (cross-entropy's architecture-growth problem -> fixed-head's collision problem -> fixed-arrangement's suboptimality -> learned-prototype solution) that matches the paper's own reasoning in Section 4.1. C4 captures the MAML-connection derivation as a clean four-step mathematical argument mirroring Section 5. C5 through C8 mirror the paper's four experimental subsections, each with edges reflecting genuine result-to-interpretation claims the paper itself draws (e.g., matching single-pass performance in mini-batch learning; positive backward transfer citing specific comparisons; CHT surpassing MergedHT suggesting joint-embedding learning difficulty; the larger multi-domain accuracy gap confirming domain-adaptive representation). Isolated nodes are appropriately limited to related-work categorization, conceptual analogies, deployment use-case framing, and experimental/architectural specifications that provide context but are not premises within the paper's central argument chain."
+}

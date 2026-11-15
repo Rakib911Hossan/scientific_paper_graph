@@ -1,0 +1,802 @@
+{
+  "NodeAccuracy": [
+    {
+      "id": "P1",
+      "score": 10,
+      "reasoning": "Correctly preserves the relationship where the gap between the early timescale (\\tau_{gen}) and the later timescale (\\tau_{mem}) grows as the training set size increases."
+    },
+    {
+      "id": "P2",
+      "score": 10,
+      "reasoning": "Correctly preserves the specific condition 'n < n*(p)' under which the two distinct timescales emerge in the training dynamics."
+    },
+    {
+      "id": "P3",
+      "score": 10,
+      "reasoning": "Correctly preserves the correspondence between training timescales and the 'inverse eigenvalues of the random feature correlation matrix' in the random feature setting."
+    },
+    {
+      "id": "P4",
+      "score": 10,
+      "reasoning": "Correctly preserves the scaling formula '\\tau_{gen} \\propto W^{-1}' for the characteristic timescale where high-quality sample generation begins."
+    },
+    {
+      "id": "P5",
+      "score": 10,
+      "reasoning": "Correctly preserves the scaling formula '\\tau_{mem} \\propto nW^{-1}' for the characteristic timescale where memorization of training data starts to emerge."
+    },
+    {
+      "id": "P6",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that the generalization timescale (\\tau_{gen}) remains constant regardless of the training set size (n)."
+    },
+    {
+      "id": "P7",
+      "score": 10,
+      "reasoning": "Correctly preserves the linear relationship where the memorization timescale (\\tau_{mem}) increases linearly with the training set size (n)."
+    },
+    {
+      "id": "P8",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that training loss decreases on the timescale where overfitting and memorization occur."
+    },
+    {
+      "id": "P9",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that test loss increases on the timescale where overfitting and memorization occur."
+    },
+    {
+      "id": "P10",
+      "score": 10,
+      "reasoning": "Correctly preserves the condition that convergence to the low-lying minimum corresponding to the empirical score occurs only at 'very long training times'."
+    },
+    {
+      "id": "P11",
+      "score": 10,
+      "reasoning": "Correctly preserves the relationship stating that the low-frequency part of the empirical score is close to the population score."
+    },
+    {
+      "id": "P12",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that the high-frequency part of the empirical score is 'dataset-dependent'."
+    },
+    {
+      "id": "P13",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that a fundamental 'n-dependent change in the loss landscape' drives memorization in diffusion models."
+    },
+    {
+      "id": "P14",
+      "score": 10,
+      "reasoning": "Correctly preserves the condition where the training set size n exceeds the threshold n*(p), leading to the score model not being expressive enough to represent the empirical score."
+    },
+    {
+      "id": "P15",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that the score model provides a smooth interpolation, approximately independent of the training set, when n exceeds the threshold n*(p)."
+    },
+    {
+      "id": "P16",
+      "score": 10,
+      "reasoning": "Correctly preserves the relationship where higher-capacity networks with larger network width W achieve high-quality generation earlier than smaller networks."
+    },
+    {
+      "id": "P17",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that higher-capacity networks with larger network width W begin to memorize earlier than smaller networks."
+    },
+    {
+      "id": "P18",
+      "score": 10,
+      "reasoning": "Correctly preserves the specific U-Net base widths W tested: 8, 16, 32, 48, and 64."
+    },
+    {
+      "id": "P19",
+      "score": 10,
+      "reasoning": "Correctly preserves the total parameter counts p tested (0.26, 1, 4, 9, 16 \\times 10^6), with a minor LaTeX formatting change from '×' to '\\times'."
+    },
+    {
+      "id": "P20",
+      "score": 10,
+      "reasoning": "Correctly preserves the reference to the 'U-Net architecture [46]' for the score model used in the study."
+    },
+    {
+      "id": "P21",
+      "score": 10,
+      "reasoning": "Correctly preserves the detail that the score model used in the study has 'three resolution levels'."
+    },
+    {
+      "id": "P22",
+      "score": 10,
+      "reasoning": "Correctly preserves the detail that the score model used in the study has a 'base channel width of W'."
+    },
+    {
+      "id": "P23",
+      "score": 10,
+      "reasoning": "Correctly preserves the specific channel width multipliers of '1, 2, and 3 respectively' for the score model."
+    },
+    {
+      "id": "P24",
+      "score": 10,
+      "reasoning": "Correctly preserves the fixed model capacity parameters 'p=4\\times10^6' used to isolate the impact of training set size n, with a minor LaTeX formatting change from '×' to '\\times'."
+    },
+    {
+      "id": "P25",
+      "score": 10,
+      "reasoning": "Correctly preserves the fixed model capacity base width 'W=32' used to isolate and investigate the impact of training set size n."
+    },
+    {
+      "id": "P26",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that overfitting disappears even at 'infinite training times' when the training set size n exceeds a model-dependent threshold."
+    },
+    {
+      "id": "P27",
+      "score": 10,
+      "reasoning": "Correctly preserves the mapping of the condition 'n > n*(p)' to the 'architectural regularization regime' in the (n, p) phase diagram."
+    },
+    {
+      "id": "P28",
+      "score": 10,
+      "reasoning": "Correctly preserves the role of the 'size of the training set n' as one of the two main parameters defining the diffusion model regimes."
+    },
+    {
+      "id": "P29",
+      "score": 10,
+      "reasoning": "Correctly preserves the role of the 'expressivity of the class of score functions' as one of the two main parameters defining the diffusion model regimes."
+    },
+    {
+      "id": "P30",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that the expressivity of the class of score functions is characterized by a 'number of parameters p'."
+    },
+    {
+      "id": "P31",
+      "score": 10,
+      "reasoning": "Correctly preserves the composition of the empirical score into a 'low-frequency part' and a 'high-frequency part'."
+    },
+    {
+      "id": "P32",
+      "score": 10,
+      "reasoning": "Correctly preserves the conditions 'low noise levels and large training set sizes' and the role of the 'irregularity of the empirical score' in driving the widening gap between timescales."
+    },
+    {
+      "id": "P33",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that deep neural networks exhibit a learning bias towards 'low frequency functions'."
+    },
+    {
+      "id": "P34",
+      "score": 10,
+      "reasoning": "Correctly preserves the linear scaling of training time with 'training set size n' required to learn the high-frequency, dataset-dependent part of the score."
+    },
+    {
+      "id": "P35",
+      "score": 10,
+      "reasoning": "Correctly preserves the use of a 'Random Features Neural Network [RFNN, 43]' to parameterize the score function."
+    },
+    {
+      "id": "P36",
+      "score": 10,
+      "reasoning": "Correctly preserves the mathematical formula 'tau^-1 = psi_p/Delta_t lambda_min' relating training timescales to the eigenvalues of the random feature correlation matrix."
+    },
+    {
+      "id": "P37",
+      "score": 10,
+      "reasoning": "Correctly preserves 'Gradient descent' as the optimization method used to study the dynamics of score learning."
+    },
+    {
+      "id": "P38",
+      "score": 10,
+      "reasoning": "Correctly preserves the reference to 'Theorem 3.2' establishing the emergence of two distinct training timescales in the overparameterized RFNN model."
+    },
+    {
+      "id": "P39",
+      "score": 10,
+      "reasoning": "Correctly preserves the use of 'random matrix theory' to compute the eigenvalue spectrum in the specified limits of large datasets, high-dimensional data, and overparameterized models."
+    },
+    {
+      "id": "P40",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that the theoretical results regarding training timescales were initially derived under 'SGD optimization'."
+    },
+    {
+      "id": "P41",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that the two key training timescales arise under the 'Adam optimizer'."
+    },
+    {
+      "id": "P42",
+      "score": 10,
+      "reasoning": "Correctly preserves the comparison that the number of optimization steps required under the 'Adam optimizer' is 'much fewer' than under the 'SGD optimizer'."
+    },
+    {
+      "id": "P43",
+      "score": 10,
+      "reasoning": "Correctly preserves the use of a 'toy Gaussian mixture dataset' to demonstrate the scaling of the memorization timescale in conditional settings."
+    },
+    {
+      "id": "P44",
+      "score": 10,
+      "reasoning": "Correctly preserves the use of 'Classifier-free guidance [21]' to show that the scaling of the memorization timescale holds in conditional settings."
+    },
+    {
+      "id": "P45",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that 'Implicit dynamical regularization' in training substantially enlarges the generalization regime of score-based generative models."
+    },
+    {
+      "id": "P46",
+      "score": 10,
+      "reasoning": "Correctly preserves the claim that 'Architectural biases' act as a constraint on memorization."
+    }
+  ],
+  "EdgeAccuracy": [
+    {
+      "from": "P6",
+      "to": "P1",
+      "skipped": true
+    },
+    {
+      "from": "P7",
+      "to": "P1",
+      "skipped": true
+    },
+    {
+      "from": "P1",
+      "to": "P32",
+      "skipped": true
+    },
+    {
+      "from": "P1",
+      "to": "P45",
+      "skipped": true
+    },
+    {
+      "from": "P28",
+      "to": "P2",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The evidence establishes that the parameters n and p define the regimes (P28), which provides the necessary framework and variables to state the condition n < n*(p) under which the two timescales emerge (P2)."
+    },
+    {
+      "from": "P29",
+      "to": "P2",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "P29 defines the parameters $n$ and $p$ (expressivity), which are then directly used in P2 to formulate the condition $n < n^*(p)$ under which the two timescales emerge."
+    },
+    {
+      "from": "P30",
+      "to": "P2",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The parameter p, defined in P30 as characterizing the expressivity of the score functions, is directly used in the condition n < n*(p) in P2 under which the two timescales emerge. Thus, P2 conceptually depends on the definition of p established in P30."
+    },
+    {
+      "from": "P35",
+      "to": "P3",
+      "skipped": true
+    },
+    {
+      "from": "P3",
+      "to": "P36",
+      "skipped": true
+    },
+    {
+      "from": "P4",
+      "to": "P16",
+      "skipped": false,
+      "score": 5,
+      "direction_supported": false,
+      "reasoning": "The evidence establishes a strong relationship between the qualitative observation (P16) and the quantitative scaling law (P4), but they are presented as parallel findings from different panels of the same figure, with the qualitative observation actually being introduced first."
+    },
+    {
+      "from": "P5",
+      "to": "P17",
+      "skipped": false,
+      "score": 5,
+      "direction_supported": false,
+      "reasoning": "The evidence establishes a strong thematic and logical connection between the qualitative observation (P17) and the quantitative scaling law (P5) shown in the same figure, but the text presents them in parallel (S137 and S138) without explicit language indicating that one is derived from or motivates the other."
+    },
+    {
+      "from": "P24",
+      "to": "P6",
+      "skipped": true
+    },
+    {
+      "from": "P25",
+      "to": "P6",
+      "skipped": true
+    },
+    {
+      "from": "P24",
+      "to": "P7",
+      "skipped": true
+    },
+    {
+      "from": "P25",
+      "to": "P7",
+      "skipped": true
+    },
+    {
+      "from": "P7",
+      "to": "P13",
+      "skipped": true
+    },
+    {
+      "from": "P7",
+      "to": "P43",
+      "skipped": true
+    },
+    {
+      "from": "P7",
+      "to": "P44",
+      "skipped": true
+    },
+    {
+      "from": "P31",
+      "to": "P11",
+      "skipped": true
+    },
+    {
+      "from": "P31",
+      "to": "P12",
+      "skipped": true
+    },
+    {
+      "from": "P12",
+      "to": "P34",
+      "skipped": true
+    },
+    {
+      "from": "P30",
+      "to": "P14",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "Sentence S35 defines the threshold n*(p) and the model's behavior in terms of the parameter p, which is introduced and defined as the expressivity of the score functions in S34 (P30). This establishes a clear unidirectional dependency where P14 requires the definition of p established in P30."
+    },
+    {
+      "from": "P30",
+      "to": "P15",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The definition of the parameter p characterizing model expressivity in P30 is a prerequisite for defining the threshold n*(p) and describing the model's behavior when n exceeds this threshold in P15."
+    },
+    {
+      "from": "P18",
+      "to": "P16",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The evidence establishes that the specific widths W defined in P18 are the experimental parameters varied to produce the empirical findings and conclusions described in P16, showing a clear setup-to-result dependency."
+    },
+    {
+      "from": "P19",
+      "to": "P16",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The experimental setup and parameter counts described in P19 are established to study model capacity, which directly enables the observation and finding reported in P16. Thus, P16 depends on the setup defined in P19."
+    },
+    {
+      "from": "P18",
+      "to": "P17",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The experimental setup of varying the U-Net base widths to specific values (P18) is the direct method used to observe and derive the finding that larger width networks memorize earlier (P17)."
+    },
+    {
+      "from": "P19",
+      "to": "P17",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The experimental setup defining the parameter counts (P19) is used to conduct the study that yields the finding about higher-capacity networks memorizing earlier (P17), establishing a clear methodological dependency from P19 to P17."
+    },
+    {
+      "from": "P22",
+      "to": "P18",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "P22 defines the parameter W as the base channel width of the score model, which is a necessary prerequisite for P18 to specify the experimental values that W takes during testing."
+    },
+    {
+      "from": "P20",
+      "to": "P21",
+      "skipped": true
+    },
+    {
+      "from": "P20",
+      "to": "P22",
+      "skipped": true
+    },
+    {
+      "from": "P20",
+      "to": "P23",
+      "skipped": true
+    },
+    {
+      "from": "P27",
+      "to": "P26",
+      "skipped": false,
+      "score": 8,
+      "direction_supported": true,
+      "reasoning": "The evidence establishes that the disappearance of overfitting described in P26 occurs specifically within the architectural regularization regime defined in P27, where the model's restricted expressivity at $n > n^*(p)$ prevents it from memorizing the data."
+    },
+    {
+      "from": "P30",
+      "to": "P27",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "P30 defines the parameter 'p' as characterizing the expressivity of the score functions, which is a necessary prerequisite for P27 to define the (n, p) phase diagram and the regime condition n > n*(p) using this parameter."
+    },
+    {
+      "from": "P33",
+      "to": "P34",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The evidence explicitly states that the learning bias (P33) 'plays an important role' in the presented results and that the training time scaling (P34) is studied 'from this perspective', establishing a clear dependency from P33 to P34."
+    },
+    {
+      "from": "P35",
+      "to": "P38",
+      "skipped": true
+    },
+    {
+      "from": "P39",
+      "to": "P38",
+      "skipped": true
+    },
+    {
+      "from": "P40",
+      "to": "P41",
+      "skipped": true
+    },
+    {
+      "from": "P41",
+      "to": "P42",
+      "skipped": true
+    },
+    {
+      "from": "P40",
+      "to": "P42",
+      "skipped": true
+    },
+    {
+      "from": "P7",
+      "to": "P34",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The evidence in S63 explicitly links the training time to learn the high-frequency part of the score to memorization ('and hence memorize'). Since P7 empirically establishes that the memorization timescale scales linearly with n, P34's claim about the scaling of the high-frequency learning time is derived from this empirical finding."
+    },
+    {
+      "from": "P14",
+      "to": "P26",
+      "skipped": false,
+      "score": 0,
+      "direction_supported": false,
+      "reasoning": "The cited sentences are disjoint statements from different parts of the text with no explicit or implicit textual or logical link connecting them in the provided evidence."
+    },
+    {
+      "from": "P14",
+      "to": "P27",
+      "skipped": false,
+      "score": 0,
+      "direction_supported": false,
+      "reasoning": "The provided evidence consists of two separate, disjoint sentences (S21 and S35) that describe the condition n > n*(p) from different perspectives without any explicit textual or causal link connecting them."
+    },
+    {
+      "from": "P15",
+      "to": "P26",
+      "skipped": false,
+      "score": 0,
+      "direction_supported": false,
+      "reasoning": "The cited sentences present P15 and P26 as separate observations regarding training set size thresholds, with no explicit textual, causal, or logical link connecting them or establishing a dependency in either direction."
+    },
+    {
+      "from": "P15",
+      "to": "P27",
+      "skipped": false,
+      "score": 8,
+      "direction_supported": true,
+      "reasoning": "The physical behavior of smooth interpolation due to limited model expressivity described in P15 provides the conceptual explanation and justification for naming this regime 'architectural regularization' in P27."
+    },
+    {
+      "from": "P18",
+      "to": "P19",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The evidence explicitly states that the parameter counts (P19) are a result of changing the U-Net base widths (P18), establishing a clear directional dependency from P18 to P19."
+    },
+    {
+      "from": "P33",
+      "to": "P32",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The evidence explicitly states that the smooth interpolation behavior driving the timescale gap (P32) is 'likely rooted in the spectral bias of neural networks' (P33), establishing a clear directional dependency where P32 is explained by P33."
+    },
+    {
+      "from": "P36",
+      "to": "P38",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The evidence explicitly uses the mathematical relation in P36 (S223) to derive and demonstrate the emergence of the training timescales in Theorem 3.2 (P38), as indicated by the logical connector 'therefore' in S224."
+    },
+    {
+      "from": "P2",
+      "to": "P1",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The emergence of the two timescales under the condition n < n*(p) (P2) is a logical prerequisite for analyzing how the gap between these two specific timescales behaves as the training set size increases (P1)."
+    },
+    {
+      "from": "P2",
+      "to": "P6",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The emergence of the two timescales under the condition n < n*(p) (P2) establishes the framework and defines the timescales, the properties of which (such as the generalization timescale remaining constant, P6) are subsequently analyzed and described."
+    },
+    {
+      "from": "P2",
+      "to": "P7",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The evidence establishes that the two timescales emerge under the condition n < n*(p) (P2), and subsequently defines the linear scaling of the memorization timescale (P7) as a property of these emerged timescales. Thus, P7 conceptually depends on the regime established in P2."
+    },
+    {
+      "from": "P37",
+      "to": "P3",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The training dynamics and timescales analyzed in P3 are derived directly within the gradient descent optimization framework established in P37, confirming that P3 depends on the setup of P37."
+    },
+    {
+      "from": "P3",
+      "to": "P39",
+      "skipped": false,
+      "score": 8,
+      "direction_supported": true,
+      "reasoning": "The text establishes a motivational dependency where the computation of the eigenvalue spectrum in P39 is performed because those eigenvalues represent the training timescales described in P3, with P39 explicitly referring back to the spectrum introduced in P3."
+    },
+    {
+      "from": "P18",
+      "to": "P4",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The experimental setup of varying the U-Net base widths W (P18) is used to observe and derive the scaling relation for the characteristic timescale (P4), establishing a clear P18 -> P4 dependency."
+    },
+    {
+      "from": "P7",
+      "to": "P5",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The authors first establish that the memorization timescale scales linearly with the training set size n at a fixed width W (P7), and subsequently vary W to find the joint scaling relation of n/W (P5), demonstrating that P5 builds upon and incorporates the linear dependency found in P7."
+    },
+    {
+      "from": "P18",
+      "to": "P5",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The experimental setup of varying the U-Net base widths (P18) is what allowed the authors to observe and derive the empirical scaling law for the memorization timescale (P5), establishing a clear setup-to-result dependency."
+    },
+    {
+      "from": "P24",
+      "to": "P8",
+      "skipped": false,
+      "score": null,
+      "direction_supported": null,
+      "reasoning": "",
+      "error": "JSONDecodeError: Expecting ',' delimiter: line 1 column 236 (char 235)"
+    },
+    {
+      "from": "P25",
+      "to": "P8",
+      "skipped": false,
+      "score": null,
+      "direction_supported": null,
+      "reasoning": "",
+      "error": "JSONDecodeError: Extra data: line 6 column 1 (char 246)"
+    },
+    {
+      "from": "P24",
+      "to": "P9",
+      "skipped": false,
+      "score": 0,
+      "direction_supported": false,
+      "reasoning": "The cited evidence presents the experimental setup of fixing model capacity (P24) and the behavior of test loss in the overparameterized regime (P9) as separate, disjoint points with no textual or logical dependency linking them."
+    },
+    {
+      "from": "P25",
+      "to": "P9",
+      "skipped": false,
+      "score": 0,
+      "direction_supported": false,
+      "reasoning": "The cited evidence presents the experimental setup in P25 and the test loss behavior in P9 as separate, disjoint observations with no textual or logical link connecting them."
+    },
+    {
+      "from": "P37",
+      "to": "P10",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The evidence establishes that the dynamics of score learning are investigated using gradient descent (P37), and the specific finding regarding convergence at long training times (P10) is a direct result of this analytical and numerical investigation."
+    },
+    {
+      "from": "P28",
+      "to": "P14",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "P28 introduces the parameters n and p as the main parameters defining the regimes, which P14 then uses to define the threshold n*(p) and describe the model's expressivity, establishing a clear definition-to-application dependency."
+    },
+    {
+      "from": "P28",
+      "to": "P15",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "P28 introduces the two main parameters (n and p) that define the regimes, which provides the necessary context and definitions for P15 to describe the model's behavior when n exceeds the threshold n*(p)."
+    },
+    {
+      "from": "P20",
+      "to": "P18",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The definition of the score model as having a U-Net architecture with a base width W (P20) is a prerequisite for varying and testing those specific U-Net base widths (P18)."
+    },
+    {
+      "from": "P20",
+      "to": "P19",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The evidence shows that the parameter counts in P19 are directly derived by varying the base width of the U-Net architecture described in P20, establishing a clear dependency from P20 to P19."
+    },
+    {
+      "from": "P30",
+      "to": "P19",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "P30 establishes the theoretical definition of the parameter p as representing the model's expressivity (capacity), which is conceptually required before P19 can vary p to empirically analyze the impact of model capacity."
+    },
+    {
+      "from": "P22",
+      "to": "P25",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "Proposition P22 defines the model's base channel width parameter W, which Proposition P25 then instantiates with a specific value of 32 for its experiment, establishing a clear dependency from the general parameter definition to its specific application."
+    },
+    {
+      "from": "P30",
+      "to": "P24",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "P30 defines the parameter p as characterizing the expressivity of the score functions, which provides the conceptual definition and justification for using and fixing the parameter p in the experiment described in P24."
+    },
+    {
+      "from": "P28",
+      "to": "P27",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The evidence (specifically S34 and S35) establishes that n and p are the two main parameters defining the regimes, and then uses this parameterization to define the specific architectural regularization regime when n > n*(p). Thus, P27 conceptually depends on the parameter framework established in P28."
+    },
+    {
+      "from": "P46",
+      "to": "P27",
+      "skipped": false,
+      "score": 10,
+      "direction_supported": true,
+      "reasoning": "The 'Architectural Regularization' regime described in P27 is physically explained and motivated by the principle that architectural biases constrain memorization (P46), as detailed in S36 and S59. Since P46 is the underlying mechanism that defines the regime in P27, P27 depends on P46."
+    }
+  ],
+  "StructuralFidelity": {
+    "score": 5,
+    "reasoning": "The graph successfully captures the high-level argument of the paper: the experimental setup (P24, P25) leads to the identification of the timescales (P6, P7), which combine to show a widening gap (P1) that supports the main conclusion of implicit dynamical regularization (P45). The theoretical derivation using the random features model (P35 -> P3 -> P36 -> P38) is also structurally coherent. However, there are significant gaps and broken connections. Specifically, the entire sub-graph explaining the architectural regularization regime under the condition $n > n^*(p)$ is fractured because the edges P14 -> P26, P14 -> P27, P15 -> P26, and P15 -> P27 are rejected. Additionally, the connections between quantitative scaling laws and qualitative capacity observations (P4 -> P16, P5 -> P17) and some experimental controls to test loss metrics (P24 -> P9, P25 -> P9) are invalid, leaving these portions of the graph disconnected from their logical premises."
+  },
+  "Flagged": {
+    "nodes": [],
+    "edges": [
+      {
+        "from": "P4",
+        "to": "P16",
+        "skipped": false,
+        "score": 5,
+        "direction_supported": false,
+        "reasoning": "The evidence establishes a strong relationship between the qualitative observation (P16) and the quantitative scaling law (P4), but they are presented as parallel findings from different panels of the same figure, with the qualitative observation actually being introduced first."
+      },
+      {
+        "from": "P5",
+        "to": "P17",
+        "skipped": false,
+        "score": 5,
+        "direction_supported": false,
+        "reasoning": "The evidence establishes a strong thematic and logical connection between the qualitative observation (P17) and the quantitative scaling law (P5) shown in the same figure, but the text presents them in parallel (S137 and S138) without explicit language indicating that one is derived from or motivates the other."
+      },
+      {
+        "from": "P14",
+        "to": "P26",
+        "skipped": false,
+        "score": 0,
+        "direction_supported": false,
+        "reasoning": "The cited sentences are disjoint statements from different parts of the text with no explicit or implicit textual or logical link connecting them in the provided evidence."
+      },
+      {
+        "from": "P14",
+        "to": "P27",
+        "skipped": false,
+        "score": 0,
+        "direction_supported": false,
+        "reasoning": "The provided evidence consists of two separate, disjoint sentences (S21 and S35) that describe the condition n > n*(p) from different perspectives without any explicit textual or causal link connecting them."
+      },
+      {
+        "from": "P15",
+        "to": "P26",
+        "skipped": false,
+        "score": 0,
+        "direction_supported": false,
+        "reasoning": "The cited sentences present P15 and P26 as separate observations regarding training set size thresholds, with no explicit textual, causal, or logical link connecting them or establishing a dependency in either direction."
+      },
+      {
+        "from": "P24",
+        "to": "P8",
+        "skipped": false,
+        "score": null,
+        "direction_supported": null,
+        "reasoning": "",
+        "error": "JSONDecodeError: Expecting ',' delimiter: line 1 column 236 (char 235)"
+      },
+      {
+        "from": "P25",
+        "to": "P8",
+        "skipped": false,
+        "score": null,
+        "direction_supported": null,
+        "reasoning": "",
+        "error": "JSONDecodeError: Extra data: line 6 column 1 (char 246)"
+      },
+      {
+        "from": "P24",
+        "to": "P9",
+        "skipped": false,
+        "score": 0,
+        "direction_supported": false,
+        "reasoning": "The cited evidence presents the experimental setup of fixing model capacity (P24) and the behavior of test loss in the overparameterized regime (P9) as separate, disjoint points with no textual or logical dependency linking them."
+      },
+      {
+        "from": "P25",
+        "to": "P9",
+        "skipped": false,
+        "score": 0,
+        "direction_supported": false,
+        "reasoning": "The cited evidence presents the experimental setup in P25 and the test loss behavior in P9 as separate, disjoint observations with no textual or logical link connecting them."
+      }
+    ],
+    "structural": true
+  }
+}

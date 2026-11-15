@@ -1,0 +1,282 @@
+{
+  "title_ref": "Differentially Private Federated Learning: A Systematic Review",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This is a long systematic-review/survey paper (no arXiv ID given; ACM manuscript format), so the graph covers its main taxonomic and argumentative structure rather than every one of the 70+ cited algorithms. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: why centralized data governance is impractical, motivating FL, and why FL alone is still vulnerable.",
+      "nodes": [
+        {"id": "P1", "name": "Traditional DL assumes centralized trustworthy data governance", "description": "Traditional deep learning frameworks assume all pertinent training data is centralized under the governance of a singular, trustworthy entity."},
+        {"id": "P2", "name": "Real-world data is distributed and central trust is impractical", "description": "In real-world industrial contexts, data is often distributed across multiple independent parties where a central trusted authority is impractical, and legal restrictions (CCPA, GDPR) plus business competition further limit data sharing."},
+        {"id": "P3", "name": "FL emerges as a collaborative alternative keeping raw data local", "description": "Federated learning emerged as a promising collaborative learning infrastructure where participants retain data locally, training models locally and sharing only model parameters with a central server that aggregates and redistributes updates."},
+        {"id": "P4", "name": "Shared model parameters still leak private information", "description": "Even though raw data stays local, adversaries may still infer sensitive data from shared model parameters — raw data content can be inverted from parameters, or membership information can be inferred."},
+        {"id": "P5", "name": "Encryption/MPC defenses are costly and don't protect the final output", "description": "Methods based on homomorphic encryption or secure multiparty computation (MPC) require significant computational overhead and do not protect the final output of the computation, leaving them vulnerable to inference attacks."},
+        {"id": "P6", "name": "DP emerges as a SOTA mitigation for FL privacy risk", "description": "Differential privacy (DP) is one state-of-the-art paradigm to mitigate privacy risks in FL; adding proper DP noise during local training or to uploaded parameters can prevent unintentional leakage (e.g., via membership inference attacks)."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["E3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["E4"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["E5"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Research gap: existing DP-FL surveys are inadequate, motivating a new taxonomy.",
+      "nodes": [
+        {"id": "P7", "name": "Publication volume makes synthesis urgent", "description": "As the volume of publications on differentially private federated learning continues to grow, summarizing and organizing this research has become both urgent and challenging."},
+        {"id": "P8", "name": "Existing surveys lack comprehensive technical/systematic analysis", "description": "Despite existing surveys on DP-FL, they do not provide a comprehensive, technical, and systematic analysis of differential privacy within the federated learning context."},
+        {"id": "P9", "name": "Existing taxonomies inadequately consider protection object/level", "description": "Existing taxonomies have not adequately considered the objects and level of privacy protection provided by various DP models in federated learning."},
+        {"id": "P10", "name": "Prior classifications based on presence of a trusted server are imprecise", "description": "Prior classification approaches based on the presence of a centralized trusted server lack precision, because FL is inherently a composite framework (e.g., cross-silo clients may also maintain local servers), so characterizing scenarios lacking a trusted central aggregator solely as LDP is overly simplistic."},
+        {"id": "P11", "name": "This motivates a new definition/guarantee-based taxonomy", "description": "This gap motivates a new taxonomy of DP-FL based on the definition and guarantee of various DP models (DP, LDP, shuffle model) and federated scenarios, rather than server-trust assumptions alone."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P9", "evidence": ["E7"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P11", "evidence": ["E8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P11", "evidence": ["E9"], "votes": 2, "confidence": "majority"},
+        {"from": "P6", "to": "P7", "evidence": ["E10"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C1"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "The two-axis taxonomy: FL scenarios (Horizontal/Vertical/Transfer) crossed with DP models (DP/LDP/Shuffle), further split by neighborhood level.",
+      "nodes": [
+        {"id": "P12", "name": "Three FL scenarios classified by data partitioning", "description": "The survey classifies works into Horizontal FL, Vertical FL, and Transfer FL based on how data is partitioned among participants, encompassing all federated learning scenarios."},
+        {"id": "P13", "name": "Most prior DP-FL work is Horizontal; Vertical/Transfer growing in importance", "description": "Although most prior work on DP for FL has been conducted in Horizontal FL, as more privacy issues are exposed in vertical and transfer FL, research on DP models in those settings is becoming increasingly important."},
+        {"id": "P14", "name": "DP models further split by neighborhood level (sample vs. client)", "description": "For DP and the shuffle model, works are further categorized into sample-level and client-level based on the definition of neighboring datasets, corresponding to the protected objects (LDP lacks this neighboring-dataset concept)."},
+        {"id": "P15", "name": "Rigorous DP-model differentiation clarifies protection subjects and methods", "description": "Rigorous differentiation of DP models based on definitions and privacy guarantees clarifies the protection subjects of different DP models and enhances understanding of their associated implementation methods."}
+      ],
+      "edges": [
+        {"from": "P11", "to": "P12", "evidence": ["E11"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P12", "to": "P13", "evidence": ["E12"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P14", "evidence": ["E13"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P14", "to": "P15", "evidence": ["E14"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "Formal relationships among DP, LDP, and the shuffle model.",
+      "nodes": [
+        {"id": "P16", "name": "DP relies on neighboring datasets; LDP does not", "description": "The main difference between DP and LDP lies in their definitions: DP relies on neighboring datasets as input, while LDP has no concept of neighboring datasets."},
+        {"id": "P17", "name": "LDP is derivable from DP as a single-record special case", "description": "LDP can be derived from DP when the input datasets are taken to be single-record datasets, since any two single-record datasets are trivially neighbors; this makes LDP a stronger condition requiring the mechanism to satisfy DP for any two domain values."},
+        {"id": "P18", "name": "LDP implies DP-compliance but not vice versa", "description": "LDP can comply with (imply) DP, but the reverse does not hold true."},
+        {"id": "P19", "name": "Shuffle model builds on LDP and adds anonymization to reach DP", "description": "The shuffle model adds a trusted shuffler between server and clients; each client satisfies LDP facing the shuffler, and the shuffled data (now forming a dataset with a neighboring-dataset concept) satisfies DP facing the server."},
+        {"id": "P20", "name": "Shuffling yields a tighter centralized privacy budget (privacy amplification)", "description": "Thanks to anonymity from shuffling, each user's privacy benefits from both local randomization and randomness from other clients, yielding a smaller centralized privacy loss ε_c than the local budget ε_l — a phenomenon called privacy amplification, roughly O(√n) smaller."}
+      ],
+      "edges": [
+        {"from": "P16", "to": "P17", "evidence": ["E15"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["E16"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["E17"], "votes": 2, "confidence": "majority"},
+        {"from": "P19", "to": "P20", "evidence": ["E18"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Neighboring-dataset levels within HFL: sample-level (SL-DP) vs. client-level (CL-DP), and their distinct protection goals/server-trust assumptions.",
+      "nodes": [
+        {"id": "P21", "name": "SL-DP protects presence of a single sample under a semi-honest server", "description": "Sample-level DP (SL-DP): two datasets are neighboring if they differ in a single sample; the goal is to bound the influence of any single sample/record on the learning outcome distribution, generally assuming a semi-honest (honest-but-curious) server, with independent per-client privacy budgets."},
+        {"id": "P22", "name": "DPSGD is the mainstream SL-DP implementation", "description": "The most mainstream approach to implementing SL-DP is executing Differentially Private Stochastic Gradient Descent (DPSGD) on each client: per-sample gradient clipping bounds sensitivity, then Gaussian noise scaled to the clipping bound is added to the batch-averaged gradient before the descent step."},
+        {"id": "P23", "name": "CL-DP protects presence of a single client under an honest server", "description": "Client-level DP (CL-DP): two datasets are neighboring if they differ in a single client/device; the goal is to limit the impact of any single client on the aggregation result distribution, generally assuming a fully honest server acting as data owner."},
+        {"id": "P24", "name": "SL-DP vs LDP are often conflated but differ structurally", "description": "SL-DP and LDP are often confused because both assume a semi-honest server, but they differ: SL-DP has a neighboring-dataset concept requiring per-sample clipping across local iterations, whereas LDP's neighboring datasets degenerate to any two inputs, with sensitivity from directly clipping model parameters and privacy loss occurring only at upload time; LDP mechanisms generally achieve SL-DP protection but not vice versa (except the rare single-data-point case)."},
+        {"id": "P25", "name": "LDP and CL-DP-with-Secure-Aggregation differ in local noise scale", "description": "LDP and CL-DP-with-Secure-Aggregation both add local noise but at different scales (e.g., Lap(0, ε/Δf) for LDP vs. Lap(0, ε/(KΔf)) for CL-DP with K clients), so CL-DP-with-SA's local noise, though nonzero, provides far weaker local protection than true ε-LDP."}
+      ],
+      "edges": [
+        {"from": "P14", "to": "P21", "evidence": ["E19"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P14", "to": "P23", "evidence": ["E19"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P21", "to": "P22", "evidence": ["E20"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P24", "evidence": ["E21"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P24", "evidence": ["E22"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P24", "to": "P25", "evidence": ["E23"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "CL-DP with Secure Aggregation: motivation for eliminating trusted-server reliance and the resulting discrete-noise research thread.",
+      "nodes": [
+        {"id": "P26", "name": "CL-DP typically requires a secure/trusted aggregation server", "description": "CL-DP as described requires the server to be trusted to correctly aggregate client updates, which is itself a strong assumption."},
+        {"id": "P27", "name": "Secure aggregation combined with DP removes trusted-authority reliance", "description": "To eliminate reliance on a trusted central authority, recent studies combine DP techniques with secure aggregation: each client adds noise locally, encrypts, and sends to the server, which aggregates, so the aggregate noise level across clients ensures the encrypted model satisfies CL-DP."},
+        {"id": "P28", "name": "Secure aggregation's modular arithmetic is incompatible with continuous noise", "description": "Secure aggregation relies on modular arithmetic and cannot be directly compatible with continuous noise mechanisms (Laplace, Gaussian) traditionally used for DP."},
+        {"id": "P29", "name": "This incompatibility drove development of discrete noise mechanisms", "description": "This incompatibility motivated researchers to design discrete noise-addition mechanisms (binomial, discrete Gaussian, Skellam, Poisson Binomial) integrable with secure aggregation, each addressing limitations of the prior mechanism (e.g., binomial noise only achieves approximate DP; discrete Gaussian isn't closed under addition; Skellam's noise is unbounded requiring modular clipping bias; Poisson Binomial is unbiased and bounded)."}
+      ],
+      "edges": [
+        {"from": "P23", "to": "P26", "evidence": ["E24"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P26", "to": "P27", "evidence": ["E25"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["E26"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P29", "evidence": ["E27"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "LDP-HFL's core obstacle: the curse of dimensionality, and the two families of solutions (shuffling and dimension selection).",
+      "nodes": [
+        {"id": "P30", "name": "LDP-HFL is essentially high-dimensional mean estimation", "description": "LDP-HFL can be viewed as a mean estimation problem based on LDP, since each model parameter represents a high-dimensional continuous data point that each client perturbs locally before the server aggregates."},
+        {"id": "P31", "name": "High model dimensionality causes exponential variance growth", "description": "Directly applying LDP mean estimation to FL faces obstacles because model-parameter dimensionality is extremely high, and as dimension increases, the privacy budget allocated per dimension decreases, leading to exponential increase in statistical variance."},
+        {"id": "P32", "name": "Parameter shuffling mitigates the dimensionality curse", "description": "One family of solutions uses parameter shuffling (splitting parameters by layer and shuffling within each layer) to break cross-dimension associations, avoiding privacy-budget division across dimensions under the independence assumption — though this does not itself constitute the formal shuffle model's privacy amplification."},
+        {"id": "P33", "name": "Dimension selection/sampling is an alternative mitigation family", "description": "A second family selects or samples a subset of important dimensions (e.g., top-k by update magnitude) to perturb, rather than perturbing all dimensions, trading off convergence speed for reduced noise."}
+      ],
+      "edges": [
+        {"from": "P14", "to": "P30", "evidence": ["E28"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C3"},
+        {"from": "P30", "to": "P31", "evidence": ["E29"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P32", "evidence": ["E30"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P33", "evidence": ["E31"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Applying the shuffle model within HFL, split again by CL-DP vs SL-DP neighborhood level.",
+      "nodes": [
+        {"id": "P34", "name": "Shuffle model in HFL split into CL-DP and SL-DP classes", "description": "Referring to the HFL taxonomy, the shuffle model within HFL is divided into two classes: client-level (shuffle CL-DP) and sample-level (shuffle SL-DP)."},
+        {"id": "P35", "name": "Shuffle CL-DP: per-user LDP randomization aggregated into DP via shuffling", "description": "In shuffle CL-DP, each user randomizes local updates with LDP, and the aggregated updates through shuffling satisfy DP; researchers typically set δ_l=0 for the local LDP budget."},
+        {"id": "P36", "name": "Shuffle SL-DP redefines neighboring datasets at the sample rather than client level", "description": "In shuffle SL-DP, the neighboring-dataset definition for the resulting DP analysis is based on samples rather than clients; a straightforward approach perturbs each sample's update separately before aggregating and shuffling."}
+      ],
+      "edges": [
+        {"from": "P19", "to": "P34", "evidence": ["E32"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P34", "to": "P35", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P34", "to": "P36", "evidence": ["E33"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Why VFL and TFL require distinct DP treatment from HFL, and their characteristic threat models.",
+      "nodes": [
+        {"id": "P37", "name": "VFL/TFL research volume lags far behind HFL", "description": "The amount of work on DP models in VFL and TFL is far less than in HFL, though as more privacy issues are exposed in VFL and TFL, research there is becoming increasingly important."},
+        {"id": "P38", "name": "VFL joint training risks leaking both features and labels", "description": "In VFL, parties share sample IDs but hold different feature spaces (one party typically holding labels); joint training poses privacy threats because both extracted features and gradient-derived label information can potentially be inferred by the respective other party."},
+        {"id": "P39", "name": "VFL DP work splits into feature-protection and label-protection strands", "description": "Consequently, DP-VFL research splits into work protecting features (perturbing the feature extractor's output before transmission to the server) and work protecting labels (perturbing gradients or labels themselves, since the server/label-holder needs label access to compute gradients), with some work protecting both sides simultaneously."},
+        {"id": "P40", "name": "TFL involves little/no feature or sample overlap, motivating knowledge distillation", "description": "TFL applies when clients (source domains) and a server (target domain) have limited or no overlap in features or samples; knowledge distillation is commonly used to transfer knowledge from local 'teacher' models to an unlabeled public/target dataset via aggregated predictions."},
+        {"id": "P41", "name": "Teacher-prediction outputs themselves leak information, motivating DP-PATE lineage", "description": "Because attackers can exploit teacher models' output predictions to attack original data, DP is incorporated into the aggregation of teacher predictions, originating with the PATE algorithm and its subsequent refinements (Gaussian-mechanism/RDP tightening, multi-client extensions, LDP variants without a trusted aggregator)."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P37", "evidence": ["E34"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C3"},
+        {"from": "P38", "to": "P39", "evidence": ["E35"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P40", "to": "P41", "evidence": ["E36"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P38", "evidence": ["E37"], "votes": 1, "confidence": "single_run"},
+        {"from": "P37", "to": "P40", "evidence": ["E37"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Extension of DP-FL to modality- and domain-specific application challenges (graph data as an illustrative case).",
+      "nodes": [
+        {"id": "P42", "name": "GNN message passing creates node interdependence, complicating sensitivity", "description": "In graph-data FL, GNN message passing makes a node's embedding depend on both itself and neighboring nodes, so accurately measuring this dependency is crucial for determining sensitivity (which drives DP noise scale), but doing so is hard."},
+        {"id": "P43", "name": "Two solution families: noise outside GNN training vs. dependency-aware gradient perturbation", "description": "Methods addressing this either avoid direct dependency measurement by perturbing the graph structure/embeddings outside standard GNN training (at the cost of usability, since perturbation isn't tailored to GNNs), or explicitly measure node dependency level (e.g., bounding in-degree via sampling) and apply gradient perturbation via DP-SGD, at the cost of high sensitivity that grows with GNN depth."}
+      ],
+      "edges": [
+        {"from": "P42", "to": "P43", "evidence": ["E38"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "Open challenge: convergence analysis for DP-HFL is fundamentally harder than for standard HFL.",
+      "nodes": [
+        {"id": "P44", "name": "Tight convergence bounds guide theory and hyperparameter tuning", "description": "A tight upper bound on convergence provides theoretical assurance of rapid convergence and enables analyzing how hyperparameters affect convergence speed, guiding tuning or new optimization algorithm design."},
+        {"id": "P45", "name": "DP-HFL convergence analysis must additionally model clipping and noise", "description": "Compared to standard HFL, DP-HFL convergence analysis must consider the effects of clipping and noise addition, making it more challenging to obtain a relatively tight upper bound."},
+        {"id": "P46", "name": "Existing analyses rely on strong assumptions and loose bounds", "description": "Existing convergence analyses for DP-HFL algorithms either make strong assumptions about the objective function/gradients (e.g., Bounded Gradient, Bounded Variance) or remain at a loose O(1/ε) bound, leaving tighter, assumption-light convergence analysis as an open future direction."}
+      ],
+      "edges": [
+        {"from": "P44", "to": "P45", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P45", "to": "P46", "evidence": ["E40"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P45", "evidence": ["E41"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5: DPSGD's clipping+noise is exactly what complicates convergence analysis"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C12",
+      "description": "Open challenge: User-level DP as a needed generalization beyond sample-level and client-level.",
+      "nodes": [
+        {"id": "P47", "name": "Real clients often contain multiple users with multiple records each", "description": "In many scenarios a client (e.g., a hospital) contains many users, and an individual user may contribute multiple samples/records (e.g., a patient with multiple medical records), which neither SL-DP nor CL-DP directly captures."},
+        {"id": "P48", "name": "User-level DP (UL-DP) defined to hide a single user's full record set", "description": "User-level DP is defined so that two datasets are neighboring if they differ in all samples from a single user, aiming to bound the influence of any single user's entire contribution on the learning outcome distribution."},
+        {"id": "P49", "name": "UL-DP faces a fundamental noise-vs-bias trade-off", "description": "Allowing users to contribute many samples (to protect minority high-contribution outliers) may introduce excessive noise, while restricting user contribution keeps noise lower but discards surplus data and introduces bias; this field remains underexplored in FL specifically."}
+      ],
+      "edges": [
+        {"from": "P47", "to": "P48", "evidence": ["E42"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P48", "to": "P49", "evidence": ["E43"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P47", "evidence": ["E44"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5: motivated as a gap relative to SL-DP/CL-DP"},
+        {"from": "P23", "to": "P47", "evidence": ["E44"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C13",
+      "description": "Open challenge: absence of comprehensive empirical privacy auditing across DP models/levels, despite shared theoretical budget notation.",
+      "nodes": [
+        {"id": "P50", "name": "Different DP models/levels protect different objects despite shared ε notation", "description": "The objects directly protected by DP-FL vary based on the DP model and neighborhood level used, yet privacy protection is commonly characterized by a single privacy budget ε across all of them."},
+        {"id": "P51", "name": "No article provides comprehensive empirical comparison across models/levels", "description": "Although many articles design algorithms for different DP models and levels, no article yet provides a comprehensive comparison among them, and definitions with the same nominal ε may have different real-world privacy effects due to their different protection objects."},
+        {"id": "P52", "name": "Practical attack-based/audit-based quantification proposed as the fix", "description": "Conducting practical attacks (membership inference, attribute inference, data reconstruction) or applying DP auditing technology to approach worst-case guarantees is proposed as a way to empirically quantify and compare privacy effects across DP models and levels."},
+        {"id": "P53", "name": "Prior SL-DP vs CL-DP comparisons are insufficiently rigorous", "description": "While some prior work (Naseri et al.) compared SL-DP and CL-DP under a trusted server, the survey argues this comparison is not comprehensive enough since the two definitions have different security assumptions and protection objects and cannot be directly compared without accounting for that."}
+      ],
+      "edges": [
+        {"from": "P50", "to": "P51", "evidence": ["E45"], "votes": 2, "confidence": "majority"},
+        {"from": "P51", "to": "P52", "evidence": ["E46"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P51", "to": "P53", "evidence": ["E47"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P50", "evidence": ["E48"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C3: the taxonomy's protection-object distinctions are exactly what motivates this open challenge"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C14",
+      "description": "Open challenge: DP-FL for LLM fine-tuning faces communication overhead and the dimensionality-driven utility/privacy trade-off.",
+      "nodes": [
+        {"id": "P54", "name": "LLM fine-tuning via FL has significant promise but high communication cost", "description": "Federated fine-tuning of LLMs with DP has significant promise for privacy-preserving personalization, but faces substantial communication overhead from the iterative aggregation of model updates for a complex, large model."},
+        {"id": "P55", "name": "Existing communication-mitigation strategies don't guarantee privacy", "description": "Some strategies mitigate communication bottlenecks but cannot provide concrete guarantees for protecting training data privacy, motivating approaches (like DP-LoRA) that reduce communication cost while retaining formal DP guarantees by fine-tuning only a small set of low-rank parameters."},
+        {"id": "P56", "name": "Embedding-layer dimensionality causes a severe utility/privacy trade-off", "description": "DPSGD's added noise, applied to the immense parameter count of language-model embedding layers, severely impacts learning ability — the curse of dimensionality — requiring solutions like public-data pre-training plus private fine-tuning, or knowledge distillation, to bypass adding heavy noise directly to high-dimensional private data."}
+      ],
+      "edges": [
+        {"from": "P54", "to": "P55", "evidence": ["E49"], "votes": 2, "confidence": "majority"},
+        {"from": "P54", "to": "P56", "evidence": ["E50"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P56", "evidence": ["E51"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7: same dimensionality-curse mechanism recurs for LLM embeddings"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C15",
+      "description": "Contribution summary chain.",
+      "nodes": [
+        {"id": "P57", "name": "Contribution 1: reviewed and summarized DP model definitions/properties", "description": "The survey reviewed the definitions and guarantees of DP, LDP, and shuffle model, summarizing their relaxations/differentiation, plus commonly used properties, composition mechanisms, and perturbation methods."},
+        {"id": "P58", "name": "Contribution 2: novel rigorous taxonomy based on DP definitions/guarantees", "description": "The survey broke from the traditional server-trust-based classification and explored a new taxonomy grounded in DP definitions and guarantees."},
+        {"id": "P59", "name": "Contribution 3: discussed 70+ articles across all three FL scenarios", "description": "Over 70 recent articles on DP-FL are discussed and clarified by protection target, covering not just Horizontal FL but also Vertical and Transfer FL."},
+        {"id": "P60", "name": "Contribution 4: summarized applications by data type and real-world domain", "description": "Applications of DP-FL are summarized by data modality (graph, bipartite/recommendation, time series) and real-world scenario (healthcare, IoT, finance)."},
+        {"id": "P61", "name": "Contribution 5: proposed 6 future research directions", "description": "Based on the preceding discussion, 6 promising future research directions are proposed (convergence analysis, user-level DP, privacy auditing, LLM fine-tuning, cross-domain TFL, multimodal FL)."}
+      ],
+      "edges": [
+        {"from": "P57", "to": "P58", "evidence": ["E52"], "votes": 2, "confidence": "majority"},
+        {"from": "P58", "to": "P59", "evidence": ["E53"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P59", "to": "P60", "evidence": ["E54"], "votes": 2, "confidence": "majority"},
+        {"from": "P60", "to": "P61", "evidence": ["E55"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P62", "name": "Cross-silo suits SL-DP; cross-device suits CL-DP/LDP", "description": "Cross-silo settings (fewer clients, more samples each) better leverage SL-DP's strengths, while cross-device settings (many clients, e.g. mobile devices) better realize the advantages of CL-DP and LDP."},
+    {"id": "P63", "name": "Time series DP-FL commonly uses hierarchical granularity with truncation", "description": "Publishing time-series data with DP in FL typically partitions the series into multiple granularities and adds noise at each, using truncation-based methods since real data often concentrates well below the theoretical upper bound used to size DP noise."},
+    {"id": "P64", "name": "Future direction: cross-domain differentially private TFL", "description": "Current DP-TFL work mostly assumes intra-domain (similar-feature) source/target datasets; real-world cross-domain scenarios require balancing privacy and utility while transferring features from decentralized multi-source domains via unsupervised multi-source domain adaptation."},
+    {"id": "P65", "name": "Future direction: multimodal federated learning with DP", "description": "Multimodal FL (multi-sensor, vision-language) combined with DP is underexplored; cross-modal complementary information can enable inference attacks, and varying modality dimensions complicate DP noise calibration, with DPSGD often failing to converge on high-dimensional multimodal models."}
+  ]
+}

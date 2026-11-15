@@ -1,0 +1,372 @@
+{
+  "arxiv_id": "2606.07819v1",
+  "note": "Single-pass extraction (no sentence-level indexing available for this document). Evidence fields reference sections/tables/figures/equations instead of indexed sentences (S#). Votes/confidence/fidelity fields from the reference schema are omitted since no multi-run validation was performed.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: limitations of existing PTQ and pruning+quantization pipelines",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "PTQ and pruning reduce LLM footprint but each has drawbacks",
+          "description": "Pruning and quantization are the two most common LLM compression techniques; pruning eliminates redundant parameters but tends to yield inferior reasoning performance versus quantization at the same high compression ratio, while quantization typically preserves better performance for a given compression ratio."
+        },
+        {
+          "id": "P2",
+          "name": "PTQ preferred over QAT since it avoids retraining",
+          "description": "Quantization encompasses QAT (requires fine-tuning) and PTQ (operates directly on pretrained weights without retraining); this work focuses on PTQ to avoid costly retraining/fine-tuning steps."
+        },
+        {
+          "id": "P3",
+          "name": "Existing mixed-precision PTQ relies on local, layer-wise greedy search",
+          "description": "Recent mixed-precision PTQ methods partition weights into salient/non-salient channels using layer-wise greedy search guided by local quantization loss, which overlooks global error propagation across the network and applies uniform saliency criteria despite varying inter-layer sensitivities, often resulting in suboptimal compression."
+        },
+        {
+          "id": "P4",
+          "name": "Pruning and quantization are non-orthogonal and applied suboptimally in isolation",
+          "description": "Studies show pruning and quantization are non-orthogonal both theoretically and empirically, yet traditional pipelines apply them in isolation or in a fixed sequence, compounding sub-optimality; joint methods like SparseGPT+GPTQ and OBR support joint unstructured/semi-structured compression but offer limited speedup compared to structured methods."
+        },
+        {
+          "id": "P5",
+          "name": "TOGA proposed: joint structured pruning + global mixed-precision PTQ",
+          "description": "The paper introduces TOGA, an end-to-end framework combining a novel mixed-precision PTQ strategy that minimizes global error propagation with a joint optimization approach that simultaneously learns structural pruning decisions and mixed-precision quantization policies in a unified search space."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["Sec 1"]},
+        {"from": "P2", "to": "P3", "evidence": ["Sec 1"]},
+        {"from": "P1", "to": "P4", "evidence": ["Sec 1"]},
+        {"from": "P3", "to": "P5", "evidence": ["Sec 1"]},
+        {"from": "P4", "to": "P5", "evidence": ["Sec 1"]}
+      ]
+    },
+    {
+      "component_id": "C2",
+      "description": "Related work: mixed-precision PTQ limitations addressed",
+      "nodes": [
+        {
+          "id": "P6",
+          "name": "Prior MPQ methods use local Hessian/activation-based saliency criteria",
+          "description": "Methods like PTQ-1.61, BiLLM, Slim-LLM, Atom, and ResQ assign higher bit-widths to salient channels based on local layer-level information such as Hessian statistics, gradients, or activation magnitudes, via per-layer greedy search or fixed thresholds."
+        },
+        {
+          "id": "P7",
+          "name": "Two shared limitations: fixed thresholds and local-only error accounting",
+          "description": "These methods share two limitations: they rely on fixed, uniform saliency thresholds that overlook layer-wise sensitivity differences across models, and they allocate bits using only local layer-level sensitivity metrics, failing to account for cumulative quantization error propagating through the network."
+        },
+        {
+          "id": "P8",
+          "name": "TOGA optimizes global end-to-end loss via learned binary masks",
+          "description": "TOGA addresses both limitations by optimizing binary masks to identify salient weights across the entire model architecture, enabling flexible non-uniform bit allocation while directly optimizing the global language modeling loss rather than local layer-wise error."
+        }
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["Sec 2.1"]},
+        {"from": "P3", "to": "P7", "evidence": ["Sec 2.1"]},
+        {"from": "P7", "to": "P8", "evidence": ["Sec 2.1"]}
+      ]
+    },
+    {
+      "component_id": "C3",
+      "description": "Related work: pruning+quantization ordering and structured vs unstructured sparsity",
+      "nodes": [
+        {
+          "id": "P9",
+          "name": "Prune-then-quantize ordering outperforms other orderings",
+          "description": "Prior work shows pruning and quantization are non-orthogonal and that a prune-then-quantize sequence consistently yields lower perplexity than quantize-then-prune or applying either technique alone; in vision models, combining mild pruning with higher-precision quantization outperforms aggressive low-bit quantization alone."
+        },
+        {
+          "id": "P10",
+          "name": "SparseGPT and OBR jointly combine pruning and quantization via OBS principles",
+          "description": "SparseGPT builds on Optimal Brain Surgeon to jointly prune and quantize (combined with GPTQ) outperforming either alone; OBR introduces explicit error compensation between pruning and quantization using OBS principles."
+        },
+        {
+          "id": "P11",
+          "name": "Unstructured/semi-structured sparsity gives limited practical hardware speedup",
+          "description": "SparseGPT and OBR rely on unstructured or semi-structured sparsity; unstructured sparsity offers limited practical inference speedup on standard GPUs, and semi-structured sparsity is constrained to the hardware-supported 2:4 pattern, falling back to inefficient unstructured pruning for other ratios."
+        },
+        {
+          "id": "P12",
+          "name": "TOGA is the first joint structured pruning + mixed-precision quantization framework",
+          "description": "In contrast to prior unstructured/semi-structured joint methods, TOGA produces hardware-friendly, dense-compatible matrices enabling efficient execution on standard GPUs, achieving superior accuracy-efficiency trade-offs, faster inference, and lower peak memory than 2:4 semi-structured pruned models."
+        }
+      ],
+      "edges": [
+        {"from": "P9", "to": "P10", "evidence": ["Sec 2.2"]},
+        {"from": "P10", "to": "P11", "evidence": ["Sec 2.2"]},
+        {"from": "P4", "to": "P11", "evidence": ["Sec 2.2"]},
+        {"from": "P11", "to": "P12", "evidence": ["Sec 2.2"]}
+      ]
+    },
+    {
+      "component_id": "C4",
+      "description": "Method foundation: structured pruning via learnable binary masks (DISP-LLM basis)",
+      "nodes": [
+        {
+          "id": "P13",
+          "name": "Transformer block structure: MHA and FFN sub-modules",
+          "description": "LLMs use decoder-only transformer blocks comprising multi-head self-attention (MHA) and a feed-forward network (FFN), each with residual connections and layer normalization (Eqs. 1-2)."
+        },
+        {
+          "id": "P14",
+          "name": "Structured pruning formulated as learnable binary input/output masks",
+          "description": "Following DISP-LLM, structured pruning is framed as learnable binary mask optimization: each weight matrix's input and output channels are masked by binary vectors Pin, Pout, producing a pruned weight matrix via Eq. 3, applied across attention and MLP sub-modules (Eqs. 4-5)."
+        },
+        {
+          "id": "P15",
+          "name": "Hypernetwork search avoids costly evolutionary/RL search",
+          "description": "Rather than computationally intensive evolutionary algorithms or reinforcement learning to search for the optimal mask configuration, a hypernetwork-based approach is adopted, trained with a budget regularization term (Eq. 6) that matches expected budget B(S) to a target b, combined with cross-entropy loss (Eq. 7)."
+        },
+        {
+          "id": "P16",
+          "name": "Gumbel-Softmax + Straight-Through Estimator yield differentiable discrete masks",
+          "description": "To obtain discrete binary masks from the hypernetwork's continuous outputs, the Gumbel-Softmax trick combined with the Straight-Through Estimator is used, enabling end-to-end gradient propagation through discrete mask selection during training."
+        }
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["Sec 2.3"]},
+        {"from": "P14", "to": "P15", "evidence": ["Sec 2.3"]},
+        {"from": "P15", "to": "P16", "evidence": ["Sec 2.3"]}
+      ]
+    },
+    {
+      "component_id": "C5",
+      "description": "Method: extending the hypernetwork paradigm to mixed-precision quantization",
+      "nodes": [
+        {
+          "id": "P17",
+          "name": "Binary mask formulation for mixed-precision quantization",
+          "description": "A binary mask M distinguishes sensitive (salient) from non-sensitive weight channels; the mixed-precision quantized weight matrix combines high-precision and low-precision quantization functions weighted by the mask (Eq. 8), with the same formulation applied to activations (Eq. 9)."
+        },
+        {
+          "id": "P18",
+          "name": "Prior MPQ methods derive masks per-layer, assuming layer independence",
+          "description": "Previous MPQ methods derive quantization masks per layer based on that layer's quantization error using calibration-based activation/Hessian sensitivity, assuming quantization choices between layers are independent and overlooking cumulative errors and inter-layer dependencies."
+        },
+        {
+          "id": "P19",
+          "name": "TOGA resolves this via end-to-end final-loss optimization",
+          "description": "TOGA resolves the layer-independence problem by considering the model's actual final loss end-to-end (via the hypernetwork approach of Sec 2.3) rather than local per-layer greedy search."
+        },
+        {
+          "id": "P20",
+          "name": "Activation-magnitude channel reordering plus GPTQ refinement",
+          "description": "Input channels are reordered by activation magnitude (estimated from a WikiText-2 calibration set) to cluster outlier channels together, and GPTQ is applied to further refine quantized weights and reduce residual error; ablations confirm both improve perplexity (Table 3)."
+        }
+      ],
+      "edges": [
+        {"from": "P8", "to": "P17", "evidence": ["Sec 3.1"]},
+        {"from": "P17", "to": "P18", "evidence": ["Sec 3.1"]},
+        {"from": "P18", "to": "P19", "evidence": ["Sec 3.1"]},
+        {"from": "P19", "to": "P20", "evidence": ["Sec 3.1"]}
+      ]
+    },
+    {
+      "component_id": "C6",
+      "description": "Method: joint pruning-then-quantization formulation and the masked compressible supernet",
+      "nodes": [
+        {
+          "id": "P21",
+          "name": "Two possible orderings: quantize-then-prune vs prune-then-quantize",
+          "description": "Combining Eq. 3 (pruning) and Eq. 8 (quantization) yields two options: quantization-then-pruning or pruning-then-quantization."
+        },
+        {
+          "id": "P22",
+          "name": "Prune-then-quantize chosen based on prior evidence",
+          "description": "Based on prior findings that pruning-as-initial-phase followed by quantization yields better inference throughput and perplexity, the paper chooses pruning-then-quantization, combining Eqs. 3 and 8 into the final joint formulation (Eq. 10), extended to activations (Eq. 11)."
+        },
+        {
+          "id": "P23",
+          "name": "Joint formulation constructs a masked compressible supernet",
+          "description": "Applying the joint pruning-and-quantization operations to weights and activations across all linear layers constructs a supernet encoding all feasible combinations of structured pruning and mixed-precision quantization policies within a single architecture (Fig. 1)."
+        },
+        {
+          "id": "P24",
+          "name": "End-to-end hypernetwork training enables mutual awareness between pruning and quantization decisions",
+          "description": "The hypernetwork is trained end-to-end to identify the optimal joint configuration, so that pruning decisions account for current quantization choices and vice versa, unlike conventional sequential prune-then-quantize pipelines."
+        }
+      ],
+      "edges": [
+        {"from": "P9", "to": "P21", "evidence": ["Sec 3.2"]},
+        {"from": "P21", "to": "P22", "evidence": ["Sec 3.2", "Eq. 10"]},
+        {"from": "P20", "to": "P22", "evidence": ["Sec 3.2"]},
+        {"from": "P22", "to": "P23", "evidence": ["Sec 3.2", "Fig. 1"]},
+        {"from": "P16", "to": "P23", "evidence": ["Sec 3.2"]},
+        {"from": "P23", "to": "P24", "evidence": ["Sec 3.2"]}
+      ]
+    },
+    {
+      "component_id": "C7",
+      "description": "Finding: TOGA-q outperforms SoTA mixed-precision PTQ at ultra-low precision",
+      "nodes": [
+        {
+          "id": "P25",
+          "name": "TOGA-q isolates the quantization-only contribution",
+          "description": "To isolate the effect of quantization, pruning is disabled (all pruning vector entries set to ones), yielding a quantization-only variant TOGA-q, compared against weight-activation (Atom, ResQ, SpinQuant) and weight-only (PTQ-1.61, SliM-LLM, BiLLM) SoTA baselines."
+        },
+        {
+          "id": "P26",
+          "name": "TOGA-q reduces perplexity and improves accuracy vs weight-activation PTQ",
+          "description": "Compared to ResQ, the strongest weight-activation PTQ baseline, TOGA-q reduces WikiText-2 perplexity by 5-21% and improves average zero-shot accuracy on reasoning tasks by 1.6-4.5% (Table 1)."
+        },
+        {
+          "id": "P27",
+          "name": "Uniform-precision SpinQuant collapses at 3-bit while TOGA-q remains coherent",
+          "description": "The leading uniform-precision method SpinQuant experiences total perplexity collapse at 3-bit precision, underscoring the importance of mixed-precision quantization for safeguarding critical weights in sub-4-bit settings."
+        },
+        {
+          "id": "P28",
+          "name": "TOGA-q outperforms weight-only PTQ baselines without costly fine-tuning",
+          "description": "TOGA-q requires neither external datasets nor fine-tuning, yet achieves 9-59% lower perplexity on WikiText and 2.3-5.4% higher zero-shot accuracy than PTQ-1.61 (which needs 10,000 LoRA fine-tuning iterations), and outperforms SliM-LLM using only two bit-widths per layer versus three, avoiding extra kernel-launch overhead."
+        },
+        {
+          "id": "P29",
+          "name": "TOGA-q also outperforms MPQ baselines in hardware-friendly INT4/INT8 setting",
+          "description": "In the mainstream INT4+INT8 mixed-precision setting with KV-cache quantized to INT4, TOGA-q surpasses Atom and ResQ in zero-shot accuracy across Llama-family models, confirming the effectiveness of adaptive, loss-driven bit-width allocation over fixed-threshold approaches (Table 2)."
+        }
+      ],
+      "edges": [
+        {"from": "P8", "to": "P25", "evidence": ["Sec 4.1", "Sec 4.3"]},
+        {"from": "P25", "to": "P26", "evidence": ["Sec 4.3", "Table 1"]},
+        {"from": "P26", "to": "P27", "evidence": ["Sec 4.3"]},
+        {"from": "P25", "to": "P28", "evidence": ["Sec 4.3", "Table 1"]},
+        {"from": "P26", "to": "P29", "evidence": ["Sec 4.3", "Table 2"]}
+      ]
+    },
+    {
+      "component_id": "C8",
+      "description": "Finding: TOGA (joint pruning+quantization) outperforms sequential and joint SoTA baselines",
+      "nodes": [
+        {
+          "id": "P30",
+          "name": "TOGA compared against sequential DISP-LLM+PTQ and joint SparseGPT+GPTQ/OBR baselines",
+          "description": "TOGA is compared against sequential baselines (DISP-LLM structured pruning followed by Atom, ResQ, BiLLM, or SliM-LLM) and joint baselines (SparseGPT+GPTQ, OBR), with a fixed-sparsity variant TOGA-fixed-sparsity added for fair comparison at matched sparsity levels."
+        },
+        {
+          "id": "P31",
+          "name": "OBR fails at ultra-low precision and is excluded from some comparisons",
+          "description": "OBR is excluded from certain ultra-low-precision comparisons due to catastrophic failure (e.g., perplexity >1500 at 10% sparsity with W3A3, or 222.67 with W2A16 for Llama-2-7B)."
+        },
+        {
+          "id": "P32",
+          "name": "TOGA flexibly balances sparsity and precision for a given compression ratio",
+          "description": "Joint optimization allows TOGA to flexibly balance sparsity and precision for any target compression ratio, e.g., at ~0.103 budget it can yield either 45% sparsity + W3A3 or 59% sparsity + W4A4 (Fig. 2)."
+        },
+        {
+          "id": "P33",
+          "name": "Unconstrained TOGA outperforms both sequential and fixed-sparsity variants",
+          "description": "TOGA consistently outperforms both SoTA joint and sequential pipelines, and unconstrained TOGA surpasses even TOGA-fixed-sparsity, particularly at aggressive compression levels, confirming that simultaneous optimization with free sparsity-precision trade-offs delivers superior accuracy-efficiency Pareto fronts."
+        }
+      ],
+      "edges": [
+        {"from": "P24", "to": "P30", "evidence": ["Sec 4.4"]},
+        {"from": "P30", "to": "P31", "evidence": ["Sec 4.4"]},
+        {"from": "P24", "to": "P32", "evidence": ["Sec 4.4", "Fig. 2"]},
+        {"from": "P32", "to": "P33", "evidence": ["Sec 4.4", "Fig. 2"]},
+        {"from": "P12", "to": "P33", "evidence": ["Sec 4.4"]}
+      ]
+    },
+    {
+      "component_id": "C9",
+      "description": "Finding: practical inference performance gains via custom CUDA kernels",
+      "nodes": [
+        {
+          "id": "P34",
+          "name": "Custom CUTLASS-based mixed-precision kernels support INT4/INT8 GEMM",
+          "description": "Custom CUDA kernels based on CUTLASS support mixed-precision INT4/INT8 GEMM operations, with the inference pipeline further optimized by fusing RMS Normalization with reordering and quantization stages, and quantizing the KV cache."
+        },
+        {
+          "id": "P35",
+          "name": "TOGA achieves faster prefill and higher sustainable batch sizes than FP16 and OBR",
+          "description": "During the compute-bound prefill stage, TOGA achieves up to 2x speedup over FP16 and about 1.3x speedup over the 2:4 semi-structured OBR baseline, while sustaining higher batch sizes without out-of-memory errors (FP16 fails starting at batch size 12)."
+        },
+        {
+          "id": "P36",
+          "name": "TOGA reduces peak decode memory versus FP16 and OBR",
+          "description": "During memory-bound autoregressive decoding, TOGA reduces peak memory by up to 6.5x compared to FP16 and by about 10% compared to OBR."
+        }
+      ],
+      "edges": [
+        {"from": "P33", "to": "P34", "evidence": ["Sec 4.5"]},
+        {"from": "P34", "to": "P35", "evidence": ["Sec 4.5", "Fig. 3"]},
+        {"from": "P34", "to": "P36", "evidence": ["Sec 4.5", "Fig. 3"]}
+      ]
+    },
+    {
+      "component_id": "C10",
+      "description": "Ablation: contribution of individual quantization techniques within TOGA-q",
+      "nodes": [
+        {
+          "id": "P37",
+          "name": "Uniform W4A4 RTN quantization performs very poorly",
+          "description": "Starting from uniform per-channel/per-token round-to-nearest (RTN) W4A4 quantization as a baseline recipe, perplexity is extremely high (1753 on WikiText-2, 2301 on C4) for Llama-2-7B (Table 3)."
+        },
+        {
+          "id": "P38",
+          "name": "Retaining salient weights at INT8 yields the largest single improvement",
+          "description": "Quantizing 12.5% of weights to INT8 (retaining sensitive weights) already yields a large perplexity reduction compared to uniform W4A4 (Table 3)."
+        },
+        {
+          "id": "P39",
+          "name": "Channel reordering and GPTQ further refine quantization quality",
+          "description": "Adding activation-based channel reordering and GPTQ refinement further improves perplexity from 6.03 to 5.38 on WikiText-2 (Table 3)."
+        },
+        {
+          "id": "P40",
+          "name": "INT4 KV-cache quantization adds only minor degradation",
+          "description": "Quantizing the KV cache to INT4 causes only a small perplexity increase (to 5.48), demonstrating the overall method remains highly effective even under KV cache quantization (Table 3)."
+        }
+      ],
+      "edges": [
+        {"from": "P20", "to": "P37", "evidence": ["Sec 4.6", "Table 3"]},
+        {"from": "P37", "to": "P38", "evidence": ["Sec 4.6", "Table 3"]},
+        {"from": "P38", "to": "P39", "evidence": ["Sec 4.6", "Table 3"]},
+        {"from": "P39", "to": "P40", "evidence": ["Sec 4.6", "Table 3"]}
+      ]
+    },
+    {
+      "component_id": "C11",
+      "description": "Finding: TOGA-q's adaptive salient-channel distribution reflects layer importance",
+      "nodes": [
+        {
+          "id": "P41",
+          "name": "Atom/ResQ apply a uniform fixed fraction of salient weights across all layers",
+          "description": "In contrast to TOGA-q, prior mixed-precision methods like Atom and ResQ apply a uniform, fixed fraction of salient weights (quantized to INT8) across all layers, using the same threshold for all linear layers."
+        },
+        {
+          "id": "P42",
+          "name": "TOGA-q's hypernetwork adaptively allocates salient weights per layer",
+          "description": "TOGA-q uses a hypernetwork to automatically search for and identify the optimal number of salient (INT8) weights in each individual layer, enabling layer-specific mixed-precision assignments that account for varying redundancy and sensitivity across layers."
+        },
+        {
+          "id": "P43",
+          "name": "TOGA-q allocates more salient weights to early and late transformer blocks",
+          "description": "TOGA-q allocates more salient weights to the first 16 transformer blocks and a few final blocks, with fewer salient weights in intermediate blocks (Fig. 4), aligning with existing findings that removing early or late layers causes larger accuracy degradation than pruning middle layers."
+        }
+      ],
+      "edges": [
+        {"from": "P41", "to": "P42", "evidence": ["Sec 4.6", "Fig. 4"]},
+        {"from": "P19", "to": "P42", "evidence": ["Sec 4.6"]},
+        {"from": "P42", "to": "P43", "evidence": ["Sec 4.6", "Fig. 4"]}
+      ]
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P44",
+      "name": "Compression budget definition",
+      "description": "The compression budget is defined as the ratio of the theoretical memory footprint of the compressed model to that of the original FP16 model, e.g., 50% sparsity combined with W4A4 quantization gives a budget of 0.125 (87.5% memory reduction)."
+    },
+    {
+      "id": "P45",
+      "name": "Precision format notation",
+      "description": "Effective average bit-width in mixed-precision quantization depends on the chosen precisions for salient/non-salient portions and their proportions, e.g., Atom's W(3.2)A(3.2) denotes ~3.2-bit average from 97% at 3-bit and 3% at 8-bit."
+    },
+    {
+      "id": "P46",
+      "name": "Experimental setup details",
+      "description": "Hypernetworks were trained on WikiText-2 using a single NVIDIA A100 GPU; 2,000 steps for quantization-only and 10,000 steps for joint pruning-and-quantization experiments, batch size 1, repeated five times for averaged results, across models including Llama-3.2-1B/3B, Llama-2-7B/13B, Llama-3-8B, Llama-3.1-8B, Mistral-7B-v0.3, and Qwen-3-8B, evaluated on WikiText-2/C4 perplexity and six zero-shot reasoning benchmarks (ARC-Easy/Challenge, BoolQ, Winogrande, HellaSwag, MMLU)."
+    }
+  ],
+  "structural_reasoning": "The graph follows a methodology-build-up structure typical of a systems/compression paper. C1 (motivation: limitations of isolated/sequential pruning-quantization pipelines and local layer-wise MPQ) sets up the problem, elaborated by two related-work critique components, C2 (MPQ-specific limitations) and C3 (pruning+quantization ordering and hardware-speedup limitations of unstructured/semi-structured joint methods), both converging on the proposed TOGA framework. C4 establishes the structural-pruning building block inherited from DISP-LLM (binary masks, hypernetwork search, Gumbel-Softmax/STE), which C5 extends to mixed-precision quantization masks and global-loss optimization, and C6 unifies both into the joint pruning-then-quantization supernet formulation — the core method. The experimental components C7-C11 fan out from this unified method: C7 validates the quantization-only ablation (TOGA-q) against MPQ baselines at both ultra-low and mainstream precisions; C8 validates the full joint TOGA against sequential and joint SoTA baselines, showing flexible sparsity-precision trade-offs; C9 demonstrates the practical systems payoff (custom kernels, real speedup/memory gains) enabled by TOGA's structured (hardware-friendly) design; C10 dissects TOGA-q's own components via ablation, showing which quantization techniques contribute most; and C11 provides an interpretability-style finding explaining why TOGA-q's adaptive allocation outperforms fixed-threshold baselines, linking back to known layer-importance patterns. Definitions (compression budget, precision format notation) and experimental setup details are treated as isolated nodes since they are supporting context referenced throughout rather than argumentative steps themselves."
+}

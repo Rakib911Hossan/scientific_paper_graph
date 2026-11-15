@@ -1,0 +1,172 @@
+{
+ "arxiv_id": "2507.16178",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Static, isolated data selection motivates DWM, a bi-level-optimized data weighting model that improves pre-training and transfers",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Selection ignores training dynamics",
+     "description": "Existing LLM data selection methods mostly select data before training, ignoring the model's dynamic data preference during training."
+    },
+    {
+     "id": "P2",
+     "name": "Samples used indiscriminately",
+     "description": "Existing methods select samples separately and use them indiscriminately within a batch, ignoring joint effects between samples that jointly determine the model update direction."
+    },
+    {
+     "id": "P3",
+     "name": "DWM weights data within batch",
+     "description": "A plug-and-play Data Weighting Model (DWM) assigns weights to selected samples within each batch during LLM training to achieve dynamic data utilization."
+    },
+    {
+     "id": "P4",
+     "name": "Training loss is a bad upper objective",
+     "description": "Updating the weighting model with the pre-training loss is sub-optimal because it can set weights of all or easily-predicted data to zero to minimize the loss."
+    },
+    {
+     "id": "P5",
+     "name": "Bi-level optimization of DWM",
+     "description": "The weighting model is optimized at the upper level by maximizing validation performance of the LLM that is trained at the lower level on DWM-weighted data, using the chain rule."
+    },
+    {
+     "id": "P6",
+     "name": "Multi-stage alternating training",
+     "description": "Training is split into stages and the DWM is re-learned at different stages by alternating iteration, to capture the model's shifting data preference."
+    },
+    {
+     "id": "P7",
+     "name": "DWM improves random-data pretraining",
+     "description": "A 370M model pre-trained from scratch on randomly selected SlimPajama data performs better with DWM than without, in zero-shot and two-shot evaluation, with larger gains in later training stages."
+    },
+    {
+     "id": "P8",
+     "name": "Gains mainly in few-shot ability",
+     "description": "DWM primarily improves few-shot performance rather than zero-shot, which the authors attribute to using LAMBADA as the validation set."
+    },
+    {
+     "id": "P9",
+     "name": "DWM transfers to other selectors and 1.3B",
+     "description": "The DWM trained on 370M with random data transfers to DSIR- and QuRating-selected data and to a 1.3B Llama2-style model, giving consistent improvements."
+    },
+    {
+     "id": "P10",
+     "name": "Preferences shift during training",
+     "description": "After stage 1 the DWM favors data scoring well on writing style, expertise, facts and education, but in later stages it prefers less well-written and more expertise-requiring data."
+    },
+    {
+     "id": "P11",
+     "name": "Static weighting models underperform",
+     "description": "Fixed weighting models from the first stage (w1) or a late stage (w4) perform worse than the dynamically re-learned DWM, because early weights are too even and late weights bias toward high-quality data and reduce diversity."
+    },
+    {
+     "id": "P12",
+     "name": "More stages help modestly",
+     "description": "Two-shot average accuracy of the 370M model is 45.1 (random), 45.3 (2 stages), 46.4 (DWM default), 46.5 (8 stages)."
+    },
+    {
+     "id": "P13",
+     "name": "LAMBADA validation beats i.i.d. validation",
+     "description": "Using LAMBADA as the validation task for the weighting model is more effective than an i.i.d. held-out SlimPajama validation set."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 5.1, Tables 1-2, Fig 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 5.1, Fig 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.2, Tables 3-4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.3, Fig 3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.4, Fig 3, Fig 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.4, Table 6"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.4, Table 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [],
+ "structural_reasoning": "Motivation (static, indiscriminate data use) leads to the DWM and its bi-level multi-stage training, then to effectiveness, transfer, preference analysis and ablations."
+}

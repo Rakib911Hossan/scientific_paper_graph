@@ -1,0 +1,171 @@
+{
+ "arxiv_id": "2507.06838",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Rerankers' individual-relevance ranking is inadequate for RAG; SetR's set selection and its evidence",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "RAG needs more than relevance",
+     "description": "RAG systems need a curated passage set offering relevance, diversity, completeness and comprehensiveness, unlike search engines that rank individual results by relevance."
+    },
+    {
+     "id": "P2",
+     "name": "Rerankers miss set-level properties",
+     "description": "Standard top-k rerankers score passages individually and overlook set-level properties such as diversity and coverage, which matter for multi-hop and compositional questions."
+    },
+    {
+     "id": "P3",
+     "name": "Set-wise selection with IRI",
+     "description": "The proposed approach selects a passage set jointly optimizing relevance, completeness and conciseness, using Chain-of-Thought information requirement identification (IRI): list requirements, map passages to requirements, then choose passages covering clear and diverse information."
+    },
+    {
+     "id": "P4",
+     "name": "SetR distillation recipe",
+     "description": "SetR is Llama-3.1-8B-Instruct fine-tuned with SFT on GPT-4o teacher-labelled set selections (with CoT/IRI reasoning) for 40K MS MARCO training questions, each with top-20 candidates."
+    },
+    {
+     "id": "P5",
+     "name": "SetR best end-to-end QA",
+     "description": "With bge-large-en-v1.5 retrieval over top-20 candidates, SetR achieves notably higher F1 and accuracy than all reranking baselines on HotpotQA, 2WikiMultiHopQA, MuSiQue and MultiHopRAG while using 40-50% fewer passages."
+    },
+    {
+     "id": "P6",
+     "name": "Higher retrieval precision",
+     "description": "On MultiHopRAG, SetR achieves 3.8%-4.6% higher precision than off-the-shelf baselines while staying competitive on rank-based metrics with few passages."
+    },
+    {
+     "id": "P7",
+     "name": "Better information coverage",
+     "description": "SetR raises Hit@k from 48.87% to 69.90% and information coverage from 19.33% to 36.49%, whereas other rerankers gain only about 9.80% in new information."
+    },
+    {
+     "id": "P8",
+     "name": "More passages can hurt",
+     "description": "Simply increasing the number of input passages often degrades generation quality, especially in multi-hop QA, whereas SetR performs better using on average 2.91 passages versus the standard top 5."
+    },
+    {
+     "id": "P9",
+     "name": "IRI is the key reasoning component",
+     "description": "Ablation shows IRI-based reasoning gives the best precision and end-to-end RAG results over no reasoning or generic CoT; set selection with the same CoT prompt beats Rank+CoT."
+    },
+    {
+     "id": "P10",
+     "name": "Controlled comparisons confirm set selection",
+     "description": "With a GPT-4o teacher as upper bound (Table 3) and with all baselines retrained on the same base model and teacher data (Table 4), set selection outperforms reranking, e.g. MultiHopRAG accuracy 47.14 vs 43.90 for RankZephyr."
+    },
+    {
+     "id": "P11",
+     "name": "Fewer generator tokens",
+     "description": "SetR-CoT & IRI feeds 1,240 input tokens to the generator on MultiHopRAG vs 2,672 for RankZephyr, while maintaining answer quality."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.3, Table 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P7",
+     "evidence": [
+      "Sec 5.1, Fig 3a,3d"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.1, Fig 3b-3f"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.2, Tables 1-3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.3, Tables 3-4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.4, Table 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P12",
+   "name": "LLM rerankers underperform small ones",
+   "description": "LLM-based rankers such as RankLlama and RankZephyr perform less well than expected, and the small bge-reranker-large is comparable to or better than some of them on complex questions."
+  },
+  {
+   "id": "P13",
+   "name": "Rank metrics diverge from QA",
+   "description": "Rank-based retrieval metrics (MRR, NDCG) diverge from end-to-end QA performance on multi-hop questions because they assume one-to-one document-query relevance."
+  },
+  {
+   "id": "P14",
+   "name": "Rank-based reasoning collapses chains",
+   "description": "Ranking-based reasoning, even with CoT, collapses multiple reasoning chains into a single score and can obscure key informational elements, while selection preserves intermediate reasoning."
+  }
+ ],
+ "structural_reasoning": "Argument runs from RAG's set-level information needs to the IRI-based set selection method, SetR's training, and its end-to-end, coverage, ablation and efficiency evidence."
+}

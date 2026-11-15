@@ -1,0 +1,308 @@
+{
+ "arxiv_id": "2609.20059",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "From deliberation's benefits and scale limits, via four frictions, to AI capabilities and principles",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Deliberation transforms preferences",
+     "description": "Structured deliberation helps citizens develop more informed positions, greater tolerance for opposing views and willingness to accept outcomes they did not initially prefer, and deliberative forums yield knowledge gains, reduced affective polarization and broader legitimacy."
+    },
+    {
+     "id": "P2",
+     "name": "Traditional deliberation does not scale",
+     "description": "Deliberative polling and citizens' assemblies are limited by facilitators, sampling and venues to a few hundred participants (assemblies typically 50 to 200), leaving a tradeoff between meaningful deliberation for the few and superficial participation for the many."
+    },
+    {
+     "id": "P3",
+     "name": "Social platforms undermine deliberation",
+     "description": "Engagement-optimized platforms favor emotionally provocative content, create rich-get-richer dynamics dominated by a few accounts, spread falsehoods faster than corrections and reward outrage over understanding."
+    },
+    {
+     "id": "P4",
+     "name": "Four categories of behavioral friction",
+     "description": "Online deliberation is limited by cognitive, social, platform-design and market-incentive frictions."
+    },
+    {
+     "id": "P5",
+     "name": "Cognitive frictions",
+     "description": "Cognitive overload, motivated reasoning, confirmation bias and correlation neglect limit deliberative capacity and can disadvantage people with less education, time or cognitive resources."
+    },
+    {
+     "id": "P6",
+     "name": "Social frictions",
+     "description": "Affective polarization, overestimation of opponents' extremity, peer pressure and the subversion dilemma fragment deliberation, but correcting misperceptions increases support for democratic norms."
+    },
+    {
+     "id": "P7",
+     "name": "Platform-design and market-incentive frictions",
+     "description": "Unlimited commenting, reply functions and rich-get-richer loops let a few voices dominate, and advertising-based business models reward short-term engagement and divisive content over deliberative quality."
+    },
+    {
+     "id": "P8",
+     "name": "Frictions compound",
+     "description": "The four frictions interact and compound, so cognitive overload invites partisan heuristics, mistrust blocks interpretation, design amplifies unproductive voices and market incentives exploit all three."
+    },
+    {
+     "id": "P9",
+     "name": "LLM capabilities for deliberation",
+     "description": "LLMs can summarize thousands of contributions, translate in real time, adjust language complexity, identify agreement and help participants articulate positions, at marginal cost that is computational rather than human."
+    },
+    {
+     "id": "P10",
+     "name": "Three scaling mechanisms",
+     "description": "Deliberation at scale rests on LLM-mediated reflection, synthesis (clustering and summarizing opinions) and moderation (civility checks, comment recommendation, equitable participation), none of which requires AI to render judgments for participants."
+    },
+    {
+     "id": "P11",
+     "name": "Four guiding principles",
+     "description": "Pro-democratic AI should preserve agency and autonomy, encourage mutual respect, promote equality and inclusiveness, and augment rather than substitute active citizenship."
+    },
+    {
+     "id": "P12",
+     "name": "Principles are necessary and sufficient",
+     "description": "The four principles are necessary and sufficient for pro-democratic AI; transparency, accountability, safety and efficiency serve them but cannot replace them, and the principles cut across every AI capability rather than mapping to specific frictions."
+    },
+    {
+     "id": "P13",
+     "name": "Evidence on cognitive frictions",
+     "description": "LLM-suggested rephrasings improved democratic reciprocity without shifting policy attitudes (Argyle et al. 2023), and a Comment Recommendation Module increased participation without reducing perceived autonomy."
+    },
+    {
+     "id": "P14",
+     "name": "Evidence on social frictions",
+     "description": "Accurate visualizations of opinion distributions significantly increased cross-partisan consensus and willingness to act, and AI-Socratic dialogue reduced extreme positioning through perspective-taking while perceived agency stayed equivalent."
+    },
+    {
+     "id": "P15",
+     "name": "Consensus discovery vs generation",
+     "description": "AI that discovers consensus among human-generated positions augments deliberation, whereas AI that generates consensus statements risks substituting for it."
+    },
+    {
+     "id": "P16",
+     "name": "Platform-design safeguards",
+     "description": "Pol.is, deliberation.io and synchronous platforms limit contributions per user, disable direct replies and use automated turn-taking, creating conditions for broader participation that AI can further enhance."
+    },
+    {
+     "id": "P17",
+     "name": "Open-source deliberation infrastructure",
+     "description": "Deliberation.io, Decidim and Pol.is release open-source components so communities can audit and govern the systems mediating collective reasoning."
+    },
+    {
+     "id": "P18",
+     "name": "Sycophancy",
+     "description": "LLMs tend toward sycophancy, and sycophantic chatbots increase attitude extremity and certainty, so facilitation must sometimes challenge rather than validate and be evaluated on deliberative quality rather than satisfaction."
+    },
+    {
+     "id": "P19",
+     "name": "Training bias",
+     "description": "LLM training biases (ideological, Western/WEIRD, gender and racial, English-centric) risk misrepresenting underrepresented participants, requiring diverse benchmarks and representative annotation."
+    },
+    {
+     "id": "P20",
+     "name": "Over-reliance and persuasion",
+     "description": "Cognitive offloading to LLMs can erode independent reasoning, and LLM messages shift policy attitudes as effectively as human-authored messages, creating temptations to persuade rather than augment."
+    },
+    {
+     "id": "P21",
+     "name": "Alignment in deliberation",
+     "description": "Deliberative alignment needs resistance to manipulation, faithful representation of minority views and procedural values, and LLM summaries have been shown to underrepresent minority perspectives."
+    },
+    {
+     "id": "P22",
+     "name": "Call to action",
+     "description": "The ML community should build deliberation-focused AI systems evaluated on facilitating informed, inclusive, consensus-building discourse rather than engagement metrics."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 2, Sec 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.1, 3.4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2, 3.4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.3, 3.4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P9",
+     "evidence": [
+      "Sec 2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P14",
+     "to": "P15",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P16",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    },
+    {
+     "from": "P16",
+     "to": "P17",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P18",
+     "evidence": [
+      "Sec 6.1"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P19",
+     "evidence": [
+      "Sec 6.2"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P20",
+     "evidence": [
+      "Sec 6.3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P21",
+     "evidence": [
+      "Sec 6.4"
+     ]
+    },
+    {
+     "from": "P18",
+     "to": "P22",
+     "evidence": [
+      "Sec 6.1, 8"
+     ]
+    },
+    {
+     "from": "P21",
+     "to": "P22",
+     "evidence": [
+      "Sec 6.4, 8"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P23",
+   "name": "Liquid democracy underperforms",
+   "description": "Experimental evidence suggests vote delegation underperforms both universal majority voting and simple abstention, and liquid democracy addresses who decides but not how people deliberate."
+  },
+  {
+   "id": "P24",
+   "name": "Online deliberation can match in-person",
+   "description": "In-person deliberation cannot scale to democratic populations, and online formats can achieve comparable outcomes when properly designed."
+  },
+  {
+   "id": "P25",
+   "name": "Three AI contributions beyond non-AI platforms",
+   "description": "AI contributes accessibility (translation, simplification), reflection (Socratic prompts) and synthesis (bridging-based ranking and clustering) beyond what structural design alone provides."
+  },
+  {
+   "id": "P26",
+   "name": "Evidence is conditional",
+   "description": "The reviewed evidence shows components of AI-assisted deliberation can work in carefully designed settings, not that they already do so reliably across deployments; the paper's position is normative."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the value and scale limits of deliberation, through friction taxonomy, to AI capabilities and guiding principles, then evidence per friction, challenges and the call to action."
+}

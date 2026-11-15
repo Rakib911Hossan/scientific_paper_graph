@@ -1,0 +1,142 @@
+{
+  "arxiv_id": "2605.02943v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {"id": "P1", "name": "Sparse terminal reward misalignment", "description": "The structural misalignment between sparse terminal rewards and the sequential nature of agentic trajectories underlies training pathologies."},
+        {"id": "P2", "name": "Response explosion", "description": "In the absence of intermediate feedback, model outputs grow monotonically to the length limit as token-level coverage becomes a proxy for task completion."},
+        {"id": "P3", "name": "Multi-turn collapse", "description": "The agentic structure degrades from coordinated tool-use dialogues into verbose single-turn monologues."},
+        {"id": "P4", "name": "Self-reinforcing collapse loop", "description": "Response explosion and multi-turn collapse are causally linked: shifting to monologues lengthens responses, which further discourages multi-turn interaction."},
+        {"id": "P5", "name": "Distillation instability", "description": "On-policy distillation, effective for single-turn reasoning, fails in agentic settings because teacher policies become stale faster due to combinatorial trajectory complexity."},
+        {"id": "P6", "name": "GRPO uniform advantage credit failure", "description": "Standard GRPO assigns a uniform advantage estimate to all tokens in a multi-turn sequence, failing to credit specific turns and causing unstable convergence."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P6", "evidence": ["S_intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P1", "to": "P2", "evidence": ["S_intro"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P4", "evidence": ["S_intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["S_intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P1", "to": "P5", "evidence": ["S_intro"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {"id": "P7", "name": "5D reward function", "description": "HealthcareAIGym implements a 5D reward function combining accuracy, procedure, safety, format, and coherence, with default weights (0.25, 0.20, 0.20, 0.10, 0.10) plus optional assertion weight."},
+        {"id": "P8", "name": "Format reward dilution problem", "description": "Agents prioritize structural correctness over clinical utility, a problem addressed by the safety-severity taxonomy and coherence checks in the 5D reward."},
+        {"id": "P9", "name": "5D reward remains episode-level", "description": "The 5D reward incorporates procedural quality but remains fundamentally episode-level, necessitating denser regularization during training."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["S_env"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P9", "evidence": ["S_prelim"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {"id": "P10", "name": "TT-OPD proposal", "description": "Turn-level Truncated On-Policy Distillation (TT-OPD) is proposed as a self-distillation framework using a gradient-free EMA teacher for dense, outcome-aware KL regularization at every turn."},
+        {"id": "P11", "name": "EMA teacher update", "description": "The teacher is updated solely via exponential moving average (α=0.995) every 5 steps, with a periodic hard-copy fallback every 30 steps."},
+        {"id": "P12", "name": "Outcome-conditioned privileged hints", "description": "The teacher receives correctness-dependent hints (reinforcing or corrective) inserted at the prompt-response boundary but hidden from the student's observed context."},
+        {"id": "P13", "name": "Cosine length-controlled reward", "description": "A cosine-shaped length-controlled reward discourages monotonic response length growth as responses approach the max length."},
+        {"id": "P14", "name": "TT-OPD prevents response explosion", "description": "TT-OPD sustains controlled response lengths (5.7-9.3K tokens) compared to GRPO oscillation (7.7-10.8K tokens) and unchecked explosion without length control."},
+        {"id": "P15", "name": "TT-OPD sustains multi-turn tool use", "description": "TT-OPD preserves multi-turn structure with tool-use frequency stable at 7.0-7.4 turns throughout training."},
+        {"id": "P16", "name": "TT-OPD average improvement", "description": "TT-OPD achieves the best performance on 10 of 18 benchmarks with an average +3.9 pp improvement over the non-RL baseline."}
+      ],
+      "edges": [
+        {"from": "P11", "to": "P10", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P10", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P10", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S_results"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P15", "evidence": ["S_results"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P16", "evidence": ["S_results"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {"id": "P17", "name": "Periodic teacher reset causes KL collapse", "description": "Periodically replacing the teacher with the student's weights causes catastrophic KL collapse, dropping abruptly at each copy event and destroying the distillation gradient."},
+        {"id": "P18", "name": "KL collapse causes accuracy decline", "description": "Without a stable reference distribution from KL collapse, accuracy declines monotonically (56.9% to 49.3%)."},
+        {"id": "P19", "name": "KL collapse causes turn collapse", "description": "Under periodic teacher reset, multi-turn tool use collapses from 7.65 to 5.52 turns per episode."},
+        {"id": "P20", "name": "EMA eliminates KL collapse", "description": "Replacing periodic resets with EMA teacher updates eliminates KL collapse entirely, allowing smooth teacher drift and continuous KL growth."},
+        {"id": "P21", "name": "EMA alone still erodes turns", "description": "Without outcome-aware conditioning, turns still erode from 7.82 to 6.23 because the KL target does not encode good multi-turn behavior."},
+        {"id": "P22", "name": "Outcome hints without length control cause explosion", "description": "Adding outcome-conditioned hints without length constraints causes responses to grow monotonically toward the max length, eventually collapsing accuracy via truncation."},
+        {"id": "P23", "name": "Full TT-OPD resolves explosion", "description": "Adding cosine length-controlled reward to EMA plus outcome hints resolves response explosion and enables sustained non-monotonic convergence to 61.1% accuracy with stable turns."}
+      ],
+      "edges": [
+        {"from": "P17", "to": "P18", "evidence": ["S_ablation"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P19", "evidence": ["S_ablation"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["S_ablation"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P22", "evidence": ["S_ablation"], "votes": 1, "confidence": "single_run"},
+        {"from": "P22", "to": "P23", "evidence": ["S_ablation"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {"id": "P24", "name": "Agentic-textual transfer gap", "description": "RL improves procedural competence but does not transfer to text-based QA benchmarks due to format-reward dilution."},
+        {"id": "P25", "name": "Agentic evaluation overhead on knowledge tasks", "description": "Multi-turn agentic evaluation introduces systematic overhead on knowledge-recall benchmarks, e.g., MMLU drops from 83.8% (text logprob) to 60.6% (Base+AR)."},
+        {"id": "P26", "name": "TT-OPD partially recovers MMLU overhead", "description": "TT-OPD recovers +4.9 pp over Base+AR on MMLU (65.5% vs 60.6%), suggesting RL partially compensates for agentic evaluation overhead."},
+        {"id": "P27", "name": "GRPO leads knowledge-intensive LFQA", "description": "GRPO leads on knowledge-intensive long-form QA tasks (KQA-Golden 65.3%, KQA-Silver 64.9%), suggesting higher peak training accuracy translates to better factual recall in open-ended settings."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P24", "evidence": ["S_discussion"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P26", "evidence": ["S_results_mcqa"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P27", "evidence": ["S_results_lfqa"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {"id": "P28", "name": "GRPO higher peak accuracy", "description": "Vanilla GRPO achieves strong training accuracy (+9.4 pp), reaching a higher peak of 62.0% at step 55."},
+        {"id": "P29", "name": "GRPO response length oscillation", "description": "GRPO shows response length oscillating between 7.7K-10.8K tokens throughout training."},
+        {"id": "P30", "name": "GRPO training instability", "description": "GRPO suffers from training instability evidenced by significant oscillations in response length and prolonged convergence periods."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P30", "evidence": ["S_dynamics"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P30", "evidence": ["S_dynamics"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P31", "name": "Environment scope", "description": "HealthcareAIGym is a Gymnasium-compatible environment spanning 10 clinical domains with 3.6K+ tasks, 135 domain-specific tools, and a knowledge base of 828K medical passages."},
+    {"id": "P32", "name": "Existing environments address fragments", "description": "Existing medical agent environments (AgentClinic, Agent Hospital, MedAgentGym, MedOpenClaw) each address only fragments of the clinical reasoning challenge, lacking some combination of tool-use, RL training, or clinical grounding."},
+    {"id": "P33", "name": "Tool-use paradox", "description": "MedOpenClaw reveals a tool-use paradox where raw prompting with professional tools degrades performance, indicating tool competence must be learned via RL rather than prompted."},
+    {"id": "P34", "name": "GRPO formalization", "description": "GRPO extends PPO by replacing the learned value function with group-relative advantages computed from a batch of G rollouts per prompt."},
+    {"id": "P35", "name": "Single-iteration importance ratio triviality", "description": "In the online single-iteration GRPO setting, the importance ratio πθ/πold is identically 1.0, rendering multi-iteration clipping mechanisms like DAPO and GSPO ineffective."},
+    {"id": "P36", "name": "Single-turn evaluation yields zero accuracy", "description": "Single-turn generation produces zero accuracy on all benchmarks because the TT-OPD-trained model has learned to reason through tool calls, and single-turn evaluation truncates this pipeline before submit_answer is reached."},
+    {"id": "P37", "name": "Backbone model", "description": "All experiments use Qwen3.5-9B trained from scratch without SFT warmup to isolate the effect of each component."},
+    {"id": "P38", "name": "Zero data contamination", "description": "Zero data contamination is verified via test-set fingerprinting across all experiments."}
+  ],
+  "structural_score": 7,
+  "structural_reasoning": "The graph captures the paper's core causal narrative: sparse terminal rewards driving three compounding pathologies (C1), the 5D reward design (C2), the TT-OPD method and its stabilizing effects (C3), the detailed ablation-derived failure progression (C4), and the agentic-textual transfer gap plus GRPO/TT-OPD trade-offs (C5, C6). These components are logically well-connected within themselves and reflect the paper's narrative arc from problem identification to method to empirical validation. Several background/setup facts (environment scope, related work gaps, formalization details) remain isolated since they serve as context rather than part of an argumentative chain. Edge confidence is generally strong for the ablation progression and TT-OPD component design, though a few cross-component links (e.g., agentic gap to GRPO LFQA strength) rely on single-run inference from adjacent narrative text rather than explicit stated dependency."
+}

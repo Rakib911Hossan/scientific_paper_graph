@@ -1,0 +1,209 @@
+{
+  "arxiv_id": "2605.11710v2",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/equations/tables rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: object-centric potential vs. existing continual learners' failure on novel concepts",
+      "nodes": [
+        {"id": "P1", "name": "Compositional structure should in principle aid generalization and resist forgetting", "description": "If a scene can be decomposed into object-level representations, a model no longer needs to have seen a whole concept to recognize it, and such compositional structure should in principle generalize robustly to novel concepts and resist catastrophic forgetting."},
+        {"id": "P2", "name": "Existing continual learners discard object structure via global embeddings", "description": "Existing continual learners represent scenes as rigid global embeddings, discarding object structure entirely, which fails precisely on novel concepts."},
+        {"id": "P3", "name": "Recent slot-attention-based continual learners still fail on truly novel concepts", "description": "Recent attempts to introduce slot attention into continual learning similarly fail to generalize to truly novel concepts."},
+        {"id": "P4", "name": "This structural potential of object-centric representations remains largely unrealized", "description": "Despite the theoretical promise of compositional structure, both global-embedding continual learners and existing slot-based continual learners fail to realize it in practice on novel concepts."},
+        {"id": "P5", "name": "The failure traces to two intertwining problems: extraction and optimization of object representations", "description": "The authors trace the unrealized potential to two intertwining problems: how object representations are extracted (architecture), and how they are optimized (training objective)."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Self-supervised patch geometry as a structural prerequisite for slot decomposition",
+      "nodes": [
+        {"id": "P6", "name": "Slot routing needs patch-level semantic clustering to isolate objects", "description": "For slot routing to isolate objects without supervision, the feature space must possess patch-level semantic geometry, such that patches of the same object naturally cluster together."},
+        {"id": "P7", "name": "Self-supervised ViTs (DINO family, iBOT) learn this patch-level clustering via local self-distillation", "description": "Through local self-distillation objectives, self-supervised models such as the DINO series and iBOT learn patch-level geometry in which patches from the same object naturally cluster together in feature space."},
+        {"id": "P8", "name": "Vision-language models like CLIP also develop spatially structured patch representations", "description": "Vision-language models such as CLIP and OpenCLIP also develop spatially structured patch representations, as contrastive alignment with language implicitly encourages the encoder to ground visual features in semantically coherent regions."},
+        {"id": "P9", "name": "Supervised ViTs are trained with global cross-entropy and never develop local structure", "description": "Supervised Vision Transformers are trained with global cross-entropy for inter-class discrimination and never develop local geometric structure, leaving their patch tokens too noisy for reliable object decomposition."},
+        {"id": "P10", "name": "Self-supervised (or language-aligned) patch geometry is therefore a strict prerequisite for slot decomposition", "description": "Because slot routing requires patch-level clustering, and only self-supervised or vision-language backbones reliably provide it while supervised ViTs do not, self-supervised patch geometry becomes a strict structural prerequisite on which the proposed approach is built."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P10", "evidence": ["S1", "S3.2", "Remark1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P10", "evidence": ["S1", "S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P10", "evidence": ["S1", "S2"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P10", "evidence": ["S1", "S2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Representation pollution: the GRU bottleneck corrupts backbone geometry",
+      "nodes": [
+        {"id": "P11", "name": "Correct patch geometry alone is insufficient if the slot architecture pollutes it", "description": "Even given correct self-supervised patch geometry, the slot representation architecture itself may re-introduce noise, so correct backbone geometry is necessary but not sufficient."},
+        {"id": "P12", "name": "Standard slot attention uses a GRU hidden state as the slot representation", "description": "Standard slot attention takes the GRU hidden state sk as the slot representation, updated via a patch-wise weighted mean of value-projected tokens."},
+        {"id": "P13", "name": "The GRU state entangles routing dynamics with visual content", "description": "The recurrent GRU bottleneck encodes routing dynamics (how to suppress competing slots), intertwining spatial logic with visual content and corrupting the backbone's semantic structure."},
+        {"id": "P14", "name": "COMPOSE replaces the GRU state with a direct attention-weighted aggregate of patch features", "description": "To preserve the backbone's semantic geometry, COMPOSE discards the GRU state entirely and instead computes an L2-normalized attention-weighted aggregate directly from the frozen backbone features (Eq. 2)."},
+        {"id": "P15", "name": "This aggregate resides strictly within the backbone's pristine semantic space", "description": "Unlike the latent GRU state, the attention-weighted aggregate is a direct readout of patch features, bypassing the recurrent bottleneck and residing strictly within the backbone's semantic space."},
+        {"id": "P16", "name": "This yields a substantial gain in slot purity", "description": "Bypassing the recurrent bottleneck yields a substantial gain in slot purity on COCO validation, as reported in the appendix."}
+      ],
+      "edges": [
+        {"from": "P10", "to": "P11", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P13", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P14", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P14", "evidence": ["S4.1", "Eq2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P16", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "The compositional optimization trap and its holistic-training escape",
+      "nodes": [
+        {"id": "P17", "name": "Compositional learning's natural intuition is part-by-part Chamfer matching during training", "description": "The foundational intuition in compositional learning is to match query and support scenes part-by-part, typically realized via a set-to-set nearest-neighbor Chamfer distance objective."},
+        {"id": "P18", "name": "Part-level matching gives slot-specific, structurally divergent gradient directions", "description": "Under any part-level nearest-neighbor objective, the gradient direction applied to each slot is governed by slot-specific factors (its own projection and its matched target), so different slots receive structurally divergent gradients (Takeaway 1)."},
+        {"id": "P19", "name": "This drives slots to over-specialize to recurring local training patterns", "description": "This slot-specific gradient pressure forces each slot to optimize its own local similarity independently, causing slots to over-specialize to recurring local patterns such as a specific texture or edge over many training episodes."},
+        {"id": "P20", "name": "Over-specialized slots fail to match novel concepts at test time", "description": "When confronted with a novel concept, over-specialized slots fail to find meaningful matches because their learned features are too narrowly tied to the training distribution, constituting the 'compositional trap'."},
+        {"id": "P21", "name": "A holistic objective instead propagates a shared gradient direction across all slots", "description": "A holistic objective applied to the router-weighted averaged slot embedding propagates a shared gradient direction across all slots, since the router weights act as constants with respect to the projection head, so gradients differ only by a non-negative scalar per slot."},
+        {"id": "P22", "name": "This aligns slots toward shared class identity without forcing part-level specialization", "description": "Because the holistic gradient direction is shared across slots (differing only by scalar weight), training holistically aligns the entire slot set toward a shared class identity rather than forcing local, part-level specialization."},
+        {"id": "P23", "name": "COMPOSE therefore trains holistically and reserves part-level matching for inference only", "description": "To escape the compositional trap, COMPOSE strictly separates phases: holistic class-identity training (no part-level Chamfer gradients) and compositional, part-level matching only at gradient-free inference."}
+      ],
+      "edges": [
+        {"from": "P17", "to": "P18", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["S4.2", "Takeaway1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P22", "evidence": ["S4.2", "S5.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P23", "evidence": ["S4.2", "S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["S4.2", "S5"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Preventing slot collapse: a cross-correlation penalty over variance-hinge alternatives",
+      "nodes": [
+        {"id": "P24", "name": "Purely holistic training risks slot collapse to redundant directions", "description": "Training purely with a holistic objective introduces the complementary failure mode of slot collapse, where slots converge to redundant directions, requiring a redundancy-reduction mechanism."},
+        {"id": "P25", "name": "VICReg's per-dimension variance-hinge conflicts with prototype cross-entropy training", "description": "VICReg enforces a per-dimension variance-hinge, which conflicts with the prototype CE objective because neural collapse drives within-class variability to zero, triggering the hinge."},
+        {"id": "P26", "name": "A Barlow-Twins-style cross-correlation penalty is compatible with prototype learning instead", "description": "A cross-correlation penalty on the off-diagonal entries of the standardized correlation matrix of slot projections (inspired by Barlow Twins) harmonizes with prototype learning by encouraging distributed feature utilization without rigid per-dimension variance constraints (Eq. 3)."},
+        {"id": "P27", "name": "CE's invariance under orthogonal rebasing lets decorrelation align with CE-optimality", "description": "Because CE is invariant under orthogonal rebasings of the projection head, every CE-optimum admits a free orthogonal rebasing that is simultaneously cross-correlation-optimal, so decorrelation along this direction incurs no CE pushback (Appendix G.2.1)."},
+        {"id": "P28", "name": "By contrast, spectral whitening and variance-hinge are shown to be dynamically antagonistic to CE", "description": "Spectral whitening has a strictly positive lower bound on L2-normalized embeddings, and variance-hinge, though nominally feasible via uniform scaling, is dynamically antagonistic to CE in the tight-cluster regime, unlike the cross-correlation penalty."},
+        {"id": "P29", "name": "COMPOSE therefore adopts the cross-correlation penalty as its decorrelation term", "description": "Given that the cross-correlation penalty is theoretically compatible with prototype CE while variance-hinge and whitening alternatives are antagonistic, COMPOSE adopts the cross-correlation penalty λd‖C−I‖²F as its redundancy-reduction term in the training loss."}
+      ],
+      "edges": [
+        {"from": "P24", "to": "P25", "evidence": ["S4.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P25", "to": "P26", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P26", "evidence": ["S4.3", "Eq3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P29", "evidence": ["S4.3", "AppendixG"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P29", "evidence": ["S4.3", "AppendixG"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P29", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "The COMPOSE framework: Phase I holistic training and Phase II compositional inference",
+      "nodes": [
+        {"id": "P30", "name": "Phase I trains a lightweight MLP router and projection head atop frozen backbone/slot attention", "description": "Phase I updates only a trainable router and projection head on top of a frozen ViT backbone and frozen slot attention, framed as attention-based multiple instance learning pooling over the K slots (Eq. 4)."},
+        {"id": "P31", "name": "The projection head produces both per-slot and holistic embeddings from a shared weight matrix", "description": "The projection head W2 is applied per-slot to produce unit-norm slot embeddings and applied to the router-weighted aggregate to produce a holistic embedding, with linearity ensuring the holistic embedding equivalently aggregates the per-slot projections (Eqs. 5-6)."},
+        {"id": "P32", "name": "Phase I loss combines holistic prototype cross-entropy with the cross-correlation penalty", "description": "The router and projection head are jointly optimized using a holistic prototype cross-entropy loss on cosine similarity to class prototypes, plus the cross-correlation redundancy-reduction penalty, with no part-level Chamfer matching applied (Eq. 7)."},
+        {"id": "P33", "name": "Phase II freezes all weights and performs gradient-free compositional inference", "description": "In Phase II, all network weights are frozen and no gradient reaches any component; inference instead exploits the preserved slot geometry learned in Phase I."},
+        {"id": "P34", "name": "Per-image slot centering isolates inter-slot compositional structure", "description": "Before matching, slot features are centered by subtracting the per-image slot mean, removing shared background/illumination biases while preserving inter-slot differences that carry compositional structure (Eq. 8)."},
+        {"id": "P35", "name": "Final prediction blends holistic and bidirectional Chamfer compositional scores", "description": "The final score blends a holistic cosine-similarity score from Phase I embeddings with a bidirectional Chamfer compositional-matching score over top-κ centered slots, weighted by γ (Eqs. 9-11)."},
+        {"id": "P36", "name": "Freezing the backbone and slot attention throughout bounds catastrophic forgetting", "description": "By freezing the backbone and slot attention across both phases, COMPOSE prevents representation drift and strictly bounds catastrophic forgetting, in addition to enabling novel-concept generalization."}
+      ],
+      "edges": [
+        {"from": "P23", "to": "P30", "evidence": ["S5", "S5.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P32", "evidence": ["S5.1", "Eq7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P31", "evidence": ["S5.1", "Eq5", "Eq6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P32", "evidence": ["S5.1", "Eq7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["S5", "S5.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P34", "evidence": ["S5.2", "Eq8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P35", "evidence": ["S5.2", "Eq9", "Eq10", "Eq11"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P36", "evidence": ["S5"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Main results: state-of-the-art novel-concept generalization on CFST",
+      "nodes": [
+        {"id": "P37", "name": "Other meta-trained slot-based methods degrade sharply on the noc split", "description": "On CGQA, other meta-trained methods degrade on the non-compositional (noc) split, with TransSlot reaching 69.68% and MetaProtoNet 79.32%."},
+        {"id": "P38", "name": "Even full-backbone fine-tuning (CoFiMA) trails COMPOSE on noc", "description": "Even CoFiMA, which fully fine-tunes DINOv2 in about 4 hours per dataset, trails COMPOSE by 2.17 percentage points on noc, despite its much larger training cost."},
+        {"id": "P39", "name": "This confirms fine-tuning alone does not recover the structural invariances needed for novel-concept generalization", "description": "Because full fine-tuning still underperforms COMPOSE's frozen-backbone approach on noc, this confirms that fine-tuning does not by itself recover the structural invariances needed for novel-concept generalization, supporting the paper's architectural diagnosis."},
+        {"id": "P40", "name": "COMPOSE achieves 94.14% noc / 92.92% Ha on CGQA, state-of-the-art", "description": "COMPOSE achieves 94.14 ± 0.64% accuracy on the unseen-concept split of CGQA with Ha = 92.92, exceeding all compared zero-shot, offline-meta, and PTM-based CIL baselines (Table 1)."},
+        {"id": "P41", "name": "noc improves monotonically with the self-supervised backbone's pretraining quality", "description": "Swapping the frozen backbone while holding all other COMPOSE components fixed shows noc rising monotonically with pretraining quality: 88.69% (DINOv1) → 90.09% (iBOT) → 94.14% (DINOv2) (Table 2)."},
+        {"id": "P42", "name": "This confirms self-supervised patch geometry quality is the key lever for novel-concept transfer", "description": "The monotonic relationship between backbone pretraining quality and noc accuracy empirically confirms that noc is sensitive to how densely the backbone encodes spatial object identity, validating the paper's central claim that self-supervised patch geometry is a structural prerequisite."}
+      ],
+      "edges": [
+        {"from": "P37", "to": "P40", "evidence": ["S6.2", "Table1"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P39", "evidence": ["S6.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P39", "to": "P40", "evidence": ["S6.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P42", "evidence": ["S6.2", "Table2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P42", "evidence": ["S6.2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "name": "Continual learning benchmarks: novel-concept robustness transfers to reduced forgetting",
+      "nodes": [
+        {"id": "P43", "name": "COMPOSE substantially reduces forgetting relative to Comp-FSCIL on CIFAR-100", "description": "On FSCIL, COMPOSE reduces catastrophic forgetting dramatically relative to Comp-FSCIL on CIFAR-100, with forgetting falling from 27.91% to 3.54%."},
+        {"id": "P44", "name": "COMPOSE also attains the best or competitive accuracy on FSCIL and CIL benchmarks", "description": "COMPOSE achieves the best AA on CIFAR-100 FSCIL (84.02%) and competitive AA on CUB-200/miniImageNet, and the highest AA on CIFAR-100 CIL (91.36%) and ImageNet-A (79.55%), with competitive results on ImageNet-R."},
+        {"id": "P45", "name": "The frozen backbone eliminates representation drift as a source of forgetting", "description": "Because the backbone remains frozen throughout continual training, representation drift is eliminated as the primary source of catastrophic forgetting across all standard CL benchmarks."},
+        {"id": "P46", "name": "COMPOSE-CT's higher forgetting confirms Chamfer training trades compositional retention for stability", "description": "The Chamfer-trained variant COMPOSE-CT shows higher forgetting than COMPOSE, confirming that training with part-level Chamfer matching trades compositional retention for per-class router stability, reinforcing the case for the phase-separated design."}
+      ],
+      "edges": [
+        {"from": "P36", "to": "P45", "evidence": ["S6.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P45", "to": "P43", "evidence": ["S6.3", "AppendixD"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P45", "to": "P44", "evidence": ["S6.3", "AppendixD"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P46", "evidence": ["S6.3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "name": "Ablations: validating decorrelation, dual-phase design, and slot-representation choices",
+      "nodes": [
+        {"id": "P47", "name": "Training with Chamfer matching (COMPOSE-CT) drops noc, confirming Chamfer must stay inference-only", "description": "Replacing holistic training with Chamfer-based training (COMPOSE-CT) drops noc by 2.51 pp on CGQA, confirming that Chamfer matching should be restricted to inference."},
+        {"id": "P48", "name": "Removing the cross-correlation penalty causes an even larger noc drop", "description": "Removing the redundancy-reduction (cross-correlation) term causes a larger noc drop than removing Chamfer-avoidance alone (−5.56 pp on CGQA), establishing decorrelation as the primary driver of noc performance."},
+        {"id": "P49", "name": "Both holistic and Chamfer inference-time scoring branches are necessary on CGQA", "description": "On CGQA, removing holistic scoring collapses Ha by 5.91 pp and removing Chamfer scoring drops it by 1.78 pp, showing both blended-score components are necessary."},
+        {"id": "P50", "name": "On COBJ, removing inference-time Chamfer scoring slightly helps, reflecting noisier natural-image slots", "description": "On COBJ, removing inference-time Chamfer scoring marginally improves noc (+0.20 pp), confirming holistic scoring alone suffices under noisier slot decomposition on natural images."},
+        {"id": "P51", "name": "Replacing attention-weighted aggregates with raw GRU states substantially degrades noc and Ha", "description": "Replacing the SCA-refined attention-weighted slot aggregates with raw GRU states drops noc by 3.64 pp (CGQA) and 7.73 pp (COBJ), with Ha dropping correspondingly, confirming the representation-pollution diagnosis."},
+        {"id": "P52", "name": "On natural images (COBJ), slot representation quality is the dominant bottleneck", "description": "The larger COBJ degradation from using raw GRU states than from removing decorrelation shows that on natural images, slot representation quality is the dominant bottleneck, exceeding even the contribution of redundancy reduction seen on CGQA."}
+      ],
+      "edges": [
+        {"from": "P23", "to": "P47", "evidence": ["S6.4", "Table3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P48", "evidence": ["S6.4", "Table3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P49", "evidence": ["S6.4", "Table3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P49", "to": "P50", "evidence": ["S6.4", "Table3"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P51", "evidence": ["S6.4", "Table3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P51", "to": "P52", "evidence": ["S6.4", "Table3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P53", "name": "Definition of the CFST evaluation splits", "description": "CFST evaluates models on five disjoint few-shot splits: systematicity (sys), productivity (pro), substitutivity (sub), non-novel (non), and non-compositional (noc), plus the harmonic mean Ha and continual-task average accuracy Acon."},
+    {"id": "P54", "name": "Slot Attention's competitive softmax formulation", "description": "Slot Attention maintains K slot vectors that attend to patch features via a competitive softmax across slots (Eq. 1), such that each patch's weight concentrates on its highest-affinity slot, producing a soft spatial mask per slot."},
+    {"id": "P55", "name": "CGQA and COBJ dataset descriptions", "description": "CGQA uses synthetic composite images with two objects in a 2×2 grid (100 classes, 10 sessions), giving clear spatial structure, while COBJ uses natural photographs with complex scene statistics (30 classes, 3 sessions) that make slot decomposition noisier."},
+    {"id": "P56", "name": "Pre-trained global-model CIL baselines (RanPAC, EASE, CoFiMA)", "description": "RanPAC inserts random projections, EASE expands representation dimensionality via task-specific adapters, and CoFiMA fine-tunes the backbone using Fisher-weighted parameter merging; all represent scenes as monolithic global vectors."},
+    {"id": "P57", "name": "CFST benchmark and compositional-generalization related work", "description": "The CFST benchmark formalizes evaluation of compositionality in continual learning; Compositional FSCIL and CZSL attempt to model primitive reuse but either lack explicit spatial decomposition or rely on closed-world assumptions."},
+    {"id": "P58", "name": "COMPOSE hyperparameter settings", "description": "COMPOSE uses K=7 slots, router hidden dimension h=64, a D×D projection head, Adam optimizer with lr=10⁻³ and λd=0.02, γ=0.3, and κ=4 top slots for Chamfer matching, shared across backbone variants and benchmark families."},
+    {"id": "P59", "name": "COBJ sensitivity analysis on slot quality", "description": "On COBJ, COMPOSE trails EASE on Ha (76.83 vs. 80.85), and sensitivity analysis points to slot quality on natural images as the primary bottleneck, with an alternate blend weight (αblend=0.7) recovering Ha=78.73."},
+    {"id": "P60", "name": "Limitation: hard dependency on patch-level semantic geometry", "description": "COMPOSE inherits a hard dependency on patch-level semantic geometry; when this geometry is weak (supervised ViTs, CLIP-style backbones, or significant domain shift), slot decomposition degrades and compositional transfer suffers regardless of model capacity."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph follows COMPOSE's own two-part diagnosis-then-solution structure. C1 captures the introduction's motivating tension (compositional structure's theoretical promise vs. its unrealized potential in existing continual learners), which C5's problem decomposition immediately splits into representation and optimization sub-problems. C2 and C3 jointly reconstruct Section 4.1's representation-pollution argument: C2 establishes self-supervised geometry as a prerequisite (mirroring Section 2's related-work framing and Remark 1), and C3 shows why even that geometry is insufficient without bypassing the GRU bottleneck. C4 reconstructs the compositional-trap argument of Section 4.2 (Takeaway 1) that motivates the holistic-training/compositional-inference split, and C5 separately captures the redundancy-reduction design decision (Section 4.3) with its own theoretical justification, since it addresses a distinct failure mode (slot collapse) from a distinct chain of reasoning. C6 assembles these solutions into the concrete Phase I/Phase II architecture of Section 5. C7-C9 mirror the paper's three results subsections (main CFST results, standard CL benchmarks, ablations), with each results claim connected to the interpretive conclusion the paper draws from it. Isolated nodes are limited to benchmark/metric definitions, baseline method descriptions, dataset descriptions, hyperparameters, and a scoped limitation that support the argument without being premises in the central derivation chains."
+}

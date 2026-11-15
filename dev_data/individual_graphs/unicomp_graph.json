@@ -1,0 +1,438 @@
+{
+  "arxiv_id": "2602.09130v5",
+  "note": "Single-pass extraction (no sentence-level indexing available for this document). Evidence fields reference sections/tables/figures/equations instead of indexed sentences (S#). Votes/confidence/fidelity fields from the reference schema are omitted since no multi-run validation was performed.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: gaps in existing compression evaluation literature",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Compression literature focuses on perplexity and knowledge benchmarks",
+          "description": "Much of the compression literature evaluates via next-token-prediction perplexity and knowledge-centric benchmarks (factual recall, single-step reasoning like MMLU/ARC), capturing mainly language-modeling ability and factual recall."
+        },
+        {
+          "id": "P2",
+          "name": "LLMCBench improves systematicity but has coverage gaps",
+          "description": "LLMCBench moves toward more systematic evaluation but omits knowledge distillation and remains focused on knowledge-centric multiple-choice benchmarks, with limited coverage of multi-step reasoning, multilingual performance, and reliability."
+        },
+        {
+          "id": "P3",
+          "name": "Impact on reasoning/instruction-following/reliability poorly characterized",
+          "description": "As compressed LLMs are increasingly used in safety-critical and diverse settings, the impact of compression on reasoning, instruction following, multilingual performance, and reliability remains poorly characterized."
+        },
+        {
+          "id": "P4",
+          "name": "UniComp proposed as unified multi-dimensional framework",
+          "description": "These limitations motivate UniComp, a unified evaluation framework systematically comparing pruning, quantization, and knowledge distillation across performance, reliability, and efficiency dimensions."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["Sec 1", "Sec 2"]},
+        {"from": "P2", "to": "P3", "evidence": ["Sec 1"]},
+        {"from": "P3", "to": "P4", "evidence": ["Sec 1"]}
+      ]
+    },
+    {
+      "component_id": "C2",
+      "description": "Framework design: three evaluation dimensions",
+      "nodes": [
+        {
+          "id": "P5",
+          "name": "Performance dimension: retained task-solving capability",
+          "description": "The performance dimension assesses the extent to which compressed models retain core task-solving capabilities, covering knowledge, multilingual/cultural generalization, reasoning, and instruction following, each scored as retained ratio relative to the base model (Sec 3.1, Eqs. 1-4)."
+        },
+        {
+          "id": "P6",
+          "name": "Reliability dimension: six TrustLLM-derived dimensions",
+          "description": "The reliability dimension adopts TrustLLM's six dimensions (truthfulness, safety, fairness, robustness, privacy, ethics) and evaluation protocols directly, scored via the same retained-ratio formula (Sec 3.2)."
+        },
+        {
+          "id": "P7",
+          "name": "Efficiency dimension: comparative, not baseline-relative",
+          "description": "Unlike performance/reliability metrics normalized to the base model, efficiency metrics are inherently comparative across compression methods, normalized relative to the best-performing method per metric (Sec 3.3, Eq. 5)."
+        },
+        {
+          "id": "P8",
+          "name": "Efficiency scores combine sub-metrics via geometric mean",
+          "description": "All three efficiency sub-scores (Runtime Acceleration, Inference Efficiency, Compute Cost) are computed using the geometric mean of their normalized components, to penalize single-axis bottlenecks and prevent one strong metric from masking deficiencies in others (Eqs. 6-8)."
+        }
+      ],
+      "edges": [
+        {"from": "P4", "to": "P5", "evidence": ["Sec 3"]},
+        {"from": "P4", "to": "P6", "evidence": ["Sec 3"]},
+        {"from": "P4", "to": "P7", "evidence": ["Sec 3"]},
+        {"from": "P7", "to": "P8", "evidence": ["Sec 3.3"]}
+      ]
+    },
+    {
+      "component_id": "C3",
+      "description": "Experimental design choices for fair cross-paradigm comparison",
+      "nodes": [
+        {
+          "id": "P9",
+          "name": "KD treated strictly as compression (student derived directly from teacher)",
+          "description": "To ensure fair and meaningful comparison, knowledge distillation is evaluated only using methods that derive the student directly from the teacher without a separately pretrained model (Minitron, Low-Rank Clone), rather than as a general-purpose transfer paradigm."
+        },
+        {
+          "id": "P10",
+          "name": "Representative, widely-cited methods chosen per paradigm",
+          "description": "For pruning (SparseGPT, Wanda) and quantization (GPTQ, AWQ), the best-performing and most-cited techniques are included, removing/quantizing at comparable ~50% effective compression levels (50% unstructured/2:4 semi-structured pruning; W4A16 quantization)."
+        },
+        {
+          "id": "P11",
+          "name": "Consistent experimental setting across all paradigms",
+          "description": "This design (matched compression levels, strict student-from-teacher KD criterion, representative method selection) ensures all compression paradigms are compared under a consistent experimental setting."
+        }
+      ],
+      "edges": [
+        {"from": "P9", "to": "P11", "evidence": ["Sec 4.1 Compression Techniques"]},
+        {"from": "P10", "to": "P11", "evidence": ["Sec 4.1 Compression Techniques"]}
+      ]
+    },
+    {
+      "component_id": "C4",
+      "description": "Finding 1: Knowledge bias across compression paradigms",
+      "nodes": [
+        {
+          "id": "P12",
+          "name": "Knowledge benchmarks are the most robust to compression",
+          "description": "Across all evaluated compression paradigms, performance is most robust on multiple-choice knowledge benchmarks; even aggressive pruning and distillation preserve a large fraction of factual knowledge (Fig. 1b, Table 1)."
+        },
+        {
+          "id": "P13",
+          "name": "Static knowledge representations are comparatively resilient",
+          "description": "This robustness suggests that static knowledge representations are comparatively resilient to compression, aligning with the compression literature's prevalent (but narrow) focus on knowledge benchmarks."
+        },
+        {
+          "id": "P14",
+          "name": "Reasoning, multilingual, and instruction-following degrade sharply",
+          "description": "Once evaluation extends beyond knowledge, pruned and distilled models fail to preserve language generalization, reasoning, and instruction-following performance, revealing stark differences hidden by knowledge-only evaluation."
+        },
+        {
+          "id": "P15",
+          "name": "Pattern holds across models with different overall robustness",
+          "description": "Qwen-2.5-7B exhibits higher overall robustness to compression than LLaMA-3.1-8B, but follows the same qualitative degradation pattern across dimensions, and the knowledge-bias pattern is further verified in additional models (Appendix B.1)."
+        },
+        {
+          "id": "P16",
+          "name": "Reasoning shows the sharpest degradation of all capabilities",
+          "description": "Reasoning-centric benchmarks exhibit the sharpest degradation under compression, e.g., LLaMA-3.1-8B Wanda-50% drops from 76.80 to 19.48 on GSM8K and from 30.20 to 7.60 on MATH-500, despite retaining much stronger knowledge performance (Table 1)."
+        },
+        {
+          "id": "P17",
+          "name": "Quantization is also most vulnerable specifically on reasoning",
+          "description": "Even quantized models are most vulnerable on reasoning tasks, with the clearest drops appearing on MATH-500 (Table 1)."
+        },
+        {
+          "id": "P18",
+          "name": "Minitron-Depth underperforms Minitron-Width despite same procedure",
+          "description": "Minitron-Depth (removing the latter half of transformer layers) performs substantially worse than its Width counterpart despite the same distillation procedure, highlighting the importance of later layers for reasoning in LLMs."
+        },
+        {
+          "id": "P19",
+          "name": "GPQA-Diamond shows relatively stronger robustness",
+          "description": "The comparatively stronger robustness on GPQA-Diamond relative to GSM8K and MATH-500 is likely attributable to its multiple-choice format, which is more forgiving than free-form generation."
+        }
+      ],
+      "edges": [
+        {"from": "P12", "to": "P13", "evidence": ["Sec 5.1 Knowledge Bias"]},
+        {"from": "P12", "to": "P14", "evidence": ["Sec 5.1", "Table 1"]},
+        {"from": "P14", "to": "P16", "evidence": ["Sec 5.1 Reasoning Sensitivity", "Table 1"]},
+        {"from": "P16", "to": "P17", "evidence": ["Sec 5.1", "Table 1"]},
+        {"from": "P16", "to": "P18", "evidence": ["Sec 5.1", "Table 1"]},
+        {"from": "P16", "to": "P19", "evidence": ["Sec 5.1"]},
+        {"from": "P14", "to": "P15", "evidence": ["Sec 5.1"]}
+      ]
+    },
+    {
+      "component_id": "C5",
+      "description": "Finding 2: Quantization's strengths and its own limits",
+      "nodes": [
+        {
+          "id": "P20",
+          "name": "Quantization consistently outperforms other methods across capabilities",
+          "description": "Consistent with prior findings, quantization techniques consistently outperform other compression methods across capabilities (Table 1)."
+        },
+        {
+          "id": "P21",
+          "name": "AWQ stays close to baseline on knowledge/multilingual for Qwen",
+          "description": "For Qwen2.5-7B, AWQ remains close to baseline on knowledge and multilingual benchmarks (70.75 vs. 71.76 on MMLU; 84.57 vs. 83.12 on BBQ), while pruning and distillation incur much larger drops (Table 1)."
+        },
+        {
+          "id": "P22",
+          "name": "Quantization is not a full drop-in replacement, especially for reasoning",
+          "description": "Even AWQ shows reduced performance on challenging reasoning tasks (72.20 vs. 75.60 on MATH-500), suggesting small quantization errors may accumulate over multi-step reasoning chains."
+        },
+        {
+          "id": "P23",
+          "name": "AWQ generally stronger than GPTQ on multilingual/cultural tasks",
+          "description": "AWQ is generally stronger than GPTQ specifically on multilingual and cultural tasks (Table 1)."
+        }
+      ],
+      "edges": [
+        {"from": "P20", "to": "P21", "evidence": ["Sec 5.1 Quantization Dominates", "Table 1"]},
+        {"from": "P21", "to": "P22", "evidence": ["Sec 5.1", "Table 1"]},
+        {"from": "P20", "to": "P23", "evidence": ["Sec 5.1"]}
+      ]
+    },
+    {
+      "component_id": "C6",
+      "description": "Finding 3: Soft-pruning-based distillation (Low-Rank Clone) beats hard-pruning distillation (Minitron)",
+      "nodes": [
+        {
+          "id": "P24",
+          "name": "LRC-4B outperforms Minitron in generalization/instruction-following",
+          "description": "The LRC-4B model (Low-Rank-Clone, combining soft pruning with distillation) substantially outperforms its Minitron counterpart in language generalization and instruction following, despite being distilled on an order of magnitude fewer tokens (20B vs. 200B)."
+        },
+        {
+          "id": "P25",
+          "name": "Result favors soft pruning over hard pruning for student construction",
+          "description": "This result underscores the advantages of soft pruning relative to hard pruning when constructing student models for distillation."
+        },
+        {
+          "id": "P26",
+          "name": "LRC-4B still limited on advanced reasoning",
+          "description": "Despite its other advantages, LRC-4B remains limited in advanced reasoning, most notably on MATH-500, consistent with the broader reasoning-sensitivity finding."
+        }
+      ],
+      "edges": [
+        {"from": "P24", "to": "P25", "evidence": ["Sec 5.1 Low-Rank Clone Outperforms Minitron"]},
+        {"from": "P16", "to": "P26", "evidence": ["Sec 5.1"]},
+        {"from": "P24", "to": "P26", "evidence": ["Sec 5.1"]}
+      ]
+    },
+    {
+      "component_id": "C7",
+      "description": "Finding 4: Multilingual evaluation reveals hidden method differences",
+      "nodes": [
+        {
+          "id": "P27",
+          "name": "Quantization methods often reported similar on English benchmarks",
+          "description": "Quantization methods (e.g., AWQ, GPTQ) are often reported to perform similarly to each other on standard English-centric benchmarks."
+        },
+        {
+          "id": "P28",
+          "name": "AWQ outperforms GPTQ by up to 9pp on multilingual benchmark",
+          "description": "Evaluating on Global-MMLU-Lite reveals that AWQ outperforms GPTQ by up to 9 percentage points in the multilingual setting, a difference not apparent in English-centric evaluation."
+        },
+        {
+          "id": "P29",
+          "name": "No consistent extra degradation on low-resource languages",
+          "description": "Analysis of high- vs. low-resource language performance does not reveal a consistent additional degradation on low-resource languages across compression paradigms (Appendix B.2)."
+        },
+        {
+          "id": "P30",
+          "name": "Comparable English performance can diverge substantially across languages",
+          "description": "These results show that compression methods with comparable performance on English tasks can diverge substantially across languages, underscoring the importance of multidimensional (multilingual-inclusive) evaluation."
+        }
+      ],
+      "edges": [
+        {"from": "P27", "to": "P28", "evidence": ["Sec 5.1 Multilingual Performance"]},
+        {"from": "P28", "to": "P30", "evidence": ["Sec 5.1"]},
+        {"from": "P29", "to": "P30", "evidence": ["Sec 5.1"]}
+      ]
+    },
+    {
+      "component_id": "C8",
+      "description": "Finding 5: Performance-reliability decoupling",
+      "nodes": [
+        {
+          "id": "P31",
+          "name": "Best-performing methods don't systematically yield best reliability",
+          "description": "Techniques that consistently perform best in retaining task performance, most notably quantization, do not systematically yield superior reliability outcomes."
+        },
+        {
+          "id": "P32",
+          "name": "Some compressed models exceed baseline reliability despite reduced performance",
+          "description": "Several compressed models achieve reliability scores exceeding 100, indicating improvement over the baseline in specific reliability dimensions despite reduced task performance."
+        },
+        {
+          "id": "P33",
+          "name": "Decoupling implies performance and reliability are non-interchangeable objectives",
+          "description": "This decoupling suggests that preserving capability under compression does not guarantee preservation of behavioral properties, underscoring the need to evaluate performance and reliability as distinct, non-interchangeable objectives."
+        }
+      ],
+      "edges": [
+        {"from": "P31", "to": "P33", "evidence": ["Sec 5.2 Performance-Reliability Decoupling"]},
+        {"from": "P32", "to": "P33", "evidence": ["Sec 5.2"]}
+      ]
+    },
+    {
+      "component_id": "C9",
+      "description": "Finding 6: Reliability sensitivity and trade-offs across dimensions and methods",
+      "nodes": [
+        {
+          "id": "P34",
+          "name": "Truthfulness and safety generally robust to compression",
+          "description": "Truthfulness and safety are generally robust to compression, often matching or exceeding baseline scores (Table 2)."
+        },
+        {
+          "id": "P35",
+          "name": "Fairness and robustness show much higher variance",
+          "description": "Fairness and robustness exhibit much higher variance across compression methods, indicating sensitivity to socially grounded behavior and adversarial resilience."
+        },
+        {
+          "id": "P36",
+          "name": "No single paradigm dominates reliability",
+          "description": "No single compression paradigm consistently dominates reliability: quantization performs well on robustness/ethics but shows mixed fairness/safety results (especially for Qwen), while pruning outcomes are strongly model-dependent (preserved on LLaMA, degraded on Qwen)."
+        },
+        {
+          "id": "P37",
+          "name": "Distillation shows weaker, less consistent reliability preservation",
+          "description": "Knowledge distillation exhibits weaker and less consistent reliability preservation compared to pruning and quantization; Minitron models underperform across most reliability dimensions on LLaMA, indicating distillation fails to preserve compromised safety/bias behaviors induced by aggressive pruning."
+        },
+        {
+          "id": "P38",
+          "name": "Low-Rank Clone achieves strong truthfulness/fairness, rivaling quantization",
+          "description": "In contrast to Minitron, Low-Rank Clone achieves strong truthfulness and fairness on Qwen, outperforming Minitron-distilled models and rivaling quantization on some metrics, suggesting soft structured parameter reduction retains reliability better than hard prune→distill pipelines."
+        }
+      ],
+      "edges": [
+        {"from": "P34", "to": "P36", "evidence": ["Sec 5.2 Reliability Sensitivity", "Table 2"]},
+        {"from": "P35", "to": "P36", "evidence": ["Sec 5.2", "Table 2"]},
+        {"from": "P36", "to": "P37", "evidence": ["Sec 5.2 Distillation Methods"]},
+        {"from": "P37", "to": "P38", "evidence": ["Sec 5.2", "Table 2"]},
+        {"from": "P25", "to": "P38", "evidence": ["Sec 5.2"]}
+      ]
+    },
+    {
+      "component_id": "C10",
+      "description": "Finding 7: Efficiency trade-offs across paradigms",
+      "nodes": [
+        {
+          "id": "P39",
+          "name": "Distillation maximizes runtime/inference efficiency at high compute cost",
+          "description": "Knowledge-distilled models achieve the highest scores in both runtime acceleration and inference efficiency, but at a prohibitive compute cost (significantly longer training times, higher resource consumption) (Fig. 2, Table 3)."
+        },
+        {
+          "id": "P40",
+          "name": "Distillation best suited when offline compute is abundant",
+          "description": "Because of the training-cost trade-off, distillation is most suitable when offline compute is abundant and compute cost is not a primary concern."
+        },
+        {
+          "id": "P41",
+          "name": "Quantization offers the most balanced efficiency profile",
+          "description": "Quantization methods (AWQ, GPTQ) offer the most balanced efficiency profile — strong runtime/memory improvements with relatively low compression overhead — making them the most practical choice for real-world, resource-constrained settings despite not matching distillation's peak efficiency."
+        },
+        {
+          "id": "P42",
+          "name": "Pruning benefits limited to semi-structured (2:4) sparsity settings",
+          "description": "Pruning methods yield meaningful runtime acceleration only under semi-structured (2:4) sparsity where hardware support can be leveraged; unstructured pruning shows weaker runtime/inference gains despite low compute cost, with Wanda notable for minimal overhead but pruning overall remaining less competitive than quantization or distillation."
+        }
+      ],
+      "edges": [
+        {"from": "P39", "to": "P40", "evidence": ["Sec 5.3 Distillation Maximizes Efficiency", "Table 3"]},
+        {"from": "P41", "to": "P40", "evidence": ["Sec 5.3 Quantization Provides Best Trade-off"]},
+        {"from": "P42", "to": "P41", "evidence": ["Sec 5.3 Pruning Benefits Limited"]}
+      ]
+    },
+    {
+      "component_id": "C11",
+      "description": "Finding 8: Scale and architecture effects",
+      "nodes": [
+        {
+          "id": "P43",
+          "name": "Larger models generally more robust to compression",
+          "description": "Across scales from 0.6B to 14B parameters, larger models generally exhibit greater robustness to compression, consistent with prior findings (Fig. 3a-b)."
+        },
+        {
+          "id": "P44",
+          "name": "Small-model reasoning is highly sensitive to pruning",
+          "description": "Reasoning performance in smaller models is highly sensitive to pruning, with retained performance dropping to as low as 6-25% for 0.6B and 1.7B models."
+        },
+        {
+          "id": "P45",
+          "name": "Quantization also incurs substantial losses at smaller scales",
+          "description": "Quantization also incurs substantial losses of up to 30% at smaller scales, indicating quantized models are not reliable drop-in replacements particularly for small models."
+        },
+        {
+          "id": "P46",
+          "name": "Pruning and quantization show opposite MoE-vs-reasoning trade-offs",
+          "description": "Across architectures, pruning favors MoE models overall but struggles specifically on reasoning, while quantization shows the opposite trend (harming MoE performance but preserving reasoning), attributed to current quantization methods not being well adapted to MoE architectures."
+        }
+      ],
+      "edges": [
+        {"from": "P43", "to": "P44", "evidence": ["Sec 5.4 Comparison Across Models", "Fig. 3a"]},
+        {"from": "P44", "to": "P45", "evidence": ["Sec 5.4"]},
+        {"from": "P43", "to": "P46", "evidence": ["Sec 5.4", "Fig. 3b"]}
+      ]
+    },
+    {
+      "component_id": "C12",
+      "description": "Finding 9: Calibration data as an explanatory mechanism for knowledge bias",
+      "nodes": [
+        {
+          "id": "P47",
+          "name": "Calibration data determines which weights are preserved",
+          "description": "Although not a compression method itself, calibration data determines which weights are preserved during pruning and quantization, offering a potential explanation for the observed knowledge bias."
+        },
+        {
+          "id": "P48",
+          "name": "Default C4 calibration is mismatched with reasoning tasks",
+          "description": "The default C4-based calibration data used by SparseGPT and Wanda is mismatched with reasoning tasks, motivating construction of a reasoning-centric calibration set from MATH, GSM8K, and ARC-c."
+        },
+        {
+          "id": "P49",
+          "name": "Reasoning-aware calibration yields up to 50% relative improvement",
+          "description": "Pruned Qwen-2.5-7B and LLaMA-3.1-8B calibrated on the reasoning-centric data consistently outperform C4-calibrated models while still preserving knowledge-benchmark performance; e.g., GSM8K accuracy on pruned LLaMA-3.1-8B improves from 36.9% to 55% (+50% relative) (Fig. 3c)."
+        },
+        {
+          "id": "P50",
+          "name": "This directly supports the knowledge-bias explanation",
+          "description": "This result directly supports the presence of a knowledge bias in compression, showing that standard calibration disproportionately favors knowledge retention over reasoning."
+        },
+        {
+          "id": "P51",
+          "name": "Reasoning-aware calibration doesn't similarly help quantized models",
+          "description": "The same reasoning-aware calibration strategy was examined for quantized models but showed no significant improvements over standard calibration, suggesting the calibration-driven mechanism is specific to pruning."
+        }
+      ],
+      "edges": [
+        {"from": "P47", "to": "P48", "evidence": ["Sec 5.4 Impact of Calibration"]},
+        {"from": "P48", "to": "P49", "evidence": ["Sec 5.4", "Fig. 3c"]},
+        {"from": "P49", "to": "P50", "evidence": ["Sec 5.4"]},
+        {"from": "P16", "to": "P50", "evidence": ["Sec 5.4"]},
+        {"from": "P49", "to": "P51", "evidence": ["Sec 5.4"]}
+      ]
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P52",
+      "name": "Mainstream compression approaches overview",
+      "description": "Current mainstream LLM compression approaches include pruning (structured/semi-structured/unstructured), quantization (reducing numerical precision rather than removing parameters), and knowledge distillation (transferring knowledge from teacher to smaller student)."
+    },
+    {
+      "id": "P53",
+      "name": "Structured pruning trade-off with hardware acceleration",
+      "description": "Structured one-shot pruning enables hardware acceleration but incurs significant performance degradation, which is why unstructured/semi-structured pruning (SparseGPT, Wanda) has become more widespread."
+    },
+    {
+      "id": "P54",
+      "name": "Weight-only quantization advantages",
+      "description": "Weight-only post-training quantization methods (GPTQ, AWQ) offer substantial memory savings with minimal accuracy loss while avoiding the runtime complexity of activation or KV-cache quantization."
+    },
+    {
+      "id": "P55",
+      "name": "Prune-then-distill pipeline in prior distillation work",
+      "description": "In settings where pretraining a student model is too expensive, prior work follows a prune→distill pipeline: a compact student is first obtained via hard structured or soft pruning, then trained using the original model as teacher."
+    },
+    {
+      "id": "P56",
+      "name": "Prior benchmarking efforts (LLMCBench and others)",
+      "description": "LLMCBench shows quantization generally outperforms pruning on knowledge-based benchmarks; subsequent work examined quantization's impact on reasoning (finding substantial degradation), agentic capabilities under compression, and reasoning robustness in distilled DeepSeek-R1 models; other work examined calibration data's role in NLU and multilingual generalization."
+    },
+    {
+      "id": "P57",
+      "name": "Models and datasets evaluated",
+      "description": "Main experiments focus on LLaMA-3.1-8B and Qwen-2.5-7B, with generalization tests across LLaMA-2 (7B/13B/70B), LLaMA-3.1-70B, Qwen-3 (0.6B-32B), DeepSeek-R1-Distill variants, and Qwen-3-30B-A3 (MoE), evaluated on over 40 datasets spanning knowledge (MMLU, ARC, HellaSwag, PIQA, Winogrande), reasoning (GSM8K, MATH-500, GPQA-Diamond), multilingual (Global-MMLU-Lite, BBQ), instruction-following (IFBench), and 30+ reliability datasets (ConfAIde, MoralChoice, HaluEval, StereoSet, Do-Not-Answer, etc.) following TrustLLM."
+    },
+    {
+      "id": "P58",
+      "name": "Implementation details",
+      "description": "UniComp is implemented in PyTorch on H100 GPUs, using Lighteval and lm-evaluation-harness with vLLM backend for performance benchmarks, GPT-4o-mini as judge for reliability benchmarks (following TrustLLM), vLLM's llm-compressor framework with default hyperparameters for applying compression, and vLLM's benchmarking utilities plus system-level profiling for efficiency metrics."
+    }
+  ],
+  "structural_reasoning": "The graph follows a hub-and-spoke structure typical of a large empirical benchmarking study. The motivation (C1: gaps in prior evaluation) and framework design (C2: the three-dimensional performance/reliability/efficiency structure), together with the fairness-oriented experimental design choices (C3), form the methodological foundation that all subsequent findings depend on. From there, the paper reports a series of largely independent empirical findings, each validated within its own component: the central knowledge-bias finding (C4) is the paper's flagship result and is referenced by several later components (quantization's specific reasoning weakness in C5, the calibration explanation in C12); C6 and C7 report specific cross-method comparisons (soft- vs. hard-pruning-based distillation; multilingual divergence) that are consistent with but distinct from the main bias finding; C8 and C9 together develop the second major finding — performance-reliability decoupling — with C9 providing the detailed per-dimension breakdown supporting C8's general claim; C10 addresses the efficiency dimension entirely separately, showing each paradigm's distinct resource trade-off; C11 examines how findings scale with model size/architecture; and C12 supplies a causal mechanism (calibration data) that explains part of the flagship knowledge-bias finding from C4, closing an explanatory loop back to the paper's central result. Background on compression method families, prior benchmarking efforts, and experimental/dataset/implementation details are treated as isolated nodes since they provide context rather than being embedded in the specific empirical-finding chains."
+}

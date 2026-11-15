@@ -1,0 +1,176 @@
+{
+ "arxiv_id": "2606.32029",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Defining and measuring DREs, then using a critic to mitigate them",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "DREs defined",
+     "description": "Data referencing errors (DREs) are failures to faithfully locate and cite information from the input; for tables they split into Incorrect Citation (wrong values, confused rows/columns, fabricated content) and Omitted Information (missing required rows/values)."
+    },
+    {
+     "id": "P2",
+     "name": "Dense tables invite DREs",
+     "description": "Tables contain many similar rows and columns, which makes models prone to referencing the wrong data even when they parse the table structure correctly."
+    },
+    {
+     "id": "P3",
+     "name": "Judge with ground truth",
+     "description": "A Sonnet-3.7 LLM-as-a-Judge that sees the ground-truth answer and judges response segments split at reflection tokens like 'Wait' detects DREs with 92.67% accuracy on manual inspection."
+    },
+    {
+     "id": "P4",
+     "name": "DREs are ubiquitous",
+     "description": "DREs occur across models from 1.7B to 20B, across table formats (JSON, CSV, Markdown) and across tasks (QA, claim verification, table-to-text); e.g. Llama4-Scout has a 46.48% DRE rate on WTQ."
+    },
+    {
+     "id": "P5",
+     "name": "Reasoning and prompting do not remove DREs",
+     "description": "Reasoning models with self-reflection still show DRE rates of 5.71%-46.04% on WTQ, and prompting Qwen3-8B to cite accurately leaves a 12.50% DRE rate and does not improve accuracy."
+    },
+    {
+     "id": "P6",
+     "name": "DREs correlate with wrong answers",
+     "description": "Incorrect responses contain DREs far more often than overall (e.g. DRE-in-Incorrect 46.89% vs 14.04% DRE rate for Qwen3-8B on WTQ), yet many correct answers also contain DREs, so accuracy alone misses them."
+    },
+    {
+     "id": "P7",
+     "name": "Critic-based filtering helps",
+     "description": "Selecting sampled responses with minimal DREs using the critic beats the average accuracy of all samples, and majority voting on the critic-filtered subset beats majority voting alone."
+    },
+    {
+     "id": "P8",
+     "name": "Rejection sampling with critic",
+     "description": "Segment-level rejection sampling, resampling a segment until the critic accepts it (max 8 retries), improves accuracy by up to 11.96% without changing the generator."
+    },
+    {
+     "id": "P9",
+     "name": "DREs are avoidable",
+     "description": "DREs are largely avoidable rather than fundamental limitations, since a DRE-free response can often be obtained simply by resampling."
+    },
+    {
+     "id": "P10",
+     "name": "Critic-4B is trained",
+     "description": "A lightweight Qwen3-4B-Instruct critic is trained with SFT warm-up followed by RLVR on Qwen3-8B responses from the WTQ training set."
+    },
+    {
+     "id": "P11",
+     "name": "Critic-4B detects DREs well",
+     "description": "Critic-4B reaches 78.16% overall F1 versus 69.51% for untrained Qwen3-4B-Instruct, generalizing to other datasets (TableBench, FinQA) and other models."
+    },
+    {
+     "id": "P12",
+     "name": "Critic-4B reduces DREs in inference",
+     "description": "Rejection sampling with Critic-4B consistently raises accuracy and lowers DRE rate for larger generators, though less than the stronger Sonnet-3.7+gt critic."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 3.1-3.2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.1, 3.3"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.3, Table 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.2-3.3, Table 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.3, Table 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2 metrics, Table 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.1, Table 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2, Table 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.3, Table 4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.1-5.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.3, Table 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Synthetic-data critic overfits",
+   "description": "Critic-4B-Synthetic, trained on synthetic data, improves in-distribution but declines on FinQA and Llama4-Scout, suggesting overfitting to synthetic biases."
+  },
+  {
+   "id": "P14",
+   "name": "Scale helps within a family",
+   "description": "Within the Qwen3 family, larger models produce fewer DREs, but this trend does not hold across model families."
+  },
+  {
+   "id": "P15",
+   "name": "Errors repeat once made",
+   "description": "Once a reasoning model makes a first DRE it often repeats it, relying more on its own generation than on the original table."
+  }
+ ],
+ "structural_reasoning": "Definition and judge underpin the prevalence findings; the measured link between DREs and wrong answers motivates critic filtering and rejection sampling; the trained small critic feeds the cheaper rejection sampling."
+}

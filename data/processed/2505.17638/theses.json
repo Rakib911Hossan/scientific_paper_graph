@@ -1,0 +1,14 @@
+[
+  "The training dynamics of diffusion models feature two distinct timescales: an early timescale (\\tau_{gen}) where high-quality sample generation begins, and a later timescale (\\tau_{mem}) where memorization of training data starts to emerge.",
+  "While the generalization timescale (\\tau_{gen}) remains constant regardless of the training set size (n), the memorization timescale (\\tau_{mem}) increases linearly with n, creating a widening window of training times where early-stopped models generalize effectively.",
+  "Memorization in diffusion models is driven by the overfitting of the irregular empirical score at low noise levels, which the model only converges to at very long training times after initially learning a smooth approximation of the population score.",
+  "The delay in memorization observed with larger training set sizes is driven by a fundamental, dataset-size-dependent change in the loss landscape rather than the mere reduction in sample repetition during training.",
+  "Higher model capacity (larger network width W) accelerates both the generalization and memorization processes, with the timescales scaling inversely with width as \\tau_{gen} \\propto W^{-1} and \\tau_{mem} \\propto n W^{-1}.",
+  "When the training set size exceeds an architectural regularization threshold (n > n^*(p)), the model lacks the expressivity to represent the empirical score, preventing memorization even at infinite training times.",
+  "The widening gap between the generalization and memorization timescales is rooted in the spectral bias of neural networks, which causes them to learn low-frequency generalizing features much faster than high-frequency, dataset-dependent features.",
+  "The training dynamics and timescales of score-based models can be analytically characterized using a Random Features Neural Network, where the timescales correspond directly to the inverse eigenvalues of the random feature correlation matrix.",
+  "In the overparameterized regime of the random features model, the eigenvalue spectrum splits into two well-separated bulks, with the larger eigenvalues governing the fast generalization timescale and the smaller eigenvalues governing the slow, dataset-size-dependent memorization timescale.",
+  "The emergence of the two distinct training timescales and their scaling behaviors is robust across different optimization algorithms, occurring under both SGD and Adam optimizers.",
+  "The linear scaling of the memorization timescale with the training set size is not limited to unconditional models and also holds in conditional diffusion model settings, such as those using classifier-free guidance.",
+  "To prevent memorization and train robust generative models in data-scarce domains, practitioners can utilize early stopping within the generalization window and carefully control network capacity."
+]

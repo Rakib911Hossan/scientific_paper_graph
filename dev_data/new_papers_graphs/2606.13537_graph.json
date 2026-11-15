@@ -1,0 +1,219 @@
+{
+ "arxiv_id": "2606.13537",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Embedding-level mixing as a controlled probe of language-mixed queries, and what it reveals",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Mixed queries untested",
+     "description": "Multilingual retrievers are typically developed and evaluated with monolingual or cross-lingual queries, so mixed-language query behavior is largely untested in standard benchmarks."
+    },
+    {
+     "id": "P2",
+     "name": "LLM word-level mixing is costly",
+     "description": "LLM-generated word-level code-switching does not guarantee successful generation and requires a separate generation for each mixing ratio, making ratio-controlled study resource-intensive."
+    },
+    {
+     "id": "P3",
+     "name": "Embedding-level mixing proposed",
+     "description": "Language-mixed queries are represented as a convex combination (ratio lambda, then L2-normalized) of the two monolingual query-translation embeddings, giving precise ratio control without repeated LLM generation."
+    },
+    {
+     "id": "P4",
+     "name": "Setup",
+     "description": "Experiments use BGE-M3 on mMARCO with 35 language pairs from 13 languages, a filtered set of 1,484 long queries, and three document settings (L1-only, L2-only, L1+L2), giving 105 groups scored by nDCG@10."
+    },
+    {
+     "id": "P5",
+     "name": "Embed-mix tracks word-mix trends",
+     "description": "On EN-ZH, embedding mixing matches word-level mixing trends in all three document settings (no new interior peak on EN+ZH) and attains higher nDCG, since it avoids word-mixing noise from generation variability and tokenization/LID errors."
+    },
+    {
+     "id": "P6",
+     "name": "Mixing often helps",
+     "description": "Optimal embedding-level mixing ratios beat the best monolingual endpoint in 88/105 groups (83.8%), with mean gain +0.70, range -0.34 to +2.92, and 66/105 reliably positive."
+    },
+    {
+     "id": "P7",
+     "name": "Largest and worst cases",
+     "description": "The largest gain is EN-AR on AR documents (+2.9203 at lambda*=50) and the most negative is EN-ZH on EN+ZH documents (-0.3359 at lambda*=10)."
+    },
+    {
+     "id": "P8",
+     "name": "Mixing helps only without English documents",
+     "description": "When English is absent from the index all groups have positive gain (average +0.95), whereas with English documents gains cluster near zero (mean -0.04) so pure English queries are best."
+    },
+    {
+     "id": "P9",
+     "name": "English effect is asymmetric",
+     "description": "Adding English to ZH queries improves ZH-document retrieval (+1.72 at lambda*=50), but adding ZH to EN queries consistently worsens English-document retrieval, so English overrides document-query similarity."
+    },
+    {
+     "id": "P10",
+     "name": "English is strongest partner",
+     "description": "For every one of the 13 non-English document languages, English yields the largest mixing gain among tested partner languages, by a large margin."
+    },
+    {
+     "id": "P11",
+     "name": "English pretraining dominance hypothesis",
+     "description": "The authors hypothesize English acts as a universal anchor because web-corpus imbalance gives the English subspace the most robust representations."
+    },
+    {
+     "id": "P12",
+     "name": "Typology correlates weakly",
+     "description": "Without English-in-documents effects (44 non-English settings), typological distance has a moderate negative correlation with gains (Spearman rho=-0.405); script, family and resource effects are weak."
+    },
+    {
+     "id": "P13",
+     "name": "Headroom effect",
+     "description": "Gain is negatively correlated with the better endpoint's score (rho=-0.607), driven by English-document settings (rho=-0.684), weak when English is excluded (rho=-0.117)."
+    },
+    {
+     "id": "P14",
+     "name": "Findings robust across models",
+     "description": "Patterns hold across model families and Qwen3 scales; scaling raises monolingual scores and shrinks gains but English remains the strongest partner and mixing does not help English retrieval."
+    },
+    {
+     "id": "P15",
+     "name": "Deployment guidance",
+     "description": "For English-inclusive indices systems should default to pure English queries, while for non-English indices embedding mixing is an effective test-time augmentation to improve recall."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.1, Fig 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.1-4.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.2, Fig 5a"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.3, Fig 5b"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3, Fig 5c"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3, Fig 6"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Finding 4.3 control, Fig 10, Table 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 5, Fig 9"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P14",
+     "evidence": [
+      "Sec 5, Table 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P15",
+     "evidence": [
+      "Sec 6 Conclusion"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P15",
+     "evidence": [
+      "Sec 6 Conclusion"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P16",
+   "name": "Mixing preserves entities but is not lexical",
+   "description": "Interpolation with English helps even for strictly monolingual queries without English loanwords, so the advantage is not just surface-level lexical matching (Appx C.3)."
+  },
+  {
+   "id": "P17",
+   "name": "Low-resource generalization",
+   "description": "The conclusions generalize to extremely low-resource languages in resource bands 0-2 (Appx C.2)."
+  },
+  {
+   "id": "P18",
+   "name": "Future directions",
+   "description": "Future work should study naturally mixed queries and interpolation of multiple languages simultaneously."
+  }
+ ],
+ "structural_reasoning": "Method motivation (costly word-level mixing) leads to the embedding-mix probe, validated against word mixing, whose global result is then decomposed by English dominance, partner language, metadata and robustness, ending in deployment guidance."
+}

@@ -1,0 +1,150 @@
+{
+ "arxiv_id": "2509.11724",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "DRAG attack on split inference: guided-diffusion method, its extension, and results against models, defenses and shuffling",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Split inference exposes IRs",
+     "description": "In split inference the client model maps private input x to an intermediate representation (IR) h = fc(x) that is sent to a cloud server, so an adversary can try to reconstruct x from h."
+    },
+    {
+     "id": "P2",
+     "name": "Foundation-model SI privacy unexplored",
+     "description": "Existing data reconstruction attacks mostly target small CNN classifiers (e.g. ResNet18); the privacy risks of vision transformers and foundation models in split inference are largely unexplored."
+    },
+    {
+     "id": "P3",
+     "name": "DRAG uses LDM prior with guidance",
+     "description": "DRAG reconstructs inputs by performing guided diffusion on a pre-trained latent diffusion model's image prior, using DSG-based guidance from the distance between fc(x) and the target IR, gradient clipping with Adam, and self-recurrence to handle non-convex fc."
+    },
+    {
+     "id": "P4",
+     "name": "DRAG++ adds inverse-network init",
+     "description": "DRAG++ initializes DRAG with a coarse reconstruction from an auxiliary inverse network trained on public data, noised at a small timestep t = sT."
+    },
+    {
+     "id": "P5",
+     "name": "DRAG beats baselines at deep layers",
+     "description": "On CLIP-ViT-B/16 and DINOv2 without defenses, DRAG consistently outperforms rMLE, LM and GLASS at deeper split points, while rMLE and LM are competitive only at shallow split points."
+    },
+    {
+     "id": "P6",
+     "name": "DRAG++ improves perceptual quality",
+     "description": "On CLIP-ViT-B/16, DRAG++ gives higher LPIPS and DINO scores than the inverse network alone and DRAG at split points beyond layer 3, with only a slight MS-SSIM loss relative to the inverse network."
+    },
+    {
+     "id": "P7",
+     "name": "Generalizes out of distribution",
+     "description": "DRAG and DRAG++ also reconstruct out-of-distribution aerial images from the UCMerced LandUse dataset."
+    },
+    {
+     "id": "P8",
+     "name": "Defenses DISCO and NoPeek still fail",
+     "description": "Input data can still be reconstructed by DRAG from CLIP-ViT-B/16 layer-12 IRs protected by DISCO (Config III) and NoPeek (Config VI), including against adaptive attacks."
+    },
+    {
+     "id": "P9",
+     "name": "Token shuffling defeats rMLE and LM",
+     "description": "Under token shuffling and 50% token dropping on CLIP-ViT-B/16 layer 12, rMLE and LM fail to reconstruct images."
+    },
+    {
+     "id": "P10",
+     "name": "Token-order classifier partly undoes shuffling",
+     "description": "A 2-layer MLP token-position classifier reaches 21.40% top-1 accuracy (average L1 distance 2.34) on ImageNet-1K, enabling reordering by the Hungarian algorithm."
+    },
+    {
+     "id": "P11",
+     "name": "GLASS and DRAG degrade but retain features under shuffling",
+     "description": "Under shuffling, GLASS and DRAG reconstructions degrade, but some images still retain key features of the original inputs."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 2.2, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 5.1, Table 1, Fig 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 5.2, Table 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P7",
+     "evidence": [
+      "Sec 5.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.4, Table 5, Fig 5"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.5, Fig 6"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.5, Fig 6"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P12",
+   "name": "ViTs have token order invariance",
+   "description": "ViTs exhibit token order invariance, absent in CNNs, which makes token shuffling a straightforward defense for tasks like classification."
+  },
+  {
+   "id": "P13",
+   "name": "Privacy risk calls for stronger defenses",
+   "description": "The results show large vision foundation models in split inference are vulnerable, posing risks to applications like domestic robots and cyber-physical systems, and call for more robust privacy protection."
+  },
+  {
+   "id": "P14",
+   "name": "Task differs from prior guided diffusion",
+   "description": "Unlike earlier guided-diffusion tasks, DRAG faces non-convex client models, deployed defenses forcing adversarial settings, and client-embedded randomness."
+  }
+ ],
+ "structural_reasoning": "Split inference exposure and the research gap motivate DRAG; its method yields results across settings. Token-shuffling analysis connects to the shuffled-reconstruction result. Remaining claims are isolated."
+}

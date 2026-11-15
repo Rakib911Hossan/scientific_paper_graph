@@ -1,0 +1,250 @@
+{
+ "arxiv_id": "2610.09703",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Token-pruning safety evaluation, attention-collapse mechanism, SAP defense and its validation",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Token pruning raises jailbreak vulnerability",
+     "description": "Most token-pruning strategies (vision-centric and text-guided) raise average ASR over the unpruned LLaVA-1.5-7B (54.01%), e.g. TRIM 62.33%, FitPrune 63.14%, SparseVLM 62.73%, with text-guided pruning the worst."
+    },
+    {
+     "id": "P2",
+     "name": "Degradation is not capacity loss",
+     "description": "As pruning ratio rises from 0% to 80%, ASR rises substantially while utility stays stable, and random pruning keeps ASR stable (52.73%), so safety loss stems from biased token selection rather than token reduction."
+    },
+    {
+     "id": "P3",
+     "name": "Query-based compression improves safety",
+     "description": "Query-based compression (LLaVA-Mini, LLaVA-MQT) reduces ASR (LLaVA-Mini 31.98% vs 54.01% baseline) even at 99.3-99.8% compression, so safety need not trade off against acceleration."
+    },
+    {
+     "id": "P4",
+     "name": "Pruning-Induced Malicious Amplification",
+     "description": "Pruning removes background tokens that act as a benign semantic buffer, forcing attention to collapse onto a few retained foreground tokens carrying malicious semantics, which then dominate generation under jailbreak prompts."
+    },
+    {
+     "id": "P5",
+     "name": "Attention visualization contrast",
+     "description": "TRIM concentrates attention on a few foreground tokens whereas LLaVA-Mini keeps attention balanced across the whole image."
+    },
+    {
+     "id": "P6",
+     "name": "Temperature intervention",
+     "description": "Sharpening TRIM's image-token attention by lowering temperature from 1.9 to 1.0 reduces attention entropy from 2.8 to 2.3 and raises ASR from 58% to 65% while SQA accuracy stays stable, linking attention collapse to vulnerability."
+    },
+    {
+     "id": "P7",
+     "name": "Malicious semantic density theory",
+     "description": "With malicious energy S and safety buffer energy N, density rho = S/(S+N); pruning drives N toward 0 so rho approaches 1 even if S is unchanged, while random pruning keeps E[rho] approximately unchanged."
+    },
+    {
+     "id": "P8",
+     "name": "SAP three-stage defense",
+     "description": "Safety-Aware Pruning is training-free and inference-time with three steps: Malicious Anchor Identification, Benign Token Restoration and Attention Reallocation."
+    },
+    {
+     "id": "P9",
+     "name": "Malicious anchor score",
+     "description": "Malicious anchors are the top-m retained visual tokens ranked by MSA score, the product of text-to-visual attention and cosine deviation from a precomputed safety-aligned semantic vector."
+    },
+    {
+     "id": "P10",
+     "name": "Benign token restoration",
+     "description": "BTR uniformly samples k pruned background tokens and swaps them for the k lowest-importance retained tokens, keeping sequence length unchanged."
+    },
+    {
+     "id": "P11",
+     "name": "Attention reallocation",
+     "description": "AR scales malicious-anchor attention by (1 - lambda) and redistributes the removed mass uniformly to the restored benign tokens, requiring no softmax recomputation."
+    },
+    {
+     "id": "P12",
+     "name": "SAP main safety results",
+     "description": "Across five pruning methods SAP reduces average ASR by 18.8-27.6% (relative), e.g. PruMerge 61.88 to 44.78, with utility changes within about 2%."
+    },
+    {
+     "id": "P13",
+     "name": "BTR and AR are complementary",
+     "description": "On TRIM, BTR alone gives modest ASR gains (MM-Safety 65.87 to 63.89), AR alone lowers it to 53.57 but cuts MMBench from 66.92 to 63.23, and combining both gives 52.78 with MMBench 67.27."
+    },
+    {
+     "id": "P14",
+     "name": "SAP is efficient",
+     "description": "SAP adds negligible cost over TRIM: latency 57.19 ms vs 55.90 ms, memory 14.53 GB, identical 2.22T FLOPs, versus 94.29 ms for the original model."
+    },
+    {
+     "id": "P15",
+     "name": "SAP restores attention entropy",
+     "description": "With TRIM+SAP, attention entropy is restored toward the original model's pattern, mitigating attention collapse."
+    },
+    {
+     "id": "P16",
+     "name": "Textual extension",
+     "description": "Applying MAI, BTR and AR to textual tokens (SAP-dagger) reduces FasterVLM MM-Safety ASR by 62% (72.02 to 10.32), showing the principle is modality-agnostic."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 3.2, Obs 1-2, Fig 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.3, Obs 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.3, Fig 5"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.4, Eq 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.4 Key Takeaways, Sec 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.1, 4.3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, 4.3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P12",
+     "evidence": [
+      "Sec 6, Table 2"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 6, Table 2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P13",
+     "evidence": [
+      "Sec 6.3, Table 5"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P13",
+     "evidence": [
+      "Sec 6.3, Table 5"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P14",
+     "evidence": [
+      "Sec 6.4, Table 8"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P15",
+     "evidence": [
+      "Sec 6.5, Fig 7"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P16",
+     "evidence": [
+      "Sec 6.3, Table 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P17",
+   "name": "Guardrail comparison",
+   "description": "SAP achieves safety comparable to LLaVAGuard on TRIM (MM-Safety 52.78 vs 51.59) at much lower latency (57.19 ms vs 160.09 ms)."
+  },
+  {
+   "id": "P18",
+   "name": "Optimal anchor count",
+   "description": "m=10 malicious anchors is optimal on TRIM: FigStep ASR drops from 62.20 to 47.80 with MMBench 67.27, while m=30 drops MMBench to 59.02 with no safety gain."
+  },
+  {
+   "id": "P19",
+   "name": "Robust across pruning ratios",
+   "description": "From 50% to 90% pruning SAP keeps ASR low on MM-Safety and FigStep and SQA utility stable."
+  },
+  {
+   "id": "P20",
+   "name": "Pruning paradigms",
+   "description": "Token pruning methods fall into vision-centric selection, text-guided selection and query-based compression."
+  }
+ ],
+ "structural_reasoning": "Argument runs from empirical safety findings, to the attention-collapse mechanism with supporting interventions and theory, to the SAP design and its validation."
+}

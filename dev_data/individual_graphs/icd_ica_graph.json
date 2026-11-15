@@ -1,0 +1,239 @@
+{
+  "arxiv_id": "2605.28626v1",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: why hybrid interpretable models arise, and the overlooked distributive question this raises.",
+      "nodes": [
+        {"id": "P1", "name": "Post-hoc explanations can be unreliable", "description": "Post-hoc explanation techniques approximate black-box behavior after training, but can be unreliable and susceptible to manipulation, raising faithfulness concerns."},
+        {"id": "P2", "name": "Inherently interpretable models trade off performance", "description": "Inherently interpretable models (decision trees, rule lists, rule sets, scoring systems) are easier to understand but may exhibit reduced predictive performance in complex settings."},
+        {"id": "P3", "name": "Hybrid interpretable models proposed as compromise", "description": "This limitation motivated hybrid interpretable models, which combine an interpretable component with a black-box component via a gating mechanism assigning each example to one or the other."},
+        {"id": "P4", "name": "Transparency level creates accuracy-interpretability trade-off", "description": "By varying the proportion of examples assigned to the interpretable component (transparency), hybrid models realize different trade-offs between interpretability and predictive performance."},
+        {"id": "P5", "name": "Overlooked question: uneven interpretability distribution", "description": "Even when hybrid models improve the aggregate accuracy-interpretability trade-off, they may distribute interpretability unevenly across individuals or demographic groups — a largely overlooked question."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["E3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["E4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Positioning relative to prior procedural-fairness work (explanation quality, recourse) and the distinct nature of ICD/ICA.",
+      "nodes": [
+        {"id": "P6", "name": "Prior fairness work mostly targets predictive outputs", "description": "A large body of fairness-in-ML work focuses on fairness criteria defined with respect to a predictive model's outputs, intervening via pre-, in-, or post-processing."},
+        {"id": "P7", "name": "Fairness in explanation quality studied separately", "description": "Fairness in explanation quality has been examined for post-hoc explanation methods (feature attribution, counterfactual explanations), revealing demographic disparities in properties like sparsity, robustness, and recourse cost."},
+        {"id": "P8", "name": "Explanation-quality and recourse fairness are procedural but post-hoc", "description": "Fairness in explanation quality and recourse fairness both fall under procedure-oriented fairness, evaluating whether externally-produced reasoning is equally reliable across groups."},
+        {"id": "P9", "name": "In hybrid models interpretability is allocated by the model itself", "description": "In hybrid interpretable models, interpretability is not provided by a separate post-hoc method; it is allocated by the model itself through its gating mechanism."},
+        {"id": "P10", "name": "ICD/ICA measure allocation, not explanation quality", "description": "Unlike prior work on explanation quality or recourse, ICD and ICA measure how interpretability itself is allocated via the routing decision, not the quality of an explanation produced after a prediction."},
+        {"id": "P11", "name": "ICD shifts focus to access rather than quality", "description": "This distinction means ICD shifts attention from whether explanations are equally good to whether different individuals/groups are equally likely to receive interpretable decisions in the first place."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["E5"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P8", "evidence": ["E6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["E7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P10", "evidence": ["E8"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P11", "evidence": ["E9"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P9", "evidence": ["E10"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Formal setup: hybrid interpretable model structure and transparency definition.",
+      "nodes": [
+        {"id": "P12", "name": "Hybrid model as triplet ⟨Ω, hs, hc⟩", "description": "A hybrid interpretable model is defined by a triplet ⟨Ω, hs, hc⟩ where Ω is the interpretable region handled by simple model hs, and examples outside Ω are deferred to black-box model hc."},
+        {"id": "P13", "name": "Transparency defined as coverage fraction", "description": "The transparency C_Ω of a hybrid model on a dataset is the proportion of examples covered by the interpretable region Ω, with 0 = pure black-box and 1 = single interpretable model."},
+        {"id": "P14", "name": "Rule-based interpretable component defines Ω", "description": "In practice, existing hybrid interpretable models use a set of rules r as the interpretable component, where the rules' support simultaneously defines Ω; examples not captured by any rule are deferred to the black-box."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P13", "evidence": ["E11"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P14", "evidence": ["E12"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "Predictive multiplicity / Rashomon set background motivating the individual-level ICA metric and the need for approximation.",
+      "nodes": [
+        {"id": "P15", "name": "Predictive multiplicity: many near-optimal, disagreeing models", "description": "Several models can achieve nearly indistinguishable predictive performance while disagreeing on individual predictions — a phenomenon called predictive multiplicity."},
+        {"id": "P16", "name": "Rashomon set formalizes the set of near-optimal models", "description": "The set of near-optimal models is formalized as the Rashomon set R(H, ε, S), those with loss within a factor (1+ε) of the reference model's loss."},
+        {"id": "P17", "name": "Rashomon-set models can differ on other desiderata", "description": "Although models in the Rashomon set have comparable predictive performance, they can differ substantially on other desiderata, motivating evaluation across the whole set rather than a single arbitrary model."},
+        {"id": "P18", "name": "Exact enumeration methods scale poorly / are narrow", "description": "Exact enumeration methods for constructing Rashomon sets exist only for specific simple hypothesis classes (rule lists, rule sets, decision trees) and scale poorly with ε and rule/feature counts; enumeration-free methods are similarly limited to particular model classes."},
+        {"id": "P19", "name": "Exact Rashomon-set construction intractable for hybrid models", "description": "Building the exact Rashomon set is not tractable for black-box models, and even more so for hybrid interpretable models, whose interpretable component training often depends on a pre-trained black-box."},
+        {"id": "P20", "name": "Bootstrap-based approximation adopted", "description": "Consistent with prior work showing model-sampling/bootstrapping provides useful Rashomon-set approximations, the paper replaces the exact Rashomon set with a bootstrap-based approximation for estimating interpretability-coverage statistics."}
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["E13"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["E14"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["E15"], "votes": 2, "confidence": "majority"},
+        {"from": "P19", "to": "P20", "evidence": ["E16"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P20", "evidence": ["E17"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Formalization of the group-level Interpretability Coverage Disparity (ICD) metric.",
+      "nodes": [
+        {"id": "P21", "name": "Interpretability Coverage (IC) of a group defined", "description": "The Interpretability Coverage IC_p of protected group p is defined as the fraction of individuals from p that fall within the interpretable region Ω."},
+        {"id": "P22", "name": "ICD defined as max pairwise IC gap", "description": "Interpretability Coverage Disparity (ICD) is defined as the maximum pairwise difference in IC across protected groups, equivalently max IC_p minus min IC_p."},
+        {"id": "P23", "name": "ICD depends only on allocation, not predictions", "description": "ICD depends only on the allocation of individuals to interpretable vs. black-box regions, not on the predictions made by either component, making it a procedural fairness notion."},
+        {"id": "P24", "name": "ICD conflates disparity magnitude with direction", "description": "ICD alone does not identify which groups are relatively advantaged or disadvantaged, since it only reflects the largest observed disparity, motivating reporting per-group coverage as well."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P21", "evidence": ["E18"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P21", "to": "P22", "evidence": ["E19"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["E20"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P24", "evidence": ["E21"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P23", "evidence": ["E22"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Formalization of the individual-level Interpretability Coverage Arbitrariness (ICA) metric.",
+      "nodes": [
+        {"id": "P25", "name": "Interpretability Coverage Frequency (ICF) defined", "description": "ICF(x) is defined as the fraction of models in the (approximate) Rashomon set for which example x falls within the interpretable region Ω."},
+        {"id": "P26", "name": "ICA defined from ICF via distance from 1/2", "description": "ICA(x) = 1 - 2|ICF(x) - 1/2|, so ICA is high when x is assigned to the interpretable region for roughly half the Rashomon-set models and low when assignment is consistent."},
+        {"id": "P27", "name": "ICA quantifies individual-level routing instability", "description": "Values close to 1 indicate high arbitrariness (unstable routing across the Rashomon set), while values close to 0 indicate consistent assignment to one component."},
+        {"id": "P28", "name": "Exact R(H,ε,S) replaced by bootstrap approximation for ICF/ICA", "description": "Because exact Rashomon-set construction is intractable for hybrid models, ICF and ICA are computed using the bootstrap-based approximate Rashomon set instead of the exact one."}
+      ],
+      "edges": [
+        {"from": "P16", "to": "P25", "evidence": ["E23"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P25", "to": "P26", "evidence": ["E24"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P27", "evidence": ["E25"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P28", "evidence": ["E26"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P25", "to": "P28", "evidence": ["E26"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Experimental design: methods, datasets, and bootstrap Rashomon-set construction procedure.",
+      "nodes": [
+        {"id": "P29", "name": "Four hybrid learning methods compared", "description": "Four state-of-the-art hybrid interpretable learning methods are evaluated: HyRS, CRL (heuristic, simulated-annealing based), and HybridCORELSPre/Post (exact branch-and-bound based)."},
+        {"id": "P30", "name": "Heuristic methods lack optimality/transparency guarantees", "description": "HyRS and CRL optimize accuracy-transparency-sparsity trade-offs but do not provide optimality guarantees and cannot enforce a prescribed transparency level."},
+        {"id": "P31", "name": "HybridCORELS variants enforce hard transparency constraints", "description": "HybridCORELSPre/Post rely on exact branch-and-bound to explore rule prefixes, with HybridCORELSPost optimizing accuracy+sparsity subject to a hard transparency constraint, and HybridCORELSPre learning the prefix before the black-box."},
+        {"id": "P32", "name": "Three benchmark datasets used", "description": "Experiments use three datasets of varying size: COMPAS (recidivism), UCI Adult Income (earnings), and ACS Employment (employment status), each with Age/Gender/Race subgroups."},
+        {"id": "P33", "name": "Bootstrap procedure generates approximate Rashomon sets", "description": "For each method/hyperparameter configuration, a reference model is trained plus 1000 bootstrap-resampled retrainings, yielding 1001 models per configuration (10,010 per method across 10 configurations), deduplicated and binned by transparency."},
+        {"id": "P34", "name": "Filtering by Rashomon parameter ε yields final analysis sets", "description": "Within each transparency bin, unique models are filtered to keep only those satisfying the Rashomon parameter ε relative to the reference model, yielding the approximate Rashomon sets used for all downstream analyses."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P30", "evidence": ["E27"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P31", "evidence": ["E28"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P33", "evidence": ["E29"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P33", "to": "P34", "evidence": ["E30"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["E31"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Result 1: substantial group-level ICD, concentrated in intermediate transparency regimes.",
+      "nodes": [
+        {"id": "P35", "name": "ICD is substantial across nearly all settings", "description": "Results reveal substantial ICD across nearly all experimental settings, confirming hybrid interpretable models can distribute interpretability unevenly, with values approaching 1.0 in several cases."},
+        {"id": "P36", "name": "Disparities consistently favor/disfavor specific subgroups", "description": "Within the same transparency bin, certain subgroups (e.g., African-American on COMPAS under HyRS) consistently receive lower interpretability coverage than others, not just larger variance."},
+        {"id": "P37", "name": "Extreme transparency bins dominated by one component", "description": "In the lowest transparency bin most instances go to the black-box; in the highest bin most go to the interpretable component — both regimes are dominated by a single component."},
+        {"id": "P38", "name": "Intermediate bins are the truly hybrid regime", "description": "Intermediate transparency bins (0.25-0.75) are where both components actively contribute to prediction, better characterizing the truly hybrid regime."},
+        {"id": "P39", "name": "ICD follows a bell-like curve peaking at intermediate transparency", "description": "The largest ICD values occur in intermediate transparency bins, with ICD increasing from low to intermediate bins and then decreasing/stabilizing at higher bins."},
+        {"id": "P40", "name": "Bell-like pattern statistically confirmed via Mann-Whitney tests", "description": "Non-parametric pairwise (Mann-Whitney U, Holm-corrected) tests across adjacent transparency bins confirm the bell-like ICD pattern is frequent and statistically significant across datasets/methods, strengthening at larger ε."}
+      ],
+      "edges": [
+        {"from": "P34", "to": "P35", "evidence": ["E32"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P35", "to": "P36", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P38", "evidence": ["E34"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P39", "evidence": ["E35"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P39", "to": "P40", "evidence": ["E36"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Result 2: individual-level ICA, also concentrated in intermediate transparency regimes.",
+      "nodes": [
+        {"id": "P41", "name": "Arbitrariness low at extreme transparency bins", "description": "Assignment arbitrariness (ICA) is generally limited in the lowest and highest transparency bins, where predictions are predominantly handled by a single component."},
+        {"id": "P42", "name": "Arbitrariness high at intermediate transparency bins", "description": "Substantially higher ICA emerges in intermediate transparency bins where both components contribute to prediction, consistently across all evaluated methods."},
+        {"id": "P43", "name": "Hybridization itself amplifies assignment uncertainty", "description": "The consistent pattern across methods supports the hypothesis that hybridization itself amplifies assignment uncertainty within Rashomon sets."}
+      ],
+      "edges": [
+        {"from": "P38", "to": "P41", "evidence": ["E37"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"},
+        {"from": "P38", "to": "P42", "evidence": ["E37"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"},
+        {"from": "P41", "to": "P43", "evidence": ["E38"], "votes": 2, "confidence": "majority"},
+        {"from": "P42", "to": "P43", "evidence": ["E38"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "ICD mitigation methodology: constrained branch-and-bound extension of HybridCORELS.",
+      "nodes": [
+        {"id": "P44", "name": "High ICD + Rashomon variability motivates mitigation", "description": "The observed substantial ICD plus high within-Rashomon-set variability across transparency bins shows near-optimal models can induce very different ICD levels, motivating a predictive-multiplicity-based search for fairer models."},
+        {"id": "P45", "name": "Maximum ICD constraint added to HybridCORELS branch-and-bound", "description": "ICD is mitigated by incorporating a maximum ICD constraint η into the HybridCORELS branch-and-bound algorithms: a candidate best prefix is retained only if it satisfies the constraint, otherwise discarded."},
+        {"id": "P46", "name": "Existing bounds/data structures remain valid under new constraint", "description": "The bounds and symmetry-aware data structures used in HybridCORELSPre/Post remain valid and tight under the added maximum-ICD constraint."}
+      ],
+      "edges": [
+        {"from": "P35", "to": "P44", "evidence": ["E39"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"},
+        {"from": "P44", "to": "P45", "evidence": ["E40"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P45", "to": "P46", "evidence": ["E41"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "Mitigation results (3-7): generalization, effect on ICA, effect on algorithmic fairness, effect on performance/sparsity, and dose-response with η.",
+      "nodes": [
+        {"id": "P47", "name": "Mitigation generalizes to test data", "description": "ICD mitigation applied during training consistently reduces both magnitude and variability of test-set ICD distributions across all sensitive attributes and transparency bins."},
+        {"id": "P48", "name": "Mitigation has no clear effect on ICA", "description": "ICD mitigation produces no substantial change in the distribution of ICA, indicating it is effective at reducing group-level disparity but has limited impact on individual-level arbitrariness."},
+        {"id": "P49", "name": "Mitigation frequently improves EO/SP despite not targeting them", "description": "Mitigated models frequently show lower median EO/SP disparities and reduced variability, despite these algorithmic fairness metrics not being directly targeted during training, though improvement is not uniform across settings."},
+        {"id": "P50", "name": "Mitigation preserves sparsity and accuracy", "description": "Enforcing ICD constraints results in only minor increases in rule count and largely comparable accuracy distributions, occasionally even slightly improving accuracy (suggesting a regularization effect)."},
+        {"id": "P51", "name": "Relaxing η increases ICD magnitude/variability, accuracy stable", "description": "As the maximum ICD constraint η is relaxed from strict to unconstrained, ICD magnitude and variability consistently increase across Rashomon models, while test accuracy remains remarkably stable throughout."},
+        {"id": "P52", "name": "Fairness gains concentrated at high-transparency bins", "description": "Bin-level analysis shows the largest EO/SP improvements from tightening η occur in higher-transparency bins, where interpretability coverage is greatest and the constraint most strongly affects routing (e.g., HybridCORELSPost's EO from ~0.25 to ~0.18 as η tightens from 0.25 to 0.05)."},
+        {"id": "P53", "name": "Reduced ICD achievable without sacrificing accuracy", "description": "Combined with stable predictive performance across mitigation strengths, results show substantially lower ICD can be selected from the Rashomon set without sacrificing predictive accuracy."}
+      ],
+      "edges": [
+        {"from": "P45", "to": "P47", "evidence": ["E42"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C10"},
+        {"from": "P47", "to": "P48", "evidence": ["E43"], "votes": 2, "confidence": "majority"},
+        {"from": "P47", "to": "P49", "evidence": ["E44"], "votes": 2, "confidence": "majority"},
+        {"from": "P47", "to": "P50", "evidence": ["E45"], "votes": 2, "confidence": "majority"},
+        {"from": "P50", "to": "P51", "evidence": ["E46"], "votes": 2, "confidence": "majority"},
+        {"from": "P49", "to": "P52", "evidence": ["E47"], "votes": 2, "confidence": "majority"},
+        {"from": "P51", "to": "P53", "evidence": ["E48"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C12",
+      "description": "Contribution summary chain.",
+      "nodes": [
+        {"id": "P54", "name": "Contribution 1: ICD and ICA metrics introduced", "description": "ICD (demographic-parity-style group disparity) and ICA (predictive-multiplicity-based individual arbitrariness) are introduced as procedural fairness notions for interpretability allocation."},
+        {"id": "P55", "name": "Contribution 2: extensive empirical demonstration of ICD/ICA", "description": "Extensive experiments across four hybrid methods show substantial ICD/ICA can arise on real-world datasets, with some individuals arbitrarily assigned and some groups systematically routed to the black-box."},
+        {"id": "P56", "name": "Contribution 3: mitigation methods and trade-off analysis", "description": "Existing hybrid interpretable learning methods are extended to mitigate ICD, with the resulting impact on sparsity, predictive performance, and algorithmic fairness investigated."}
+      ],
+      "edges": [
+        {"from": "P54", "to": "P55", "evidence": ["E49"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P55", "to": "P56", "evidence": ["E50"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P57", "name": "Future work: characteristics driving individual ICA", "description": "Future work includes investigating which characteristics make an example more or less likely to be affected by ICA, and designing mitigation mechanisms for such arbitrariness, possibly drawing on the stability literature."},
+    {"id": "P58", "name": "Future work: downstream privacy and robustness effects of ICD", "description": "Investigating downstream effects of ICD on privacy (black-box-deferred examples may be more vulnerable to inference attacks) and robustness (harder to audit black-box-deferred examples for adversarial vulnerability) is an interesting future research avenue."}
+  ]
+}

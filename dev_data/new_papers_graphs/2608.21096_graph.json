@@ -1,0 +1,224 @@
+{
+ "arxiv_id": "2608.21096",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Geometric heterogeneity (negative, client-varying curvature) motivates tailored Lorentz spaces and time/space parameter decoupling, then results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Graph FL heterogeneity",
+     "description": "Graph federated learning faces pronounced structural heterogeneity because clients hold structurally diverse graphs, and federated learning may even underperform local training."
+    },
+    {
+     "id": "P2",
+     "name": "Existing PFL is Euclidean",
+     "description": "Existing personalized federated graph learning methods are confined to Euclidean space, assume uniform flat geometry, and need parameter disentanglement, client similarity estimation or auxiliary modules with significant computational overhead."
+    },
+    {
+     "id": "P3",
+     "name": "Negative and varying curvature",
+     "description": "Client graphs predominantly have negative Forman-Ricci curvature (hyperbolic structure), and curvature values vary substantially across clients, indicating geometric heterogeneity beyond statistical differences."
+    },
+    {
+     "id": "P4",
+     "name": "Necessity of tailored curvature",
+     "description": "Theorem 4.1: if client graphs have different average Ricci curvatures, the maximum minimal embedding distortion is at least (c_d/2) max|R_i - R_j|, so no single Lorentz scale K gives low distortion for all clients."
+    },
+    {
+     "id": "P5",
+     "name": "Time-like dimension encodes heterogeneity",
+     "description": "Theorem 4.3: the space-like direction is independent of client identity, I(u;C)=0, while the time-like coordinate x_t has positive mutual information with client identity if its distributions differ across K."
+    },
+    {
+     "id": "P6",
+     "name": "Lorentz model fits parameter decoupling",
+     "description": "The Lorentz model's time-space decomposition supports parameter decoupling, its linear-algebraic isometries keep aggregated parameters on the manifold, and its exponential map gives closed-form curvature-aware gradients."
+    },
+    {
+     "id": "P7",
+     "name": "Tailored Lorentz spaces with learnable curvature",
+     "description": "FlatLand assigns each client a learnable Lorentz scale K_c (sigmoid reparameterized), initialized from its average Forman-Ricci curvature, and embeds the client's data in that space via the exponential map."
+    },
+    {
+     "id": "P8",
+     "name": "Parameter decoupling",
+     "description": "Each Lorentz linear layer's matrix is split into a time-like column m (personalized, kept local with K_c) and a space-like block M (shared); only M is uploaded and averaged by the server as in FedAvg."
+    },
+    {
+     "id": "P9",
+     "name": "Correctness after aggregation",
+     "description": "Proposition 6.1: applying the aggregated shared matrix still maps any vector in L^n_K to L^m_K with the same Lorentz scale, so representations remain valid hyperbolic points after aggregation."
+    },
+    {
+     "id": "P10",
+     "name": "Convergence and efficiency",
+     "description": "Under standard FedAvg, FlatLand keeps the O(1/T) convergence rate and adds only minimal overhead such as an O(1) exponential map and curvature estimation."
+    },
+    {
+     "id": "P11",
+     "name": "Node classification results",
+     "description": "FlatLand achieves the best or competitive accuracy in most settings, with clear gains on CiteSeer, ogbn-arxiv and Minesweeper (e.g. CiteSeer 10 clients 73.90 vs 72.35 for FED-PUB; Cora 20 clients 82.49)."
+    },
+    {
+     "id": "P12",
+     "name": "Low-dimensional advantage",
+     "description": "Reducing embedding dimension from 64 to 4 hurts hyperbolic methods much less than Euclidean ones, and FlatLand's advantage over baselines grows as dimensionality shrinks."
+    },
+    {
+     "id": "P13",
+     "name": "Robust to partial participation",
+     "description": "On Cora with 50 clients and only 10% participation, FlatLand achieves 81.82% accuracy while FedAvg reaches only 18.14%."
+    },
+    {
+     "id": "P14",
+     "name": "Tailored curvature ablation",
+     "description": "Fixing K=1 for all clients (w/o TS) performs worse than learning client-specific Lorentz scale parameters, which lets full FlatLand surpass the Local (L) baseline."
+    },
+    {
+     "id": "P15",
+     "name": "Lorentz-space decoupling ablation",
+     "description": "Applying the decoupling in Euclidean space (FlatLand (E)) is clearly worse than in Lorentz space, e.g. Cora 20 clients 76.23 vs 82.49 and CiteSeer 20 clients 66.29 vs 72.24."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 4, Fig 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 4.1, Theorem 4.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P7",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.1, Sec 5.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1 Remark 4.4, Sec 5.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Sec 5.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 6, Prop 6.1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 6"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 7.2, Tables 1-2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 7.2, Tables 1-2"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 7.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 7.4, Fig 6"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P14",
+     "evidence": [
+      "Sec 7.5, Fig 5"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P15",
+     "evidence": [
+      "Sec 7.5, Table 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P16",
+   "name": "Local Lorentz often beats Euclidean",
+   "description": "Local (L) often surpasses Local (E), suggesting hyperbolic space represents most datasets better, particularly heterophilic graphs."
+  },
+  {
+   "id": "P17",
+   "name": "Euclidean FL underperforms local training",
+   "description": "Vanilla Euclidean FL baselines such as FedAvg, FedProx and FedGNN often underperform local training under strong heterogeneity."
+  },
+  {
+   "id": "P18",
+   "name": "FedHGCN limitations",
+   "description": "FedHGCN underperforms in many heterogeneous settings because it does not model client-specific geometry, and runs out of memory on large datasets like ogbn-arxiv due to its quadratic node selection module."
+  },
+  {
+   "id": "P19",
+   "name": "Graph classification",
+   "description": "On graph classification, FlatLand reaches 76.55 on CHEM and 67.31 on BIO-CHEM-SN, outperforming the Euclidean baselines, while Local (L) fails to beat Local (E) on multi-dataset BIO-CHEM-SN."
+  }
+ ],
+ "structural_reasoning": "Argument moves from observed hyperbolic and client-varying geometry, through theory (tailored curvature, time-like heterogeneity), to the FlatLand design, correctness guarantees and experiments with ablations."
+}

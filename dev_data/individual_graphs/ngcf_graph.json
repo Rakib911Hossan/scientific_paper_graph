@@ -1,0 +1,150 @@
+{
+  "arxiv_id": "1905.08108",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {"id": "P1", "name": "Embedding function lacks collaborative signal", "description": "Existing CF methods build the embedding function with descriptive features only (e.g., ID and attributes), without considering user-item interactions, which are only used to define the training objective."},
+        {"id": "P2", "name": "Embeddings insufficient for CF", "description": "The lack of explicit encoding of collaborative signal, latent in user-item interactions, means resultant embeddings may not sufficiently capture the collaborative filtering effect."},
+        {"id": "P3", "name": "Methods rely on interaction function to compensate", "description": "When embeddings are insufficient in capturing CF, methods have to rely on the interaction function to make up for the deficiency of suboptimal embeddings."},
+        {"id": "P4", "name": "High-order connectivity encodes collaborative signal", "description": "High-order connectivity in the user-item interaction graph is a natural way to encode collaborative signal, e.g., paths like u1←i2←u2 indicate behavioral similarity."},
+        {"id": "P5", "name": "NGCF proposal", "description": "NGCF is proposed to integrate the bipartite user-item graph structure into the embedding process by propagating embeddings on the graph, explicitly injecting collaborative signal."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S_intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["S_intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P5", "evidence": ["S_intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S_intro"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {"id": "P6", "name": "Message construction with element-wise interaction", "description": "The message from item i to user u encodes both the item embedding and the element-wise product of item and user embeddings (ei⊙eu), making the message dependent on the affinity between them, unlike conventional GCNs that use ei only."},
+        {"id": "P7", "name": "Graph Laplacian norm as decay factor", "description": "The coefficient pui is set as the graph Laplacian norm 1/sqrt(|Nu||Ni|), interpretable as a discount factor reflecting how much a historical item contributes to user preference and decaying with path length."},
+        {"id": "P8", "name": "Message aggregation with self-connection", "description": "First-order propagation aggregates neighbor messages plus a self-connection message (mu←u=W1*eu) via LeakyReLU to refine user u's representation, retaining original feature information."},
+        {"id": "P9", "name": "High-order propagation via stacking layers", "description": "By stacking l embedding propagation layers, a user (or item) receives messages propagated from its l-hop neighbors, recursively formulated using representations from the previous layer."},
+        {"id": "P10", "name": "High-order connectivity captured in embeddings", "description": "Stacking multiple embedding propagation layers seamlessly injects collaborative signal into representation learning, e.g., capturing the path u1←i2←u2←i4 explicitly in the third-layer representation of u1."},
+        {"id": "P11", "name": "Matrix form propagation rule", "description": "The layer-wise propagation rule can be expressed in matrix form using the Laplacian matrix, enabling efficient simultaneous update of all user and item representations without node sampling."},
+        {"id": "P12", "name": "Layer-wise concatenation for final embedding", "description": "Representations from different propagation layers are concatenated to form the final user and item embeddings, since different layers emphasize messages passed over different connections."},
+        {"id": "P13", "name": "Inner product prediction", "description": "The final user and item embeddings are used to estimate preference via inner product, emphasizing the embedding function rather than a complex interaction function."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P8", "evidence": ["S_method_message"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P8", "evidence": ["S_method_message"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S_method_highorder"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S_method_highorder"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P11", "evidence": ["S_method_matrix"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P12", "evidence": ["S_method_prediction"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P13", "evidence": ["S_method_prediction"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {"id": "P14", "name": "NGCF uses few additional parameters", "description": "Compared to MF, NGCF uses only 2Ldldl-1 more parameters, an almost negligible additional cost since L is usually smaller than 5 and dl is much smaller than the number of users/items."},
+        {"id": "P15", "name": "Dropout techniques adopted", "description": "NGCF adopts message dropout (randomly dropping outgoing messages) and node dropout (randomly blocking nodes and discarding their outgoing messages) to prevent overfitting."},
+        {"id": "P16", "name": "NGCF generalizes SVD++", "description": "Setting L=1 and disabling the transformation matrix and nonlinear activation, NGCF reduces to a form that recovers SVD++ (and FISM as another special case) under specific coefficient settings."}
+      ],
+      "edges": [],
+      "depth": 1,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {"id": "P17", "name": "NGCF consistently best performance", "description": "NGCF consistently yields the best performance on all three datasets, improving over the strongest baselines by 11.68%, 11.97%, and 9.61% recall@20 on Gowalla, Yelp2018, and Amazon-Book respectively."},
+        {"id": "P18", "name": "Multiple propagation layers explore high-order connectivity", "description": "By stacking multiple embedding propagation layers, NGCF explicitly explores high-order connectivity, unlike CMN and GC-MC which only utilize first-order neighbors."},
+        {"id": "P19", "name": "Multi-grained representations aid prediction", "description": "Compared with PinSage (which uses only the last layer's output), NGCF considers multi-grained representations from different layers, demonstrating that different propagation layers encode different information."},
+        {"id": "P20", "name": "Improvement over HOP-Rec", "description": "NGCF's improvement over HOP-Rec indicates that explicitly encoding CF signal in the embedding function achieves better representations than HOP-Rec's approach of enriching training data via random walks."}
+      ],
+      "edges": [
+        {"from": "P18", "to": "P17", "evidence": ["S_results_overall"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P17", "evidence": ["S_results_overall"], "votes": 2, "confidence": "majority"},
+        {"from": "P20", "to": "P17", "evidence": ["S_results_overall"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {"id": "P21", "name": "NGCF and HOP-Rec outperform on all sparsity groups", "description": "NGCF and HOP-Rec consistently outperform all other baselines across user groups of different interaction sparsity levels."},
+        {"id": "P22", "name": "High-order connectivity aids inactive users", "description": "Exploiting high-order connectivity greatly facilitates representation learning for inactive (sparse-interaction) users, since collaborative signal can be effectively captured even with few direct interactions."},
+        {"id": "P23", "name": "Larger relative improvement for sparser groups", "description": "Improvements achieved for the most inactive user groups (e.g., 8.49% for <24 interactions in Gowalla) are more significant than for the most active groups (e.g., 1.29% for <1014 interactions), verifying embedding propagation particularly benefits inactive users."}
+      ],
+      "edges": [
+        {"from": "P21", "to": "P22", "evidence": ["S_sparsity"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["S_sparsity"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {"id": "P24", "name": "NGCF-2/3 outperform NGCF-1", "description": "NGCF-2 and NGCF-3 achieve consistent improvement over NGCF-1 (first-order neighbors only) across all datasets, attributed to second- and third-order connectivities capturing collaborative user similarity and collaborative signal respectively."},
+        {"id": "P25", "name": "NGCF-4 overfits on Yelp2018", "description": "Further stacking a fourth propagation layer (NGCF-4) leads to overfitting on the Yelp2018 dataset, with only marginal improvements on the other two datasets, suggesting three layers are sufficient."},
+        {"id": "P26", "name": "NGCF-1 outperforms ablated variants", "description": "NGCF-1 is consistently superior to NGCF-1-SVD++, NGCF-1-GC-MC, and NGCF-1-PinSage variants, with improvements attributed to the representation interaction term (eu⊙ei) functioning like an attention mechanism."},
+        {"id": "P27", "name": "Layer-aggregation mechanism significant", "description": "When concatenating all layers' outputs, NGCF-1-PinSage and NGCF-1-GC-MC achieve better performance than the original PinSage and GC-MC, emphasizing the significance of the layer-aggregation mechanism itself."},
+        {"id": "P28", "name": "Node dropout more effective than message dropout", "description": "Node dropout offers better performance than message dropout (e.g., on Gowalla, p2=0.2 yields recall@20 of 0.1514 vs. message dropout's 0.1506), since it makes representations robust against both edge and node influence."},
+        {"id": "P29", "name": "NGCF converges faster than MF", "description": "NGCF exhibits faster convergence than MF across all three datasets, since indirectly connected users and items are involved when optimizing interaction pairs in mini-batches."}
+      ],
+      "edges": [
+        {"from": "P24", "to": "P25", "evidence": ["S_layers"], "votes": 1, "confidence": "single_run"},
+        {"from": "P26", "to": "P27", "evidence": ["S_layer_ablation"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 6.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {"id": "P30", "name": "NGCF-3 embeddings show discernible clustering", "description": "Representations from NGCF-3 exhibit discernible clustering in t-SNE visualization, meaning items consumed by the same user tend to form clusters, unlike MF representations."},
+        {"id": "P31", "name": "Historical item embeddings grow closer with propagation", "description": "For the same users analyzed across MF and NGCF-3 visualizations, embeddings of their historical items tend to be closer under NGCF-3, qualitatively verifying that embedding propagation injects explicit collaborative signal."}
+      ],
+      "edges": [
+        {"from": "P30", "to": "P31", "evidence": ["S_visualization"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P32", "name": "MF achieves poor performance", "description": "MF achieves poor performance on all three datasets, indicating that inner product alone is insufficient to capture complex user-item relations."},
+    {"id": "P33", "name": "NeuMF outperforms MF via nonlinearity", "description": "NeuMF consistently outperforms MF across all cases, demonstrating the importance of nonlinear feature interactions between user and item embeddings."},
+    {"id": "P34", "name": "GC-MC improves via first-order neighbors", "description": "Compared to MF and NeuMF, GC-MC's performance verifies that incorporating first-order neighbors improves representation learning, though it underperforms NeuMF on Yelp2018 ndcg@20."},
+    {"id": "P35", "name": "CMN improves via attention mechanism", "description": "CMN generally achieves better performance than GC-MC, attributed to its neural attention mechanism specifying attentive weights per neighboring user rather than equal/heuristic weights."},
+    {"id": "P36", "name": "HOP-Rec limitation", "description": "HOP-Rec's prediction model remains MF, trained with a loss augmented by high-order connectivity data, rather than directly integrating high-order connectivity into the prediction model itself."},
+    {"id": "P37", "name": "Dataset statistics", "description": "Experiments use three datasets: Gowalla (29,858 users, 40,981 items), Yelp2018 (31,668 users, 38,048 items), and Amazon-Book (52,643 users, 91,599 items), each filtered with a 10-core setting."},
+    {"id": "P38", "name": "Evaluation protocol", "description": "Performance is evaluated using recall@20 and ndcg@20, with 80% of each user's interactions for training and 20% for testing, plus negative sampling."},
+    {"id": "P39", "name": "Time complexity", "description": "NGCF's overall training complexity is O(sum of |R+|*dl*dl-1 + |R+|*dl across layers); empirically NGCF costs about 80s per epoch vs MF's 20s on the Gowalla dataset."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph captures NGCF's complete argumentative arc: the motivation for explicitly encoding collaborative signal via graph structure (C1), the detailed embedding propagation mechanism from message construction through high-order stacking to final prediction (C2), model efficiency and theoretical properties (C3), and four empirical validation components covering overall performance (C4), sparsity robustness (C5), layer/component ablations (C6), and representation visualization (C7). These components closely mirror the paper's section structure with strong internal coherence, particularly the core method component (C2) which traces a clear causal chain matching the mathematical formulation. Baseline comparison facts and dataset/evaluation setup details are appropriately isolated as supporting context rather than part of NGCF's own argumentative chain. Some ablation findings in C6 are recorded with lower-confidence or absent edges since they represent parallel independent findings from a shared results table rather than an explicit causal narrative."
+}

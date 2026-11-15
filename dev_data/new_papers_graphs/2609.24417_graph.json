@@ -1,0 +1,155 @@
+{
+ "arxiv_id": "2609.24417",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "KV cache growth and the limits of eviction motivate ARM's routed fixed-size memory with learnable writes and adaptive reads, evaluated on benchmarks",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "KV cache growth limits long context",
+     "description": "KV cache memory grows linearly with context length, rapidly surpassing the model's own memory footprint and degrading decoding latency, which hinders long-context inference."
+    },
+    {
+     "id": "P2",
+     "name": "Existing remedies have limitations",
+     "description": "Quantization, pruning/eviction and offloading each retain a limitation: a still-growing cache, risk of discarding important information, or inter-hierarchy transfer latency."
+    },
+    {
+     "id": "P3",
+     "name": "Eviction treats importance as certain",
+     "description": "Eviction-based policies implicitly use a one-hot write weight, discarding all but one write candidate and assuming certainty about future access; they cannot adapt to task-specific importance."
+    },
+    {
+     "id": "P4",
+     "name": "Hierarchical routed memory",
+     "description": "ARM organizes the KV cache as a fixed multi-level tree of routers whose leaf buckets each hold a fixed number of KV slots; each token is deterministically routed root-to-leaf by the largest routing logit, with routers trained by a self-supervised objective."
+    },
+    {
+     "id": "P5",
+     "name": "Learnable soft writes",
+     "description": "ARM selects bucket slots via Gumbel-Softmax and updates them with sigmoid-gated combinations of new and stored content, so new information is softly integrated without hard eviction and the cache size stays constant."
+    },
+    {
+     "id": "P6",
+     "name": "Adaptive Top-M retrieval",
+     "description": "A policy trained as an MDP learns per-input and per-layer how many memory buckets (Top-M) to retrieve, enabling sparse access for simple inputs and expanded retrieval for harder ones."
+    },
+    {
+     "id": "P7",
+     "name": "Gated shared writes are optimal under uncertainty",
+     "description": "Under i.i.d. Gaussian write candidates, optimal gated weights w*=pi make a shared slot retain information in proportion to anticipated usage, with I(a_r; A | r) >= -(d/2) log(1-||pi||_2^2), so sharing capacity beats one-hot eviction."
+    },
+    {
+     "id": "P8",
+     "name": "Experimental setup",
+     "description": "ARM is built on Llama3-8B, pre-trained on a 10B-token FineWeb-Edu subset, with 256 memory slots (4-level tree, 4 children per node) compared against full attention, sliding window, StreamingLLM, KIVI quantization and CPU offloading."
+    },
+    {
+     "id": "P9",
+     "name": "No loss on non-generative tasks",
+     "description": "On language modeling and zero-shot commonsense tasks (Table 1), adapting the pre-trained model to ARM causes minimal change in average performance and perplexity, as with standard caching."
+    },
+    {
+     "id": "P10",
+     "name": "ARM works on long-context benchmarks",
+     "description": "ARM outperforms standard eviction baselines on LongBench (Table 3) and RULER up to 128K context (Table 4), e.g. TREC 62.5 vs 38.0 for full attention in Table 3."
+    },
+    {
+     "id": "P11",
+     "name": "Latency and memory benefits",
+     "description": "ARM gives significant generation speedup over full-cache methods (full attention, quantization), is on par with sliding window and sink caches, and offloading has the same memory use but significant latency problems (Fig 2)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 2.1, Sec 4.4"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.4, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.1-4.4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.1, Sec 5.2, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.2, Tables 3-4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.2, Tables 3-4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.1, Sec 5.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.3, Fig 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [],
+ "structural_reasoning": "Problem and limits of prior cache management lead to the ARM design (routed memory, soft writes, adaptive reads), theory for gated writes, and empirical evaluation."
+}

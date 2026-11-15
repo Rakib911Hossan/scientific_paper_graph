@@ -1,0 +1,318 @@
+{
+  "arxiv_id": "2604.26651v1",
+  "note": "Single-pass extraction (no sentence-level indexing available for this document). Evidence fields reference sections/tables/figures/equations instead of indexed sentences (S#). Votes/confidence/fidelity fields from the reference schema are omitted since no multi-run validation was performed.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: state representation as an overlooked component of CMAB recommenders",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Recommender systems increasingly rely on CMABs for real-time personalization",
+          "description": "Due to the continuous stream of user interactions and feedback in web-based systems, recommenders increasingly rely on contextual multi-armed bandits (CMABs), which encode users and items as feature vectors, select an item to recommend, and update incrementally from feedback."
+        },
+        {
+          "id": "P2",
+          "name": "CMAB research has concentrated on model, exploration, inference, and reward aspects",
+          "description": "Most CMAB research has concentrated on four aspects: the underlying model consuming user state, the exploration strategy, the inference procedure for producing recommendations, and reward modeling for learning and evaluation."
+        },
+        {
+          "id": "P3",
+          "name": "State representation is a critical but neglected aspect of CMABs",
+          "description": "Current literature often neglects the state representation — the contextual encoding of user interaction history (one-hot vectors, item metadata summaries, or more commonly embeddings) — with most CMAB studies treating it as a given design choice rather than investigating its impact."
+        },
+        {
+          "id": "P4",
+          "name": "Paper investigates how embedding-based state representations impact CMAB performance",
+          "description": "The paper investigates the impact of different embedding-based state representations derived from matrix factorization models on the performance of traditional CMAB algorithms, hypothesizing that this seemingly minor design choice substantially influences final performance."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["Sec 1"]},
+        {"from": "P2", "to": "P3", "evidence": ["Sec 1"]},
+        {"from": "P3", "to": "P4", "evidence": ["Sec 1"]}
+      ]
+    },
+    {
+      "component_id": "C2",
+      "description": "Contributions of the study",
+      "nodes": [
+        {
+          "id": "P5",
+          "name": "First large-scale empirical comparison of state representations in CMABs",
+          "description": "The paper presents the first large-scale empirical comparison of state representations in contextual multi-armed bandits, evaluating six recommendation datasets, two matrix factorization models, three representation strategies, and three CMAB models, systematically varying both embedding method and representation formulation to isolate their impact."
+        },
+        {
+          "id": "P6",
+          "name": "State representation choice often outweighs bandit algorithm choice",
+          "description": "The study shows that the choice of bandit algorithm often results in minor performance differences compared to the substantial impact of the selected context representation strategy."
+        },
+        {
+          "id": "P7",
+          "name": "Identification of a literature gap around state representation design",
+          "description": "The paper identifies a prominent gap in the literature: while much research emphasizes new algorithms, reward modeling, and evaluation methods, the design of the environment's state representation remains largely overlooked."
+        }
+      ],
+      "edges": [
+        {"from": "P4", "to": "P5", "evidence": ["Sec 1"]},
+        {"from": "P5", "to": "P6", "evidence": ["Sec 1"]},
+        {"from": "P6", "to": "P7", "evidence": ["Sec 1"]}
+      ]
+    },
+    {
+      "component_id": "C3",
+      "description": "Related work: content-based vs. embedding-based context strategies and their limitations",
+      "nodes": [
+        {
+          "id": "P8",
+          "name": "Content-based representations use demographic/metadata features but suffer from noise and unavailability",
+          "description": "Content-based CMAB context uses user demographic information and item metadata, useful for cold-start and explainability, but such features are not always available and are often subject to noise and inconsistencies, limiting applicability."
+        },
+        {
+          "id": "P9",
+          "name": "Embedding-based context is a common alternative using latent factorization",
+          "description": "Due to content-feature limitations, a common strategy represents users and items via latent embeddings capturing preferences and characteristics in a shared latent space, exemplified by warm-up ALS initialization, Latent Contextual Bandits, BanditMF, and deep-learning healthcare recommenders that concatenate learned embeddings as bandit input."
+        },
+        {
+          "id": "P10",
+          "name": "Many embedding-based recommenders rely on static offline-pretrained embeddings",
+          "description": "Many existing recommenders using item/user embeddings as context rely on offline pre-trained embeddings that remain static during online interactions, simplifying modeling but potentially failing to capture evolving real-time dynamics."
+        },
+        {
+          "id": "P11",
+          "name": "Some studies instead learn evolving embeddings dynamically",
+          "description": "To address the static-embedding limitation, studies like COFIBA (dynamic user clustering with LinUCB), Alternating Linear Bandits (continuously retrained MF embeddings), and Khosravi et al.'s work explore evolving user states and their representation."
+        },
+        {
+          "id": "P12",
+          "name": "Most studies still treat state representation as given, with limited focus on its construction",
+          "description": "Even accounting for dynamic embeddings, the vast majority of studies pay limited attention to how item/user feature vectors are obtained and state representations constructed, treating context as given without describing how to build it."
+        },
+        {
+          "id": "P13",
+          "name": "Studies that prioritize state representation design achieve more impactful results",
+          "description": "Studies emphasizing state representation — dynamically learned variable-sized embeddings (He et al.), bandit-based denoising and diffusion-enhanced contrastive learning for sequential recommendation (Feng et al., Cui et al.), and knowledge-graph embeddings (Gan and Kwon) — demonstrate that state-representation decisions can outweigh algorithm choice in impact."
+        }
+      ],
+      "edges": [
+        {"from": "P3", "to": "P8", "evidence": ["Sec 2"]},
+        {"from": "P8", "to": "P9", "evidence": ["Sec 2"]},
+        {"from": "P9", "to": "P10", "evidence": ["Sec 2"]},
+        {"from": "P10", "to": "P11", "evidence": ["Sec 2"]},
+        {"from": "P10", "to": "P12", "evidence": ["Sec 2"]},
+        {"from": "P11", "to": "P12", "evidence": ["Sec 2"]},
+        {"from": "P12", "to": "P13", "evidence": ["Sec 2"]},
+        {"from": "P13", "to": "P4", "evidence": ["Sec 2"]}
+      ]
+    },
+    {
+      "component_id": "C4",
+      "description": "Experimental protocol: continuous temporal evaluation with static embeddings to isolate representation effects",
+      "nodes": [
+        {
+          "id": "P14",
+          "name": "Temporal split into historical warm-up and online evaluation phases",
+          "description": "Interaction logs are ordered by timestamp; the first 50% of interactions form historical data for model initialization (with a 10% slice for hyperparameter tuning and the remainder for learning embeddings and warming up CMABs), while the second half is dedicated exclusively to online evaluation (Fig. 1)."
+        },
+        {
+          "id": "P15",
+          "name": "Static, non-incremental embeddings chosen to isolate representation effects",
+          "description": "Embeddings are generated in a single non-incremental pass and kept static (not dynamically learned) to prevent effects related to temporal drift and model coupling, deliberately isolating the influence of state representation for a controlled comparison."
+        },
+        {
+          "id": "P16",
+          "name": "Cold-start items excluded to ensure consistent evaluation",
+          "description": "Since the static embedding space was generated in a single pass, unseen test-set items lacked vector representations; interactions involving those items were excluded to avoid the cold-start issue and ensure consistent evaluation."
+        },
+        {
+          "id": "P17",
+          "name": "Online evaluation proceeds over 10 chronological windows",
+          "description": "In the online stage, test data is processed in 10 equally-sized chronological windows; in each window, models generate ranked recommendations, observe actual user choices, and update their linear predictors with the new feedback."
+        }
+      ],
+      "edges": [
+        {"from": "P4", "to": "P14", "evidence": ["Sec 3.2", "Fig. 1"]},
+        {"from": "P14", "to": "P15", "evidence": ["Sec 3.2"]},
+        {"from": "P15", "to": "P16", "evidence": ["Sec 3.2"]},
+        {"from": "P14", "to": "P17", "evidence": ["Sec 3.2"]}
+      ]
+    },
+    {
+      "component_id": "C5",
+      "description": "Method: two matrix factorization embedding models (ALS and BPR)",
+      "nodes": [
+        {
+          "id": "P18",
+          "name": "Matrix factorization represents users/items via a shared latent space",
+          "description": "Matrix factorization models approximate the interaction signal between a user and item as the dot product of a user feature vector and an item feature vector in a shared d-dimensional latent space (Eq. 1), learned by minimizing a loss over observed interactions."
+        },
+        {
+          "id": "P19",
+          "name": "ALS and BPR chosen as well-established, differently-optimized MF baselines",
+          "description": "Implicit Alternating Least Squares (ALS) and Bayesian Personalized Ranking (BPR) were selected as embedding models; both leverage historical user-item interactions but differ in optimization objective — ALS uses confidence-weighted feedback while BPR optimizes a ranking-based loss — and both are well-established, efficiently trainable baselines."
+        },
+        {
+          "id": "P20",
+          "name": "Hyperparameters tuned per dataset via validation NDCG@20",
+          "description": "For both MF models, hyperparameters (latent factors d, learning rate, regularization strength, training epochs) were tuned on the validation split of warm-up data, selecting per-dataset the configuration yielding the best NDCG@20 (Table 2)."
+        }
+      ],
+      "edges": [
+        {"from": "P15", "to": "P18", "evidence": ["Sec 3.3", "Eq. 1"]},
+        {"from": "P18", "to": "P19", "evidence": ["Sec 3.3"]},
+        {"from": "P19", "to": "P20", "evidence": ["Sec 3.3", "Table 2"]}
+      ]
+    },
+    {
+      "component_id": "C6",
+      "description": "Method: three state-representation aggregation strategies",
+      "nodes": [
+        {
+          "id": "P21",
+          "name": "User embeddings: static, most personalized but non-adaptive representation",
+          "description": "The simplest strategy represents the state solely by the static user embedding p_u; it is the most personalized representation available but remains unchanged throughout online evaluation, yielding stable but non-diversified recommendations and failing to capture behavioral drift in dynamic environments."
+        },
+        {
+          "id": "P22",
+          "name": "Item-averaged embeddings: dynamic but order-agnostic representation",
+          "description": "This strategy computes the user state as the average of embeddings of all previously consumed items (Eq. 2), dynamically adapting to behavior changes while maintaining fixed dimensionality, but losing the sequential order of interactions."
+        },
+        {
+          "id": "P23",
+          "name": "Concatenated item embeddings: order-preserving but higher-complexity representation",
+          "description": "To preserve sequential information, this strategy concatenates the embeddings of the h most recent consumed items in FIFO order (Eq. 3, zero-padded if fewer than h items exist), explicitly encoding interaction order but increasing computational/memory complexity linearly/quadratically with h, making it the most computationally expensive strategy tested."
+        }
+      ],
+      "edges": [
+        {"from": "P20", "to": "P21", "evidence": ["Sec 3.3.1"]},
+        {"from": "P21", "to": "P22", "evidence": ["Sec 3.3.1", "Sec 3.3.2"]},
+        {"from": "P22", "to": "P23", "evidence": ["Sec 3.3.2", "Sec 3.3.3"]}
+      ]
+    },
+    {
+      "component_id": "C7",
+      "description": "Finding (RQ1): no single embedding model consistently dominates",
+      "nodes": [
+        {
+          "id": "P24",
+          "name": "ALS and BPR performance varies drastically and unpredictably across datasets",
+          "description": "Different embedding models lead to significant performance variation with no single algorithm consistently outperforming the other; ALS achieved up to 22x better results than BPR on BestBuy, while BPR outperformed ALS by 47x in specific MovieLens-100k scenarios."
+        },
+        {
+          "id": "P25",
+          "name": "ALS wins the majority of experiments but BPR wins a substantial minority",
+          "description": "Holding CMAB algorithm and aggregation function fixed, ALS attained the best overall score in 61% of experiments, with BPR thriving in the remaining 39%, showing alternating dominance across datasets and contexts."
+        },
+        {
+          "id": "P26",
+          "name": "Friedman test shows no statistically significant difference between ALS and BPR overall",
+          "description": "A Friedman test comparing ALS and BPR embeddings across all results revealed no statistically significant difference (chi-squared_r=2.67, p=0.102), consistent with the alternating dominance pattern."
+        }
+      ],
+      "edges": [
+        {"from": "P19", "to": "P24", "evidence": ["Sec 4", "Fig. 2"]},
+        {"from": "P24", "to": "P25", "evidence": ["Sec 4"]},
+        {"from": "P25", "to": "P26", "evidence": ["Sec 4"]}
+      ]
+    },
+    {
+      "component_id": "C8",
+      "description": "Finding (RQ2): aggregation strategy significantly affects outcomes, defying intuition",
+      "nodes": [
+        {
+          "id": "P27",
+          "name": "Static user embeddings sometimes outperform more sophisticated aggregations",
+          "description": "Although expected to generally underperform (and indeed generally the worst among BPR approaches per Table 4), the static user-embedding strategy achieved the best and second-best results on BestBuy and outperformed item concatenation for both BPR and ALS on MovieLens-100k."
+        },
+        {
+          "id": "P28",
+          "name": "Concatenation does not always outperform simpler aggregations despite preserving order",
+          "description": "Contrary to the prior assumption that concatenation would be superior due to preserving item-consumption ordering, other (simpler) strategies surpassed concatenation in 41% of experiments."
+        },
+        {
+          "id": "P29",
+          "name": "Friedman/Nemenyi tests confirm item-based aggregations statistically beat user embeddings",
+          "description": "A Friedman test comparing the three aggregation strategies found significant differences (chi-squared_r=16.26, p=0.00029, 99% confidence); a post-hoc Nemenyi test (critical difference 0.5522) showed Item-averaged and Concatenated embeddings are statistically superior to User embeddings with 95% confidence, with no significant difference between the two item-based methods."
+        }
+      ],
+      "edges": [
+        {"from": "P21", "to": "P27", "evidence": ["Sec 4", "Table 4"]},
+        {"from": "P23", "to": "P28", "evidence": ["Sec 4"]},
+        {"from": "P27", "to": "P29", "evidence": ["Sec 4"]},
+        {"from": "P28", "to": "P29", "evidence": ["Sec 4"]}
+      ]
+    },
+    {
+      "component_id": "C9",
+      "description": "Finding (RQ3): state representation quality outweighs bandit algorithm choice",
+      "nodes": [
+        {
+          "id": "P30",
+          "name": "Different CMAB algorithms perform very similarly under a fixed state representation",
+          "description": "The performance of LinUCB, LinGreedy, and LinTS using the same state representation is generally very similar, typically differing only in the fourth decimal place, with only a few notable exceptions such as Delicious and MovieLens-100k under item concatenation."
+        },
+        {
+          "id": "P31",
+          "name": "Switching representation/embedding yields far larger gains than switching bandit algorithm",
+          "description": "Across all datasets, switching from a lower-quality embedding representation to a more effective aggregation method or embedding model resulted in substantially larger performance gains (up to 47x) than changing the underlying bandit algorithm."
+        }
+      ],
+      "edges": [
+        {"from": "P26", "to": "P30", "evidence": ["Sec 4", "Tables 3-4"]},
+        {"from": "P29", "to": "P30", "evidence": ["Sec 4"]},
+        {"from": "P30", "to": "P31", "evidence": ["Sec 4"]},
+        {"from": "P31", "to": "P6", "evidence": ["Sec 4", "Sec 5"]}
+      ]
+    },
+    {
+      "component_id": "C10",
+      "description": "Overall conclusion: no universal winner, domain-specific evaluation needed",
+      "nodes": [
+        {
+          "id": "P32",
+          "name": "No single embedding model or aggregation method consistently dominates across datasets",
+          "description": "Synthesizing the RQ1-RQ3 findings, both the embedding algorithm and the aggregation strategy significantly impact recommendation performance, but no single combination consistently dominates across datasets, underscoring the need for domain-specific, tailored evaluation."
+        },
+        {
+          "id": "P33",
+          "name": "Future CMAB research should prioritize state-representation design alongside algorithmic innovation",
+          "description": "Because state-representation quality generally has a stronger effect on results than the specific bandit algorithm, future work should prioritize optimizing embedding-based context representations alongside algorithmic improvements rather than focusing predominantly on new bandit algorithms."
+        }
+      ],
+      "edges": [
+        {"from": "P25", "to": "P32", "evidence": ["Sec 4", "Sec 5"]},
+        {"from": "P29", "to": "P32", "evidence": ["Sec 4", "Sec 5"]},
+        {"from": "P31", "to": "P33", "evidence": ["Sec 4", "Sec 5"]},
+        {"from": "P32", "to": "P7", "evidence": ["Sec 5"]}
+      ]
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P34",
+      "name": "Foundational CMAB background",
+      "description": "CMABs extend traditional multi-armed bandits by incorporating contextual state representations, exemplified by methods like LinGreedy and LinUCB; the linear bandit is a foundational CMAB variant scoring items via linear regression with an exploration strategy balancing exploration-exploitation."
+    },
+    {
+      "id": "P35",
+      "name": "Broader CMAB recommender research directions",
+      "description": "The CMAB-based recommender literature has expanded to include pre-filtering items to reduce the action space, clustering users/items to generalize learning, incorporating deep learning or graph-based models, and structured bandits for slate recommendation."
+    },
+    {
+      "id": "P36",
+      "name": "Datasets and implementation tools used",
+      "description": "Experiments use six public benchmark datasets (Amazon Beauty, Amazon Books, BestBuy, Delicious, MovieLens-100K, MovieLens-25M, RetailRocket) after deduplication/consistency preprocessing, implemented in Python3 using the implicit library for embeddings and the Mab2Rec library for bandit models."
+    },
+    {
+      "id": "P37",
+      "name": "Related deployment-focused embedding study",
+      "description": "Hejazinia et al. examined deployment aspects and compared different types of embeddings but did not focus specifically on the bandit framework, distinguishing their study's scope from this paper's bandit-centric focus."
+    },
+    {
+      "id": "P38",
+      "name": "Planned future work directions",
+      "description": "Future work plans include exploring SOTA neural embedding algorithms (RecVAE, Neural Collaborative Filtering), evaluating SOTA deep incremental recommenders (BSARec, GRU4RecCPR, FEARec), analyzing embedding hyperparameter influence, and comparing static versus incrementally learned embeddings."
+    }
+  ],
+  "structural_reasoning": "The graph follows the structure of an empirical benchmarking study centered on a research gap. C1 (motivation: state representation as an overlooked CMAB component) leads to C2 (the paper's three explicit contributions), both grounded further by C3's detailed related-work analysis contrasting content-based versus embedding-based context strategies and noting that state-representation-focused studies achieve more impactful results — directly motivating the paper's design. C4 (experimental protocol) establishes the controlled, static-embedding evaluation methodology that isolates representation effects from confounds like temporal drift, feeding into the two method components: C5 (the ALS/BPR embedding models) and C6 (the three aggregation strategies: user, item-mean, item-concat). The experimental findings are organized directly around the paper's three research questions: C7 answers RQ1 (no embedding model dominates), C8 answers RQ2 (aggregation strategy matters and defies intuition, statistically confirmed), and C9 answers RQ3 (representation quality outweighs bandit algorithm choice) — these three converge in C10, the paper's overall conclusion advocating domain-specific evaluation and prioritizing representation design in future CMAB research, closing the loop back to the literature gap identified in C2. Foundational CMAB background, broader research-direction context, dataset/tooling details, a related deployment-focused study, and planned future work are treated as isolated nodes since they provide supporting context rather than participating in the core causal/argumentative chain."
+}

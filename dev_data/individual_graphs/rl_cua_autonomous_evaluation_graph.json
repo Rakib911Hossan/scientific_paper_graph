@@ -1,0 +1,153 @@
+{
+  "arxiv_id": "2606.24515v1",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/tables/equations rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: absence of reliable reward signals for CUA reinforcement learning",
+      "nodes": [
+        {"id": "P1", "name": "Desktop task success is implicit and visually grounded", "description": "Unlike robotics simulators or game environments with explicit machine-readable success criteria, desktop applications rarely expose clear, machine-readable indicators of task completion; objectives are typically implicit, visually grounded, and unstructured."},
+        {"id": "P2", "name": "RL for GUI agents is constrained by lack of reward signals", "description": "Applying reinforcement learning to GUI-based environments remains fundamentally constrained by the absence of reliable, scalable reward signals."},
+        {"id": "P3", "name": "Prior work relies on brittle heuristics or manual labels", "description": "Prior work often relies on brittle, task-specific heuristics (e.g., DOM element checks in web environments) or manually annotated success labels to supply a reward/success signal."},
+        {"id": "P4", "name": "Heuristics/manual labels fail to scale and generalize", "description": "Brittle heuristics and manual success labels fail to scale across different applications, operating systems, and task distributions, substantially limiting generalization beyond narrowly defined settings."},
+        {"id": "P5", "name": "Self-judging agents introduce reliability concerns", "description": "Defining task success internally within the computer-use agent itself introduces additional reliability concerns, since the agent's own perception and reasoning are imperfect and are exactly what RL aims to improve."},
+        {"id": "P6", "name": "Lack of scalable reliable reward mechanism is a central bottleneck", "description": "The lack of a scalable and reliable reward mechanism remains a central bottleneck for effective RL fine-tuning of computer-use agents."},
+        {"id": "P7", "name": "SOTA desktop agents underperform in real-world settings", "description": "State-of-the-art desktop agents achieve success rates of only around 60% on OSWorld and approximately 40% on macOSWorld, highlighting a significant gap between current capability and practical deployment."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 1, "confidence": "single_run"},
+        {"from": "P4", "to": "P6", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P2", "evidence": ["S1"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Noisy autonomous evaluator and noise-corrected reward estimator derivation",
+      "nodes": [
+        {"id": "P8", "name": "Autonomous VLM evaluators achieve high accuracy but introduce noise", "description": "Autonomous evaluators based on Vision-Language Models can achieve high accuracy and generalize across diverse applications, but inevitably introduce noise via false positives (labeling unsuccessful executions as completed) and false negatives (failing to detect success)."},
+        {"id": "P9", "name": "Naive evaluator-as-reward use causes bias/instability", "description": "Naively using evaluator outputs as reward signals can introduce bias and lead to unstable reinforcement learning."},
+        {"id": "P10", "name": "Evaluator modeled as noisy binary reward channel", "description": "The paper models the autonomous evaluator's feedback as a noisy binary reward channel, characterized by false-negative rate e+ and false-positive rate e-."},
+        {"id": "P11", "name": "Separability constant D defined and assumed positive", "description": "The separability constant D := 1 - e+ - e- is defined and assumed positive, ensuring the evaluator gives informative feedback beyond random guessing."},
+        {"id": "P12", "name": "Conditional expectation of noisy signal derived", "description": "Because the observed evaluator output is binary, its conditional expectation given the true label satisfies E[r~ | r*] = e- + D * r*."},
+        {"id": "P13", "name": "Corrected reward estimator derived by solving for r*", "description": "Solving the conditional-expectation equation for the true label r* yields the corrected reward estimator r-hat := (r~ - e-) / D."},
+        {"id": "P14", "name": "Corrected estimator is asymptotically unbiased", "description": "The corrected reward estimator r-hat satisfies E[r-hat | trajectory] = r*, making it an asymptotically unbiased estimator of true task completion."},
+        {"id": "P15", "name": "Plug-in estimator using empirical error rates", "description": "Because true error rates e+ and e- are unknown in practice, empirical estimates from a held-out calibration split are substituted to form a plug-in estimator, asymptotically unbiased as calibration data grows and the estimated separability stays bounded away from zero."},
+        {"id": "P16", "name": "Corrected reward integrated into PPO via terminal discounted return", "description": "The corrected terminal reward is propagated backward through the trajectory as a discounted return and used as the training signal for Proximal Policy Optimization, enabling stable policy-gradient updates despite evaluator-induced noise."}
+      ],
+      "edges": [
+        {"from": "P8", "to": "P9", "evidence": ["S1", "S2.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S1", "S3.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["Eq3", "Eq4", "Eq5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P12", "evidence": ["Eq6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P13", "evidence": ["Eq7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P13", "evidence": ["Eq7"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P14", "evidence": ["Eq8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["Eq9"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P16", "evidence": ["S3.3", "Eq10", "Eq11"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 6,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Dataset and evaluator calibration design",
+      "nodes": [
+        {"id": "P17", "name": "Synthetic dataset of 7,560 tasks across 42 applications/OS", "description": "The authors construct a synthetic dataset of computer-use tasks spanning 42 applications per OS, with 60 natural-language task descriptions per application, totaling 7,560 tasks across macOS, Windows, and Linux."},
+        {"id": "P18", "name": "Three-way disjoint split per application", "description": "Tasks per application are randomly partitioned into three disjoint splits of 20 tasks each: two splits (40 tasks, two-thirds) for RL fine-tuning and one split (one-third) reserved for evaluator calibration."},
+        {"id": "P19", "name": "Disjoint splits prevent information leakage", "description": "Separating evaluator calibration and policy optimization onto disjoint task sets ensures evaluator calibration and policy optimization are conducted without information leakage between them."},
+        {"id": "P20", "name": "Ground-truth labels reserved for evaluator assessment and benchmarking only", "description": "Ground-truth success labels for the calibration and RL test splits are used exclusively for evaluator assessment and final benchmarking, and are never exposed to the agent during training."}
+      ],
+      "edges": [
+        {"from": "P17", "to": "P18", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P20", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Evaluator error asymmetry and its consequences for RL",
+      "nodes": [
+        {"id": "P21", "name": "Evaluator behavior varies by operating system", "description": "While the vision-based evaluator achieves high accuracy overall, its behavior (error profile) varies by operating system, as shown in the normalized confusion matrices (Table 2)."},
+        {"id": "P22", "name": "False positives reinforce incorrect behaviors", "description": "False positives are particularly harmful for reinforcement learning because they assign high reward to unsuccessful trajectories, reinforcing incorrect behaviors."},
+        {"id": "P23", "name": "False negatives slow learning by reducing reward frequency", "description": "False negatives primarily reduce the effective reward frequency, which can slow learning, but do not reinforce incorrect behavior the way false positives do."},
+        {"id": "P24", "name": "Per-OS error rates estimated for reward correction", "description": "Because evaluator error rates vary by OS, (e+, e-) were estimated separately per OS from the evaluator calibration split and used to compute the corrected reward estimator during PPO fine-tuning."}
+      ],
+      "edges": [
+        {"from": "P21", "to": "P24", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P24", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P24", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Reinforcement learning fine-tuning results",
+      "nodes": [
+        {"id": "P25", "name": "Evaluator-based RL improves over zero-shot baseline", "description": "Across all three benchmarks (macOSWorld, Windows Agent Arena, OSWorld), reinforcement learning with evaluator feedback (raw or corrected) improves performance over the zero-shot baseline."},
+        {"id": "P26", "name": "Raw evaluator rewards yield moderate, inconsistent gains", "description": "Using raw evaluator rewards yields moderate gains in most settings, but these gains are consistently smaller than those from the corrected reward estimator, and in some cases raw rewards reduce generalization."},
+        {"id": "P27", "name": "Corrected reward achieves strongest performance with per-OS models", "description": "The noise-corrected reward achieves the strongest performance across all three benchmarks when combined with per-OS fine-tuning: 0.084->0.203 on macOSWorld, 0.331->0.442 on Windows Agent Arena, and 0.283->0.432 on OSWorld."},
+        {"id": "P28", "name": "Corrected reward outperforms raw reward most clearly on OSWorld", "description": "The effect of the corrected estimator's advantage over raw rewards is most evident on OSWorld, where it consistently outperforms raw rewards under both unified and per-OS training."},
+        {"id": "P29", "name": "Ignoring evaluator error introduces distribution-shift bias", "description": "These results indicate that ignoring evaluator error can introduce bias that negatively impacts reinforcement learning, particularly under distribution shift."},
+        {"id": "P30", "name": "Per-OS models generalize more reliably than unified models", "description": "The ablation comparing per-OS and unified fine-tuning suggests OS-specific policies provide more reliable generalization overall, supporting the use of per-OS models in the main experiments."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P27", "evidence": ["S4.2", "Table3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P28", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P29", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P30", "evidence": ["S4.2", "S6"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Limitations of the noise-correction framework",
+      "nodes": [
+        {"id": "P31", "name": "Assumption of fixed error rates may not hold", "description": "The approach assumes evaluator false-negative and false-positive rates are approximately fixed for a given model/protocol, but in practice evaluator behavior may be non-stationary, varying with task type, UI complexity, phrasing, visual themes, and OS-specific conventions."},
+        {"id": "P32", "name": "Policy improvement may shift visited-state distribution", "description": "As the agent improves during training, the distribution of visited GUI states may shift, potentially changing the evaluator's error profile and introducing residual bias in the plug-in error-rate estimates."},
+        {"id": "P33", "name": "Binary terminal signal is sparse and limits exploration", "description": "The formulation relies on a binary, effectively terminal success signal, which is inherently sparse; while PPO can learn under sparse rewards, exploration remains challenging for long-horizon GUI tasks with delayed success."},
+        {"id": "P34", "name": "Correction improves accuracy but not reward density", "description": "The proposed correction improves reward accuracy but does not increase reward density, and therefore cannot by itself resolve exploration difficulties."},
+        {"id": "P35", "name": "Small separability D amplifies correction variance", "description": "With limited calibration data or a small separability term D, statistical uncertainty in the error-rate estimates can propagate into the corrected reward and increase the variance of policy-gradient updates."},
+        {"id": "P36", "name": "Corrected reward can fall outside [0,1], affecting PPO scale", "description": "The corrected reward r-hat is real-valued and can fall outside the [0,1] range, altering the scale of advantages, which may affect PPO optimization in finite-sample settings despite policy-gradient methods being invariant to affine reward transforms in expectation."},
+        {"id": "P37", "name": "Vision-based evaluators have inherent blind spots", "description": "Vision-based evaluators may miss semantically correct outcomes that are visually subtle or overestimate success from superficial visual cues, and binary labels ignore partial progress and alternative valid solutions."}
+      ],
+      "edges": [
+        {"from": "P31", "to": "P32", "evidence": ["S5"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P34", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P36", "evidence": ["S5"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P38", "name": "RL framing as principled improvement mechanism", "description": "Reinforcement learning provides a principled framework for improving agent behavior via exploration, error recovery, and interaction, rather than reliance on static demonstrations."},
+    {"id": "P39", "name": "CUA definition and interaction model", "description": "Computer-Use Agents are end-to-end autonomous systems that complete natural-language tasks by perceiving the rendered desktop GUI (typically via screenshots) and executing actions such as clicking, typing, scrolling, and dragging, without requiring explicit service/API integrations."},
+    {"id": "P40", "name": "CUA MDP formulation", "description": "A CUA is formulated as a Markov Decision Process with state defined as the rendered screen image plus the fixed task description, and an action space of click, type, scroll, and drag operations."},
+    {"id": "P41", "name": "Terminal-only reward setting", "description": "Reward in this setting is terminal-only: the true task-completion signal is defined only at the end of the episode and is never directly observed."},
+    {"id": "P42", "name": "Qwen2-VL-7B used as the evaluator", "description": "The autonomous evaluator uses the Qwen2-VL-7B model, chosen for its strong multimodal reasoning and demonstrated superiority as a vision-based evaluator among open-source models."},
+    {"id": "P43", "name": "Evaluator decoupled from acting agent", "description": "The evaluator operates zero-shot and is fully decoupled from the acting agent, observing neither its action history nor internal reasoning, basing judgment solely on the final screenshot and instruction."},
+    {"id": "P44", "name": "Five training configurations compared", "description": "The experiments compare five training configurations: zero-shot baseline, PPO with raw rewards (unified model), PPO with corrected rewards (unified model), PPO with raw rewards (per-OS models), and PPO with corrected rewards (per-OS models)."},
+    {"id": "P45", "name": "Additional external datasets incorporated for RL diversity", "description": "Task descriptions from OmniAct, GUI-World, and GUIDE are incorporated alongside the authors' own dataset to further diversify the task distribution used for RL fine-tuning, using only their natural-language task specifications."},
+    {"id": "P46", "name": "Execution logs recorded from base and fine-tuned agents", "description": "The dataset includes execution logs of the base UI-TARS agent and of RL-fine-tuned agents, recording complete trajectories including screenshots, actions, and intermediate reasoning steps."},
+    {"id": "P47", "name": "Related work: reward corruption correction via confusion matrix", "description": "Prior work (Wang et al. 2020a) formalizes reward corruption using a confusion matrix over discrete reward values and shows that, given an estimate of the corruption process, an unbiased reward estimator can be constructed."},
+    {"id": "P48", "name": "Related work: CANDERE-COACH online denoising", "description": "CANDERE-COACH considers unreliable binary approve/disapprove human feedback and proposes online denoising mechanisms that filter feedback before policy updates, at the data level rather than the reward level."},
+    {"id": "P49", "name": "Related work: RL with verifiable noisy rewards", "description": "Cai et al. study reinforcement learning with verifiable rewards from noisy binary automated verifiers, modeling asymmetric false-positive/false-negative errors and deriving correction strategies that debias policy-gradient updates, most closely related to this paper's setting."},
+    {"id": "P50", "name": "This work's correction operates at the reward level", "description": "Unlike approaches that denoise feedback at the data level, this paper's correction operates at the reward level, making it straightforward to plug into standard policy-gradient fine-tuning such as PPO."},
+    {"id": "P51", "name": "Future extension: conditional error-rate estimation", "description": "A suggested extension is to estimate evaluator error rates conditionally, e.g., per task family or application type, to address non-stationary evaluator behavior."},
+    {"id": "P52", "name": "Future extension: richer feedback signals", "description": "Extending evaluators to produce calibrated confidence scores, multi-level outcomes, or preference-based feedback could provide richer learning signals, but would require revisiting both the noise model and correction mechanism."},
+    {"id": "P53", "name": "Open research direction: robustness under broader distribution shift", "description": "Robustness under broader distribution shifts, such as new application versions, different screen resolutions, or accessibility settings, remains an open direction for future work."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph is highly coherent within its components. C1 traces a clean motivational chain from the implicit/visually-grounded nature of desktop task success through to the central reward-signal bottleneck, closely following the paper's own introduction narrative. C2 is the strongest and most central component, tightly mirroring the paper's formal derivation from the noisy-channel model through the separability constant, conditional expectation, corrected estimator, unbiasedness proof, plug-in estimator, and integration into PPO -- each step is an explicit mathematical consequence of the prior one (Equations 3-11). C3 (dataset/calibration split design) and C4 (error asymmetry and its RL consequences) are compact, well-evidenced chains directly grounded in Sections 3.1 and 4.1. C5 (main results) follows the paper's own results narrative from evaluator-based improvement over baseline, through the raw-vs-corrected comparison, to the per-OS vs. unified ablation conclusion. C6 (limitations) is intentionally left as a small set of largely independent point-claims (non-stationarity, sparse terminal signal, small-D variance, out-of-range reward scale) since the paper itself presents these as a list of separate caveats rather than a single dependency chain. A substantial number of foundational/definitional facts (MDP formulation, evaluator model choice, dataset composition, and related-work summaries) are correctly left as isolated nodes, as they are descriptive/contextual rather than argumentative premises feeding into other propositions."
+}

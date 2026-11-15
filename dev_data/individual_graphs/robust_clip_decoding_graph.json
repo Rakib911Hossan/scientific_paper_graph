@@ -1,0 +1,321 @@
+{
+  "arxiv_id": "2607.03165v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "CLIP not optimized for neural alignment",
+          "description": "CLIP is not explicitly optimized for neural alignment, so its representations may capture statistically predictive cues that are only partially reflected in brain activity, limiting decoding performance."
+        },
+        {
+          "id": "P2",
+          "name": "Prior work modifies pipeline/embedding geometry",
+          "description": "Recent works showed neural decoding with CLIP can be improved via biologically constrained pipelines, such as adding visual attention mechanisms or enforcing CLIP embeddings' geometric similarity to fMRI responses."
+        },
+        {
+          "id": "P3",
+          "name": "Suggests native CLIP space may be suboptimal",
+          "description": "The fact that pipeline/geometry modifications improve decoding suggests that the native CLIP representation space may be suboptimal for neural decoding."
+        },
+        {
+          "id": "P4",
+          "name": "Visually plausible reconstructions can misrepresent neural content",
+          "description": "Prior work indicates visually plausible reconstructions can arise without faithfully capturing underlying neural representations, highlighting that decoding can rely on visual features that are predictive yet less aligned with human neural representations."
+        },
+        {
+          "id": "P5",
+          "name": "CLIP may capture non-robust/shortcut features",
+          "description": "Since CLIP is optimized for web-scale image-text contrastive learning rather than neural alignment, its embeddings may capture non-robust or shortcut-driven features predictive for image-text matching but not necessarily well-aligned with brain activity."
+        },
+        {
+          "id": "P6",
+          "name": "Motivates revisiting target representation properties",
+          "description": "Together, these findings suggest that improving brain decoding may require revisiting the properties of the target representation itself, beyond architectural or pipeline-level modifications."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P3", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P6", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P6", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P7",
+          "name": "Human neural representations relatively invariant to small perturbations",
+          "description": "Human neural representations are reported to be relatively invariant to small perturbations and less reliant on non-robust cues."
+        },
+        {
+          "id": "P8",
+          "name": "Adversarial training reduces reliance on non-robust features",
+          "description": "Adversarial training has been shown to reduce reliance on non-robust features that are less aligned with human perception, associated with shortcut-like behavior and spurious correlations."
+        },
+        {
+          "id": "P9",
+          "name": "Central hypothesis: adversarially robust CLIP improves neural alignment",
+          "description": "Combining the observation that neural representations resist small perturbations with adversarial training's suppression of non-robust features motivates the central hypothesis that adversarially robust CLIP variants can improve neural alignment."
+        },
+        {
+          "id": "P10",
+          "name": "Paper proposes adversarial robustness as selection criterion",
+          "description": "The paper proposes adversarial robustness as a criterion for selecting target representations in brain decoding, motivated by the central hypothesis."
+        }
+      ],
+      "edges": [
+        {"from": "P7", "to": "P9", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P11",
+          "name": "Adversarially trained models show human-aligned properties",
+          "description": "Adversarially trained models have been shown to exhibit more human-aligned properties: more stable/perceptually meaningful visual features, more interpretable gradients, more concise/sparse attribution maps, and increased shape-bias reliance."
+        },
+        {
+          "id": "P12",
+          "name": "These properties motivate potential alignment improvement",
+          "description": "The human-aligned properties of adversarially trained models motivate their potential to improve alignment between model representations and neural signals."
+        },
+        {
+          "id": "P13",
+          "name": "Controlled setting varies only target representation",
+          "description": "The paper adopts a controlled setting varying only the target representation (standard CLIP vs. robust variants TeCoA and FARE) while fixing the fMRI decoder architecture and training procedure."
+        }
+      ],
+      "edges": [
+        {"from": "P11", "to": "P12", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P13", "evidence": ["S1", "S2.2.2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P14",
+          "name": "Robust CLIP variants show stronger alignment metrics on NSD",
+          "description": "Across Pearson correlation, cosine similarity, and RSA metrics on the NSD dataset, adversarially trained models (FARE and TeCoA) achieve higher alignment scores than standard CLIP, with TeCoA-4 consistently highest."
+        },
+        {
+          "id": "P15",
+          "name": "Robust CLIP variants show higher retrieval accuracy",
+          "description": "For fMRI-image retrieval, TeCoA and FARE decoders achieve consistently higher accuracy than the standard CLIP decoder, with the best model (FARE-4) improving Top-1 accuracy by 13% relative to CLIP."
+        },
+        {
+          "id": "P16",
+          "name": "Improvement holds under both contrastive and ridge decoding",
+          "description": "Robust-variant decoders outperform the CLIP decoder under both contrastive learning and ridge regression training objectives, suggesting the target representation choice matters more than the training objective."
+        },
+        {
+          "id": "P17",
+          "name": "Stronger adversarial training improves retrieval under contrastive decoding",
+          "description": "Under contrastive decoding, both FARE and TeCoA decoders achieve higher retrieval accuracy with strongly adversarially trained models (FARE-4, TeCoA-4) compared to moderately robust models (FARE-2, TeCoA-2)."
+        },
+        {
+          "id": "P18",
+          "name": "This trend does not consistently hold under ridge regression",
+          "description": "The trend of stronger adversarial training improving retrieval does not consistently hold under ridge regression: FARE-2 and FARE-4 overlap closely, while TeCoA-4 continues to outperform TeCoA-2."
+        },
+        {
+          "id": "P19",
+          "name": "TeCoA and FARE show metric-dependent relative performance",
+          "description": "TeCoA decoders tend to score higher on representation-level alignment metrics (Pearson, cosine, RSA), while FARE decoders achieve higher retrieval performance under contrastive decoding, indicating no single method uniformly dominates."
+        }
+      ],
+      "edges": [
+        {"from": "P14", "to": "P15", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P16", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P18", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P19", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P20",
+          "name": "Prior criticism of limited cross-dataset generalizability",
+          "description": "Recent criticism raised concerns that some CLIP-based pipelines evaluated on NSD may exhibit limited cross-dataset generalizability, indicating potential evaluation bias such as double dipping."
+        },
+        {
+          "id": "P21",
+          "name": "GOD dataset used to test zero-shot generalization",
+          "description": "Motivated by generalizability concerns, the paper uses the GOD dataset, which enforces zero-shot settings with non-overlapping train-test semantics, to test whether NSD improvements are reproducible under stricter semantic separation."
+        },
+        {
+          "id": "P22",
+          "name": "Robust variants maintain generalizability in zero-shot retrieval",
+          "description": "Consistent with NSD results, decoders with adversarially trained variants show higher zero-shot fMRI-image retrieval performance than the standard CLIP decoder on GOD, with TeCoA decoders consistently outperforming FARE under contrastive decoding."
+        },
+        {
+          "id": "P23",
+          "name": "Robust variants also improve zero-shot text classification",
+          "description": "Both TeCoA and FARE decoders outperform the standard CLIP decoder on fMRI-text zero-shot classification, with TeCoA decoders also consistently outperforming FARE decoders."
+        }
+      ],
+      "edges": [
+        {"from": "P20", "to": "P21", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P22", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {
+          "id": "P24",
+          "name": "Unclear mechanism behind decoding improvement",
+          "description": "Despite observed improvements, it remains unclear why decoders targeting adversarially robust representations exhibit such improvement and how this connects to the specific image features decoders rely on."
+        },
+        {
+          "id": "P25",
+          "name": "Attribution framework adapted for fMRI decoders",
+          "description": "To investigate the mechanism, the paper adapts the Palazzo et al. attribution framework by replacing the neural encoder with the trained fMRI decoder, computing pixel-wise attribution via occlusion-based compatibility scores."
+        },
+        {
+          "id": "P26",
+          "name": "All models show high global spatial diffusion",
+          "description": "Both standard CLIP and robust variants exhibit consistently high normalized entropy in their attribution maps, indicating broadly distributed spatial attribution, so global diffusion alone does not distinguish the models."
+        },
+        {
+          "id": "P27",
+          "name": "Robust variants show scale-dependent structural variation",
+          "description": "While CLIP's entropy remains relatively stable across spatial resolutions, both TeCoA and FARE show a consistent entropy decrease as resolution becomes coarser, indicating more structured, scale-dependent attribution."
+        },
+        {
+          "id": "P28",
+          "name": "Low IoU and variable rank correlation vs CLIP",
+          "description": "Robust-variant decoders show consistently low top-k Intersection-over-Union and moderate-but-variable Spearman rank correlation with CLIP's attribution maps, including extremely low top-1% IoU."
+        },
+        {
+          "id": "P29",
+          "name": "Robust models rely on structurally distinct attribution patterns",
+          "description": "Combining the scale-dependent structural variation with low spatial overlap and variable rank correlation indicates adversarially trained models do not simply refine CLIP's feature usage, but rely on structurally distinct attribution patterns for alignment."
+        }
+      ],
+      "edges": [
+        {"from": "P24", "to": "P25", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P27", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P29", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P29", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {
+          "id": "P30",
+          "name": "TeCoA and FARE differ in IoU/correlation ranges",
+          "description": "TeCoA and FARE exhibit different ranges of IoU and correlation values relative to CLIP, suggesting different adversarial training strategies may induce distinct modes of feature reorganization."
+        },
+        {
+          "id": "P31",
+          "name": "Attribution differences lack ground-truth saliency correspondence",
+          "description": "Attribution maps do not provide ground-truth correspondence to human visual saliency, making it difficult to determine whether highlighted regions reflect semantically meaningful features or model-specific predictive cues."
+        },
+        {
+          "id": "P32",
+          "name": "Results interpreted as representational usage differences, not definitive spurious-feature evidence",
+          "description": "Given the lack of ground-truth saliency correspondence and inability to find clear statistical evidence of background reliance, the authors interpret their attribution results as differences in representational usage rather than definitive evidence of spurious feature reliance."
+        }
+      ],
+      "edges": [
+        {"from": "P31", "to": "P32", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P33",
+      "name": "Brain decoding pipeline background",
+      "description": "Typical fMRI-based brain decoding pipelines include a decoder mapping fMRI to latent model representations and a generator reconstructing stimuli from those representations."
+    },
+    {
+      "id": "P34",
+      "name": "Evolution of target representation models",
+      "description": "Early approaches used engineered features like Gabor wavelet patches; deep learning brought end-to-end feature extractors; recently large-scale vision-language models like CLIP have emerged as effective target representations due to their semantically rich embedding space."
+    },
+    {
+      "id": "P35",
+      "name": "Paper isolates decoder from generator",
+      "description": "Unlike recent work focused on improving reconstruction quality via the generator component, this paper isolates the decoder to study the fidelity of the fMRI-to-representation mapping without confounding generation effects."
+    },
+    {
+      "id": "P36",
+      "name": "Linear decoder trained with InfoNCE and ridge baselines",
+      "description": "The decoder is a linear model trained primarily with an InfoNCE contrastive loss between predicted and target embeddings, with ridge regression also evaluated as a standard baseline."
+    },
+    {
+      "id": "P37",
+      "name": "TeCoA vs FARE training differences",
+      "description": "TeCoA adversarially fine-tunes the visual encoder under text-guided supervision, while FARE uses an unsupervised adversarial fine-tuning scheme without text supervision, both maintaining strong zero-shot capabilities."
+    },
+    {
+      "id": "P38",
+      "name": "NSD dataset details",
+      "description": "NSD is the largest open-source vision-fMRI dataset, containing 73,000 MSCOCO-derived images with fMRI data from 8 subjects; evaluation uses subjects 1, 2, 5, and 7 with full trial repetitions."
+    },
+    {
+      "id": "P39",
+      "name": "GOD dataset details",
+      "description": "GOD contains 1,250 ImageNet images and beta data from 5 subjects, designed to test zero-shot generalization with non-overlapping train-test semantics; the last 50 images serve as averaged test data."
+    },
+    {
+      "id": "P40",
+      "name": "Connection between adversarial robustness and biological constraints in prior work",
+      "description": "Prior work has shown that incorporating biological constraints into models can improve robustness and perceptual alignment, connecting adversarial robustness with brain-like representations, though the converse (whether robust representations align better with neural signals) remained unclear before this work."
+    },
+    {
+      "id": "P41",
+      "name": "Qualitative background-region attribution observed",
+      "description": "The standard CLIP decoder was qualitatively observed to sometimes assign non-negligible importance to background regions, a behavior associated with shortcut-like feature usage in vision-language models, though not statistically confirmed here."
+    }
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph is coherent across its major clusters: the motivation chain establishing that native CLIP representations may be suboptimal for neural alignment (C1), the central hypothesis linking adversarial robustness to improved neural alignment (C2), the human-aligned properties motivating the controlled experimental design (C3), the main NSD results chain covering alignment metrics, retrieval accuracy, and adversarial-strength/metric-dependent nuances (C4), the GOD zero-shot generalization results motivated by prior generalizability criticism (C5), the attribution analysis mechanism investigation (C6), and the cautious interpretation of attribution differences (C7). Edge confidence is high throughout given the paper's clearly structured introduction, results, and discussion sections that explicitly motivate each experimental step and interpret each finding in sequence. The isolated-node set captures background context (pipeline structure, representation-model history, dataset details, prior connections between robustness and biological alignment) that supports but is not tightly chained into the paper's central argument connecting adversarial robustness to improved and mechanistically distinct neural decoding. No cycles or contested edge directions were identified in this construction."
+}

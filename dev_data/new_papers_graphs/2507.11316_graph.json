@@ -1,0 +1,198 @@
+{
+ "arxiv_id": "2507.11316",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "ConVA: context-controlled value vectors plus gated activation for internal value alignment",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Behavior-level alignment is black-box",
+     "description": "SFT, RLHF and in-context alignment treat the LLM as a black box, lacking interpretability for understanding and controlling internal values and giving no guarantee of consistent adherence."
+    },
+    {
+     "id": "P2",
+     "name": "Activation engineering challenge 1: biased data",
+     "description": "Datasets generated for interpreting values by naive prompting suffer contextual biases, e.g. misunderstanding the value 'security' as 'digital security' due to frequent co-occurrence."
+    },
+    {
+     "id": "P3",
+     "name": "Activation engineering challenge 2: performance loss",
+     "description": "Modifying model activations to ensure consistent values may significantly decrease model performance."
+    },
+    {
+     "id": "P4",
+     "name": "Linear representation assumption",
+     "description": "Following the linear representation hypothesis, target values are assumed to be represented linearly as directions in the model's activation space, so a value vector can steer outputs."
+    },
+    {
+     "id": "P5",
+     "name": "Context-controlled data generation",
+     "description": "GPT-4o generates positive samples with diverse pronouns, sentence structures and scenarios, then a matching negative sample per positive that keeps value-independent context unchanged while reversing the value."
+    },
+    {
+     "id": "P6",
+     "name": "Data quality validated",
+     "description": "In a user study of 200 training texts, three labelers judged 98%, 99% and 95% of samples suitable, and context words like 'financial' and 'family' appear in both positive and negative samples while value words appear only on one side."
+    },
+    {
+     "id": "P7",
+     "name": "Value vector identification",
+     "description": "Value vectors are identified from the context-controlled data; decoded vectors from Llama-3-8B-Instruct layer 31 show semantic correspondence with intended values (e.g. 'perseverance' for achievement)."
+    },
+    {
+     "id": "P8",
+     "name": "Gated value vector activation",
+     "description": "ConVA steers embeddings at all token positions by e + epsilon*v, with control degree epsilon from a constrained optimization for minimal perturbation, and a binary gate g(x) applies control only to value-related queries."
+    },
+    {
+     "id": "P9",
+     "name": "Gate is DeBERTa value detector",
+     "description": "The gate unit is a DeBERTa-based human value detector."
+    },
+    {
+     "id": "P10",
+     "name": "ConVA achieves best control",
+     "description": "ConVA improves control success rate by an average relative 29.6% across 10 Schwartz basic values (t-test p=6.29e-07) while keeping fluency rate at or above 97%."
+    },
+    {
+     "id": "P11",
+     "name": "Baseline trade-offs",
+     "description": "ICA keeps high fluency but often fails to trigger internal values, while CAA gets better control than ICA in some values but suboptimal fluency from embedding modification."
+    },
+    {
+     "id": "P12",
+     "name": "Context-controlled data ablation",
+     "description": "ConVA outperforms ConVA without context-controlled data comprehensively, showing the data method builds an unbiased value vector from few samples."
+    },
+    {
+     "id": "P13",
+     "name": "Generalizes across backbones",
+     "description": "ConVA achieves the highest control success rates across most values with high fluency on Qwen2.5 (3B-72B), Llama3-8B, Vicuna-13B and Mistral-7B."
+    },
+    {
+     "id": "P14",
+     "name": "Gate preserves general capability",
+     "description": "The gate effectively separates value-related from unrelated queries (Fig 3), and on four unrelated MMLU tasks it mitigates the capability loss seen for ConVA without gate (Table 5)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P8",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2, Appx L"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.3, Fig 3, Table 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Value control is uneven",
+   "description": "Control success rate differs across value dimensions and is lower for 'power', as for baselines, suggesting limits set by the LLM's architecture, size and training data."
+  },
+  {
+   "id": "P16",
+   "name": "100 pairs suffice",
+   "description": "A dataset of 100 positive-negative pairs is sufficient to find value vectors, though 'achievement' and 'power' CSR drops about 13-40% with 80% of the data."
+  },
+  {
+   "id": "P17",
+   "name": "Multi-layer control better",
+   "description": "Multi-layer control consistently outperforms single-layer modifications."
+  },
+  {
+   "id": "P18",
+   "name": "Human-GPT4o agreement",
+   "description": "Human evaluation shows high inter-rater reliability (e.g. 0.9298 for fluency) and strong agreement with GPT-4o evaluation."
+  }
+ ],
+ "structural_reasoning": "Two challenges motivate the ConVA design (data identification, gated activation), which then leads to control, generalization and capability-preservation results."
+}

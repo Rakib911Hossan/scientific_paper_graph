@@ -1,0 +1,200 @@
+{
+ "arxiv_id": "2507.09506",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Ref-Long benchmark motivation, design, difficulty and analyses",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Referencing is crucial but underexplored",
+     "description": "Long-context referencing, the ability to attribute items of interest to specific parts of long documents, is crucial for applications such as legal and financial work but is underexplored for long-context language models (LCLMs)."
+    },
+    {
+     "id": "P2",
+     "name": "Existing benchmarks do not assess referencing",
+     "description": "General long-context benchmarks either append irrelevant text to short tasks (unrealistic, biased) or are built from scratch with costly human annotation, while needle-in-a-haystack-style retrieval benchmarks ignore the relationship between retrieved text and its context and so are overly simple."
+    },
+    {
+     "id": "P3",
+     "name": "Ref-Long task definition",
+     "description": "Ref-Long gives LCLMs several indexed documents containing keys and asks for the indexes of all documents that reference a specific key, emphasizing the contextual relationship between key and document over simple retrieval."
+    },
+    {
+     "id": "P4",
+     "name": "Ref-Long is cheap to build",
+     "description": "Ref-Long tasks can be constructed cost-efficiently because only the locations of specific keys are required."
+    },
+    {
+     "id": "P5",
+     "name": "Three subsets from synthetic to realistic",
+     "description": "Ref-Long has three subsets: Ref-Long-A (synthetic, with the template sentence 'The little penguin counted {num} stars' inserted abruptly), Ref-Long-F (natural-language keys in LLM-generated coherent news documents of about 1,000 tokens on 3 topics), and Ref-Long-Paper (citations of 47 computer-science arXiv seed papers)."
+    },
+    {
+     "id": "P6",
+     "name": "All 13 LCLMs struggle",
+     "description": "Evaluating 13 LCLMs on Ref-Long reveals significant shortcomings in long-context referencing, even for advanced models like GPT-4o."
+    },
+    {
+     "id": "P7",
+     "name": "Performance drops with input length",
+     "description": "On Ref-Long-A, the performance of all LCLMs consistently drops as input length grows, so task difficulty increases with length."
+    },
+    {
+     "id": "P8",
+     "name": "No model exceeds 20% at 40K on Ref-Long-F",
+     "description": "On Ref-Long-F no LCLM exceeds 20.00% exact-match accuracy at 40K-token inputs, far below claimed maximum input lengths."
+    },
+    {
+     "id": "P9",
+     "name": "Humans solve the tasks",
+     "description": "On 50 Multi-Hard-24K tasks, two annotators gave identical correct annotations on 42 tasks and took an average of 123.95 seconds per task, while GPT-4o and o1 face significant challenges, so the tasks are manageable for humans."
+    },
+    {
+     "id": "P10",
+     "name": "Human strategy hints help only GPT-4o",
+     "description": "Adding a human-inspired step-by-step strategy to the prompt improves GPT-4o but not weaker LCLMs, and GPT-4o remains far below human level."
+    },
+    {
+     "id": "P11",
+     "name": "Key format does not change conclusions",
+     "description": "Replacing numeric keys with 20 fruit names does not substantially change the conclusions, so the difficulty is not an artifact of key format."
+    },
+    {
+     "id": "P12",
+     "name": "Long-context fine-tuning does not transfer",
+     "description": "ProLong-8B-512K performs comparably to Llama-3.1-Ins-8B despite less data and a weaker backbone, while LongCite-8B underperforms its Llama-3.1-Ins-8B backbone, so models fine-tuned on other long-context tasks generalize poorly to referencing."
+    },
+    {
+     "id": "P13",
+     "name": "Fine-tuning on Ref-Long helps but is insufficient",
+     "description": "Fine-tuning Llama-3.1-Ins-8B on Multi-Easy-8K improves performance, particularly on easier tasks, but as input length and difficulty increase all models still fail, so data alone cannot overcome the limitation."
+    },
+    {
+     "id": "P14",
+     "name": "Paper subset also hard",
+     "description": "On Ref-Long-Paper, stronger LCLMs reach only about 30% exact-match accuracy even with just 16 papers."
+    },
+    {
+     "id": "P15",
+     "name": "Error types by key format",
+     "description": "With numeric-symbol keys (Ref-Long-A), GPT-4o rarely confuses the key with others and errs mostly by missing documents (type I, reference less); with natural-language keys it often includes documents referencing unrelated keys."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3, 4, 5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4, 5, Table 1, 6, 7"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3, Table 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.4, Table 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.4, Table 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.5, Table 1"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.5, Table 5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.1, Table 6"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.2, Table 7"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P15",
+     "evidence": [
+      "Sec 6"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P16",
+   "name": "Referencing differs from retrieval",
+   "description": "Referencing requires the model to know the location where a key appears, not merely to retrieve the key."
+  },
+  {
+   "id": "P17",
+   "name": "Larger models perform better",
+   "description": "Models with more parameters perform better on Ref-Long-A, and Llama-3.3-Ins-70B surpasses Llama-3.1-Ins-70B."
+  }
+ ],
+ "structural_reasoning": "Motivating gap in benchmarks leads to the Ref-Long task and subsets, results showing universal difficulty, and ablations ruling out human gap, prompting, key format and fine-tuning explanations."
+}

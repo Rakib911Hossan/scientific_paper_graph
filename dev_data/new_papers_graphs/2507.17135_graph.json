@@ -1,0 +1,145 @@
+{
+ "arxiv_id": "2507.17135",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Fidelity gap of per-step sparsity methods motivates SADA, whose results follow",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Two efficiency bottlenecks of diffusion",
+     "description": "Deploying diffusion models at high resolution faces two efficiency bottlenecks: the iterative denoising process and the quadratic complexity of attention."
+    },
+    {
+     "id": "P2",
+     "name": "Per-step sparsity methods have low fidelity",
+     "description": "Training-free methods that reduce per-step computation reduce sampling time but show low faithfulness to the original samples, as measured by LPIPS and FID."
+    },
+    {
+     "id": "P3",
+     "name": "Causes of the fidelity gap",
+     "description": "The fidelity gap arises because fixed or pre-searched sparsity patterns cannot adapt to each prompt's denoising trajectory, and because the methods do not use the underlying ODE formulation or the specific ODE solver."
+    },
+    {
+     "id": "P4",
+     "name": "SADA stability criterion",
+     "description": "SADA decides sparsity with a stability criterion (Criterion 3.4): a timestep is stable and eligible for acceleration if the extrapolation error is anti-aligned with the local curvature, (x_{t-1} - x_hat_{t-1}) . second-order difference of y_t < 0."
+    },
+    {
+     "id": "P5",
+     "name": "Unified step-wise and token-wise sparsity",
+     "description": "When the criterion returns True, SADA applies step-wise (step-wise or multistep-wise) cache-assisted pruning; when it returns False, it applies token-wise cache-assisted pruning, partitioning tokens into unstable tokens computed fully and stable tokens approximated from a latent cache."
+    },
+    {
+     "id": "P6",
+     "name": "Solver-gradient approximation schemes",
+     "description": "SADA uses the trajectory gradient from the ODE solver to derive approximation schemes that give an error-bounded estimate of the per-step clean sample x_t^0 for solvers such as DPM-Solver++, and a third-order Adams-Moulton estimate gives lower MSE than a third-order finite difference method."
+    },
+    {
+     "id": "P7",
+     "name": "SADA gives at least 1.8x speedup with high fidelity",
+     "description": "On SD-2, SDXL and Flux with EDM and DPM++ solvers at 50 steps, SADA gives consistent speedups of at least 1.8x with LPIPS at most 0.10 and FID at most 4.5 relative to unmodified baselines."
+    },
+    {
+     "id": "P8",
+     "name": "SADA outperforms DeepCache, AdaptiveDiffusion and TeaCache",
+     "description": "In Table 1, SADA consistently outperforms DeepCache, AdaptiveDiffusion and TeaCache across all tested settings, with substantially better faithfulness."
+    },
+    {
+     "id": "P9",
+     "name": "Fewer steps improve fidelity but reduce speedup",
+     "description": "As the step count falls from 50 to 15, SADA's PSNR rises from 26.25 dB to 29.34 dB, FID falls from 4.26 to 3.70 and LPIPS drops from 0.100 to 0.076, while speedup falls to about 1.5x at 25 steps and about 1.25x at 15 steps."
+    },
+    {
+     "id": "P10",
+     "name": "SADA transfers to music and ControlNet",
+     "description": "SADA speeds up MusicLDM by about 1.81x with spectrogram LPIPS around 0.01-0.02, and accelerates SD-1.5-based ControlNet by about 1.41x without modification."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 3.4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.4, Fig 6, Fig 7"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P11",
+   "name": "SADA is training-free",
+   "description": "SADA is a training-free framework that needs no additional training and works as a plug-and-play module."
+  },
+  {
+   "id": "P12",
+   "name": "Trajectory continuity in expectation",
+   "description": "The expected value of x_t over x_0, epsilon and t equals sqrt(alpha_bar_t) times E[x_0], so the trajectory is continuous in expectation (Theorem 3.2)."
+  },
+  {
+   "id": "P13",
+   "name": "First bridge of solvers and sparsity",
+   "description": "SADA is, to the authors' knowledge, the first paradigm directly bridging numerical solvers of the sampling trajectory with sparsity-aware architecture optimizations."
+  }
+ ],
+ "structural_reasoning": "Motivation (fidelity gap) leads to the stability criterion and approximation design, which underlies the speedup/fidelity results and ablations."
+}

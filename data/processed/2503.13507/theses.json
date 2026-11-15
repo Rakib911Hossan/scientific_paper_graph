@@ -1,0 +1,14 @@
+[
+  "Top-performing models in the LLM fine-tuning competition exhibited significant overfitting on open benchmark datasets, resulting in poor generalization and near-chance performance on unseen, closed evaluation tasks.",
+  "The winning submissions succeeded by focusing on meticulous data curation and configuration tuning using standard open-source libraries, rather than implementing custom model architectures or custom fine-tuning code.",
+  "Widespread reproducibility and software quality issues exist in the ML community, as over half of the competition's submitted Dockerfiles failed to build due to unpinned dependencies and breaking changes in popular libraries like HuggingFace PEFT and Transformers.",
+  "Strict runtime limits during evaluation revealed that slow inference speeds and memory limitations are critical bottlenecks, causing approximately 30% of submissions to fail to complete the evaluation tasks.",
+  "Evaluation scores on open and closed task sets showed very low correlation, indicating that models either overfitted to the open tasks or that the two sets assessed entirely different skills.",
+  "The paper argues that accuracy-based scores alone are insufficient for LLM evaluation, recommending that the ML community adopt a broader set of metrics—including bias, robustness, and fairness—and transition to real-world, task-driven evaluations.",
+  "Individual evaluation scenarios do not consistently agree on which model is the best, as the top-ranked overall model achieved the highest score in only one out of eight scenarios, demonstrating the necessity of multi-scenario benchmarks.",
+  "The submission process exposed security vulnerabilities, with organizers inadvertently receiving sensitive credentials from participants, highlighting the need for stricter security measures and careful handling of secrets.",
+  "The competition proved that high-performance LLM fine-tuning is highly accessible and inexpensive, with top-performing models successfully fine-tuning on a single GPU in 15 to 20 hours for an estimated cost of $7 to $20.",
+  "To achieve cohesive agreement and reduce unexpected scattering in evaluation results, the paper highlights the importance of using comprehensive benchmarks where scores are aggregated across all tasks.",
+  "The paper argues that fine-tuning should not be viewed as a standalone solution for real-world applications, but rather as one tool within a holistic systems approach that incorporates techniques like RAG, Mixture of Experts, and model compression.",
+  "Many participants failed to develop their training workflows using Docker from the outset, leading to untested Dockerfiles, subtle numerical bugs, and broken references to local datasets or weights when they attempted to backport their work."
+]

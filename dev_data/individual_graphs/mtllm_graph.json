@@ -1,0 +1,384 @@
+{
+  "arxiv_id": "2406.12739v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "LLMs excel in English NLU",
+          "description": "LLMs pretrained with language modeling on trillions of tokens excel at complex NLU tasks with minimal or no labeled data, predominantly in English."
+        },
+        {
+          "id": "P2",
+          "name": "English-dominant pretraining",
+          "description": "Widely used LLMs are predominantly trained on English data, with English text typically comprising more than 80% of their pretraining corpora."
+        },
+        {
+          "id": "P3",
+          "name": "LLM degradation on distant/unseen languages",
+          "description": "LLM performance degrades in cross-lingual transfer to languages that are typologically distant from English or virtually unseen at pretraining."
+        },
+        {
+          "id": "P4",
+          "name": "LLM effectiveness restricted to high-resource languages",
+          "description": "The cross-lingual performance degradation restricts LLM effectiveness primarily to English and a small subset of high-resource languages, amplifying the cross-lingual technology gap."
+        },
+        {
+          "id": "P5",
+          "name": "MT models are inclusive by design",
+          "description": "Publicly available MT models like NLLB and MADLAD-400 are designed for inclusiveness, providing translation between 200+ and 400+ languages respectively."
+        },
+        {
+          "id": "P6",
+          "name": "MT encoders semantically align representations",
+          "description": "Unlike LLMs, MT models (specifically MT encoders) are designed to semantically align textual representations in a unified embedding space, as demonstrated by sentence retrieval performance on FLORES 200."
+        },
+        {
+          "id": "P7",
+          "name": "MT encoders lack world/commonsense knowledge",
+          "description": "MT models lack various types of knowledge (world knowledge, commonsense knowledge) commonly acquired through large-scale language modeling pretraining."
+        },
+        {
+          "id": "P8",
+          "name": "MT encoders underperform on multilingual NLU",
+          "description": "Because they lack LM-acquired knowledge, MT encoders underperform even smaller multilingual encoders like XLM-R on multilingual NLU tasks and cross-lingual transfer."
+        },
+        {
+          "id": "P9",
+          "name": "Proposal: merge MT encoders with LLMs (MT-LLM)",
+          "description": "The paper proposes merging MT encoders directly with LLMs into a unified multilingual model (MT-LLM) to combine the LLM's general knowledge with the MT encoder's multilingual representational alignment."
+        }
+      ],
+      "edges": [
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P9", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P8", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P9", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P10",
+          "name": "TTRAIN requires LLM support for target language",
+          "description": "Translating training data (TTRAIN) yields strong XLT performance but requires LLMs to support the target languages, which does not hold for low-resource languages."
+        },
+        {
+          "id": "P11",
+          "name": "TTEST enables ZS-XLT with monolingual LMs",
+          "description": "Translating test data (TTEST) enables zero-shot cross-lingual transfer with monolingual LMs, but incurs additional inference overhead from MT and generally offers performance slightly inferior to TTRAIN."
+        },
+        {
+          "id": "P12",
+          "name": "TTRAIN/TTEST rely on discrete MT decoder output",
+          "description": "Both TTRAIN and TTEST align input to accommodate LLM representation-space shortcomings by resorting to discrete natural language translations from the MT decoder."
+        },
+        {
+          "id": "P13",
+          "name": "Discrete translation propagates errors, loses latent info",
+          "description": "Because TTRAIN and TTEST rely on discrete MT decoder output, they fail to preserve the rich latent representations from the MT encoder and propagate translation errors to LLMs, reducing downstream performance."
+        },
+        {
+          "id": "P14",
+          "name": "Proposal: align latent MT encoder representations",
+          "description": "In contrast to discrete translation-based methods, the paper proposes aligning the latent representations produced by the MT encoder directly to the LLM's representation space via self-distillation, bypassing MT-decoder translation errors."
+        },
+        {
+          "id": "P15",
+          "name": "Latent alignment reduces inference cost vs TTEST",
+          "description": "By retaining continuous MT encoder representations and avoiding discretization in the MT decoder, the proposed approach reduces inference time and cost relative to TTEST."
+        }
+      ],
+      "edges": [
+        {"from": "P12", "to": "P13", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P16",
+          "name": "Vertical fusion of MT encoder and LLM",
+          "description": "The MT-LLM approach 'vertically' fuses a multilingual MT encoder E and an LLM M by introducing a projection U mapping the MT encoder's output space into the LLM's input embedding space, plus LoRA adapters inserted into the LLM's linear layers."
+        },
+        {
+          "id": "P17",
+          "name": "Frozen base parameters, trainable Θ only",
+          "description": "All other parameters of the MT encoder and LLM are frozen; only the new projection and LoRA parameters are trained."
+        },
+        {
+          "id": "P18",
+          "name": "Self-distillation with original LLM as teacher",
+          "description": "The new modular parameters are trained using the original (unmodified) LLM as a teacher, guiding the self-supervised training of the stacked MT-LLM."
+        },
+        {
+          "id": "P19",
+          "name": "Stage 1: minimize MSE between pooled outputs",
+          "description": "In Stage 1, the sequence embedding from feeding input through the original LLM is compared, via mean-squared error, to the sequence embedding obtained from feeding MT-encoder output embeddings through the LLM (with projection and LoRA), training only the projection and LoRA parameters."
+        }
+      ],
+      "edges": [
+        {"from": "P16", "to": "P17", "evidence": ["S3.stage1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S3.stage1"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P19", "evidence": ["S3.stage1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P20",
+          "name": "General adaptation less sample-efficient than task-specific",
+          "description": "The authors hypothesize that optimizing MT-LLM representation alignment on general-purpose data is less sample-efficient than task-specific alignment."
+        },
+        {
+          "id": "P21",
+          "name": "Task fine-tuning reduces LLM output complexity",
+          "description": "Fine-tuning the base LLM with a classification head on labeled task data reduces the complexity of the LLM's output representations to encode only task-specific features."
+        },
+        {
+          "id": "P22",
+          "name": "Reduced complexity facilitates task-specific alignment",
+          "description": "Because task fine-tuning reduces the LLM's output representations to task-specific features, this facilitates task-specific representational alignment for the MT-LLM."
+        },
+        {
+          "id": "P23",
+          "name": "Stage 2: continue training LoRA adapters on task alignment",
+          "description": "Building on Stage 1's task-agnostic adaptation, Stage 2 continues training only the LoRA adapters to again minimize MSE between the MT-LLM's and fine-tuned LLM's task-specific output representations."
+        },
+        {
+          "id": "P24",
+          "name": "Two-stage alignment extends LLM knowledge access",
+          "description": "Both alignment stages together ensure that MT encoder latent translations integrate seamlessly as LLM input representations, extending access to the LLM's embedded knowledge to all languages supported by the MT model."
+        }
+      ],
+      "edges": [
+        {"from": "P20", "to": "P21", "evidence": ["S3.stage2"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P22", "evidence": ["S3.stage2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["S3.stage2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P23", "evidence": ["S3.stage2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P24", "evidence": ["S3.stage2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P25",
+          "name": "NLLB-Encoder alone lacks NLU on complex tasks",
+          "description": "The NLLB encoder alone shows strong ZS-XLT performance on sentiment classification (NusaX) but performs worse on NLI and degrades on the more intricate Belebele MRC task."
+        },
+        {
+          "id": "P26",
+          "name": "NLLB-LLM2Vec outperforms both components",
+          "description": "The integrated NLLB-LLM2Vec variants substantially outperform both standalone LLM2Vec and the standalone NLLB encoder on all NLU tasks, with Belebele gains of 12% and 30% respectively."
+        },
+        {
+          "id": "P27",
+          "name": "S1+FT already competitive with TTEST",
+          "description": "Fine-tuning NLLB-LLM2Vec adapted only via task-agnostic Stage 1 (S1+FT) is already competitive with the more computationally involved TTEST baseline."
+        },
+        {
+          "id": "P28",
+          "name": "S1+S2 substantially improves over S1+FT",
+          "description": "Adding task-specific distillation (S1+S2) substantially and consistently improves performance over direct fine-tuning (S1+FT), with the largest gains on NusaX (+9.4%), the dataset with the smallest training set."
+        },
+        {
+          "id": "P29",
+          "name": "S1+S2 consistently beats TTEST on same MT model",
+          "description": "The full NLLB-LLM2Vec S1+S2 consistently beats TTEST based on the same NLLB 600M model by sizable margins of 3-11%."
+        },
+        {
+          "id": "P30",
+          "name": "S1+S2 matches or beats TTEST with larger MT model",
+          "description": "NLLB-LLM2Vec S1+S2 frequently performs on par with or better than TTEST using higher-quality translations from the larger NLLB 3B model, because MT improvements propagate to ZS-XLT via favorable model selection on T-DEV."
+        }
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["S5.nllb"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P28", "evidence": ["S5.nllb"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P29", "evidence": ["S5.nllb"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P30", "evidence": ["S5.nllb"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {
+          "id": "P31",
+          "name": "LLM2Vec strong English but weak ZS-XLT",
+          "description": "Despite strong English performance, the English-centric LLM2Vec model underperforms all other models in ZS-XLT, with even the much smaller NLLB-Encoder outperforming it on NLI and NusaX."
+        },
+        {
+          "id": "P32",
+          "name": "TTEST significantly improves over LLM2Vec ZS-XLT",
+          "description": "TTEST significantly improves upon the ZS-XLT performance of LLM2Vec, especially on datasets predominantly featuring lower-resource languages (AmNLI, Kardeş-NLU)."
+        },
+        {
+          "id": "P33",
+          "name": "Larger MT model improves TTEST",
+          "description": "Consistent with related work, the larger NLLB 3B model improves TTEST performance on all tasks compared to NLLB 600M."
+        },
+        {
+          "id": "P34",
+          "name": "MT-LLM alignment outperforms TTEST and cuts inference cost",
+          "description": "The alignment procedure effectively merges NLLB into LLM2Vec to enable ZS-XLT that both outperforms TTEST and reduces inference cost by avoiding MT decoding."
+        }
+      ],
+      "edges": [
+        {"from": "P31", "to": "P32", "evidence": ["S5.llm2vec"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P34", "evidence": ["S5.llm2vec"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P34", "evidence": ["S5.llm2vec"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {
+          "id": "P35",
+          "name": "Task-agnostic adaptation is sample-efficient",
+          "description": "Stage 1 alignment is highly sample-efficient: the largest relative ZS-XLT gains are obtained after only 3K training steps (e.g., +10.5% for Belebele) and then marginalize with further training."
+        },
+        {
+          "id": "P36",
+          "name": "Adaptation important for both English and ZS-XLT",
+          "description": "Task-agnostic adaptation steps are important for both English performance and ZS-XLT performance, with similar trends observed for English gains (e.g., +15% on Belebele from 3K steps)."
+        },
+        {
+          "id": "P37",
+          "name": "Negligible computational cost relative to pretraining",
+          "description": "Because alignment gains saturate after only a few thousand steps, LLMs and MT encoders can be tied into a unified MT-LLM at computational cost negligible relative to both LLM and MT pretraining."
+        },
+        {
+          "id": "P38",
+          "name": "NusaX ZS-XLT does not improve with prolonged adaptation",
+          "description": "On NusaX, prolonged task-agnostic adaptation benefits in-language English performance but does not improve ZS-XLT results, because the NLLB encoder already solves the simpler sentiment task well, requiring little additional LLM knowledge."
+        }
+      ],
+      "edges": [
+        {"from": "P35", "to": "P36", "evidence": ["S5.1.adapt"], "votes": 2, "confidence": "majority"},
+        {"from": "P35", "to": "P37", "evidence": ["S5.1.adapt"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {
+          "id": "P39",
+          "name": "GPT-2 lacks EOS token pretraining",
+          "description": "Due to the absence of an EOS token in GPT-2's pretraining, task-agnostic self-distillation for NLLB-GPT-2 uses mean-pooled token representations instead."
+        },
+        {
+          "id": "P40",
+          "name": "NLLB-GPT-2 outperforms standalone NLLB and fair TTEST",
+          "description": "NLLB-GPT-2 successfully taps into GPT-2's knowledge to outperform both the standalone NLLB encoder and the fair TTEST baseline using the same NLLB-600M model in ZS-XLT across all datasets."
+        },
+        {
+          "id": "P41",
+          "name": "Encoder-to-decoder conversion causes suboptimal alignment",
+          "description": "Despite outperforming baselines, NLLB-GPT-2 shows a notable performance gap to fine-tuned GPT-2 on English, likely stemming from challenges in converting encoder representations into a decoder model."
+        },
+        {
+          "id": "P42",
+          "name": "Approach generalizes to decoder-only backbones",
+          "description": "The successful (though suboptimal) alignment of NLLB with GPT-2 demonstrates that the self-distillation MT-LLM approach benefits both encoder-only and decoder-only LLM backbones."
+        }
+      ],
+      "edges": [
+        {"from": "P39", "to": "P40", "evidence": ["S5.1.gpt2"], "votes": 2, "confidence": "majority"},
+        {"from": "P40", "to": "P41", "evidence": ["S5.1.gpt2"], "votes": 2, "confidence": "majority"},
+        {"from": "P40", "to": "P42", "evidence": ["S5.1.gpt2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P43",
+      "name": "Better generation does not mean better NLU",
+      "description": "Recent work shows that methods improving a model's target-language generation capabilities (continued pretraining, self-instruction, vocabulary extension) do not necessarily translate to stronger NLU performance."
+    },
+    {
+      "id": "P44",
+      "name": "Prior MT-representation integration was task-specific only",
+      "description": "Few prior studies investigated integrating rich MT representations into language models, but these efforts generally focused on task-specific integration without achieving global representation alignment between the MT encoder and the LLM."
+    },
+    {
+      "id": "P45",
+      "name": "MT-LLM enables TTRAIN unlike standalone LLM",
+      "description": "Unlike an English-centric standalone LLM, the inherently multilingual MT-LLM can further benefit from training on translated training data (TTRAIN), since it was trained on both MT and denoising autoencoding objectives."
+    },
+    {
+      "id": "P46",
+      "name": "Evaluation tasks and datasets",
+      "description": "The paper evaluates on three NLU tasks: Natural Language Inference (XNLI, AmericasNLI, Kardeş-NLU), Sentiment Classification (NusaX), and multiple-choice Machine Reading Comprehension (Belebele), covering 127 predominantly low-resource languages."
+    },
+    {
+      "id": "P47",
+      "name": "LLM2Vec conversion recipe",
+      "description": "LLM2Vec converts decoder-only LLMs into sequence encoders via bidirectional attention, self-supervised masked next-token prediction, and SimCSE training."
+    },
+    {
+      "id": "P48",
+      "name": "Buginese excluded as outlier",
+      "description": "ZS-XLT performance for Buginese progressively deteriorated with more distillation, an unusual behavior consistent with other reported work using NLLB, leading the authors to exclude it from the main discussion."
+    },
+    {
+      "id": "P49",
+      "name": "Numerical instability from merging LoRA sets",
+      "description": "Preliminary experiments found that merging the Stage 1 adaptation LoRAs with new fine-tuning LoRA adapters led to numerical instabilities due to quantization, severely degrading task performance, motivating separate continued training of the same LoRA set."
+    },
+    {
+      "id": "P50",
+      "name": "Future work: token-level alignment and MT encoder extension",
+      "description": "Future work directions include incorporating token-level alignment objectives to further improve MT-LLM generalization, and extending the MT-LLM to additional languages via post-hoc adaptation of the MT encoder."
+    }
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph is coherent across its major clusters: the motivation contrasting LLM English-centricity with MT multilinguality that drives the MT-LLM proposal (C1), the critique of discrete translation-based baselines motivating latent representation alignment (C2), the two-stage self-distillation methodology (C3, C4), the main NLLB-LLM2Vec results chain (C5), the LLM2Vec-specific comparative results (C6), the sample-efficiency analysis of adaptation (C7), and the decoder-backbone generalization experiment with GPT-2 (C8). Edge confidence is generally high because the paper's argumentative structure directly motivates each design choice with an explicit problem-solution narrative, and the results sections explicitly connect ablation findings to the paper's central claims about sample efficiency and performance gains. The isolated-node set captures supporting details (specific datasets, technical recipes, minor outlier observations, future work) that contextualize but are not tightly chained into the central technical and empirical narrative. No cycles or contested edge directions were identified in this construction."
+}

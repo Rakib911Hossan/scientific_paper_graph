@@ -1,0 +1,176 @@
+{
+ "arxiv_id": "2608.16974",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Evaluation-centered diagnosis of generative-model fairness failure, illustrative audit, and the Fairness Card remedy",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Fairness is an evaluation problem",
+     "description": "Fairness failures in generative models persist not primarily because of missing mitigations but because current evaluation practices prevent cumulative, decision-relevant evidence."
+    },
+    {
+     "id": "P2",
+     "name": "Mitigations rarely help dependably",
+     "description": "Modern generative systems still reproduce representational and stereotyping harms despite widespread mitigations (data filtering/balancing, regularization, prompting, RLHF, post-processing), and fairness methods are fragile, non-generalizable and often traded off against performance."
+    },
+    {
+     "id": "P3",
+     "name": "Fairness is protocol-dependent",
+     "description": "Fairness results depend on prompt families, paraphrases, decoding, seeds and post-processing; e.g. small prompt variations ('a person' vs 'one person') shift demographic distributions in SDXL and DALL-E 3, so two papers can both be correct yet incomparable."
+    },
+    {
+     "id": "P4",
+     "name": "Safety layers create access fairness",
+     "description": "Safety layers (refusals, deflections, moderation) shape who obtains information or content, and refusal rates and styles differ across gender, nationality, religion and sexual orientation, so disparities arise even when the base model is unchanged."
+    },
+    {
+     "id": "P5",
+     "name": "Refusals dropped as missing data",
+     "description": "Many audits evaluate generated content only and silently discard refusals, hiding unequal access and yielding overly optimistic fairness assessments or harm shifting."
+    },
+    {
+     "id": "P6",
+     "name": "Not counterfactually consistent",
+     "description": "Generative models infer protected attributes via proxies (names, hobbies, visual cues), alter tone under identity swaps and have stochastic variability, so counterfactual symmetry assumptions rarely hold."
+    },
+    {
+     "id": "P7",
+     "name": "Fairness metrics are unstable",
+     "description": "Fairness conclusions depend on metric choice and labeling pipelines; common representation and quality metrics are embedding-dependent and can change model rankings with fixed generators."
+    },
+    {
+     "id": "P8",
+     "name": "Evidence is non-cumulative",
+     "description": "Because prompt suites, decoding settings, scoring and refusal handling differ or are under-reported, fairness results cannot be reliably compared across papers or over time, and protocol choice allows cherry-picking and harm shifting."
+    },
+    {
+     "id": "P9",
+     "name": "Same model, opposite verdicts",
+     "description": "In an audit of Qwen2.5-7B-Instruct (3,200 generations over 4 intersectional slices, 4 prompt families, 5 paraphrases, 4 occupations, 2 decoding regimes), aggregate disparities are at or below the 5% flag line (max six points on title mention), yet worst-slice stereotype-keyword rate exceeds 5% on every slice under F2 and on none under F4."
+    },
+    {
+     "id": "P10",
+     "name": "Fairness Cards make choices explicit",
+     "description": "Fairness Cards are a minimal reporting artifact disclosing prompt families, counterfactual protocols, metrics and decision rules, and refusal handling, enabling reproducibility, comparability and accountability."
+    },
+    {
+     "id": "P11",
+     "name": "Upstream fixes need evaluation to be meaningful",
+     "description": "Improved data, training or governance, and alignment/safety work alone cannot substitute for standardized evaluation: alignment optimizes average preference while fairness is distributional, so worst-slice gaps can widen and guardrails can amplify access disparities."
+    },
+    {
+     "id": "P12",
+     "name": "Recommendations for evaluation standards",
+     "description": "The paper recommends mandating Fairness Cards, treating refusals and deflections as first-class fairness outcomes, requiring robustness and uncertainty reporting, standardizing the evaluation surface, and embedding fairness regression tests in governance and post-release monitoring."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P3",
+     "to": "P8",
+     "evidence": [
+      "Sec 2.3, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 2.3, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 2.3, Sec 3.4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P2",
+     "evidence": [
+      "Sec 2.3 (evaluation failures are the deeper bottleneck behind limits of current practice)"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P1",
+     "evidence": [
+      "Sec 1, Sec 2.3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P9",
+     "evidence": [
+      "Sec 4, Fig 1"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P10",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4, Sec 5"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 6"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P12",
+     "evidence": [
+      "Sec 7"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Fairness treated as orthogonal constraint",
+   "description": "Evaluation instabilities help explain why fairness is frequently treated as an orthogonal constraint rather than a co-equal design goal alongside quality, efficiency or realism."
+  },
+  {
+   "id": "P14",
+   "name": "Evaluation does not generalize across modality",
+   "description": "Many fairness interventions target classification, retrieval or binary attribute control and often fail to generalize to open-ended generation."
+  },
+  {
+   "id": "P15",
+   "name": "Technical reports offer incomparable bias evidence",
+   "description": "Technical reports and model cards increasingly acknowledge bias, but their evidence is hard to compare across systems and versions because protocols are underspecified and limited in scope."
+  }
+ ],
+ "structural_reasoning": "Specific evaluation failure modes feed into the non-cumulative-evidence diagnosis, which supports the thesis; the thesis motivates Fairness Cards, which are defended against alternative views and yield recommendations."
+}

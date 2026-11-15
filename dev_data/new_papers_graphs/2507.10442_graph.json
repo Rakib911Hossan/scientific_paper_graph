@@ -1,0 +1,211 @@
+{
+ "arxiv_id": "2507.10442",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Three-space probing of VLMs: knowledge preserved in visual/VL-projection spaces is lost in the response space",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "VLMs lack basic visual skills",
+     "description": "Evidence shows VLMs lack basic capabilities such as understanding simple negations and recognizing and counting objects, but prior work evaluates only the final VLM response, not which component is at fault."
+    },
+    {
+     "id": "P2",
+     "name": "Three-space probing design",
+     "description": "VLMs are analyzed via three intermediate spaces, visual latent (visual encoder output), vision-language projection output, and language response (decoder output), probing each on recognition, counting and spatial tasks."
+    },
+    {
+     "id": "P3",
+     "name": "Coarse recognition solved in all spaces",
+     "description": "For coarse-grained object recognition, visual and VL-projection probes of all VLMs achieve above 95% accuracy."
+    },
+    {
+     "id": "P4",
+     "name": "Fine-grained recognition collapses in response",
+     "description": "On fine-grained recognition (CUB, Stanford Dogs) visual and VL-projection probes mostly exceed 90%, but response-space accuracy drops by at least 45%."
+    },
+    {
+     "id": "P5",
+     "name": "Decoder lacks no knowledge; fine-tuning is ineffective",
+     "description": "The drop is attributed not to missing knowledge in the language decoder but to ineffective joint fine-tuning of the projection layer and decoder, as the LLaVA 665k data has only 0.17% samples on fine-grained dog breeds."
+    },
+    {
+     "id": "P6",
+     "name": "Scaling decoder does not fix it",
+     "description": "Larger language decoders (7B to 34B) improve response-space accuracy only somewhat, and best fine-grained response accuracy remains at least 35% below visual and VL-projection performance."
+    },
+    {
+     "id": "P7",
+     "name": "Counting follows the same loss pattern",
+     "description": "Object counting on PaintSkills (1-4 instances, chance 25%) shows trends similar to fine-grained recognition: visual and VL-projection probes are high while response-space performance is much lower."
+    },
+    {
+     "id": "P8",
+     "name": "Spatial understanding reverses the trend",
+     "description": "On spatial arrangement (PaintSkills, chance 25%) visual-latent performance is worst and response space (e.g. LLaVA-1.5) is better, supporting Tong et al.'s claim that the visual encoder is deficient for spatial tasks."
+    },
+    {
+     "id": "P9",
+     "name": "Visual encoders are proficient for most tasks",
+     "description": "Contrary to prior claims that vision encoders are the bottleneck, for most visual tasks except spatial the encoders capture the needed information and VL projection preserves most of it; the loss occurs in the language decoder."
+    },
+    {
+     "id": "P10",
+     "name": "Language priors are not a confound",
+     "description": "Setup and synthetic datasets minimize language priors, and a blind language-only Vicuna baseline performs near chance, so priors do not explain the results."
+    },
+    {
+     "id": "P11",
+     "name": "Response space is most robust to corruptions",
+     "description": "The response space is the most robust to image corruptions, which is attributed to the poor information flow into it, while the VL projection space is least robust."
+    },
+    {
+     "id": "P12",
+     "name": "Visual prompting helps response space less",
+     "description": "Visual prompting techniques (background blur/removal, red circle) improve visual and VL-projection spaces dramatically but gains are comparatively diminished in the response space; blurring gives the best overall performance."
+    },
+    {
+     "id": "P13",
+     "name": "VLMs rely on texture over shape",
+     "description": "Edge-map transformations cause a drastic performance drop while patch shuffle causes a smaller one, indicating VLMs rely on texture more than shape, unlike humans."
+    },
+    {
+     "id": "P14",
+     "name": "Objects and background context both matter",
+     "description": "VLMs perform best when both object information and background context are preserved; with a masked object, keeping background context improves all three spaces."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 4.1, Table 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 4.1, Table 2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 4.1, Table 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.1 discussion"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.1, Fig 3, Table 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2, Table 4"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2, Table 5"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P9",
+     "evidence": [
+      "Sec 1, Sec 4.1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 1, Sec 4.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 1, Sec 4.2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P10",
+     "evidence": [
+      "Sec 4, Table 6"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.1, Table 7"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.2, Table 8"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.3 summary"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.2, Table 8"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.2, Table 8"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Most findings are not limited to larger models",
+   "description": "Study covers contrastive (CLIP, ALBEF), encoder-decoder (CoCa, BLIP-2) and instruction-tuned (InstructBLIP, LLaVA-1.5, LLaVA-NEXT) VLMs."
+  }
+ ],
+ "structural_reasoning": "The three-space probing design underlies per-task findings; the fine-grained recognition drop is explained and extended to the broad conclusion about encoders, and transformation experiments reuse the design."
+}

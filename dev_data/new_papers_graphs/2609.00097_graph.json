@@ -1,0 +1,283 @@
+{
+ "arxiv_id": "2609.00097",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Decode-phase bottlenecks and sparse-attention dilemmas lead to FFD's design and its efficiency/accuracy results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Decoding is memory-bandwidth-bound",
+     "description": "In the autoregressive decode phase each token generation reloads the entire KV cache from HBM, so IO rather than FLOPs is the primary bottleneck, creating a memory wall for long contexts."
+    },
+    {
+     "id": "P2",
+     "name": "Selector-Computer separation wastes computation",
+     "description": "In the standard decoupled Selector-Computer paradigm, the computer cannot reuse the selector's intermediate computations, creating efficiency bottlenecks."
+    },
+    {
+     "id": "P3",
+     "name": "Metric dilemma",
+     "description": "Importance metrics that rely on extra metadata (partial dimensions, centroids, geometric bounds) either incur additional memory overhead or suffer information distortion."
+    },
+    {
+     "id": "P4",
+     "name": "Selection dilemma",
+     "description": "Top-k selection is cheap but cannot adapt to varying attention entropy, while top-p adapts to the distribution but needs a global softmax and sorting, which adds overhead and breaks the streaming pipeline."
+    },
+    {
+     "id": "P5",
+     "name": "Content-aware 2-bit scanning",
+     "description": "FFD splits the K cache into a 2-bit quantized thumbnail for scanning and an 8-bit residual for refinement (symmetric zero-free mid-rise quantization), replacing metadata-based indexing and avoiding metadata memory overhead."
+    },
+    {
+     "id": "P6",
+     "name": "Top-delta rule",
+     "description": "Top-delta keeps tokens with score s_ij at least m_i minus delta, i.e. attention at least e^-delta of the peak; delta=5 discards only tokens below about 0.67% of peak attention mass."
+    },
+    {
+     "id": "P7",
+     "name": "Pseudo-max avoids global reduction",
+     "description": "Estimating the maximum score from only sink and local tokens (pseudo-max), justified by attention being dominated by sink and local tokens, lets the threshold be computed locally so KV blocks are processed independently without global synchronization."
+    },
+    {
+     "id": "P8",
+     "name": "Pseudo-max approximation is accurate",
+     "description": "The gap between true max and pseudo-max is below 0.01 in 86.1% of cases, so the approximation is a robust safe relaxation."
+    },
+    {
+     "id": "P9",
+     "name": "Fused kernel with refinement and CUDA graphs",
+     "description": "FFD runs pseudo-max estimation, 2-bit top-delta selection and 8-bit refinement as fused Triton kernels reusing the scan, and uses full-chain block-wise JIT CUDA graphs that run 99% of decode steps within a graph."
+    },
+    {
+     "id": "P10",
+     "name": "Top-delta selection is cheaper than top-k and top-p",
+     "description": "At a matched keep ratio of about 27.3%, top-delta selection is 2x faster than top-k and 25x faster than top-p."
+    },
+    {
+     "id": "P11",
+     "name": "Kernel speedup up to 11.6x",
+     "description": "On an RTX 4090 FFD kernel latency scales linearly with a much lower slope than FlashAttention-2, with average speedups of 7.33x (delta=5) and 6.18x (delta=7) and a peak of 11.63x; at 256K it is 0.17 ms versus 1.12 ms."
+    },
+    {
+     "id": "P12",
+     "name": "End-to-end throughput gains",
+     "description": "FFD reaches up to 2.37x throughput over FlashAttention-2 at 16K on RTX 4090 (51.8 vs Quest 47.8 tokens/s) and 1.96x on H100 (87.0 vs 44.5 tokens/s)."
+    },
+    {
+     "id": "P13",
+     "name": "KIVI underperforms dense attention",
+     "description": "KIVI is slower than dense attention in the low-batch regime (22.4 vs 44.5 tokens/s on H100 at 16K) because of dequantization cost."
+    },
+    {
+     "id": "P14",
+     "name": "RULER accuracy preserved",
+     "description": "On RULER at 32K with Llama-3.1-8B-Instruct, FFD matches the dense baseline on NIAH single-key tasks (100.0) and has minimal degradation on Variable Tracking (98.4 vs 99.6)."
+    },
+    {
+     "id": "P15",
+     "name": "Adaptive top-delta handles multi-peak retrieval",
+     "description": "Fixed-budget Quest drops sharply on MK-3 (6.0) whereas FFD with top-delta reaches 95.0, and FFD consistently outperforms Twilight on both benchmarks."
+    },
+    {
+     "id": "P16",
+     "name": "LongBench result",
+     "description": "On LongBench (21 datasets, 6 categories) FFD with delta=7 achieves the highest overall average of 26.35 among compared methods."
+    },
+    {
+     "id": "P17",
+     "name": "Higher recall than Quest",
+     "description": "FFD achieves higher recall and lower LSE error than Quest at the same retrieval budget, and maintains higher Spearman correlation across layers, because 2-bit quantization preserves key directionality better than min/max bounds."
+    },
+    {
+     "id": "P18",
+     "name": "Fusion and 2-bit scanning are synergistic",
+     "description": "The fused 2-bit top-delta configuration achieves 53.96 tok/s, RULER AVG 90.40 and LongBench AVG 25.90, a 2.2x throughput gain over its split-execution counterpart."
+    },
+    {
+     "id": "P19",
+     "name": "Generalizes to Qwen2.5",
+     "description": "On Qwen2.5-7B-Instruct with delta=7, FFD gets RULER AVG 85.90 and LongBench AVG 30.11, outperforming KIVI, Quest and StreamingLLM."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 3.2, Fig 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 5 Fig 5"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P9",
+     "evidence": [
+      "Sec 1, Sec 3.3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 4 Table 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P10",
+     "evidence": [
+      "Sec 4 Table 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.4, Table 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.4, Table 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.4, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P16",
+     "evidence": [
+      "Sec 4.4, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P17",
+     "evidence": [
+      "Sec 5.1, Fig 6, 7"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P18",
+     "evidence": [
+      "Sec 4 Ablation, App G"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P18",
+     "evidence": [
+      "Sec 4 Ablation, App G"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P19",
+     "evidence": [
+      "Sec 4 Generalization"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P20",
+   "name": "Quest memory footprint matched",
+   "description": "Quest with page size 16 has index memory footprint equal to FFD's 2-bit data for full scanning, with token budget aligned at 16k, making the comparison fair."
+  },
+  {
+   "id": "P21",
+   "name": "Delta=7 is conservative",
+   "description": "delta=7 corresponds to threshold e^-7 (about 1/1096), retaining tokens with about 0.1% relative importance, a conservative setting versus the aggressive delta=5 targeting the top ~1% tokens."
+  }
+ ],
+ "structural_reasoning": "Problem diagnosis (memory wall, metric and selection dilemmas) leads to the design components (2-bit scanning, top-delta, pseudo-max), fused into a kernel, which then underpins efficiency and accuracy results. Setup facts isolated."
+}

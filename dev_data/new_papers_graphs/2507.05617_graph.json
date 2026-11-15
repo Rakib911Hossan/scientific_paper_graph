@@ -1,0 +1,197 @@
+{
+ "arxiv_id": "2507.05617",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Fine-tuned SLMs excel at text matching, motivating flipped distillation via a LoRA encoder-decoder view and margin-aware losses, validated offline and online",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "SLMs beat LLMs on specialized tasks",
+     "description": "LLMs often underperform on domain-specific tasks such as text matching compared to smaller models fine-tuned on specialized data."
+    },
+    {
+     "id": "P2",
+     "name": "SLMs learn representation similarity",
+     "description": "SLMs are trained to make paired inputs more similar in representation, which helps them distinguish synonyms and learn in-domain terminology more effectively than LLMs that directly predict match or non-match."
+    },
+    {
+     "id": "P3",
+     "name": "Flipped distillation paradigm",
+     "description": "The paper proposes flipping knowledge distillation so that an LLM (student) learns domain expertise in representation learning from a small encoder-based model (teacher) for text matching."
+    },
+    {
+     "id": "P4",
+     "name": "Architecture gap",
+     "description": "Decoder-only LLMs lack dedicated modules for learning text representations, so the architectural gap to encoder-based SLMs must be bridged."
+    },
+    {
+     "id": "P5",
+     "name": "LoRA as encoder-decoder",
+     "description": "LoRA's compression matrix A acts as an encoder mapping input to a low-dimensional representation and its expansion matrix B acts as a decoder, so the LLM can be reinterpreted as an encoder-decoder whose encoder yields text representations and similarities."
+    },
+    {
+     "id": "P6",
+     "name": "Distillation loss with dual-threshold denoising",
+     "description": "Student similarities are aligned with teacher cosine similarities via a squared-error distillation loss that filters noisy teacher outputs: positive pairs with teacher similarity below threshold theta and negative pairs at or above 1-theta."
+    },
+    {
+     "id": "P7",
+     "name": "Margin-aware contrastive loss",
+     "description": "The MCL converts cosine similarity to angular distance and adds the teacher-derived margin m_c to positive pairs and subtracts it for negative pairs, so the LLM learns differentiation within as well as between positive and negative samples."
+    },
+    {
+     "id": "P8",
+     "name": "Flip distillation is best offline",
+     "description": "Across ATEC, NfCorpus and a ByteDance dataset, flip-distilled LLMs (Qwen-0.5b to GLM-10b) outperform original LLMs, SFT/LoRA, and distillation from larger LLMs; e.g. FLM-10b-flip (MedBERT) reaches F1 0.9249 on NfCorpus versus 0.9227 for PMC-Llama-13b."
+    },
+    {
+     "id": "P9",
+     "name": "Works with a weaker teacher",
+     "description": "Even when the teacher underperforms the student, flip distillation improves the student, e.g. GTE as teacher raises Qwen-0.5b to 0.8076 accuracy."
+    },
+    {
+     "id": "P10",
+     "name": "Online A/B gains",
+     "description": "A 7-day online A/B test in ByteDance's FAQ search against the deployed Baichuan-7b shows significant relative gains in insurance, loan, payment and subscription scenarios, and the model has been deployed."
+    },
+    {
+     "id": "P11",
+     "name": "Ablation: components all matter",
+     "description": "Removing L_MCL lowers ByteDance F1 from 0.7307 to 0.7226 and AUC from 0.9251 to 0.9169; removing L_dist lowers F1 to 0.7249 and AUC to 0.9180; removing noise filtering causes the smallest drop."
+    },
+    {
+     "id": "P12",
+     "name": "Margin has a sweet spot",
+     "description": "F1 rises as m_c grows from 0.0 to about 0.06, peaking at 0.7307, and falls to 0.7219 at m_c=0.1."
+    },
+    {
+     "id": "P13",
+     "name": "Cleaner class separation",
+     "description": "With MCL, Qwen-0.5b-flip shows clearly separated positive (near 1.0) and negative (near 0.0) score distributions, whereas Qwen-0.5b overlaps near the boundary."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 3.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.5, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.5, Table 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.5, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.5, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.6, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.2, Fig 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.3, Fig 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Domain-matched pretraining helps",
+   "description": "SLMs and LLMs pre-trained in the same domain perform better, e.g. FinBERT has F1 0.8025 on ATEC versus 0.8003 (GTE) and 0.7979 (MedBERT)."
+  },
+  {
+   "id": "P15",
+   "name": "Reliance on a strong SLM",
+   "description": "The paradigm depends heavily on the teacher SLM performing well (stated limitation)."
+  }
+ ],
+ "structural_reasoning": "Observation that SLMs are better at specialized matching motivates flipped distillation; LoRA reinterpretation enables the architecture, losses are built on it, and results/ablations follow."
+}

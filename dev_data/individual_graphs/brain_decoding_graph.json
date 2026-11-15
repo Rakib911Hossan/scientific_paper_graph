@@ -1,0 +1,389 @@
+{
+  "arxiv_id": "2606.19081v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Concepts as high-dimensional vectors",
+          "description": "Recent theoretical work argues that human concepts are most plausibly represented as high-dimensional vectors, explaining typicality, similarity, relations, and compositionality through geometric structure."
+        },
+        {
+          "id": "P2",
+          "name": "Vector framework resonates with foundation models",
+          "description": "The vector-space framework resonates with the success of modern foundation models, which learn rich embedding spaces where meaning is encoded in geometric relations among vectors."
+        },
+        {
+          "id": "P3",
+          "name": "Vector organization suggests similarity-driven learning",
+          "description": "If the brain organizes concepts in vector spaces, comparison and learning are likely driven by similarity, suggesting contrastive learning as a biologically plausible approximation of the brain's own optimization principle."
+        },
+        {
+          "id": "P4",
+          "name": "Motivates investigating contrastive objectives",
+          "description": "This reasoning motivates investigating contrastive objectives as biologically plausible candidates to reverse the brain's loss function for brain decoding."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P1", "to": "P3", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["Sabstract", "S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P5",
+          "name": "Macroscale factors linearize fMRI signal",
+          "description": "Spatial averaging over millions of neurons, temporal filtering of fast dynamics, observation noise, and limited sample size relative to dimensionality act together to smooth and linearize the measured fMRI signal."
+        },
+        {
+          "id": "P6",
+          "name": "fMRI approximates first-order neural computation",
+          "description": "Because macroscale factors linearize the measured signal, what fMRI captures is effectively a first-order approximation of underlying neural computations, despite neurons being individually non-linear."
+        },
+        {
+          "id": "P7",
+          "name": "Prior large-scale study found linear models outperform non-linear at macroscale",
+          "description": "A recent large-scale fMRI study showed that linear models not only match but often outperform a wide range of non-linear approaches across predictive accuracy, residual structure, and computational efficiency."
+        },
+        {
+          "id": "P8",
+          "name": "Principled explanation for linear model effectiveness",
+          "description": "The linearization of the observable signal due to macroscale measurement factors provides a principled explanation for why linear models can be highly effective in fMRI decoding despite the non-linear nature of underlying neural processes."
+        }
+      ],
+      "edges": [
+        {"from": "P5", "to": "P6", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P8", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P8", "evidence": ["S1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P9",
+          "name": "Unclear if gains stem from contrastive objective or architecture",
+          "description": "Prior work employing contrastive learning within deep architectures for brain encoding/decoding leaves it unclear whether performance gains stem from the contrastive objective itself or from architectural complexity."
+        },
+        {
+          "id": "P10",
+          "name": "No prior systematic benchmarking isolating objective from depth",
+          "description": "To the authors' knowledge, no prior work has conducted systematic benchmarking isolating the contribution of the training objective from that of architectural depth, across multiple modalities."
+        },
+        {
+          "id": "P11",
+          "name": "Paper conducts controlled cross-modality comparison",
+          "description": "This paper addresses the gap directly by providing a systematic and controlled comparison across decoder types (ridge, linear contrastive, non-linear/MLP contrastive) under matched conditions across three input modalities."
+        }
+      ],
+      "edges": [
+        {"from": "P9", "to": "P10", "evidence": ["S2"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P11", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P12",
+          "name": "Subject-specific alignment layer maps to shared space",
+          "description": "The decoder architecture applies a subject-specific alignment layer A_k that maps each subject's neural input to a shared dimensionality before further linear projections to the output embedding space."
+        },
+        {
+          "id": "P13",
+          "name": "Contrastive NT-Xent loss aligns predicted and target embeddings",
+          "description": "The model is trained with a contrastive loss inspired by NT-Xent, computing cosine similarity between predicted and target embeddings and encouraging each prediction to be most similar to its paired target relative to other batch members."
+        },
+        {
+          "id": "P14",
+          "name": "Same architecture and objective used across all three modalities",
+          "description": "The same linear contrastive model architecture and training objective is applied independently across image, language, and music modalities, each with its own dataset, ROI definition, and target embedding space."
+        }
+      ],
+      "edges": [
+        {"from": "P12", "to": "P13", "evidence": ["S3.4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S3", "S3.4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P15",
+          "name": "Linear contrastive model outperforms ridge and non-linear across all modalities",
+          "description": "Across image (NSD), language (HUTH), and music (GTZAN) modalities, the linear contrastive model consistently achieved the highest Top-1 and Top-3 retrieval accuracies, outperforming both ridge regression and the non-linear contrastive variant."
+        },
+        {
+          "id": "P16",
+          "name": "Advantage evident in similarity matrix sharpness",
+          "description": "The retrieval advantage of the linear contrastive model is qualitatively evident in sharper diagonal activations in the sample-wise cosine similarity matrices compared to ridge regression."
+        },
+        {
+          "id": "P17",
+          "name": "Non-linear layers do not translate into performance gains",
+          "description": "Despite introducing additional parameters and activation functions between the subject aligner and mapping layer, non-linear models consistently underperformed compared to the linear contrastive approach across all three modalities."
+        },
+        {
+          "id": "P18",
+          "name": "Feature-wise correlations confirm linear superiority",
+          "description": "Feature-wise evaluation confirmed that linear mappings lead to stronger correlations between predicted and ground-truth embeddings, with effect sizes ranging from moderate to large, suggesting the contrastive objective itself (not model complexity) is the critical factor."
+        }
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P17", "evidence": ["S4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {
+          "id": "P19",
+          "name": "Removing subject-alignment layer defines ablation",
+          "description": "Removing the subject-specific alignment layer A_k corresponds to training a separate anatomical-only model per subject, defining the Anatomical-CL ablation baseline."
+        },
+        {
+          "id": "P20",
+          "name": "Ablation reduces performance across all datasets",
+          "description": "Removing the subject-alignment layer (Anatomical-CL) reduces Top-1 and Top-3 retrieval performance across all three datasets (NSD, HUTH, GTZAN) compared to the full Linear-CL model."
+        },
+        {
+          "id": "P21",
+          "name": "Confirms benefit of shared functional space",
+          "description": "The consistent performance reduction from removing subject alignment confirms the benefit of learning a shared functional space across subjects via the joint contrastive objective."
+        }
+      ],
+      "edges": [
+        {"from": "P19", "to": "P20", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {
+          "id": "P22",
+          "name": "Contrastive objective aligns loss with retrieval metric",
+          "description": "Contrastive objectives directly operationalize the vector-geometry view of concepts by maximizing angular similarity between matched pairs and enforcing separation from distractors, aligning the training loss with the retrieval evaluation metric."
+        },
+        {
+          "id": "P23",
+          "name": "Negative set acts as data-driven regularizer",
+          "description": "In practice, the negative set in the contrastive objective acts as a data-driven regularizer, suppressing nuisance-variance directions in fMRI while amplifying directions aligned with semantic information."
+        },
+        {
+          "id": "P24",
+          "name": "Ridge prioritizes magnitude, contrastive preserves relational structure",
+          "description": "Whereas ridge regression minimizes pointwise L2 error, implicitly prioritizing magnitude alignment, contrastive learning preserves and sharpens the relational structure of the embedding manifold, explaining its systematic outperformance of ridge."
+        },
+        {
+          "id": "P25",
+          "name": "Advantage holds for non-contrastively-trained embedding spaces too",
+          "description": "The same contrastive advantage holds even when mapping into embedding spaces (like LLaMA3 language embeddings) that were not trained contrastively, indicating a general advantage of geometry-aware objectives rather than mere contrastive-to-contrastive alignment."
+        }
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["S5.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P25", "evidence": ["S5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P24", "evidence": ["S5.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {
+          "id": "P26",
+          "name": "fMRI signal approximates first-order Taylor expansion",
+          "description": "Because fMRI signals reflect averages over millions of individually non-linear neurons, filtered in time and smoothed by observation noise, the effective signal approximates a first-order (Taylor-linear) expansion of underlying neural processes."
+        },
+        {
+          "id": "P27",
+          "name": "Linear mappings are the most faithful representation in this regime",
+          "description": "Given that fMRI approximates a first-order expansion, linear mappings are not just a simplifying choice but may be the most explainable and faithful representation of the observable data."
+        },
+        {
+          "id": "P28",
+          "name": "Non-linear layers relax inductive bias and distort geometry",
+          "description": "Non-linear layers, while increasing expressivity, relax the inductive bias that preserves embedding geometry; in the small-to-moderate fMRI data regime, this flexibility can rotate/distort informative directions and amplify noise-driven variance."
+        },
+        {
+          "id": "P29",
+          "name": "Distorted geometry degrades retrieval accuracy",
+          "description": "The rotation/distortion of informative directions and amplified noise-driven variance from non-linear flexibility ultimately degrades retrieval accuracy, explaining the observed non-linear underperformance."
+        }
+      ],
+      "edges": [
+        {"from": "P26", "to": "P27", "evidence": ["S5.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["S5.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P29", "evidence": ["S5.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C9",
+      "nodes": [
+        {
+          "id": "P30",
+          "name": "Non-linear structure already embedded upstream in foundation models",
+          "description": "When decoding with rich pretrained representations, most of the relevant non-linear structure is already embedded upstream in the foundation models, so the decoder's role is not to discover new features."
+        },
+        {
+          "id": "P31",
+          "name": "Decoder's role is geometric alignment, not feature discovery",
+          "description": "Because non-linear structure is already captured upstream, the decoder's role is to align noisy brain measurements with an existing embedding geometry rather than to discover new features."
+        },
+        {
+          "id": "P32",
+          "name": "Linear contrastive mappings well suited to this role",
+          "description": "Linear contrastive mappings are well suited to the geometric-alignment role: they provide stable optimization, suppress nuisance variance, and maximize discriminative alignment."
+        }
+      ],
+      "edges": [
+        {"from": "P30", "to": "P31", "evidence": ["S5.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P32", "evidence": ["S5.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C10",
+      "nodes": [
+        {
+          "id": "P33",
+          "name": "Strong inter-subject variability in fMRI",
+          "description": "fMRI responses exhibit strong inter-subject variability in both anatomical organization and functional topography."
+        },
+        {
+          "id": "P34",
+          "name": "Anatomical alignment alone insufficient",
+          "description": "Prior cross-subject decoding frameworks show anatomical alignment alone is insufficient for high-level semantic decoding; subject-specific functional alignment is typically required."
+        },
+        {
+          "id": "P35",
+          "name": "Alignment layer jointly optimized within contrastive objective",
+          "description": "The subject-alignment layer A_k is jointly optimized inside the contrastive objective (rather than as a separate preprocessing step), learning linear subject-specific transformations that project each subject's activity into a common functional space."
+        }
+      ],
+      "edges": [
+        {"from": "P33", "to": "P34", "evidence": ["S5.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P35", "evidence": ["S5.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P36",
+      "name": "CLIP-based visual decoding prior work",
+      "description": "Approaches leveraging pre-trained vision-language models like CLIP, combined with linear regression or contrastive learning, have enabled retrieval-based decoding and realistic image reconstruction when coupled with diffusion models."
+    },
+    {
+      "id": "P37",
+      "name": "fMRI mapped to diverse modality latent spaces",
+      "description": "Growing evidence shows fMRI activity can be mapped onto latent spaces of diverse modalities including video, language, and music."
+    },
+    {
+      "id": "P38",
+      "name": "Traditional brain decoding relies on ridge regression",
+      "description": "Brain decoding approaches have traditionally relied on linear methods such as ridge regression to predict high-dimensional stimulus representations from non-invasive neural recordings, though limited in capturing semantic richness."
+    },
+    {
+      "id": "P39",
+      "name": "NSD dataset details",
+      "description": "The Natural Scenes Dataset provides over 24,000 fMRI trials across multiple subjects viewing natural images, with beta coefficients from GLM within NSD General ROI masks, and CLIP embeddings as targets."
+    },
+    {
+      "id": "P40",
+      "name": "HUTH language dataset details",
+      "description": "The HUTH language dataset includes ~16 hours of fMRI per subject across 3 subjects listening to naturalistic stories, with LLaMA3-8B word embeddings as targets and top 10,000 encoding-correlated voxels as input."
+    },
+    {
+      "id": "P41",
+      "name": "GTZAN music dataset details",
+      "description": "The GTZan fMRI dataset includes five participants listening to 540 music excerpts across ten genres, with CLAP embeddings as targets and top 3,000 music-responsive voxels as input."
+    },
+    {
+      "id": "P42",
+      "name": "Top-k retrieval evaluation metric",
+      "description": "Evaluation uses within-subject nearest-neighbor retrieval based on cosine distance, reporting Top-1 and Top-3 accuracy as the fraction of queries for which the true target appears among the k nearest neighbors."
+    },
+    {
+      "id": "P43",
+      "name": "Qualitative retrieval examples show semantic similarity",
+      "description": "Qualitative examples across all three modalities show that retrieved samples exhibit clear conceptual similarity with the target stimulus, e.g., shared semantic content in images, shared meaning in sentences, and shared spectral patterns in music genres."
+    },
+    {
+      "id": "P44",
+      "name": "Limitation: non-linear architecture space is large",
+      "description": "The space of non-linear architectures is large, and it remains possible that alternative designs or more extensive hyperparameter sweeps could achieve better performance than tested here."
+    },
+    {
+      "id": "P45",
+      "name": "Limitation: no cross-dataset generalization evaluated",
+      "description": "The study does not directly address generalization across datasets, since decoding models were trained and evaluated within individual modalities."
+    },
+    {
+      "id": "P46",
+      "name": "Limitation: temporal architectures not evaluated",
+      "description": "Time-aware architectures (e.g., LSTMs, Transformers) were not evaluated since temporal structure was removed by design via GLM betas and HRF-averaged responses."
+    },
+    {
+      "id": "P47",
+      "name": "Ethical considerations for brain decoding",
+      "description": "Decoding brain activity into rich semantic spaces raises concerns about potential misuse, especially in unconstrained settings or without informed consent, warranting principled data governance discussions."
+    }
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph is coherent across its major clusters: the vector-space theory of concepts motivating contrastive objectives (C1), the macroscale-linearization theory motivating linear decoders (C2), the gap in prior contrastive-decoding work motivating a controlled comparison (C3), the shared architecture/objective design (C4), the main comparative retrieval results (C5), the subject-alignment ablation (C6), the mechanistic explanation for contrastive learning's advantage over ridge (C7), the mechanistic explanation for linear's advantage over non-linear (C8), the broader 'alignment not discovery' framing (C9), and the subject-variability motivation for the alignment layer (C10). Edge confidence is high throughout since the paper's introduction and discussion sections explicitly build a motivation-to-mechanism-to-result narrative for each of its two central claims (contrastive > ridge; linear > non-linear). The isolated-node set captures related-work context, dataset/method details, and discussion limitations that support but are not part of the tightly reasoned central argument. No cycles or contested edge directions were identified in this construction."
+}

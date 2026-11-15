@@ -1,0 +1,299 @@
+{
+  "arxiv_id": "2503.06594v2",
+  "correction_notes": "Initial graph build (not a correction pass). Evidence uses paraphrase-anchored tags (E<n>) keyed to paper sections/paragraphs, since no sentence-indexed source was provided. Edges reflect explicit causal/support language in the text (e.g., 'because', 'this suggests', ablation deltas); coordinate/parallel statements joined by 'and' without dependency language are left as separate isolated nodes rather than force-linked.",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {"id": "P1", "name": "Encoder-decoder decoupling", "description": "LaMaTE decouples encoding and decoding from language modeling by using an LLM as the NMT encoder and leaving the NMT decoder unchanged."},
+        {"id": "P2", "name": "Modeling flexibility", "description": "Decoupling encoding and decoding confers modeling flexibility, allowing a deep complex encoder paired with a lightweight decoder."},
+        {"id": "P3", "name": "Heterogeneous architecture suitability", "description": "The heterogeneous architecture (powerful encoder, lightweight decoder) is well-suited for MT, using a powerful encoder to understand input while generating translations at lower decoding cost."},
+        {"id": "P4", "name": "Inference speedup result", "description": "LaMaTE achieves 2.4-6.5x inference speedups over baselines."},
+        {"id": "P5", "name": "KV cache memory reduction result", "description": "LaMaTE achieves a 75% reduction in KV cache memory footprint."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 1, "confidence": "single_run"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 1, "confidence": "single_run"},
+        {"from": "P3", "to": "P4", "evidence": ["E3"], "votes": 1, "confidence": "single_run"},
+        {"from": "P3", "to": "P5", "evidence": ["E3"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 9.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {"id": "P10", "name": "LLM decoder as unidirectional encoder", "description": "The function Dec_theta( , [c,x]) serves as a unidirectional encoder in LaMaTE."},
+        {"id": "P11", "name": "Whole model as hybrid LM", "description": "Because both the LaMaTE encoder and decoder are unidirectional, the whole model can roughly be thought of as a hybrid language model: a large model for prefilling, a small model for decoding."},
+        {"id": "P12", "name": "Dimensionality mismatch problem", "description": "The LLM decoder may have a larger hidden size than the NMT decoder, creating a mismatch."},
+        {"id": "P13", "name": "Adaptor introduced", "description": "An adaptor is added to the output of the LLM decoder to reduce its dimensionality to match the NMT decoder."},
+        {"id": "P14", "name": "Plain linear adaptor insufficient", "description": "A simple linear mapping adaptor falls short because LLMs are too big, making it difficult for untrained smaller models to use the transformed representations directly."},
+        {"id": "P15", "name": "Three-component adaptor design", "description": "An adaptor with three components (layer fusion, MLP, EncStack) is designed to make better use of LLM outputs for the NMT decoder."}
+      ],
+      "edges": [
+        {"from": "P10", "to": "P11", "evidence": ["E4"], "votes": 1, "confidence": "single_run"},
+        {"from": "P12", "to": "P13", "evidence": ["E5"], "votes": 1, "confidence": "single_run"},
+        {"from": "P14", "to": "P15", "evidence": ["E6"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 9.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {"id": "P16", "name": "Layer fusion mechanism", "description": "LLM layers are divided into K groups and their outputs fused via a learnable weighted sum plus layer norm (Hfuse)."},
+        {"id": "P17", "name": "Layer fusion motivation", "description": "Fusing outputs of intermediate layers (rather than only the final layer) forms a finer-grained output, a method found beneficial to deep-to-shallow architectures in prior NMT work."},
+        {"id": "P18", "name": "MLP dimensionality reduction", "description": "A 2-layer MLP is placed after layer fusion to reduce hidden size from d1 to d2, matching the NMT decoder's hidden size."},
+        {"id": "P19", "name": "EncStack bidirectional learning", "description": "A stack of Transformer encoder layers (EncStack) is used to learn bidirectional representations from the unidirectional adaptor output, added with small computational overhead."},
+        {"id": "P20", "name": "Ablation: no layer fusion", "description": "Removing layer fusion causes a COMET drop of 0.24 and BLEU drop of 0.71 relative to full LaMaTE."},
+        {"id": "P21", "name": "Ablation: no EncStack", "description": "Removing EncStack causes a COMET drop of 0.30 and BLEU drop of 0.53 relative to full LaMaTE."},
+        {"id": "P22", "name": "Layer fusion informativeness conclusion", "description": "Fusing intermediate LLM layers provides a more informative representation than relying solely on the final layer."},
+        {"id": "P23", "name": "Adaptor enhances LLM representations conclusion", "description": "The adaptor enhances the native representations of LLMs, rendering them more suitable for the NMT decoder."}
+      ],
+      "edges": [
+        {"from": "P17", "to": "P16", "evidence": ["E7"], "votes": 1, "confidence": "single_run"},
+        {"from": "P20", "to": "P22", "evidence": ["E8"], "votes": 1, "confidence": "single_run"},
+        {"from": "P21", "to": "P23", "evidence": ["E9"], "votes": 1, "confidence": "single_run"},
+        {"from": "P22", "to": "P23", "evidence": ["E9"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 9.0, "edge_score": 7.0, "flagged_edges": ["P18,P19 left unconnected to other nodes within component: parallel adaptor sub-components with no stated dependency ordering"]}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {"id": "P25", "name": "Fine-tuning LLMs is costly", "description": "Fine-tuning pre-trained LLMs is costly, making it generally favorable to use less labeled data."},
+        {"id": "P26", "name": "Less data causes inadequate learning", "description": "Using less labeled data can lead to inadequate learning of the new parameters (adaptor and NMT decoder)."},
+        {"id": "P27", "name": "Extensive fine-tuning causes forgetting", "description": "Extensive fine-tuning may cause the LLM to forget its original knowledge encoded in its parameters."},
+        {"id": "P28", "name": "Two-stage training method introduced", "description": "A two-stage training method is presented to perform more efficient learning for different types of parameters."},
+        {"id": "P29", "name": "Stage 1: frozen LLM pretraining", "description": "In stage 1, the LLM decoder is frozen while the adaptor and NMT decoder are pre-trained on a standard translation task."},
+        {"id": "P30", "name": "Stage 1 avoids backward pass", "description": "Because the LLM decoder parameters are frozen in stage 1, only a forward pass through the large network is needed, avoiding the backward pass."},
+        {"id": "P31", "name": "Stage 1 is less computationally expensive", "description": "Avoiding the backward pass through the LLM makes stage 1 less computationally expensive than full LLM fine-tuning, enabling scaling to large datasets."},
+        {"id": "P32", "name": "Stage 2: joint fine-tuning", "description": "In stage 2, the LLM decoder, NMT decoder, and adaptor are fine-tuned together on various tasks using the ComMT dataset."},
+        {"id": "P33", "name": "Ablation: without stage 2", "description": "Training with only stage 1 (W/o S2) results in a substantial performance drop (COMET -2.25, BLEU -4.18)."},
+        {"id": "P34", "name": "Ablation: stage 2 with frozen LLM", "description": "Incorporating stage 2 while freezing LLM parameters yields improvements over stage-1-only but still falls short of full LaMaTE performance (COMET -0.16, BLEU -0.12)."},
+        {"id": "P35", "name": "Both data and LLM tuning matter conclusion", "description": "The ablation results underscore the importance of both high-quality data and LLM parameter tuning in maximizing model performance."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["E10"], "votes": 1, "confidence": "single_run"},
+        {"from": "P26", "to": "P28", "evidence": ["E10"], "votes": 1, "confidence": "single_run"},
+        {"from": "P27", "to": "P28", "evidence": ["E11"], "votes": 1, "confidence": "single_run"},
+        {"from": "P28", "to": "P29", "evidence": ["E12"], "votes": 1, "confidence": "single_run"},
+        {"from": "P28", "to": "P32", "evidence": ["E13"], "votes": 1, "confidence": "single_run"},
+        {"from": "P29", "to": "P30", "evidence": ["E12"], "votes": 1, "confidence": "single_run"},
+        {"from": "P30", "to": "P31", "evidence": ["E12"], "votes": 1, "confidence": "single_run"},
+        {"from": "P33", "to": "P35", "evidence": ["E14"], "votes": 1, "confidence": "single_run"},
+        {"from": "P34", "to": "P35", "evidence": ["E14"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {"id": "P40", "name": "Gap in universal translation data resources", "description": "There remains a notable gap in comprehensive, high-quality data resources tailored to developing universal translation models."},
+        {"id": "P41", "name": "ComMT benchmark developed", "description": "ComMT, a new comprehensive evaluation/training benchmark spanning five diverse translation-related tasks, is developed to generalize and evaluate LaMaTE."},
+        {"id": "P42", "name": "ComMT task set", "description": "ComMT comprises five tasks: General Translation, Document-level Translation, Domain Translation, Terminology-constrained Translation, and Automatic Post-editing."},
+        {"id": "P43", "name": "ComMT training set size", "description": "ComMT's training set totals 239,661 samples across four languages (German, Czech, Russian, Chinese)."},
+        {"id": "P44", "name": "ComMT quality verification setup", "description": "Llama3-8B was fine-tuned on ComMT and compared against WMT17-20 and TowerBlock datasets, evaluated on the WMT23 test set."},
+        {"id": "P45", "name": "ComMT outperforms WMT17-20", "description": "ComMT surpasses WMT17-WMT20 in both En->X and X->En directions."},
+        {"id": "P46", "name": "ComMT underperforms TowerBlock on X->En", "description": "ComMT excels in En->X but underperforms TowerBlock in the X->En direction."},
+        {"id": "P47", "name": "TowerBlock size/composition explanation", "description": "The X->En discrepancy versus TowerBlock may be attributed to TowerBlock's larger dataset size and its inclusion of additional general task data predominantly in English."}
+      ],
+      "edges": [
+        {"from": "P40", "to": "P41", "evidence": ["E15"], "votes": 1, "confidence": "single_run"},
+        {"from": "P41", "to": "P42", "evidence": ["E16"], "votes": 1, "confidence": "single_run"},
+        {"from": "P41", "to": "P43", "evidence": ["E17"], "votes": 1, "confidence": "single_run"},
+        {"from": "P41", "to": "P44", "evidence": ["E18"], "votes": 1, "confidence": "single_run"},
+        {"from": "P44", "to": "P45", "evidence": ["E19"], "votes": 1, "confidence": "single_run"},
+        {"from": "P44", "to": "P46", "evidence": ["E19"], "votes": 1, "confidence": "single_run"},
+        {"from": "P46", "to": "P47", "evidence": ["E20"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {"id": "P50", "name": "LaMaTE vs encoder-decoder baselines", "description": "LaMaTE surpasses NLLB-3.3B, NMT, and mT5-Large across all evaluated ComMT tasks."},
+        {"id": "P51", "name": "LLMs as high-capacity encoders conclusion", "description": "This result highlights the potential of LLMs as high-capacity encoders, capable of producing more expressive and informative representations."},
+        {"id": "P52", "name": "Better representations improve decoder foundation", "description": "The enhanced representations from LLM encoding provide a solid foundation for the decoder, ultimately improving translation quality."},
+        {"id": "P53", "name": "LaMaTE comparable to Llama3-8B-SFT", "description": "LaMaTE achieves comparable overall performance to Llama3-8B-SFT, a fully fine-tuned decoder-only LLM."},
+        {"id": "P54", "name": "LLMs as effective MT encoders conclusion", "description": "The comparability to Llama3-8B-SFT demonstrates that LLMs can serve as effective MT encoders, offering an efficient alternative to fine-tuning LLMs as direct generators."}
+      ],
+      "edges": [
+        {"from": "P50", "to": "P51", "evidence": ["E21"], "votes": 1, "confidence": "single_run"},
+        {"from": "P51", "to": "P52", "evidence": ["E21"], "votes": 1, "confidence": "single_run"},
+        {"from": "P53", "to": "P54", "evidence": ["E22"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {"id": "P56", "name": "Encoder-decoder models show lower misalignment", "description": "Encoder-decoder models (mT5-large, LaMaTE) consistently exhibit lower off-target rate, unaligned source words, and unaligned target words than decoder-only models."},
+        {"id": "P57", "name": "LaMaTE mitigates misalignment", "description": "LaMaTE follows the encoder-decoder paradigm, which also helps mitigate misalignment issues as an added bonus."},
+        {"id": "P58", "name": "Cross-attention hypothesis", "description": "The misalignment improvement is speculated to be attributable to the cross-attention mechanism in the NMT decoder, which allows direct token-wise interaction between target and source."},
+        {"id": "P59", "name": "Cross-attention enhances alignment", "description": "Cross-attention enhances source-target alignment, in contrast to LLMs relying on a single attention mechanism over concatenated source and target text."},
+        {"id": "P60", "name": "Single attention causes lost focus", "description": "Relying on a single attention mechanism to jointly process concatenated source and target text could potentially cause a loss of attention focus."}
+      ],
+      "edges": [
+        {"from": "P56", "to": "P57", "evidence": ["E23"], "votes": 1, "confidence": "single_run"},
+        {"from": "P58", "to": "P59", "evidence": ["E24"], "votes": 1, "confidence": "single_run"},
+        {"from": "P60", "to": "P58", "evidence": ["E24"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 9.0, "edge_score": 6.0, "flagged_edges": ["P60->P58 direction inferred: text presents cross-attention hypothesis first, then contrasts with single-attention/lost-focus explanation for decoder-only models; causal ordering between P58 and P60 is not fully explicit"]}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {"id": "P62", "name": "Ablation: Concat Decoder variant", "description": "The Concat Decoder variant, which removes cross-attention, underperforms the standard decoder (COMET -0.80, BLEU -2.34)."},
+        {"id": "P63", "name": "Ablation: Prefix Decoder variant", "description": "The Prefix Decoder variant, which also removes cross-attention, underperforms the standard decoder (COMET -0.66, BLEU -1.47)."},
+        {"id": "P64", "name": "Standard decoder superiority conclusion", "description": "The standard decoder proves superior to the alternative cross-attention-free decoder designs."},
+        {"id": "P65", "name": "Cross-attention beneficial for alignment-demanding tasks", "description": "Together with the misalignment findings, maintaining cross-attention in the decoder is argued to be particularly beneficial for translation tasks that demand strong alignment."}
+      ],
+      "edges": [
+        {"from": "P62", "to": "P64", "evidence": ["E25"], "votes": 1, "confidence": "single_run"},
+        {"from": "P63", "to": "P64", "evidence": ["E25"], "votes": 1, "confidence": "single_run"},
+        {"from": "P64", "to": "P65", "evidence": ["E26"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C9",
+      "nodes": [
+        {"id": "P67", "name": "Decoder depth increases quality but reduces speed", "description": "Increasing decoder layers significantly improves translation performance, particularly En->X, but decoding speed drops sharply as depth increases, with a 39% reduction from 8 to 16 layers."},
+        {"id": "P68", "name": "Encoder scaling offers better trade-off conclusion", "description": "Because decoder depth improves quality but sharply hurts speed while EncStack depth gives only modest gains with minimal efficiency cost, scaling the encoder offers a more effective trade-off between performance and computational efficiency than scaling the decoder."},
+        {"id": "P69", "name": "EncStack depth gives modest gains", "description": "Adding more EncStack layers leads to modest improvements in both translation directions, with relatively small gains compared to decoder variations."},
+        {"id": "P70", "name": "EncStack depth has minimal efficiency impact", "description": "Since EncStack operates only on the encoder side, its impact on decoding efficiency is minimal."}
+      ],
+      "edges": [
+        {"from": "P69", "to": "P68", "evidence": ["E27"], "votes": 1, "confidence": "single_run"},
+        {"from": "P70", "to": "P68", "evidence": ["E27"], "votes": 1, "confidence": "single_run"},
+        {"from": "P67", "to": "P68", "evidence": ["E28"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C10",
+      "nodes": [
+        {"id": "P72", "name": "LaMaTE underperforms on low-resource languages", "description": "LaMaTE underperforms compared to mT5-large in low- and very-low-resource languages in the large-scale 99-language evaluation."},
+        {"id": "P73", "name": "Limited pretraining data explanation", "description": "The low-resource underperformance is likely due to limited pre-training data for these languages in the Llama3-base model."},
+        {"id": "P74", "name": "Stronger multilingual encoder suggestion", "description": "Using a model with stronger multilingual capabilities as the encoder could further improve performance on low-resource languages."}
+      ],
+      "edges": [
+        {"from": "P72", "to": "P73", "evidence": ["E29"], "votes": 1, "confidence": "single_run"},
+        {"from": "P73", "to": "P74", "evidence": ["E29"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C11",
+      "nodes": [
+        {"id": "P76", "name": "Decoder lightweight design", "description": "The NMT decoder in LaMaTE is intentionally lightweight relative to the LLM encoder."},
+        {"id": "P77", "name": "Lightweight decoder may bottleneck many-target-language generation", "description": "Because the decoder is lightweight, it may become a bottleneck when generating translations into many target languages."},
+        {"id": "P78", "name": "Expanding decoder capacity essential", "description": "Expanding decoder capacity is essential for better performance given this potential bottleneck."},
+        {"id": "P79", "name": "MoE scaling suggestion", "description": "A more effective strategy might involve scaling the decoder's capacity with Mixture-of-Experts instead of adding more layers, boosting performance without compromising efficiency."}
+      ],
+      "edges": [
+        {"from": "P76", "to": "P77", "evidence": ["E30"], "votes": 1, "confidence": "single_run"},
+        {"from": "P77", "to": "P78", "evidence": ["E30"], "votes": 1, "confidence": "single_run"},
+        {"from": "P78", "to": "P79", "evidence": ["E31"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C12",
+      "nodes": [
+        {"id": "P81", "name": "Randomly initialized decoder requires stage-1 pretraining", "description": "The approach requires pre-training the decoder's parameters using large-scale bilingual data in stage 1 because the decoder is randomly initialized."},
+        {"id": "P82", "name": "Stage-1 pretraining may be inefficient", "description": "The requirement to pre-train a randomly initialized decoder on large-scale bilingual data may not be the most efficient process."},
+        {"id": "P83", "name": "Alternative initialization suggestion", "description": "Future work could explore initializing decoder parameters from the encoder or leveraging a small pre-trained language model to reduce the state gap between encoder and decoder."}
+      ],
+      "edges": [
+        {"from": "P81", "to": "P82", "evidence": ["E32"], "votes": 1, "confidence": "single_run"},
+        {"from": "P82", "to": "P83", "evidence": ["E32"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C13",
+      "nodes": [
+        {"id": "P85", "name": "Llama3-8B best multilingual backbone", "description": "Llama3-8B consistently outperformed XGLM-7.5B, Bloom-7B, Falcon-7B, and Qwen2-7B in 0-shot and 3-shot translation across En<->De/Cs/Ru/Zh."},
+        {"id": "P86", "name": "Stronger multilingual capability inference", "description": "Llama3-8B's superior cross-lingual performance suggests it possesses stronger multilingual capabilities."},
+        {"id": "P87", "name": "Llama3-8B selected as backbone", "description": "Based on the evaluation results, Llama3-8B was selected as the backbone model for subsequent LaMaTE experiments."}
+      ],
+      "edges": [
+        {"from": "P85", "to": "P86", "evidence": ["E33"], "votes": 1, "confidence": "single_run"},
+        {"from": "P86", "to": "P87", "evidence": ["E34"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P90", "name": "NLP focus on decoder-only models", "description": "Much recent NLP emphasis has been on modeling MT and other problems using a single pre-trained Transformer decoder."},
+    {"id": "P91", "name": "Encoder-decoder architectures receive less attention", "description": "Encoder-decoder architectures, standard in earlier NMT models, have received relatively less attention."},
+    {"id": "P92", "name": "LLMs computationally expensive", "description": "LLMs are computationally expensive and pose challenges for applications requiring low latency and small memory footprint."},
+    {"id": "P93", "name": "Analyze-then-generate paradigm", "description": "Most MT models, traditional and LLM-based, operate on an analyze-then-generate paradigm."},
+    {"id": "P94", "name": "BERT-style encoder pretraining", "description": "A large body of NLP work has focused on pretraining and applying text encoders such as BERT for language understanding."},
+    {"id": "P95", "name": "LLMs as text encoders for embeddings", "description": "Recent work has fine-tuned LLMs for text encoding and shown they can produce high-quality representations for embedding tasks."},
+    {"id": "P96", "name": "Rarity of LLM encoders for generation", "description": "It is rare to see studies incorporating LLMs in the encoding side for NMT or other language generation tasks."},
+    {"id": "P97", "name": "MT research shift to LLM adaptation", "description": "The focus of MT research has shifted toward adapting LLMs (prompting, fine-tuning) rather than improving model architectures."},
+    {"id": "P98", "name": "Complementarity with efficiency methods", "description": "Quantization, pruning, and speculative decoding methods are not contradictory with LaMaTE and can be combined with it."},
+    {"id": "P100", "name": "Two-stage architecture as hybrid LM framing", "description": "The whole LaMaTE system can be viewed as a single language model since both encoder and decoder are language-model-based."},
+    {"id": "P101", "name": "Prompt-guided task control", "description": "By giving an appropriate prompt, the system can be guided to produce outputs following specific needs or contexts, giving LaMaTE an advantage over traditional NMT models."},
+    {"id": "P102", "name": "ComMT collection goals", "description": "ComMT data was collected with two goals: maximizing data source diversity and maximizing high-quality manually annotated data."},
+    {"id": "P103", "name": "ComMT covers four languages", "description": "ComMT is multilingual and supports four languages: German, Czech, Russian, and Chinese."},
+    {"id": "P104", "name": "Original source language requirement", "description": "The test set ensures the source language is original in each case to avoid translationese issues."},
+    {"id": "P105", "name": "Some languages lack test sets", "description": "Some languages currently lack test sets in ComMT because obtaining task data is challenging."},
+    {"id": "P108", "name": "Efficient methods compatibility", "description": "Since LaMaTE follows standard encoding/decoding, it can be easily combined with various efficient inference methods."}
+  ],
+  "structural_score": 7,
+  "structural_reasoning": "The graph captures LaMaTE's main argumentative chains: architecture motivation -> speed/memory results (C1); the LLM-decoder-as-encoder framing and adaptor necessity (C2); the three-part adaptor design and its ablations (C3); the two-stage training rationale and its ablations (C4); the ComMT benchmark motivation and quality-verification results (C5); main results and the 'LLMs as encoders' interpretive claims (C6); misalignment analysis with a speculative causal mechanism (C7, lower confidence since the causal direction between cross-attention and single-attention explanations is somewhat inferred); decoder-variant ablations reinforcing the cross-attention claim (C8); depth-vs-efficiency trade-off reasoning (C9); low-resource underperformance diagnosis (C10); and two limitations chains (C11 decoder bottleneck, C12 stage-1 initialization cost). Background/related-work statements and standalone descriptive facts (dataset composition, prior-work framing) are left as isolated nodes since the text does not present them as premises feeding a specific downstream claim. Confidence is single_run throughout since only one extraction pass was performed (no multi-run voting), which caps edge_score below the DecomposeRL reference graph's unanimous-vote components."
+}

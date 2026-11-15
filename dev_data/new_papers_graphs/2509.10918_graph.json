@@ -1,0 +1,162 @@
+{
+ "arxiv_id": "2509.10918",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Why prior token merging fails with fast attention, and the ToMA design built to fix it",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Quadratic attention bottlenecks diffusion",
+     "description": "Self-attention in diffusion transformers (U-ViT, DiT) has quadratic complexity in token count, which causes latency across denoising steps."
+    },
+    {
+     "id": "P2",
+     "name": "Prior merging uses GPU-inefficient ops",
+     "description": "Prior token-reduction methods for diffusion (ToMeSD, Token Pruning, ToFu) rely on GPU-inefficient primitives such as sorting and scattered memory writes."
+    },
+    {
+     "id": "P3",
+     "name": "Merge overhead negates speedups with fast attention",
+     "description": "When paired with optimized attention such as FlashAttention in diffusers, the overhead of earlier merging logic dominates computation time and prevents practical speedups."
+    },
+    {
+     "id": "P4",
+     "name": "Facility location selects destination tokens",
+     "description": "ToMA formulates destination-token selection as a submodular optimization problem solved with a GPU-optimized facility location algorithm, choosing a diverse and representative token set."
+    },
+    {
+     "id": "P5",
+     "name": "Merge and unmerge as attention-like linear maps",
+     "description": "ToMA merges non-destination tokens into destinations via an attention-like linear transformation and unmerges them via an inverse transformation, using GPU-friendly matrix multiplications."
+    },
+    {
+     "id": "P6",
+     "name": "Transpose approximates pseudo-inverse",
+     "description": "Because facility-location destinations cover largely disjoint source sets and low attention temperature sharpens the softmax, the merge matrix rows are near-orthonormal, so the transpose approximates the pseudo-inverse and is used as the default unmerge."
+    },
+    {
+     "id": "P7",
+     "name": "Locality enables tile-parallel merging",
+     "description": "Latent tokens exhibit spatial coherence, so merging can run in parallel within non-overlapping local tiles."
+    },
+    {
+     "id": "P8",
+     "name": "Destinations persist across steps and layers",
+     "description": "Over a 10-step window, more than half of destination tokens are reused, so ToMA reuses destination sets and linear merge/unmerge weights across consecutive steps and layers to amortize overhead."
+    },
+    {
+     "id": "P9",
+     "name": "ToMA speeds up SDXL and Flux",
+     "description": "ToMA reduces total generation time by 24% for SDXL-base and 23% for Flux.1-dev with negligible quality change (DINO delta < 0.07)."
+    },
+    {
+     "id": "P10",
+     "name": "Tile vs stripe vs once trade-offs",
+     "description": "ToMAtile gives the best DINO score but is slowed by memory copying, ToMAstripe is faster but slightly lower quality, and ToMAonce is fastest but has the worst quality; ToMA's default locality-aware variant balances them with up to 24% speedup."
+    },
+    {
+     "id": "P11",
+     "name": "ToMA fastest among token-reduction baselines",
+     "description": "On SDXL ToMA achieves the fastest generation time (up to 28.5% improvement) with competitive quality, while ToMe is slower due to sorting and ToFu shows unstable quality."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4, Fig 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 4, Sec 5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3.2, Fig 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 5, Table 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P12",
+   "name": "Flux excludes stripe merging",
+   "description": "Stripe-based merging is incompatible with the rotary positional embedding (RoPE) used in Flux, so only ToMA and ToMAtile are evaluated on it."
+  },
+  {
+   "id": "P13",
+   "name": "ToMA is training-free",
+   "description": "ToMA is a training-free, plug-and-play framework that needs no auxiliary modules, unlike learned token reduction methods such as DynamicViT and A-ViT."
+  },
+  {
+   "id": "P14",
+   "name": "ToFu merges or prunes per layer",
+   "description": "ToFu decides per layer whether to merge or prune tokens based on a linearity test."
+  },
+  {
+   "id": "P15",
+   "name": "Submodularity gives coverage guarantee",
+   "description": "Submodular optimization provides theoretical guarantees that ToMA's token selection approximates optimal coverage."
+  }
+ ],
+ "structural_reasoning": "Problem (quadratic attention, inefficient prior merging) motivates the GPU-aligned ToMA design, whose components lead to the speedup results and benchmark comparison."
+}

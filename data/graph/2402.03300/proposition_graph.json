@@ -1,0 +1,263 @@
+{
+  "Nodes": [
+    {
+      "id": "P1",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P2",
+      "name": "short label",
+      "description": "DeepSeekMath 7B achieves 51.7% on the competition-level MATH benchmark."
+    },
+    {
+      "id": "P3",
+      "name": "short label",
+      "description": "DeepSeekMath 7B has achieved an impressive score of 51.7% on the competition-level MATH benchmark without relying on external toolkits and voting techniques, approaching the performance level of Gemini-Ultra and GPT-4."
+    },
+    {
+      "id": "P4",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P5",
+      "name": "short label",
+      "description": "DeepSeekMath 7B achieves 51.7% on the competition-level MATH benchmark."
+    },
+    {
+      "id": "P6",
+      "name": "short label",
+      "description": "DeepSeekMath 7B has achieved an impressive score of 51.7% on the competition-level MATH benchmark without relying on external toolkits and voting techniques, approaching the performance level of Gemini-Ultra and GPT-4."
+    },
+    {
+      "id": "P7",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P8",
+      "name": "short label",
+      "description": "DeepSeekMath 7B achieves 51.7% on the competition-level MATH benchmark."
+    },
+    {
+      "id": "P9",
+      "name": "short label",
+      "description": "DeepSeekMath 7B has achieved an impressive score of 51.7% on the competition-level MATH benchmark without relying on external toolkits and voting techniques, approaching the performance level of Gemini-Ultra and GPT-4."
+    },
+    {
+      "id": "P10",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P11",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P12",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P13",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P14",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P15",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P16",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P17",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P18",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P19",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P20",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P21",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    },
+    {
+      "id": "P22",
+      "name": "short label",
+      "description": "DeepSeekMath 7B scores 51.7% on the MATH benchmark."
+    }
+  ],
+  "Edges": [
+    {
+      "from": "P2",
+      "to": "P1",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P3",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P4",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P5",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P6",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P7",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P8",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P9",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P10",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P11",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P12",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P13",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P14",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P15",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P16",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P17",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P18",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P19",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P20",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P21",
+      "evidence": [
+        "S3"
+      ]
+    },
+    {
+      "from": "P2",
+      "to": "P22",
+      "evidence": [
+        "S3"
+      ]
+    }
+  ]
+}

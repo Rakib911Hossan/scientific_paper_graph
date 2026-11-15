@@ -1,0 +1,181 @@
+{
+ "arxiv_id": "2608.04899",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Sparse verbalized confidence, its evaluation consequences, and the verbalization-logprobs fix",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "LLMs prefer certain number tokens",
+     "description": "LLMs strongly prefer generating certain numerical tokens, which biases verbalized confidence estimates."
+    },
+    {
+     "id": "P2",
+     "name": "Verbalized confidences are extremely sparse",
+     "description": "Vanilla verbalization yields very few unique confidence values; Qwen3-32B predicts only eight on SST-2 with over half equal to 95%, and 45-93% of confidences fall in the five most common values across four datasets."
+    },
+    {
+     "id": "P3",
+     "name": "Sparsity limits threshold choice",
+     "description": "Sparse confidences leave little choice of decision threshold: reaching at least 98% accuracy on SST-2 requires rejecting 39.7% of predictions versus 23.6% for 97.9% accuracy."
+    },
+    {
+     "id": "P4",
+     "name": "Stepwise interpolation is correct for sparse scores",
+     "description": "With sparse confidences the correct way to compute AUARC is stepwise interpolation; linear (trapezoidal) interpolation wrongly assumes gradual change between thresholds and inflates scores."
+    },
+    {
+     "id": "P5",
+     "name": "Interpolation inflates sparse methods",
+     "description": "Verbalization and sampling approaches score 0.7-4.5 AUARC points lower under stepwise than linear interpolation, while continuous token logprobs are unaffected."
+    },
+    {
+     "id": "P6",
+     "name": "Interpolation changes rankings",
+     "description": "Consistency sampling ranks first under linear interpolation but last under stepwise interpolation, a 12.5-point absolute decrease."
+    },
+    {
+     "id": "P7",
+     "name": "Verbalization logprobs method",
+     "description": "Verbalization logprobs computes confidence as the expected value over verbalized digits weighted by their token probabilities, turning sparse verbalized values into continuous estimates."
+    },
+    {
+     "id": "P8",
+     "name": "Verbalization logprobs removes sparsity",
+     "description": "Verbalization logprobs uses at least 630 unique values (up to 2,227 on ESCI), an 80x-200x resolution increase, and cuts top-5 concentration from 92% to 1%."
+    },
+    {
+     "id": "P9",
+     "name": "Finer thresholds salvage data",
+     "description": "With verbalization logprobs, 98% accuracy requires rejecting only 28.1% of examples instead of 39.7%, salvaging 11.6% of data."
+    },
+    {
+     "id": "P10",
+     "name": "Verbalization logprobs improves metrics",
+     "description": "Verbalization logprobs improves on vanilla verbalization by +2.3 AUARC and +0.9 AUROC and on token logprobs by +1.3 AUARC and +4.7 AUROC at no added computational cost."
+    },
+    {
+     "id": "P11",
+     "name": "Matches sampling at lower cost",
+     "description": "Verbalization logprobs matches verbalization sampling, the strongest baseline, in AUARC (0.736 vs 0.734) at 1.7x cost instead of 6.8x because it needs one inference call instead of four."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 3, Fig 1a"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3, Fig 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.1, Fig 1b"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.1, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.1, Table 2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P7",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4, Fig 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P9",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P10",
+     "evidence": [
+      "Sec 4, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4, Table 3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4, Table 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P12",
+   "name": "Confidence matters for selective prediction",
+   "description": "Selective classification rejects low-confidence examples, controlling the risk-coverage trade-off."
+  },
+  {
+   "id": "P13",
+   "name": "Sparsity found across models",
+   "description": "Sparsity is also observed with Claude 3.7 Sonnet, with or without reasoning, and with an alternative 0-9 confidence range."
+  },
+  {
+   "id": "P14",
+   "name": "Logprobs unavailable in many APIs",
+   "description": "Logit-based methods cannot be used with APIs that do not return logprobs (e.g. OpenAI, Claude, Bedrock), leaving only verbalization or sampling."
+  },
+  {
+   "id": "P15",
+   "name": "Scores highly but not fully correlated",
+   "description": "Spearman correlation between verbalization logprobs and vanilla verbalization averages 0.89 across four datasets."
+  },
+  {
+   "id": "P16",
+   "name": "Digit independence is approximated",
+   "description": "The expected-value computation treats tens and units digit distributions as independent, an approximation since standard APIs return logprobs only for generated tokens."
+  }
+ ],
+ "structural_reasoning": "Sparsity observation drives both the evaluation critique (interpolation) and the proposed fix; results chain from metric correction to method comparison."
+}

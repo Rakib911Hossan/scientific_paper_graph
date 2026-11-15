@@ -1,0 +1,224 @@
+{
+ "arxiv_id": "2604.23790",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Partitioning the label's Markov blanket into parents, children, spouses yields identifiable general multi-source domain adaptation (GAMA)",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Target joint distribution is underdetermined",
+     "description": "Without extra assumptions there are infinitely many joint distributions consistent with source data, so assumptions linking source and target are needed to identify the target joint distribution."
+    },
+    {
+     "id": "P2",
+     "name": "Existing latent methods use restrictive assumptions",
+     "description": "Existing latent-representation DA methods rely on restrictive assumptions such as independent latent variables, invariant label distributions or exponential-family distributions, or lack identifiability guarantees for the target joint distribution."
+    },
+    {
+     "id": "P3",
+     "name": "Markov blanket representation is the natural predictive target",
+     "description": "The label's Markov blanket (parents, children, spouses) is the minimal predictive set for the label, so a natural approach is to learn a representation of it."
+    },
+    {
+     "id": "P4",
+     "name": "Sufficient-change assumptions across domains",
+     "description": "Assumptions 1 and 2 require latent variables' and label's distributions to vary sufficiently across source domains, which makes recovery of latent representations feasible."
+    },
+    {
+     "id": "P5",
+     "name": "Markov blanket subspace is identifiable",
+     "description": "Under sufficient changes and faithfulness, modelling the generative process with the minimal number of edges in the learned Markov network recovers a representation that is an invertible transformation of the true Markov blanket (Theorem 1)."
+    },
+    {
+     "id": "P6",
+     "name": "Markov blanket alone is underspecified for DA",
+     "description": "Because P(Y|Zmb) changes across domains and Y is unavailable in the target, the joint P(Zmb,Y) is not identifiable in the target domain from Markov blanket representations alone."
+    },
+    {
+     "id": "P7",
+     "name": "Parents, children, spouses subspaces identifiable",
+     "description": "Under Assumptions 1-3 and faithfulness, the learned Markov blanket can be partitioned into subspaces that are invertible transformations of the true parents, children and spouses of Y (Theorem 2)."
+    },
+    {
+     "id": "P8",
+     "name": "Group-specific intimate neighbors assumption",
+     "description": "Assumption 3 requires that the intimate neighbors of Y's parents, children and spouses lie only within their own group."
+    },
+    {
+     "id": "P9",
+     "name": "Target factorization via parents and children",
+     "description": "With Zpa, Zch, Zsps disentangled, P(Y|X) in the target domain is determined by P(Y|Zpa) and P(Zch|Y,Zsps) in the target (Proposition 1 and Corollary 1)."
+    },
+    {
+     "id": "P10",
+     "name": "Low-dimensional change assumption",
+     "description": "Assumption 4 confines domain-specific conditional distributions P(Zch|Y=vc,Zsps) to a q-dimensional manifold, so each domain is characterized by mixture weights."
+    },
+    {
+     "id": "P11",
+     "name": "Target joint distribution is identifiable",
+     "description": "Under Assumptions 4 and 5 (linear independence), the target distributions P(Zch|Y,Zsps) and P(Y|Zpa) are identifiable, giving identifiability of P(Y|X) in the target domain (Theorem 3, Remark 1)."
+    },
+    {
+     "id": "P12",
+     "name": "GAMA models domain-specific parameters with VAEs",
+     "description": "GAMA uses VAEs for (theta_Y, Zpa)->Y and (theta_ch, Y, Zsps)->Zch, with a Gumbel-Softmax VAE for discrete Y, plus a classifier; domain parameters theta are learned for the target during training."
+    },
+    {
+     "id": "P13",
+     "name": "GAMA total loss",
+     "description": "GAMA trains with Lall = Lcls + l1 Lvae,Z + l2 Lvae,Y + l3 Lvae,Zch + l4 Lch + l5 LY, with beta1 and beta2 set to 1."
+    },
+    {
+     "id": "P14",
+     "name": "Beats strongest baseline on Office-Home",
+     "description": "GAMA achieves the best performance in most Office-Home sub-tasks, surpassing the strongest baseline iMSDA by 1% on average (Table 1)."
+    },
+    {
+     "id": "P15",
+     "name": "Beats best baseline on PACS",
+     "description": "GAMA achieves better average accuracy than the best baseline on PACS, with 98.8% on the Photo domain (Table 1)."
+    },
+    {
+     "id": "P16",
+     "name": "Ablation shows VAEs matter",
+     "description": "On Office-Home, removing the VAE losses (GAMA-vae) hurts, and the theta-related VAEs further improve accuracy over GAMA-theta (Table 2)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P6",
+     "evidence": [
+      "Sec 1: need identifiability beyond restrictive assumptions"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.1, Thm 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3, Sec 4.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2, Thm 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3, Corollary 1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3, Thm 3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Remark 1"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P13",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 6.2, Table 1"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P15",
+     "evidence": [
+      "Sec 6.2, Table 1"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P16",
+     "evidence": [
+      "Sec 6.3, Table 2"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P17",
+   "name": "Datasets and setup",
+   "description": "Evaluation uses Office-Home (ResNet50 features, MLP-based VAEs) and PACS (ResNet18 backbone), with one domain as target and the others as sources, averaged over three seeds."
+  },
+  {
+   "id": "P18",
+   "name": "Special cases of shift",
+   "description": "Restricting changes to the parents of Y is covariate shift, and restricting changes to Y is target (prior probability) shift."
+  },
+  {
+   "id": "P19",
+   "name": "Faithfulness can be weakened",
+   "description": "Single adjacency-faithfulness and single unshielded-collider-faithfulness suffice in place of full faithfulness, being considerably weaker."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the underdetermination problem and Markov blanket representation to its insufficiency, the finer parent/child/spouse partition, target identifiability, then the GAMA implementation and empirical results."
+}

@@ -1,0 +1,209 @@
+{
+ "arxiv_id": "2606.11762",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Automated domain-general LLM creativity evaluation: divergent (semantic entropy), convergent (retrieval multi-agent judge), and their separability",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Existing creativity metrics are task-bound",
+     "description": "Most existing LLM creativity metrics are tightly coupled to specific tasks, rely on curated answer sets, hand-crafted rubrics or human annotation, and are therefore subjective, resource-intensive and hard to scale."
+    },
+    {
+     "id": "P2",
+     "name": "Creativity needs divergent and convergent parts",
+     "description": "Creativity requires both novelty (divergent thinking) and usefulness or appropriateness (convergent thinking); without convergent evaluation, diverse but incoherent outputs would be misleadingly perceived as creative."
+    },
+    {
+     "id": "P3",
+     "name": "Semantic entropy measures divergent creativity",
+     "description": "Semantic entropy (SE) computed over semantic-class probabilities of n=10 sampled next-step continuations, clustered by bi-directional entailment, is used as a reference-free measure of divergent creativity, since in open-ended tasks probability spread across distinct ideas reflects exploration rather than error."
+    },
+    {
+     "id": "P4",
+     "name": "Multi-agent judges are too costly",
+     "description": "Existing multi-agent judges such as ChatEval append the full discussion history each turn, so token cost grows with each round, making them prohibitively expensive at benchmark scale."
+    },
+    {
+     "id": "P5",
+     "name": "Retrieval-based multi-agent judge",
+     "description": "The proposed judge uses Problem, Solution and Criterion agents that store insights as retrievable fragments in a vector database and retrieve only the k most relevant fragments per turn, with confidence-based stopping, cutting token usage by about 63% versus ChatEval."
+    },
+    {
+     "id": "P6",
+     "name": "Benchmark protocol across three domains",
+     "description": "The benchmark evaluates 300 problems per domain on MacGyver, HypoGen and BookMIA stepwise: at each step the model samples n=10 continuations to compute SE, then greedy decoding continues the solution, whose final result is scored by the convergent judge."
+    },
+    {
+     "id": "P7",
+     "name": "SE tracks flexibility, temperature, and dissimilarity",
+     "description": "Step-level SE correlates strongly with the number of unique idea categories (TTCT flexibility), increases with sampling temperature, and is negatively correlated with average pairwise cosine similarity of candidates."
+    },
+    {
+     "id": "P8",
+     "name": "SE agrees best with human divergent judgments",
+     "description": "On 50 MacGyver problems SE reaches Cohen's kappa 0.56 with human judgments of divergent creativity, above cosine similarity (0.49), Self-BLEU (0.35), Distinct-1 (0.37) and Distinct-2 (0.34)."
+    },
+    {
+     "id": "P9",
+     "name": "Solution-level SE aligns with LLM novelty",
+     "description": "Solution-level SE (mean over steps) is positively rank-correlated with LLM-judged novelty of final solutions, where the novelty judge was validated against human rankings (Spearman 0.80 on 30 MacGyver solutions)."
+    },
+    {
+     "id": "P10",
+     "name": "Judge matches individual human annotators",
+     "description": "The retrieval-based judge reaches accuracy comparable to individual human annotators on MacGyver and BookMIA (50 solutions each), outperforms single-agent baselines and ChatEval, and cuts computational cost by over 60%."
+    },
+    {
+     "id": "P11",
+     "name": "Convergent creativity scales with size, recency, reasoning",
+     "description": "Larger and more recent LLMs (e.g. GPT-4o, LLaMA 3.1 70B over GPT-3.5, LLaMA 3.1 8B) and reasoning models (R1-70B over Llama 3.3) score higher on convergent creativity."
+    },
+    {
+     "id": "P12",
+     "name": "Divergent creativity does not scale",
+     "description": "SE remains largely stable or sometimes decreases as models become larger or more recent across LLaMA generations (8B to 405B) and Vicuna sizes (7B to 33B)."
+    },
+    {
+     "id": "P13",
+     "name": "Divergent and convergent are separable",
+     "description": "Spearman correlations between SE and convergent metrics are consistently weak across models and domains, so the two dimensions are empirically separable and possibly independently optimizable."
+    },
+    {
+     "id": "P14",
+     "name": "SE captures exploration, not error",
+     "description": "The absence of strong negative correlation between SE and task fulfilment supports that SE in open-ended generation captures distributional breadth rather than hallucination or incorrectness."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 3.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P7",
+     "evidence": [
+      "Sec 6.1, Fig 4a-c"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P8",
+     "evidence": [
+      "Sec 6.1, Table 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P9",
+     "evidence": [
+      "Sec 6.1, Fig 4d"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 6.2, Table 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.2, Fig 5, Tables 3-5"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P12",
+     "evidence": [
+      "Sec 6.1, App G"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 6.3, Fig 6"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P13",
+     "evidence": [
+      "Sec 6.3, Fig 6"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 6.3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Domains probe complementary creativity",
+   "description": "MacGyver (physical reasoning with unconventional object use), HypoGen (scientific hypothesis ideation) and BookMIA (creative writing) probe practical reasoning, scientific synthesis and narrative originality respectively."
+  },
+  {
+   "id": "P16",
+   "name": "Human validation of HypoGen infeasible",
+   "description": "Human annotation for HypoGen was infeasible because of the specialized domain expertise required."
+  }
+ ],
+ "structural_reasoning": "Problem framing and the two-part definition motivate SE (divergent) and the retrieval judge (convergent); validation results and the benchmark scaling findings then support the separability conclusion."
+}

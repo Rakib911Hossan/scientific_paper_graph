@@ -1,0 +1,195 @@
+{
+ "arxiv_id": "2608.22898",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Why external-teacher KD fails for DLMs and how SelFusion's self-distillation works",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "DLMs trail LLMs in quality",
+     "description": "Diffusion language models offer faster parallel decoding than autoregressive LLMs but have lower generation quality, e.g. 10-32% worse perplexity than AR baselines."
+    },
+    {
+     "id": "P2",
+     "name": "LLM-to-DLM logit mismatch",
+     "description": "LLM teachers give peaked distributions (near 100% top-1 probability) while DLMs give flatter ones (about 60% at 50% masking), and top-1 token overlap is only about 60%, so logit-level KD from an LLM is ineffective."
+    },
+    {
+     "id": "P3",
+     "name": "DLM teachers are too weak",
+     "description": "DLM teachers' generation quality is far below AR models, so logit-level KD gives marginal gains at higher training cost and sequence-level KD is of limited effectiveness."
+    },
+    {
+     "id": "P4",
+     "name": "Existing KD fails to help DLMs",
+     "description": "Conventional logit- and sequence-level KD, from LLM or DLM teachers, give only marginal gains or degrade over the DLM SFT baseline (e.g. Dolly 15.11 with LLM logit KD vs 18.77 SFT at 8 steps)."
+    },
+    {
+     "id": "P5",
+     "name": "Easy and hard modes",
+     "description": "SelFusion runs two forward passes in one model: a hard mode with the original random masking and an easy mode with a lower masking ratio that exposes more context."
+    },
+    {
+     "id": "P6",
+     "name": "Easy mode is a better teacher on average",
+     "description": "The easy mode assigns higher probability to ground-truth tokens than the hard mode, with the gap growing from about 6% to about 10% over training, and keeps a distribution close to the student's."
+    },
+    {
+     "id": "P7",
+     "name": "Easy mode is not always right",
+     "description": "Despite more context the easy mode is not always more accurate and can be overconfident on incorrect tokens; hard-to-easy distillation beats easy-to-hard on several benchmarks."
+    },
+    {
+     "id": "P8",
+     "name": "Bidirectional KD",
+     "description": "Per token, the distillation direction follows correctness and confidence: if both correct the higher-probability mode teaches, if both wrong the one with higher ground-truth probability teaches, otherwise the correct mode teaches."
+    },
+    {
+     "id": "P9",
+     "name": "RMSNorm logit calibration",
+     "description": "RMSNorm calibration cuts overconfidence mostly on wrong predictions (about 40% to 10% top-1 probability when both modes are wrong, versus 90% to 60% when both are right)."
+    },
+    {
+     "id": "P10",
+     "name": "Ablations confirm components",
+     "description": "Removing either unidirectional direction or RMSNorm consistently degrades performance, and neither unidirectional variant matches bidirectional KD."
+    },
+    {
+     "id": "P11",
+     "name": "SelFusion outperforms KD baselines",
+     "description": "SelFusion beats the strongest baseline (LLM-to-DLM sequence-level KD) by 2-4 points (about 16% relative) and DLM SFT by 1.5-3 points across five benchmarks."
+    },
+    {
+     "id": "P12",
+     "name": "Student surpasses LLM teacher",
+     "description": "SelFusion exceeds the LLM teacher on multiple benchmarks, e.g. 12.87 vs 11.04 on Self-inst, 17.08 vs 14.95 on Vicuna, 23.21->27.07 on Sinst."
+    },
+    {
+     "id": "P13",
+     "name": "Cheaper without teacher",
+     "description": "SelFusion needs about 2x per-iteration compute of SFT but removes teacher training, cutting total training cost roughly 2x versus KD with a separately trained teacher, with only 1,280 extra parameters."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 2, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.1, 4.2, 4.3.5, Fig 3, Fig 7"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.1, 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2, 4.3.3, Fig 5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2, 4.3.2, Table 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2, 4.3.2, Fig 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.2, 4.3.4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3.1-4.3.2, Table 3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3.4, Table 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.3.1, Table 2"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Larger diffusion steps",
+   "description": "SelFusion generally outperforms baseline distillation at 32 diffusion steps, achieving the best average performance."
+  },
+  {
+   "id": "P15",
+   "name": "DLMs are faster at inference",
+   "description": "Even with 32 diffusion steps DLMs achieve about 1.5x speedup over LLMs in practice, due to parallel token generation."
+  },
+  {
+   "id": "P16",
+   "name": "Evaluation scope limited",
+   "description": "Validation is limited by few available DLM backbones and to English instruction tuning."
+  }
+ ],
+ "structural_reasoning": "Failure analysis of external-teacher KD motivates the two-mode self-distillation; mode asymmetry and its limits lead to bidirectional KD with calibration, whose ablations and main results follow."
+}

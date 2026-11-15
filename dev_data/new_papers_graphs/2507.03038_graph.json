@@ -1,0 +1,188 @@
+{
+ "arxiv_id": "2507.03038",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Uncertainty-triggered multi-trial decoding (CNTP) and its evidence",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Standard decoding is suboptimal when uncertain",
+     "description": "Standard decoding strategies (greedy, top-k, nucleus sampling) can produce dull or suboptimal completions in uncertain contexts, and temperature scaling with nucleus sampling gives inferior performance when the model is unsure about test questions."
+    },
+    {
+     "id": "P2",
+     "name": "Multi-sample methods are costly, single-sample risk hallucination",
+     "description": "Extensive multi-sample strategies inflate computational cost, while purely single-sample methods risk hallucinations and local optimum traps."
+    },
+    {
+     "id": "P3",
+     "name": "Entropy as uncertainty signal",
+     "description": "CNTP measures model uncertainty at each step by the entropy H(s) of the next-token distribution; high entropy means the model is more uncertain."
+    },
+    {
+     "id": "P4",
+     "name": "Adaptive trial count rule",
+     "description": "CNTP sets the number of trials N = max(1, min(Nmax, (H(s)-Hmin)*Nmax/(Hmax-Hmin))), so N=1 when entropy is below Hmin and N=Nmax when it exceeds Hmax."
+    },
+    {
+     "id": "P5",
+     "name": "Select lowest-perplexity trial",
+     "description": "At each step CNTP samples N independent candidate continuations until a punctuation token, computes each path's perplexity from its negative log-likelihood, and keeps the trial with lowest perplexity."
+    },
+    {
+     "id": "P6",
+     "name": "CNTP is training-free and self-contained",
+     "description": "CNTP is a training-free inference-only decoding strategy needing no critic model, external feedback or domain-specific tuning."
+    },
+    {
+     "id": "P7",
+     "name": "Gains on Llama-3.1-8B-Instruct",
+     "description": "With Llama-3.1-8B-Instruct, CNTP improves over stochastic decoding on GSM8K (81.6 vs 79.4), MATH (47.1 vs 41.5) and StrategyQA (73.2 vs 72.0), at 0.46k, 0.87k and 0.35k generated tokens."
+    },
+    {
+     "id": "P8",
+     "name": "Gains on DeepSeek-R1-Distill-Qwen-1.5B",
+     "description": "With DeepSeek-R1-Distill-Qwen-1.5B, CNTP improves over stochastic decoding on GSM8K (65.7 vs 61.6), MATH (37.7 vs 27.9) and StrategyQA (53.0 vs 51.7)."
+    },
+    {
+     "id": "P9",
+     "name": "CNTP combined with self-consistency",
+     "description": "CNTP plus self-consistency (40 paths) improves over vanilla SC on Llama-3.1-8B-Instruct: GSM8K 85.2 vs 84.8, MATH 57.5 vs 56.0, StrategyQA 76.3 vs 76.2."
+    },
+    {
+     "id": "P10",
+     "name": "TruthfulQA improvement",
+     "description": "On Truthful-QA with Llama-2-7B-Chat, CNTP reaches 74.0 truth-info accuracy versus 66.0 for stochastic decoding and 57.6 for greedy decoding."
+    },
+    {
+     "id": "P11",
+     "name": "Multimodal improvements",
+     "description": "On Llama-3.2-11B-Vision-Instruct CNTP improves MMVet by 5.5 and MathVista by 5.0 over greedy decoding, and gives gains of 0.4 on both for LLaVA-CoT."
+    },
+    {
+     "id": "P12",
+     "name": "Positive entropy-trial correlation is best",
+     "description": "Making trial count positively correlated with entropy (explore more when uncertain) performs best: GSM8K 81.6 vs 81.1 (fixed 6 trials) and 81.2 (negative correlation), and the alternatives yield repetitive text on TruthfulQA."
+    },
+    {
+     "id": "P13",
+     "name": "Moderate max trials best",
+     "description": "Performance as Nmax grows first decreases then increases and saturates or slightly decreases, so a moderate Nmax roughly in [10, 30] works well unlike self-consistency, which keeps improving."
+    },
+    {
+     "id": "P14",
+     "name": "Higher cost than vanilla decoding",
+     "description": "CNTP generates more tokens than greedy decoding (e.g., 0.46k vs 0.15k on GSM8K) but far fewer than self-consistency with 40 paths (6.03k)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3, Algorithm 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 4, Table 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 4, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 4, Table 8"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P11",
+     "evidence": [
+      "Sec 4, Table 9"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Table 10"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P13",
+     "evidence": [
+      "Sec 5, Fig 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P14",
+     "evidence": [
+      "Sec 4, Table 2"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Perplexity-range ablation",
+   "description": "Selecting best-of-N by whole-answer perplexity on GSM8K (79.2 at N=2 falling to 76.1 at N=40) does not match sentence-level CNTP (81.6)."
+  },
+  {
+   "id": "P16",
+   "name": "Robust to temperature and top-p",
+   "description": "CNTP on MATH with Llama-3.1-8B-Instruct is robust to varying temperature and top-p values, while greedy and stochastic decoding stay around 41.5%."
+  }
+ ],
+ "structural_reasoning": "CNTP design (entropy-triggered trials, lowest perplexity selection) leads to benchmark gains, combinations, and ablations."
+}

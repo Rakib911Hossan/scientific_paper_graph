@@ -1,0 +1,252 @@
+{
+ "arxiv_id": "2609.03818",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Protocol-space inconsistency problem to causal two-stage CauseCollab design and its empirical support",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Heterogeneous agents hinder feature fusion",
+     "description": "In real deployments collaborative agents come from different manufacturers and platforms, with differing sensor types, voxel sizes and network architectures, which makes intermediate features hard to fuse."
+    },
+    {
+     "id": "P2",
+     "name": "Pairwise mapping scales poorly",
+     "description": "One-stage methods learn a dedicated mapping for each pair of heterogeneous modalities, so training cost grows rapidly with the number of modalities."
+    },
+    {
+     "id": "P3",
+     "name": "Protocol-space methods scale better",
+     "description": "Two-stage methods map each modality into a shared protocol space with a per-modality converter and reconstructor, improving scalability."
+    },
+    {
+     "id": "P4",
+     "name": "Independent converters yield pseudo-protocol distributions",
+     "description": "Training converters independently per modality makes each learn a locally self-consistent mapping, producing inconsistent pseudo-protocol distributions, semantic and statistical discrepancies across modalities, and error accumulation, especially when the modality gap is large."
+    },
+    {
+     "id": "P5",
+     "name": "Root cause: protocol space as mere alignment intermediary",
+     "description": "Existing methods model the protocol space only as a distribution-alignment intermediary and do not characterize which semantic factors are shared and which modality-specific statistical confounders should be suppressed."
+    },
+    {
+     "id": "P6",
+     "name": "Causal model treats noise as confounders",
+     "description": "A structural causal model treats the true semantic factor S as the causal factor and the protocol and heterogeneous-modality statistical noises Np and Nm as confounders that create spurious correlation paths and modality-specific semantic clusters."
+    },
+    {
+     "id": "P7",
+     "name": "Causal metric learning with MGI-SPD",
+     "description": "Counterfactual intervention via causal metric learning, implemented by the Mask-Guided Intervention via SPD Feature Geometry module, drives each modality's protocol representation toward the weakly observed protocol modality, suppressing pseudo-protocol shifts."
+    },
+    {
+     "id": "P8",
+     "name": "Unified converter with SCE and CGDR",
+     "description": "A unified converter combining a semantic context extractor and a context-guided dynamic refiner is trained on multi-modality mixed batches, using global semantics as an anchor to constrain local refinement and reduce background-induced misalignment."
+    },
+    {
+     "id": "P9",
+     "name": "Stage-2 local reconstruction",
+     "description": "With the Stage-1 converter frozen, a ConvNeXt-based local semantic reconstructor is trained for each modality to restore protocol features to that modality's local space."
+    },
+    {
+     "id": "P10",
+     "name": "Adapters add new modalities cheaply",
+     "description": "For a new modality the converter backbone is frozen and only low-rank bottleneck adapters (initialized with scaling coefficient 0) are trained to align it to the protocol space, plus a local reconstructor."
+    },
+    {
+     "id": "P11",
+     "name": "Best OPV2V results as agents added",
+     "description": "On OPV2V with Lpp4 ego and three heterogeneous neighbors added progressively, CauseCollab achieves the best AP@0.3 and AP@0.5 against MPDA, HEAL, PnPDA and STAMP."
+    },
+    {
+     "id": "P12",
+     "name": "Gains in large modality gap",
+     "description": "With a larger modality gap, CauseCollab improves AP by 4.2% at IoU 0.3 and 3.6% at IoU 0.5 for ego CEff and neighbor CRes, and by 0.5%/0.4% for ego Lpp4 and neighbor CEff."
+    },
+    {
+     "id": "P13",
+     "name": "Outperforms on real-world DAIR-V2X",
+     "description": "On DAIR-V2X, with Lpp4 and CEff as ego, CauseCollab outperforms all previous methods overall."
+    },
+    {
+     "id": "P14",
+     "name": "Novel modalities with fewer trainable parameters",
+     "description": "Adapting to novel modalities Lsd2 and CEffB1 gives higher average precision with fewer trainable parameters, indicating semantic consistency and parameter reuse."
+    },
+    {
+     "id": "P15",
+     "name": "Causal intervention ablation",
+     "description": "Removing the causal intervention module significantly lowers AP at IoU 0.3 and 0.5, and removing the intervention mask also degrades performance."
+    },
+    {
+     "id": "P16",
+     "name": "Converter component ablations",
+     "description": "Removing semantic context guidance causes a substantial drop, replacing CGDR or SCE+CGDR with a single-tower ConvNeXt degrades further, and removing the new-modality adapter also degrades performance."
+    },
+    {
+     "id": "P17",
+     "name": "Cleaner protocol features than STAMP",
+     "description": "Visualization shows a semantic gap between LiDAR and camera intermediate features; STAMP's protocol features from camera contain semantically irrelevant background noise while CauseCollab's are cleaner and more cross-modally consistent."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1/2.1"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1/2.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P8",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2, Table 3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.3 Scalability, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.3, Table 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P16",
+     "evidence": [
+      "Sec 4.3, Table 4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P16",
+     "evidence": [
+      "Sec 4.3, Table 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P17",
+     "evidence": [
+      "Sec 4.4, Fig 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P17",
+     "evidence": [
+      "Sec 4.4, Fig 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P18",
+   "name": "Robust to localization noise",
+   "description": "CauseCollab's performance remains robust under Gaussian pose noise with standard deviation from 0.0 to 0.5 (Fig 3)."
+  },
+  {
+   "id": "P19",
+   "name": "Large modality gap makes pseudo-protocols worse",
+   "description": "The inconsistency of pseudo-protocol distributions becomes particularly pronounced when the modality gap is large, introducing noisy responses and spurious activations in background regions."
+  }
+ ],
+ "structural_reasoning": "A chain from heterogeneity and scalability limitations of prior methods, through the protocol-space inconsistency diagnosis, to the causal and converter design and then to experimental validation; robustness analyses isolated."
+}

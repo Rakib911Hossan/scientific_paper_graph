@@ -1,0 +1,193 @@
+{
+ "arxiv_id": "2607.27967",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "MARS-RA: motivation, method, theory, and empirical results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Embodied credit assignment is hard",
+     "description": "Embodied multi-agent credit assignment is exacerbated by partial noisy egocentric multimodal observations with sparse, delayed rewards, and by open systems where agents enter or leave mid-task, violating fixed-agent-set assumptions."
+    },
+    {
+     "id": "P2",
+     "name": "Existing methods degrade",
+     "description": "Credit assignment methods like QMIX and COMA already degrade under insufficient feedback, and prior LLM-based credit assignment relies on simplified environments, handcrafted rules and strong assumptions."
+    },
+    {
+     "id": "P3",
+     "name": "Credit as rank aggregation",
+     "description": "MARS-RA reformulates credit assignment as rank aggregation: each agent's credit is a latent contribution score inferred from pairwise comparisons of which agent contributes more, replacing absolute with relative estimation."
+    },
+    {
+     "id": "P4",
+     "name": "LMM pairwise comparisons",
+     "description": "An LMM, prompted as a referee with task context, agent-image mapping, comparative reasoning and JSON output, compares egocentric observations of active-agent pairs in both orders (to mitigate position bias), skipping when fewer than 2 agents are active."
+    },
+    {
+     "id": "P5",
+     "name": "Bradley-Terry aggregation",
+     "description": "The comparison matrix is aggregated with a Bradley-Terry model by MLE into per-agent contribution scores, which handles noise and yields cardinal values for smooth rewards."
+    },
+    {
+     "id": "P6",
+     "name": "Potential-based shaping",
+     "description": "Scores are softmax-normalized into a potential (zero at terminal states) and used for potential-based reward shaping with weight rho, preserving policy invariance while the scores evolve during training."
+    },
+    {
+     "id": "P7",
+     "name": "Convergence and robustness bound",
+     "description": "If the comparison graph is connected, with probability at least 1-n^-2 the MLE error to the latent preference is bounded by C0*sqrt(n log n / K)/sqrt(n) with K comparisons, so more comparisons filter out LMM noise."
+    },
+    {
+     "id": "P8",
+     "name": "Shapley interpretation",
+     "description": "If the LMM's latent preference equals true Shapley values, MARS-RA scores are consistent estimators of them up to a translation constant, an idealized interpretive lens rather than a practical claim."
+    },
+    {
+     "id": "P9",
+     "name": "MARS-Bench",
+     "description": "MARS-Bench in ManiSkill3 has three tasks (Pass Gate, Herd Sheep, Collect Ball) with 2-4 agents, egocentric pixel observations, sparse rewards, and battery depletion that removes and later respawns agents, creating open agent counts."
+    },
+    {
+     "id": "P10",
+     "name": "MARS-RA outperforms baselines",
+     "description": "All baselines (MAPPO, QMIX, COMA, SQDDPG, SAMA, V-GEPF) stay below 50% success on MARS-Bench while MARS-RA keeps success above 47% on all three tasks and exceeds 70% on Herd Sheep."
+    },
+    {
+     "id": "P11",
+     "name": "LMM comparisons are consistent",
+     "description": "LMM pairwise judgments are consistent, with a 3-cycle rate of 8.95% versus 25.00% for random and held-out 3-way NLL of 0.41 versus 1.10 for random."
+    },
+    {
+     "id": "P12",
+     "name": "Rank aggregation beats direct scoring",
+     "description": "The LMM Score variant, which has the LMM directly output contribution scores, shows oscillation and weaker performance than rank aggregation, even though LMM spatio-temporal inference helps."
+    },
+    {
+     "id": "P13",
+     "name": "Better LMMs and more queries help",
+     "description": "Performance rises with LMM comparison accuracy (Gemini-2.5-Pro, GPT-5.1 above 70%; Qwen3-VL 2B/4B/8B above 43%) and number of queries, with gains from more queries larger for lower-accuracy LMMs."
+    },
+    {
+     "id": "P14",
+     "name": "Generalizes to standard MARL",
+     "description": "MARS-RA is comparable to SAMA on five Overcooked tasks and remains effective on 10-agent Pistonball, suggesting benefit beyond small teams and MARS-Bench."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 5.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 5.2, Eq 2-3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 5.3, Eq 4-5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 6.1, Prop 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 6.2, Prop 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 7, Fig 4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 7, Fig 3-4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P11",
+     "evidence": [
+      "Sec 7"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P12",
+     "evidence": [
+      "Sec 7, Fig 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 6.1, Sec 7, Fig 6"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P14",
+     "evidence": [
+      "Sec 7, Fig 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Rank Centrality is slightly worse",
+   "description": "Using Rank Centrality instead of Bradley-Terry yields slightly lower success on MARS-Bench, with a small gap (Table 1)."
+  },
+  {
+   "id": "P16",
+   "name": "Errors when views lack cues",
+   "description": "Pairwise comparison errors occur most often when all agents face a wall with no informative visual cues; they stay accurate if at least one agent's observation is informative."
+  },
+  {
+   "id": "P17",
+   "name": "No benchmark supports dynamic agents",
+   "description": "Existing multi-agent embodied benchmarks such as MQE and TDW-Cook do not support a dynamic number of active agents."
+  }
+ ],
+ "structural_reasoning": "Embodied-setting challenges motivate rank aggregation; the pipeline from LMM comparison to BT scores to shaping underlies theory and the benchmark results."
+}

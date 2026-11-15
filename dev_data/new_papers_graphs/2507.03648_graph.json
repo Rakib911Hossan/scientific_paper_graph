@@ -1,0 +1,174 @@
+{
+ "arxiv_id": "2507.03648",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Representation criteria and theory lead to empirical findings on representations, selection algorithms and pruning performance",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Data pruning decomposes into two components",
+     "description": "Data pruning methods decompose into (1) obtaining instance representations from a reference model and (2) a selection algorithm guided by an objective (difficulty, diversity or relevance to validation data)."
+    },
+    {
+     "id": "P2",
+     "name": "Three criteria for good representations",
+     "description": "Good representations should yield distances that (1) account for distance to the decision boundary, (2) contain label information, and (3) are more discriminative for important instances near the decision boundary."
+    },
+    {
+     "id": "P3",
+     "name": "Losses add boundary distance over hidden states",
+     "description": "Compared with hidden-state distances, loss-based distances additionally integrate instances' distances to the decision boundary."
+    },
+    {
+     "id": "P4",
+     "name": "Only gradients are label-aware",
+     "description": "Gradient-based distances further reflect label agreement, so only gradients are label-aware; losses and gradients are thus stronger than hidden states for identifying instances that are similar for training."
+    },
+    {
+     "id": "P5",
+     "name": "Representations influence selection more than algorithms",
+     "description": "Different selection algorithms using the same representation overlap more in selected instances than the same algorithm with different representations (e.g. gradient-based proto-difficulty overlaps 0.79 with LESS-relevance on CAD but 0.26 with hidden-state proto-difficulty)."
+    },
+    {
+     "id": "P6",
+     "name": "Gradient and loss selections overlap",
+     "description": "Selections based on gradients and losses overlap more with each other than with hidden-state selections, as large as 0.75 for the same algorithm on CAD, consistent with the theory."
+    },
+    {
+     "id": "P7",
+     "name": "Algorithms do not follow their objectives",
+     "description": "Selection algorithms do not always follow their intended objectives: hidden-state Prototypicality, aimed at difficult instances, mostly selects easy, correctly predicted instances far from the decision boundary on synthetic data."
+    },
+    {
+     "id": "P8",
+     "name": "Same-objective algorithms select differently",
+     "description": "Algorithms with the same difficulty objective (hidden-state Prototypicality vs loss hard-to-learn) select vastly different instances, with NLP overlap ratios close to the random baseline."
+    },
+    {
+     "id": "P9",
+     "name": "Hidden-state methods are weak",
+     "description": "Hidden-state-based pruning methods perform worse than or similar to random selection on all tasks, especially at low data budgets."
+    },
+    {
+     "id": "P10",
+     "name": "Difficulty methods need larger budgets",
+     "description": "Hard-to-learn and self-influence are competitive with random only with data budgets above 30% and comparable to the dummy baseline at lower budgets."
+    },
+    {
+     "id": "P11",
+     "name": "Gradient methods are competitive",
+     "description": "Gradient-based methods like LESS and self-influence perform competitively across most tasks, reaffirming the effectiveness of gradients as representations."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2, Fig 2b"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P9",
+     "evidence": [
+      "Sec 4, Fig 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P11",
+     "evidence": [
+      "Sec 4, Fig 3a/3c"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P12",
+   "name": "LESS needs label matching on imbalanced data",
+   "description": "LESS performs well on highly imbalanced datasets only with label matching; otherwise it over-selects majority-label instances."
+  },
+  {
+   "id": "P13",
+   "name": "No algorithm wins everywhere",
+   "description": "Different selection algorithms excel in different settings, and none consistently outperforms the others; maximizing relevance to validation data excels under substantial train-test distribution shift."
+  },
+  {
+   "id": "P14",
+   "name": "Methods fail outside original context",
+   "description": "Data pruning methods applied outside their original context are often outperformed by random selection."
+  },
+  {
+   "id": "P15",
+   "name": "Hardest instances alone block convergence",
+   "description": "Selecting only the hardest instances will make models fail to converge."
+  },
+  {
+   "id": "P16",
+   "name": "Prior studies treated methods as units",
+   "description": "Previous studies typically treated data pruning methods as cohesive units, so the impact of individual design choices was unclear."
+  }
+ ],
+ "structural_reasoning": "Theory about representations (Sec 3.1) predicts the empirical overlap and performance findings; the objective-compliance finding is separate but supports the budget-sensitivity result."
+}

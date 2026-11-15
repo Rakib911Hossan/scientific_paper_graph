@@ -1,0 +1,206 @@
+{
+  "arxiv_id": "unspecified",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/equations/figures rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: 0-shot stability/plasticity metrics miss key characteristics of CL models",
+      "nodes": [
+        {"id": "P1", "name": "Standard CL evaluation uses 0-shot stability and plasticity metrics", "description": "The standard measure of a CL model's stability is its 0-shot resistance to catastrophic forgetting, and plasticity is typically measured as performance on the most recently learned task, i.e. Average Task Accuracy."},
+        {"id": "P2", "name": "Natural learners recover 'forgotten' knowledge via cued recall (the relearning effect)", "description": "Natural learners like humans often require warm-up via cued recall to switch context, and the rapid re-acquisition of seemingly forgotten concepts, known as the relearning effect, is well studied in humans and other animals."},
+        {"id": "P3", "name": "0-shot forgetting may therefore not be catastrophic but a retrieval issue", "description": "A stable CL model may efficiently regain past performance after adaptation, an aspect not measured by existing forgetting/backward-transfer metrics, so 0-shot 'forgetting' may reflect retrieval difficulty rather than irrecoverable loss."},
+        {"id": "P4", "name": "Plasticity is treated as an afterthought and measured only via direct optimization", "description": "While mitigating forgetting is well studied, plasticity is often treated as an afterthought and measured only as the ability to learn a new task through direct optimization, ignoring that plasticity can itself improve as learning progresses via shared task structure."},
+        {"id": "P5", "name": "Existing 0-shot forward transfer metrics are often trivially zero", "description": "0-shot forward transfer, an occasionally studied plasticity-related metric, is trivially zero when new tasks do not share the same outputs as learned tasks, and only measures generalization within shared domains."},
+        {"id": "P6", "name": "An ideal plasticity metric should also measure within-task adaptation efficiency", "description": "An ideal metric for plasticity should measure within-task adaptation—how efficiently a model adapts to a new task with limited information—since this aligns better with natural learning and generalizes across tasks with differing inputs/outputs/difficulty."},
+        {"id": "P7", "name": "These gaps motivate few-shot adaptation as a more comprehensive CL evaluation paradigm", "description": "The retrieval-based nature of 0-shot forgetting and the inadequacy of existing plasticity metrics together motivate a new evaluation paradigm: continuous evaluation with few-shot adaptation on every task at every checkpoint."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P3", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P1", "to": "P4", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Positioning against existing forward-transfer and few-shot evaluation metrics",
+      "nodes": [
+        {"id": "P8", "name": "Standard stability/plasticity are formalized as Backward Transfer and Average Task Accuracy", "description": "Backward Transfer/Average Forgetting F measures the average loss in performance on task Tt across later checkpoints (Eq. 1), with stability defined as σCL = −F, while plasticity ϕCL is the Average Task Accuracy measured immediately after optimization (Eq. 2)."},
+        {"id": "P9", "name": "ϕCL is reactive and fails to differentiate methods when the learner is strong", "description": "The standard plasticity metric ϕCL is reactive—it only confirms that a stable method retains the ability to learn via gradient descent—so with a strong learner ϕCL is high irrespective of the CL method used, failing to capture real differences in adaptation ability."},
+        {"id": "P10", "name": "Research on few-shot learning and ICL explicitly studies rapid adaptation to new tasks", "description": "Research on few-shot learning studies rapid adaptation to unseen classes via fine-tuning on a handful of examples, and LLMs use in-context learning to perform new tasks without optimization, both illustrating rapid task adaptation outside standard CL metrics."},
+        {"id": "P11", "name": "Learning Curve Area (LCA) is the only prior few-shot transfer metric in CL, but only measures average performance", "description": "The Learning Curve Area (Eq. 3) is, to the authors' knowledge, the only prior exploration of few-shot transfer in CL, but it is not a true measure of 'area'—it effectively measures average performance over 0-K shots rather than the rapidity of adaptation."},
+        {"id": "P12", "name": "This motivates a new metric that specifically captures adaptation rapidity", "description": "Because LCA aggregates average performance rather than capturing how quickly a model improves with additional shots, this motivates defining a new per-shot plasticity metric (SAUCE) that isolates the rapidity of adaptation."}
+      ],
+      "edges": [
+        {"from": "P8", "to": "P9", "evidence": ["S2.2", "Eq1", "Eq2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P11", "evidence": ["S2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P12", "evidence": ["S2.2", "Eq3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Shortcomings of existing meta-CL methods motivate a foresight approach",
+      "nodes": [
+        {"id": "P13", "name": "Existing meta-CL methods modify architecture or use a meta-optimizer, but only from past-task buffers", "description": "Existing meta-CL strategies either modify the learner's architecture using meta-information across the task sequence, or use a meta-optimizer leveraging cross-task information, but obtain all meta-information from a buffer of already-learned past task examples (hindsight meta-learning)."},
+        {"id": "P14", "name": "Existing meta-CL methods only evaluate on short task sequences and scale poorly", "description": "Many existing meta-CL works only evaluate on short sequences (fewer than 10 tasks), and methods often do not scale well to longer sequences."},
+        {"id": "P15", "name": "No existing meta-CL method optimizes explicitly for few-shot performance", "description": "To the authors' knowledge, no meta-CL method optimizes for few-shot performance (forward or backward), despite this being a prevalent goal in the broader meta-learning literature."},
+        {"id": "P16", "name": "These gaps motivate a foresight meta-CL method optimizing forward few-shot adaptation on unseen future tasks", "description": "The reliance on past-task buffers, poor scaling to long sequences, and absence of explicit few-shot optimization together motivate developing a foresight meta-CL method that meta-learns on new, forward-looking examples rather than only past ones."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P16", "evidence": ["S2.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P16", "evidence": ["S2.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P16", "evidence": ["S2.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Few-shot stability evaluation reveals non-catastrophic, recoverable forgetting",
+      "nodes": [
+        {"id": "P17", "name": "At 0-shot, non-replay methods (especially SGD) show severe backward-task degradation", "description": "In the 0-shot setting, methods that explicitly replay task examples or model outputs vastly outperform the SGD fine-tuning baseline on backward tasks, with SGD performance often close to random, indicating apparent catastrophic forgetting."},
+        {"id": "P18", "name": "At k=5-shot, performance recovers drastically across methods, including SGD", "description": "At k=5-shot adaptation, SGD recovers a significant amount of performance, even approaching the accuracy of methods that store and replay samples during training, across four common CL sequences (Figure 2)."},
+        {"id": "P19", "name": "The recovery on backward tasks greatly exceeds any corresponding gain on unlearned tasks", "description": "The increase in performance with few-shot adaptation on previously learned tasks is significantly higher than any corresponding increase on tasks that have not yet been learned."},
+        {"id": "P20", "name": "This confirms the recovery reflects rapid reacquisition of prior knowledge, not generic few-shot gains", "description": "Because the backward-task-specific recovery outpaces gains on tasks never learned, this confirms the observed recovery is genuine rapid reacquisition of previously learned knowledge, rather than a generic benefit of any few-shot adaptation."},
+        {"id": "P21", "name": "Few-shot test-time replay is nearly as effective as training-time replay at much lower cost", "description": "Because few-shot adaptation recovers most of the performance that training-time replay strategies preserve, test-time few-shot replay appears nearly as effective as training-time replay while incurring a much smaller overhead, since samples are only replayed once at evaluation."},
+        {"id": "P22", "name": "No CL method (except MER) shows significant stability improvement over the sequence", "description": "In fine-grained per-checkpoint tracking over 20-task sequences, every method except MER maintains stability with no deterioration, but none shows significant improvement in stability over time."}
+      ],
+      "edges": [
+        {"from": "P17", "to": "P18", "evidence": ["S3.2", "Figure2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P22", "evidence": ["S3.2", "Figure4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Few-shot forward transfer differentiates CL method plasticity where 0-shot cannot",
+      "nodes": [
+        {"id": "P23", "name": "0-shot current-task accuracy (ϕCL) is roughly identical across methods", "description": "Across every setting, the conventional 0-shot current-task accuracy ϕCL is roughly identical across CL methods, suggesting most methods lead to similar plasticity under this metric."},
+        {"id": "P24", "name": "10-shot forward transfer instead reveals method-specific plasticity differences", "description": "Examining 10-shot accuracy on forward tasks shows CL methods differ significantly in plasticity as expected from their differing inductive biases, unlike the flat 0-shot picture."},
+        {"id": "P25", "name": "EWC shows strong short-sequence plasticity but sharply loses plasticity on long sequences", "description": "EWC, which promotes stability via weight-space regularization, shows strong plasticity on the short SEQ-MNIST-5 sequence but significantly loses plasticity on longer sequences, even with high cross-task structure as in ROT-MNIST-20."},
+        {"id": "P26", "name": "AGEM's plasticity depends on task overlap due to its null-space update rule", "description": "AGEM makes task updates in the null space of prior tasks, giving high plasticity in sequences with low task overlap (STRUCT-CIFAR100-20) and low plasticity in sequences with high overlap (SEQ-CIFAR100-10), even on the same base dataset."},
+        {"id": "P27", "name": "SGD remains highly competitive on plasticity since it does not preserve stability", "description": "SGD remains highly competitive with other methods on few-shot forward transfer, which is expected since it does not explicitly preserve stability and thus retains maximal plasticity."},
+        {"id": "P28", "name": "Few-shot forward transfer therefore effectively characterizes plasticity where 0-shot accuracy does not", "description": "Because 10-shot forward transfer reveals inductive-bias-driven plasticity differences (EWC's degradation, AGEM's overlap-dependence, SGD's competitiveness) that are invisible under the near-identical 0-shot ϕCL, few-shot forward transfer is established as a more informative plasticity measure."}
+      ],
+      "edges": [
+        {"from": "P23", "to": "P28", "evidence": ["S3.3", "Figure3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P28", "evidence": ["S3.3", "Figure3", "Figure4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P25", "evidence": ["S3.3", "Figure4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P26", "evidence": ["S3.3", "Figure4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P27", "evidence": ["S3.3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Foresight meta-learning: method and formulation",
+      "nodes": [
+        {"id": "P29", "name": "Existing meta-CL updates are backward-looking, motivating a forward-looking alternative", "description": "Existing meta-CL methods optimize for stability with backward-looking meta-updates, motivating the question of whether few-shot learning-to-learn ability can instead be optimized as the model progresses forward through the sequence."},
+        {"id": "P30", "name": "Standard CL trains via a sequential many-shot outer loop over tasks", "description": "The standard CL outer loop trains a model many-shot sequentially on the task sequence via repeated application of the update operator UN across tasks (Eq. 4)."},
+        {"id": "P31", "name": "Foresight meta-learning adds an inner loop that meta-learns on unseen look-ahead tasks", "description": "In a rolled-back setting at task t+L, foresight meta-learning uses up to k unseen examples from tasks Tt+1,...,Tt+L to meta-learn an initialization via MAML (Eq. 5) before training on the full task Tt+1 (Eq. 6), distinguishing it from hindsight meta-learning that uses only already-learned examples."},
+        {"id": "P32", "name": "A sequential variant meta-learns over an explicit sub-sequence of look-ahead tasks", "description": "A sequential variant of foresight meta-learning composes updates across an explicit ordered sub-sequence of look-ahead tasks Tt+1→...→Tt+L within the inner loop (Eq. 7), rather than treating them as a single batch."},
+        {"id": "P33", "name": "This yields a concrete foresight meta-CL method distinguishing itself from hindsight meta-CL", "description": "Combining the rolled-back setup, the MAML-based inner loop over unseen future tasks, and the parallel/sequential update variants yields a concrete foresight meta-CL method that explicitly optimizes forward few-shot performance, addressing the gap identified in the related-work critique."}
+      ],
+      "edges": [
+        {"from": "P16", "to": "P29", "evidence": ["S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P31", "evidence": ["S4", "Eq5", "Eq6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P31", "evidence": ["S4", "Eq4"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P32", "evidence": ["S4", "Eq7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Results: foresight meta-learning improves forward transfer and even backward transfer",
+      "nodes": [
+        {"id": "P34", "name": "Foresight meta-learning improves forward-task performance beyond the look-ahead window for most methods", "description": "Adding foresight meta-learning improves performance on forward tasks beyond the look-ahead window for most methods on each task sequence, with STRUCT-CIFAR100-20 as the exception due to lack of shared task structure (Figure 5)."},
+        {"id": "P35", "name": "Foresight meta-learning also improves backward transfer despite no direct optimization for it", "description": "The foresight procedure results in improved backward transfer even though it is only optimized in the forward direction, indicating the model's general ability to adapt may be improved rather than only its forward-specific performance."},
+        {"id": "P36", "name": "MAML generally outperforms Reptile and simple fine-tuning as the inner-loop algorithm", "description": "On ROT-MNIST-20, comparing MAML, Reptile, and a look-ahead fine-tuning baseline as the inner-loop meta-learning algorithm shows second-order MAML generally outperforms the other strategies, though Reptile performs well when combined with ER."},
+        {"id": "P37", "name": "Meta-learning adds limited benefit to the weakest forward-transfer method (EWC)", "description": "On EWC, the weakest forward-transfer method identified in Section 3.3, foresight meta-learning is observed to add limited additional benefit."},
+        {"id": "P38", "name": "Parallel and sequential update strategies perform similarly at the tested sequence lengths", "description": "The sequential foresight strategy performs similarly to the parallel strategy, with the authors hypothesizing that differences between the two would require studying longer task sequences."}
+      ],
+      "edges": [
+        {"from": "P33", "to": "P34", "evidence": ["S4", "Figure5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P35", "evidence": ["S4", "Figure5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P36", "evidence": ["S4", "Figure6"], "votes": 2, "confidence": "majority"},
+        {"from": "P25", "to": "P37", "evidence": ["S4", "Figure6"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P38", "evidence": ["S4", "Figure6"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "name": "Per-shot plasticity (SAUCE): defining and applying a rate-of-adaptation metric",
+      "nodes": [
+        {"id": "P39", "name": "Choosing a single k for k-shot evaluation is inherently arbitrary", "description": "A major consideration in few-shot evaluation is selecting an appropriate value of k, driven by the tasks, model, methods, and practical constraints on available examples, and no single k is clearly correct."},
+        {"id": "P40", "name": "Aggregating across k (as LCA does) misses the rapidity of adaptation", "description": "Aggregating performance across multiple values of k, as LCA effectively does, fails to capture an important aspect of plasticity: the rapidity of adaptation to increasing information, since two models with identical 0- and K-shot performance can differ greatly in how quickly they improve in between."},
+        {"id": "P41", "name": "AUAC is defined as the cumulative early-adaptation error (regret)", "description": "The Area Under the Performance-Adaptation Curve (AUAC) quantifies the cumulative absolute error over a set of adaptation strategies (Eq. 8), approximating early regret in learning under gradient-descent adaptation."},
+        {"id": "P42", "name": "AUAC's raw value is confounded by a model's 0-shot and K-shot performance level", "description": "AUAC's numerical value is highly dependent on a model's 0-shot and K-shot performance, meaning it conflates overall performance level with the rate of adaptation."},
+        {"id": "P43", "name": "SAUCE rescales AUAC to isolate the rate of adaptation into [0,1]", "description": "To isolate the rate of adaptation specifically, SAUCE scales the worst-performing adaptation to error 1 and the best to 0, and scales by the adaptation range, producing a metric in [0,1] that measures relative improvement in performance with increasing adaptation (Eq. 9)."},
+        {"id": "P44", "name": "Backward and forward per-shot plasticity are defined as aggregated SAUCE over backward/forward tasks", "description": "Backward per-shot plasticity is defined as aggregated SAUCE over backward tasks (akin to cued recall), and forward per-shot plasticity is the analogous aggregation over future tasks, measuring learning-to-learn ability at a given point in the sequence."}
+      ],
+      "edges": [
+        {"from": "P39", "to": "P40", "evidence": ["S5"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P40", "evidence": ["S5"], "votes": 2, "confidence": "majority"},
+        {"from": "P40", "to": "P41", "evidence": ["S5", "Eq8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P41", "to": "P42", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P42", "to": "P43", "evidence": ["S5", "Eq9"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P43", "to": "P44", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "name": "Results: SAUCE reveals plasticity trade-offs and learning-to-learn behavior under foresight",
+      "nodes": [
+        {"id": "P45", "name": "SGD is the most per-shot-plastic method due to minimal inductive bias", "description": "SGD remains the most plastic method by average SAUCE, consistent with its lack of additional inductive bias constraining adaptation."},
+        {"id": "P46", "name": "Replay-based methods reduce rapid-adaptation ability despite strong overall few-shot accuracy", "description": "Replay-based methods (ER, DER++), which perform very well in the few-shot setting overall, appear to reduce models' ability to rapidly adapt to new tasks compared to SGD and regularization-based methods, per SAUCE."},
+        {"id": "P47", "name": "This implies replay-based methods may be a poor choice under very limited adaptation budgets", "description": "Because replay-based methods have a high performance ceiling but adapt less rapidly per shot, a practitioner facing very few adaptation examples may not want to choose a replay-based method despite its strong asymptotic few-shot performance."},
+        {"id": "P48", "name": "This trade-off is invisible to conventional plasticity metrics, evidencing SAUCE's practical value", "description": "Because this sample-efficiency trade-off between replay-based and other methods does not emerge with conventional plasticity metrics, its detection via SAUCE demonstrates the practical benefit of per-shot plasticity as an evaluation metric."},
+        {"id": "P49", "name": "Without task overlap, AGEM shows the most rapid improvement and best final plasticity", "description": "On STRUCT-CIFAR100-20 (no task overlap), AGEM shows the most rapid per-shot plasticity improvement and the best final plasticity, attributed to its inductive bias of partitioning task representations into orthogonal subspaces."},
+        {"id": "P50", "name": "Foresight meta-learning yields a steady increase in plasticity over the sequence, unlike static non-meta baselines", "description": "On every sequence except ROT-MNIST-20, adding foresight meta-learning not only improves average SAUCE performance versus non-meta counterparts but also shows a steady increase in plasticity over time, whereas non-meta methods show relatively flat adaptation rates."},
+        {"id": "P51", "name": "This improvement holds for both forward and backward per-shot plasticity, ruling out a trivial look-ahead-information explanation", "description": "Because the plasticity improvement from foresight meta-learning applies to both forward and backward per-shot plasticity, it cannot be attributed simply to the additional forward information provided by look-ahead examples, supporting a genuine learning-to-learn interpretation."}
+      ],
+      "edges": [
+        {"from": "P44", "to": "P45", "evidence": ["S5", "Figure8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P44", "to": "P46", "evidence": ["S5", "Figure8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P46", "to": "P47", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P47", "to": "P48", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P44", "to": "P49", "evidence": ["S5", "Figure9"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P50", "evidence": ["S5", "Figure9"], "votes": 2, "confidence": "majority"},
+        {"from": "P44", "to": "P50", "evidence": ["S5", "Figure9"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P50", "to": "P51", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P52", "name": "Definitions of class-, task-, and domain-incremental CL", "description": "Each task in a CL sequence may add new elements to existing objectives (class-incremental), switch to a different objective set (task-incremental), or shift the training data distribution (domain-incremental)."},
+    {"id": "P53", "name": "Overview of standard CL strategies (replay, distillation, regularization, architecture)", "description": "Existing CL methods focus on mitigating catastrophic forgetting via replay-based storage/retraining, distilling previous model states, regularizing to prevent information loss, or modifying model architecture as new tasks are learned."},
+    {"id": "P54", "name": "Continual pre-training of foundation models is limited by data scale and redundancy", "description": "Recent work on continual pre-training of massive foundation models is limited in the ability to conduct robust experimentation by the scale and high redundancy of pretraining data, and likely also limits curriculum effectiveness."},
+    {"id": "P55", "name": "Task sequence construction: SEQ-MNIST-5, SEQ/STRUCT-CIFAR100, ROT-MNIST-20", "description": "The paper constructs several benchmark sequences: SEQ-MNIST-5 (2-way, 5-task binary MNIST splits), SEQ-CIFAR100-10/20 (random class groupings with overlapping superclass concepts), STRUCT-CIFAR100-20 (splits along superclass labels for higher task independence), and ROT-MNIST-20 (domain-incremental sequence with progressive image rotation)."},
+    {"id": "P56", "name": "Backbone and baseline method choices", "description": "Experiments use a ResNet-18 backbone (an MLP for SEQ-MNIST-5) and compare ER (replay), DER++ (distillation), EWC and AGEM (regularization), MER (meta-CL), and an SGD baseline trained on all data as encountered."},
+    {"id": "P57", "name": "Evaluation scale: full k-value and checkpoint sweep", "description": "The evaluation checks every checkpoint on every task at k=0,1,2,5,10 shot adaptation, requiring S²×5 test-set forward passes for a 20-task sequence."},
+    {"id": "P58", "name": "ROT-MNIST-20 is an intentionally difficult, noisy sequence", "description": "ROT-MNIST-20 is designed as an intentionally 'messy' scenario with smooth rotation-driven input variance, similar first/last task pairs, and label-flip noise between '6' and '9' images, and is noted as harder than the short variant studied by La-MAML."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph mirrors the paper's three-part structure: motivating a new evaluation paradigm (few-shot adaptation), applying it empirically to reveal stability/plasticity phenomena invisible to 0-shot metrics, and then building on those findings to propose a foresight meta-learning method and a companion per-shot plasticity metric. C1-C3 reconstruct the Introduction and Related Work's layered critique: C1 targets the inadequacy of 0-shot stability/plasticity broadly, C2 specifically critiques existing forward-transfer/LCA metrics as setup for SAUCE, and C3 specifically critiques existing meta-CL methods as setup for the foresight method, kept separate since they motivate two distinct contributions (a metric and a method) via different argument chains. C4 and C5 mirror Section 3's two empirical subsections on few-shot stability and few-shot forward transfer, each ending in the paper's own interpretive claim (retrieval-based forgetting; inductive-bias-driven plasticity differences). C6 and C7 mirror Section 4's method formulation (Eqs. 4-7) and its results (Figures 5-6), and C8-C9 mirror Section 5's SAUCE metric derivation and its resulting empirical findings (Figures 8-9), including the key learning-to-learn confirmation. Isolated nodes are limited to background CL taxonomy, baseline/dataset descriptions, and experimental protocol details that support but are not premises within the central argument chains."
+}

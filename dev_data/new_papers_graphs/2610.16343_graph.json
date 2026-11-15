@@ -1,0 +1,223 @@
+{
+ "arxiv_id": "2610.16343",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Reconciling debate theories motivates selective leader-centric LASE and its theoretical/empirical support",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Corrective regime theory",
+     "description": "Hu et al. (2025) show that when at least one agent produces a correct seed, debate acts as Bayesian posterior updating that amplifies correctness and can outperform majority vote."
+    },
+    {
+     "id": "P2",
+     "name": "Neutral regime theory",
+     "description": "Choi et al. (2025) show that under symmetric information flow, Dirichlet belief updates form a martingale with zero expected improvement, so majority voting can dominate."
+    },
+    {
+     "id": "P3",
+     "name": "Debate is regime-dependent",
+     "description": "The two theories are compatible: debate is corrective when asymmetric signals such as a correct seed exist and neutral when agents are symmetric with unconstrained information flow, so the question is when and how to invoke debate."
+    },
+    {
+     "id": "P4",
+     "name": "Uniform debate wastes compute",
+     "description": "Existing frameworks apply debate uniformly across instances, conflating corrective and neutral regimes and incurring computational overhead where expected contribution is minimal."
+    },
+    {
+     "id": "P5",
+     "name": "Leader-supporter structure breaks symmetry",
+     "description": "LASE uses a designated leader that synthesizes auxiliary critiques from supporters through a directed 1:1 star topology, forcing the system into the corrective regime with positive expected drift."
+    },
+    {
+     "id": "P6",
+     "name": "Uncertainty gating",
+     "description": "LASE invokes interaction only when the leader's initial response is uncertain (U=1), judged from min logprob and max entropy signals, stopping early when U=0."
+    },
+    {
+     "id": "P7",
+     "name": "Calibration of uncertainty proxies",
+     "description": "On MATH-500 (2,000 samples), accuracy is 85.5% for high-confidence generations (min logprob at least 0.99) versus 50.9% below 0.50, and falls to 30.4% when entropy exceeds 1.0."
+    },
+    {
+     "id": "P8",
+     "name": "Selective debate improves expected accuracy",
+     "description": "Under the seed-conditional assumptions, LASE accuracy is at least leader-only accuracy plus P(U=1)*rho*delta (Theorem 3.7)."
+    },
+    {
+     "id": "P9",
+     "name": "LASE costs less than static debate",
+     "description": "LASE expected cost equals leader cost plus P(U=1) times one peer interaction, which is strictly below static debate cost whenever P(U=1)<1."
+    },
+    {
+     "id": "P10",
+     "name": "Star topology scales better",
+     "description": "A leader-centric 1:1 scheme grows as O(T) cross-agent context inclusions versus Theta(T n^2) for all-to-all debate, an Omega(n^2) reduction."
+    },
+    {
+     "id": "P11",
+     "name": "LASE Pareto-dominates static debate",
+     "description": "LASE strictly improves expected cost over static debate while keeping positive expected accuracy gain over leader-only inference (Corollary 3.9)."
+    },
+    {
+     "id": "P12",
+     "name": "Accuracy gains over MV and MAD",
+     "description": "On Gemini-2.0-Flash and GPT-4.1-mini, LASE outperforms majority voting and multi-agent debate, e.g. 65.2% on GPQA-Diamond versus MV 62.7% and MAD 62.1%, and 87.2% on MATH-500."
+    },
+    {
+     "id": "P13",
+     "name": "Over 10x token reduction",
+     "description": "LASE cuts average token usage by over 10x versus MAD, e.g. 0.4k versus 5.6k on GSM-Symbolic (14x) and 1.1k versus MAD 11.8k and MV 5.2k on MATH-500."
+    },
+    {
+     "id": "P14",
+     "name": "Orthogonal to majority voting",
+     "description": "Running LASE five times in parallel with majority voting adds +0.8% over single-path LASE, uses tokens comparable to MV with N=7, and significantly outperforms MV."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 2.2-2.3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 2.2-2.3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 2.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.4, Fig 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2 Assumption 3.3, Sec 4.4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2, Thm 3.7"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.2, Eq 15"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.2, Prop 3.8"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 3.2, Cor 3.9"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 3.2, Cor 3.9"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.3, Table 2"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.3, Table 2"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Permutation invariance",
+   "description": "Randomly permuting agent order yields 86.9% (std 0.31) versus 87.2% main result on MATH-500, with stable ~1.1k tokens, so LASE is effectively permutation invariant."
+  },
+  {
+   "id": "P16",
+   "name": "Evaluation setup",
+   "description": "Evaluation uses six benchmarks (MATH-500, MATH-lv5 N=1,324, GSM-Symbolic N=500, MMLU-Pro N=504, GPQA-Diamond N=198, TruthfulQA-MC N=817) against Single Agent, MV (N=7) and MAD (N=3, 2 rounds) baselines."
+  }
+ ],
+ "structural_reasoning": "Theory reconciliation -> design of selective leader-centric debate -> theoretical guarantees and empirical validation. Robustness and setup isolated."
+}

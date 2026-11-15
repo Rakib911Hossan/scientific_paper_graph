@@ -1,0 +1,248 @@
+{
+  "arxiv_id": "2605.08889v1",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL and 2109.09774v1 example graphs. Evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: ML research volume/writing has outpaced communication norms, framed against analogous medical-publishing precedent.",
+      "nodes": [
+        {"id": "P1", "name": "ML research output doubles every 2-3 years and is mostly written", "description": "The output of machine learning research doubles every two to three years, most of it written, producing denser titles, harder abstracts, and reviewers facing dozens of submissions with diminishing attention per paper."},
+        {"id": "P2", "name": "Knowledge ignorance paradox: information grows, understanding doesn't", "description": "Jeschke et al. [2019] describe a general pattern in which information volume grows but actionable understanding does not, termed the knowledge ignorance paradox."},
+        {"id": "P3", "name": "NeurIPS interdisciplinary audience raises the cost of opaque writing", "description": "NeurIPS serves theorists, practitioners, clinical researchers, and policy analysts, so opaque writing compounds its costs across this varied audience."},
+        {"id": "P4", "name": "Medical publishing already solved an analogous problem with editorial style guides", "description": "Medical publishing confronted analogous pressures decades ago and responded with explicit editorial style guides, while machine learning has not yet adopted comparable venue-level norms."},
+        {"id": "P5", "name": "Central claim: NeurIPS should adopt measurable writing standards", "description": "The paper argues NeurIPS could adopt explicit, measurable writing standards on acronym introduction/reuse, readability, citation quality/count, and acceptance thresholds, backed by open source audit tooling."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 2, "confidence": "majority"},
+        {"from": "P1", "to": "P3", "evidence": ["E2"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["E3"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P5", "evidence": ["E4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P5", "evidence": ["E4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Corpus construction, hypotheses, and the five-metric-family measurement pipeline.",
+      "nodes": [
+        {"id": "P6", "name": "Three-corpus dataset spanning arXiv, NeurIPS, and PubMed", "description": "The study analyzes roughly 2.8 million arXiv papers (1991-2025), 24,772 NeurIPS papers (1987-2024), and 24.5 million PubMed papers (1990-2025)."},
+        {"id": "P7", "name": "arXiv ML vs non-ML split enables a field-growth control", "description": "arXiv papers are classified as ML by primary category (cs.LG, cs.AI, cs.CV, cs.CL, cs.NE, cs.RO, cs.IR, cs.MA, cs.HC, cs.CY, stat.ML); remaining categories form a non-ML control group so ML-specific trends can be separated from field-wide trends."},
+        {"id": "P8", "name": "Six hypotheses on readability, LLM judgment, acronyms, citations, sensationalism, and volume", "description": "The paper tests six hypotheses: harder classical readability, divergent LLM-judge ratings, above-baseline acronym growth, positive readability-citation correlation, rising sensational language, and volume outpacing peer review capacity."},
+        {"id": "P9", "name": "Five metric families computed on titles/abstracts", "description": "Five families of metrics are applied: 15 classical readability scores, the nine-metric Hohmann writing style suite, an acronym extraction algorithm, an LLM-as-judge readability protocol, and citation counts from OpenAlex/Semantic Scholar."},
+        {"id": "P10", "name": "Each metric maps to a working-memory-based reader cost", "description": "Each measurable maps to a reader cost: long sentences impose working-memory load, dense noun phrases force parallel concept-holding, novel acronyms occupy a memory slot until expansion, and citation-dense sentences require reference-graph traversal."}
+      ],
+      "edges": [
+        {"from": "P5", "to": "P6", "evidence": ["E5"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P6", "to": "P7", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P8", "evidence": ["E7"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P9", "evidence": ["E8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["E9"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Classical readability decline and sensational language rise, specific to ML venues.",
+      "nodes": [
+        {"id": "P11", "name": "Flesch Reading Ease chosen as primary indicator", "description": "Flesch Reading Ease is chosen as the primary readability indicator because it is the only one of 15 metrics where higher is unambiguously better, making its decline directionally clear."},
+        {"id": "P12", "name": "NeurIPS Flesch score falls from ~24 (1987) to ~13 (2024)", "description": "NeurIPS Flesch Reading Ease falls from approximately 24 in 1987 to approximately 13 in 2024, a sustained decline across 37 years, with arXiv ML following a similar trajectory."},
+        {"id": "P13", "name": "arXiv non-ML control declines more slowly", "description": "The arXiv non-ML baseline declines more slowly than NeurIPS/arXiv ML, confirming the accelerated decline is specific to ML rather than a universal property of scientific writing."},
+        {"id": "P14", "name": "All 15 classical metrics agree and accelerate after 2020", "description": "All 15 classical readability metrics move in the same direction on ML venues, rising after approximately 2015 and accelerating after 2020, coinciding with the late-2022 availability of instruction-tuned writing assistants."},
+        {"id": "P15", "name": "NeurIPS sensational language rises ~50% from 2015-2024", "description": "Total sensational language rate in NeurIPS abstracts rises by approximately 50 percent between 2015 and 2024 (from 1.10 to 1.69 per 100 words), with the arXiv non-ML baseline rising more slowly and divergence accelerating after 2022."},
+        {"id": "P16", "name": "Hohmann style suite is mixed, not uniformly declining", "description": "Of twelve Hohmann writing style metrics, only three (signposting, active narration, passive rate) show a clear ML-vs-non-ML gap widening after 2015; the remaining nine are stable or converging, suggesting the readability decline concentrates in classical/sensational metrics rather than broader style."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P11", "evidence": ["E10"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P11", "to": "P12", "evidence": ["E11"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P13", "evidence": ["E12"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P14", "evidence": ["E13"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P15", "evidence": ["E14"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P13", "to": "P15", "evidence": ["E15"], "votes": 1, "confidence": "single_run"},
+        {"from": "P9", "to": "P16", "evidence": ["E16"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "LLM-as-judge readability diverges from classical metrics, raising an enforcement design question.",
+      "nodes": [
+        {"id": "P17", "name": "Six open-weight models scored under three prompt templates", "description": "Following Cachola et al. [2025], three prompt templates are applied to six open-weight instruction-tuned models on every NeurIPS abstract from 1987-2024, with scores standardized to each model's own 1987-2022 mean."},
+        {"id": "P18", "name": "All six models/prompts show flat-to-improving readability, sharp post-2022 rise", "description": "All six models agree across all three prompts that LLM-judged readability is approximately flat or gently improving over four decades, with a notable upward shift after 2022."},
+        {"id": "P19", "name": "This directly contradicts the classical readability decline", "description": "The LLM-judged flat-to-improving trend stands in direct contrast to every classical readability metric, which shows sustained decline over the same period."},
+        {"id": "P20", "name": "LLM judges underweight the features classical formulas penalize", "description": "LLM judges underweight lexical and syntactic features that classical formulas penalize and respond favorably to surface fluency properties that instruction-tuned writing assistants produce, replicating Cachola et al. [2025]'s headline finding."},
+        {"id": "P21", "name": "Implication: enforcement cannot rely on a single LLM judge", "description": "Because AI-assisted writing appears optimized for features LLMs attend to rather than working-memory costs classical formulas measure, any readability threshold policy must combine classical scores, Hohmann suite measures, and calibrated human judgments."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P17", "evidence": ["E17"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P17", "to": "P18", "evidence": ["E18"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P19", "evidence": ["E19"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P18", "to": "P19", "evidence": ["E19"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["E20"], "votes": 2, "confidence": "majority"},
+        {"from": "P20", "to": "P21", "evidence": ["E21"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Acronym density and reuse patterns show ML vocabulary is mostly paper-specific rather than shared.",
+      "nodes": [
+        {"id": "P22", "name": "Novel acronyms impose working-memory cost until expansion", "description": "Every novel acronym occupies a working-memory slot until the reader commits its expansion, and undefined abbreviations impair processing fluency even when definitions are available."},
+        {"id": "P23", "name": "NeurIPS title acronym density rises tenfold (1987-2024)", "description": "NeurIPS title acronym density rose from 0.33 per 100 words in 1987 to 3.21 in 2024, a tenfold increase, crossing above PubMed title density only in 2024."},
+        {"id": "P24", "name": "arXiv ML title density also exceeds the science-wide peak", "description": "arXiv ML title acronym density climbs from 1.60 in 2007 to 4.64 in 2025, while arXiv non-ML stays between 2.1 and 2.8, consistent with the science-wide peak of 2.40 reported by Barnett and Doubleday [2020]."},
+        {"id": "P25", "name": "Abstract density ranking is reversed: PubMed exceeds NeurIPS", "description": "In abstracts, PubMed density rises from 2.55 to 4.30 while NeurIPS rises from ~1.0 to 2.80, so PubMed abstracts still carry roughly 1.5 times the NeurIPS rate."},
+        {"id": "P26", "name": "ML acronyms are reused less than PubMed's despite comparable single-use rates", "description": "Single-use rates are comparable across venues (29-32%), but NeurIPS/arXiv ML sit at 57-59% in the 2-9 use bucket versus 48-50% for PubMed, so 88-89% of ML acronyms appear fewer than ten times versus 79% science-wide."},
+        {"id": "P27", "name": "PubMed's high-density acronyms are standardized; ML's are paper-specific", "description": "PubMed's high-density abstract acronyms are largely standardized vocabulary (drug/disease names, statistical terms) appearing in 10+ papers, whereas ML acronyms remain mostly paper-specific, motivating reuse-focused rather than pure density-reduction policy."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P22", "evidence": ["E22"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P22", "to": "P23", "evidence": ["E23"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P24", "evidence": ["E24"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P25", "evidence": ["E25"], "votes": 1, "confidence": "single_run"},
+        {"from": "P25", "to": "P26", "evidence": ["E26"], "votes": 2, "confidence": "majority"},
+        {"from": "P26", "to": "P27", "evidence": ["E27"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Citation-readability correlation and the resulting fragmentation paradox.",
+      "nodes": [
+        {"id": "P28", "name": "Hypothesis: readability and citation impact are positively correlated", "description": "If readability and citation count are positively correlated, then the readability decline compounds: harder papers reach a smaller audience and accumulate fewer citations, producing fragmentation within the literature."},
+        {"id": "P29", "name": "Top-cited NeurIPS papers score easier-to-read on 12 of 15 metrics", "description": "For top vs bottom decile cited NeurIPS papers by within-year percentile, 12 of 15 readability metrics favor the top-cited papers (Flesch Reading Ease 2.1 points higher, Gunning Fog 0.69 lower, LIX 0.94 lower, words/sentence 1.24 lower)."},
+        {"id": "P30", "name": "Three metrics show small reversed deltas", "description": "Dale-Chall, Coleman-Liau, and FORCAST show small reversed deltas (absolute differences below 0.3), suggesting some vocabulary-level formulas are less sensitive to citation-correlated stylistic differences."},
+        {"id": "P31", "name": "Effects are small but consistent across most metrics", "description": "The readability-citation effects are small in absolute terms but consistent across the majority of the fifteen metrics tested."},
+        {"id": "P32", "name": "Bibliography length grew five-to-sixfold (1987-2022), then dipped slightly", "description": "Mean bibliography length grew from ~11 entries per paper in 1987 to ~61 in 2022, then declined slightly in 2023 (56.4) and 2024 (55.2), a reversal not yet explained."},
+        {"id": "P33", "name": "Growing bibliographies compound the fragmentation paradox", "description": "Even as bibliographies expand, the density of genuine readership per paper does not, compounding Jeschke et al. [2019]'s fragmentation paradox."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P28", "evidence": ["E28"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P28", "to": "P29", "evidence": ["E29"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P30", "evidence": ["E30"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P31", "evidence": ["E31"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P31", "evidence": ["E31"], "votes": 1, "confidence": "single_run"},
+        {"from": "P9", "to": "P32", "evidence": ["E32"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P2", "to": "P33", "evidence": ["E33"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C1"},
+        {"from": "P32", "to": "P33", "evidence": ["E33"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "The volume problem: growth outpacing peer review and coordination capacity.",
+      "nodes": [
+        {"id": "P34", "name": "NeurIPS grew ~50x, arXiv grew ~800x, since the late 1980s/1990s", "description": "NeurIPS grew by a factor of roughly 50 from fewer than 100 accepted papers (1987) to approximately 4,500 (2024); arXiv submissions grew from ~300 records (1991) to ~244,000 (2024)."},
+        {"id": "P35", "name": "Mean authors per NeurIPS paper roughly tripled", "description": "Mean authors per accepted NeurIPS paper roughly tripled between 1987 and 2024, reflecting genuine multi-site collaboration and expanded contributorship norms."},
+        {"id": "P36", "name": "Larger author pools make shared-vocabulary coordination harder", "description": "A larger author pool implies a larger pool of competing interests over terminology, citation practices, and writing conventions, making the coordination problem of maintaining shared vocabulary harder as the field grows."},
+        {"id": "P37", "name": "Volume growth has structural, not just time-cost, consequences", "description": "When literature growth outpaces the community's synthesis capacity, citation networks fragment and papers become harder to locate, contextualize, and replicate because connecting vocabulary is unstable."},
+        {"id": "P38", "name": "Readability/acronym trends are partly a symptom of volume pressure", "description": "The readability decline and acronym growth documented earlier are framed as partially a symptom of the volume pressure described in this section."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P34", "evidence": ["E34"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P34", "to": "P35", "evidence": ["E35"], "votes": 1, "confidence": "single_run"},
+        {"from": "P35", "to": "P36", "evidence": ["E36"], "votes": 2, "confidence": "majority"},
+        {"from": "P36", "to": "P37", "evidence": ["E37"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P37", "evidence": ["E38"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C6"},
+        {"from": "P37", "to": "P38", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P38", "evidence": ["E39"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C3"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "The seven proposed NeurIPS standards, each tied to a measurable success criterion.",
+      "nodes": [
+        {"id": "P39", "name": "P1: Acronym budget + approved-term list", "description": "No abstract may introduce more than two novel acronyms not on a venue-maintained approved list; success criterion is a 30% drop in median novel acronym count per abstract by NeurIPS 2028."},
+        {"id": "P40", "name": "P2: Readability threshold at submission", "description": "A submission-time tool flags abstracts below thresholds on Flesch Reading Ease, sentence length, and parse depth, soft at first then required; success criterion is a five-point Flesch rise by NeurIPS 2028."},
+        {"id": "P41", "name": "P3: Stricter citation standards", "description": "Every paper must identify three core citations essential to understanding, exclude decorative citations, and attest all citations are retrievable; success criterion is stabilized or decreased mean citations per paper by 2028."},
+        {"id": "P42", "name": "P4: Standalone visual elements", "description": "Every accepted paper should carry at least one self-explanatory figure conveying the core contribution; success criterion is over 80% of accepted papers carrying such a figure by 2028."},
+        {"id": "P43", "name": "P5: Plain language summary", "description": "A required 100-word plain-language summary for non-specialist readers, modeled on NEJM/NIH practice; success criterion is 95% compliance plus improved reader-survey understanding by 2028."},
+        {"id": "P44", "name": "P6: Pre-registered acronym glossary", "description": "A machine-readable glossary of every acronym in the full paper, enabling P1 enforcement and building the community approved-term list; success criterion is 100% compliance and 200+ new approved terms in year one."},
+        {"id": "P45", "name": "P7: Open source audit tooling", "description": "An open, independently verifiable tool computing every metric in the paper, integrated into OpenReview with published venue-level dashboards; success criterion is integration at NeurIPS 2027 and published dashboards at 2028."},
+        {"id": "P46", "name": "Standards are ordered by implementation cost and empirically anchored", "description": "The seven standards are proposed in order of implementation cost, each with a measurable one-year success criterion evaluable after a NeurIPS 2027 pilot."}
+      ],
+      "edges": [
+        {"from": "P27", "to": "P39", "evidence": ["E40"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P44", "to": "P39", "evidence": ["E41"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P40", "evidence": ["E42"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P33", "to": "P41", "evidence": ["E43"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C6"},
+        {"from": "P37", "to": "P42", "evidence": ["E44"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C7"},
+        {"from": "P3", "to": "P43", "evidence": ["E45"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C1"},
+        {"from": "P39", "to": "P44", "evidence": ["E46"], "votes": 2, "confidence": "majority"},
+        {"from": "P40", "to": "P45", "evidence": ["E47"], "votes": 2, "confidence": "majority"},
+        {"from": "P44", "to": "P45", "evidence": ["E47"], "votes": 2, "confidence": "majority"},
+        {"from": "P39", "to": "P46", "evidence": ["E48"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P40", "to": "P46", "evidence": ["E48"], "votes": 2, "confidence": "majority"},
+        {"from": "P45", "to": "P46", "evidence": ["E48"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Rebuttals to five anticipated counterarguments against the proposed standards.",
+      "nodes": [
+        {"id": "P47", "name": "Objection: acronyms are efficient for domain experts", "description": "A likely objection is that acronyms are efficient shorthand within a community of practice when reused."},
+        {"id": "P48", "name": "Rebuttal: P1 targets reuse, not elimination", "description": "Since 89% of NeurIPS acronyms are used fewer than ten times, most never become shared vocabulary, so an acronym is a reader tax without shared-shorthand benefit; P1 asks for a budget and reuse registry rather than prohibiting acronyms."},
+        {"id": "P49", "name": "Objection: this is just field growth, not an ML-specific problem", "description": "A second objection attributes the readability decline simply to overall field growth rather than something specific to ML writing."},
+        {"id": "P50", "name": "Rebuttal: non-ML arXiv control grows similarly but doesn't decline similarly", "description": "arXiv non-ML categories grow at comparable rates from the same infrastructure yet sit well below ML on readability and acronym density, so field growth alone cannot explain the ML-specific decline."},
+        {"id": "P51", "name": "Objection: enforced standards will stifle creativity", "description": "A third objection is that enforced writing standards will stifle scientific creativity."},
+        {"id": "P52", "name": "Rebuttal: BMJ/NEJM/JMLR enforce style guides without creativity loss", "description": "BMJ, NEJM, and JMLR have enforced explicit style guides for decades without measurable creativity or quality loss, and Hohmann et al. [2025] find enforced-style journals show more stable/improving readability, since enforcement targets presentation, not content."},
+        {"id": "P53", "name": "Objection: AI-assisted writing will self-correct without intervention", "description": "A fourth objection holds that AI writing assistants will correct these trends without deliberate intervention."},
+        {"id": "P54", "name": "Rebuttal: LLM judges don't detect the degradation classical metrics reveal", "description": "Current AI writing assistants optimize for surface fluency, not the psycholinguistic features classical formulas penalize; the LLM-as-judge experiment shows models rate the same abstracts as more readable, so deliberate tooling design (P7) is required."},
+        {"id": "P55", "name": "Objection: stricter citation rules will penalize comprehensive scholarship", "description": "A fifth objection is that the P3 citation standard will penalize thorough scholarship."},
+        {"id": "P56", "name": "Rebuttal: three core citations plus unrestricted supporting tail preserves scholarship", "description": "P3 requires three declared core citations plus an unrestricted tail of supporting citations, giving reviewers a clear essential-vs-supplementary signal without limiting comprehensive referencing, and attestation catches unresolvable entries without manual verification."}
+      ],
+      "edges": [
+        {"from": "P47", "to": "P48", "evidence": ["E49"], "votes": 2, "confidence": "majority"},
+        {"from": "P26", "to": "P48", "evidence": ["E49"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5"},
+        {"from": "P39", "to": "P48", "evidence": ["E50"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C8"},
+        {"from": "P49", "to": "P50", "evidence": ["E51"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P50", "evidence": ["E51"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C3"},
+        {"from": "P51", "to": "P52", "evidence": ["E52"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P52", "evidence": ["E52"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C3"},
+        {"from": "P53", "to": "P54", "evidence": ["E53"], "votes": 2, "confidence": "majority"},
+        {"from": "P20", "to": "P54", "evidence": ["E53"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C4"},
+        {"from": "P55", "to": "P56", "evidence": ["E54"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P56", "evidence": ["E54"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C8"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Discussion synthesis, limitations, and future directions.",
+      "nodes": [
+        {"id": "P57", "name": "Findings converge into preconditions for the fragmentation paradox", "description": "Growing volume, declining readability, rising acronym density with low reuse, and citation-readability correlation together constitute preconditions for the fragmentation paradox: information grows but actionable understanding does not."},
+        {"id": "P58", "name": "Analysis is limited to titles/abstracts, English/Western venues, NeurIPS-only citations", "description": "The analysis is restricted to titles and abstracts (full-text signals may differ in magnitude), concentrated in English-language/Western-institution venues, and citation analysis is restricted to NeurIPS where Semantic Scholar coverage is complete from 2010 onward."},
+        {"id": "P59", "name": "LLM-judge experiment limited to mid-size open-weight models", "description": "The LLM-as-judge experiment uses six open-weight models with roughly 7-32 billion active parameters; larger closed-weight models may recover more of the classical readability signal."},
+        {"id": "P60", "name": "Proposed standards remain untested prospectively", "description": "The seven proposed standards have not yet been evaluated prospectively, so their effects on venue-level writing quality remain to be measured."},
+        {"id": "P61", "name": "Four future directions proposed", "description": "Four directions are proposed: full-text analysis once licensing permits, multilingual audits of ML venues, prospective evaluation of P1-P7 at NeurIPS 2027, and integrating the writing metric calculator as an optional author-side OpenReview tool before mandatory enforcement."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P57", "evidence": ["E55"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C3"},
+        {"from": "P26", "to": "P57", "evidence": ["E55"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5"},
+        {"from": "P29", "to": "P57", "evidence": ["E55"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C6"},
+        {"from": "P37", "to": "P57", "evidence": ["E55"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P57", "to": "P58", "evidence": ["E56"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P59", "evidence": ["E57"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C4"},
+        {"from": "P46", "to": "P60", "evidence": ["E58"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"},
+        {"from": "P58", "to": "P61", "evidence": ["E59"], "votes": 2, "confidence": "majority"},
+        {"from": "P60", "to": "P61", "evidence": ["E59"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P62", "name": "Post-2022 inflection tracks instruction-tuned writing assistant availability", "description": "Data are consistent with a post-2022 inflection in jargon and sensational language tracking the late-2022 availability of widely-used instruction-tuned writing assistants, marked as a vertical dashed line across multiple figures."},
+    {"id": "P63", "name": "Specialized terminology already reduces citations in biology", "description": "Martínez and Mammola [2021] show that specialized terminology already reduces per-paper citation counts in biology, cited as suggesting the same dynamic now applies to ML."},
+    {"id": "P64", "name": "Bibliography length decline in 2023-2024 is unexplained", "description": "The cause of the slight 2023-2024 reversal in mean bibliography length (56.4 then 55.2, down from ~61 in 2022) is not yet established and is flagged as warranting further investigation."}
+  ]
+}

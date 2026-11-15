@@ -1,0 +1,339 @@
+{
+  "arxiv_id": "2512.11781v2",
+  "note": "Single-pass extraction (no sentence-level indexing available for this document). Evidence fields reference sections/figures instead of indexed sentences (S#). Votes/confidence/fidelity fields from the reference schema are omitted since no multi-run validation was performed.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Central thesis: sparse multi-agent competitive reward vs. dense single-agent reward",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Sparse competitive reward",
+          "description": "Agents are rewarded only for finishing a lap or passing a gate before their opponent, with no reward term prescribing specific flight behavior."
+        },
+        {
+          "id": "P2",
+          "name": "Emergent agile flight",
+          "description": "High-speed, physically aggressive flight emerges from the sparse competitive reward without any explicit speed-shaping term."
+        },
+        {
+          "id": "P3",
+          "name": "Emergent strategic behavior",
+          "description": "Tactical behaviors such as overtaking, blocking, and adapting to an opponent's crash emerge without explicit reward terms for these skills."
+        },
+        {
+          "id": "P4",
+          "name": "Dense progress reward limits exploration",
+          "description": "Dense, race-line progress-based rewards are prescriptive and constrain exploration, discouraging deviations needed for obstacle avoidance."
+        },
+        {
+          "id": "P5",
+          "name": "Complexity-dependent degradation of dense rewards",
+          "description": "The prescriptive structure of dense rewards causes performance to degrade specifically as environment complexity increases (e.g., obstacles present)."
+        },
+        {
+          "id": "P6",
+          "name": "Sparse multi-agent outperforms dense single-agent",
+          "description": "The sparse multi-agent (Ours) approach outperforms the common dense, single-agent progress-reward paradigm, especially as environment complexity increases."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["Abstract", "Sec I Contributions"]},
+        {"from": "P1", "to": "P3", "evidence": ["Abstract", "Sec I Contributions"]},
+        {"from": "P4", "to": "P5", "evidence": ["Sec I", "Sec III-A Comparison to Existing Rewards"]},
+        {"from": "P5", "to": "P6", "evidence": ["Sec IV-B", "Table I"]},
+        {"from": "P2", "to": "P6", "evidence": ["Sec IV-C", "Fig. 4"]},
+        {"from": "P3", "to": "P6", "evidence": ["Sec IV-C", "Fig. 4"]}
+      ]
+    },
+    {
+      "component_id": "C2",
+      "description": "Single-agent baseline limitations (obstacles)",
+      "nodes": [
+        {
+          "id": "P7",
+          "name": "Dense single-agent success without obstacles",
+          "description": "Dense single-agent (DS) policies achieve high success rates (100% LT, 98% CT) when no obstacles are present."
+        },
+        {
+          "id": "P8",
+          "name": "Dense single-agent failure with obstacles",
+          "description": "Dense single-agent (DS) policies achieve a 0% success rate on both tracks once obstacles are introduced, failing to complete even a single lap."
+        },
+        {
+          "id": "P9",
+          "name": "Progress reward penalizes gate-moving-away",
+          "description": "The progress reward (Eq. 7) discourages the drone from moving away from the next gate, which is required to avoid obstacles."
+        },
+        {
+          "id": "P10",
+          "name": "Sparse single-agent (SS) lower speed but some obstacle tolerance",
+          "description": "Sparse single-agent (SS) policies show lower speed than DS on obstacle-free tracks but retain non-zero, sometimes near-perfect, success with obstacles present on the lemniscate track."
+        },
+        {
+          "id": "P11",
+          "name": "Sparse reward reliability across obstacle settings",
+          "description": "Sparse (competitive or not) rewards more consistently discover obstacle-free/obstacle-tolerant trajectories than dense rewards, though at a training-stability cost in the single-agent case."
+        }
+      ],
+      "edges": [
+        {"from": "P9", "to": "P8", "evidence": ["Sec IV-B"]},
+        {"from": "P8", "to": "P11", "evidence": ["Sec IV-B"]},
+        {"from": "P10", "to": "P11", "evidence": ["Sec IV-B"]},
+        {"from": "P7", "to": "P8", "evidence": ["Table I"]}
+      ]
+    },
+    {
+      "component_id": "C3",
+      "description": "Head-to-head competitive evaluation",
+      "nodes": [
+        {
+          "id": "P12",
+          "name": "Ours highest average win rate",
+          "description": "The Sparse Multi-Agent (Ours) policy achieves the highest average win rate (91.17%) across all simulated head-to-head matchups."
+        },
+        {
+          "id": "P13",
+          "name": "Ours beats DS even on obstacle-free tracks",
+          "description": "Ours wins 100% of races against DS on the lemniscate track and 84% on the complex track, even though those are DS's best-case conditions."
+        },
+        {
+          "id": "P14",
+          "name": "Adding overtaking reward to DM does not help",
+          "description": "Extending the dense single-agent reward to multi-agent (DM) by adding a dense overtaking term does not improve performance and often results in more losses than DS."
+        },
+        {
+          "id": "P15",
+          "name": "DM balancing difficulty",
+          "description": "DM's underperformance likely stems from the difficulty of balancing two dense reward terms, causing convergence to a suboptimal local minimum."
+        },
+        {
+          "id": "P16",
+          "name": "Competitive pressure broadens discovered behaviors",
+          "description": "Competitive pressure among agents broadens the range of behaviors discovered during training, most visible when Ours is compared against SS (identical except for the presence of a competitor)."
+        }
+      ],
+      "edges": [
+        {"from": "P14", "to": "P15", "evidence": ["Sec IV-C"]},
+        {"from": "P13", "to": "P12", "evidence": ["Sec IV-C", "Fig. 4"]},
+        {"from": "P16", "to": "P12", "evidence": ["Sec IV-C"]},
+        {"from": "P15", "to": "P12", "evidence": ["Sec IV-C", "Fig. 4"]}
+      ]
+    },
+    {
+      "component_id": "C4",
+      "description": "Sim-to-real transfer",
+      "nodes": [
+        {
+          "id": "P17",
+          "name": "Shared sim/hardware setup",
+          "description": "DS and Ours use the same simulation environment, randomization strategy, policy structure, and physical hardware, isolating reward design as the variable."
+        },
+        {
+          "id": "P18",
+          "name": "Smaller sim-to-real speed gap for Ours",
+          "description": "Ours shows a 44.7% smaller gap between simulated and real-world average flight speed (0.43 m/s vs. 0.76 m/s for DS)."
+        },
+        {
+          "id": "P19",
+          "name": "Lower real-world failure/collision rate for Ours",
+          "description": "Ours exhibits substantially lower real-world failure and collision rates than DS, despite both having zero failure/collision rates in simulation."
+        },
+        {
+          "id": "P20",
+          "name": "Sparse competitive rewards improve transfer",
+          "description": "Sparse, competition-based rewards lead to improved simulation-to-reality transfer relative to dense progress-based rewards."
+        },
+        {
+          "id": "P21",
+          "name": "Only Ours clears real-world obstacle track",
+          "description": "Ours is the only method that successfully completes the real-world lemniscate track in the presence of obstacles."
+        }
+      ],
+      "edges": [
+        {"from": "P17", "to": "P18", "evidence": ["Sec IV-D", "Fig. 5"]},
+        {"from": "P17", "to": "P19", "evidence": ["Sec IV-D", "Fig. 5"]},
+        {"from": "P18", "to": "P20", "evidence": ["Sec IV-D"]},
+        {"from": "P19", "to": "P20", "evidence": ["Sec IV-D"]},
+        {"from": "P20", "to": "P21", "evidence": ["Sec IV-D"]}
+      ]
+    },
+    {
+      "component_id": "C5",
+      "description": "Generalization and real-world head-to-head",
+      "nodes": [
+        {
+          "id": "P22",
+          "name": "Generalization to unseen opponents",
+          "description": "Ours generalizes well across different real-world opponents, achieving the highest win rate, on par with DS."
+        },
+        {
+          "id": "P23",
+          "name": "Ours vs DS head-to-head advantage",
+          "description": "Despite equal average win rates with DS, Ours outperforms DS specifically in direct head-to-head real-world races."
+        },
+        {
+          "id": "P24",
+          "name": "DM poor transfer explains draws",
+          "description": "Ours' equal average win rate (despite head-to-head superiority over DS) is explained by draws against the poorly-transferring DM policy, whose erratic behavior knocked Ours out of distribution."
+        },
+        {
+          "id": "P25",
+          "name": "Cross-agent dependency complicates real-world prediction",
+          "description": "Because outcomes depend on the behavior of another agent, predicting a policy's real-world performance against new opponents is inherently more challenging in multi-agent settings."
+        }
+      ],
+      "edges": [
+        {"from": "P24", "to": "P23", "evidence": ["Sec IV-D", "Fig. 6"]},
+        {"from": "P24", "to": "P25", "evidence": ["Sec IV-D"]},
+        {"from": "P22", "to": "P25", "evidence": ["Sec IV-D"]}
+      ]
+    },
+    {
+      "component_id": "C6",
+      "description": "Emergent strategic behavior analysis",
+      "nodes": [
+        {
+          "id": "P26",
+          "name": "More aggressive flight vs. competitive opponent",
+          "description": "The agent flies a significantly more aggressive trajectory (higher max/mean velocity) against a competitive opponent than against a crashed one."
+        },
+        {
+          "id": "P27",
+          "name": "Risk-averse behavior once opponent forfeits",
+          "description": "The agent reduces speed once the opponent has crashed, since gate-pass and lap-bonus rewards become effectively guaranteed."
+        },
+        {
+          "id": "P28",
+          "name": "Blocking maneuvers observed",
+          "description": "Real-world trajectories show learned blocking maneuvers, e.g., an agent flying a wide trajectory to defend a lead and force a collision on the opponent."
+        },
+        {
+          "id": "P29",
+          "name": "Strategic behavior beyond raw speed",
+          "description": "The agent learns strategic behaviors (risk-averse adaptation, blocking) beyond simply flying fast."
+        }
+      ],
+      "edges": [
+        {"from": "P26", "to": "P27", "evidence": ["Sec IV-E", "Fig. 7a-b"]},
+        {"from": "P27", "to": "P29", "evidence": ["Sec IV-E"]},
+        {"from": "P28", "to": "P29", "evidence": ["Sec IV-E", "Fig. 7c-d"]}
+      ]
+    },
+    {
+      "component_id": "C7",
+      "description": "Training stability",
+      "nodes": [
+        {
+          "id": "P30",
+          "name": "Single-agent training stability",
+          "description": "Single-agent (dense) training is stable and smooth across seeds, with low variance in cumulative reward."
+        },
+        {
+          "id": "P31",
+          "name": "Multi-agent training variability",
+          "description": "Multi-agent (sparse, competitive) training curves show greater variability across seeds than single-agent training."
+        },
+        {
+          "id": "P32",
+          "name": "Multi-agent variability reflects competitive alternation",
+          "description": "The alternating higher-cumulative-reward phases between the two competing agents reflect the inherently competitive, shifting-balance nature of multi-agent training."
+        },
+        {
+          "id": "P33",
+          "name": "Multi-agent training still consistently competitive",
+          "description": "Despite greater variance, all multi-agent training runs converge to consistently competitive policies."
+        }
+      ],
+      "edges": [
+        {"from": "P31", "to": "P32", "evidence": ["Sec IV-F", "Fig. 9"]},
+        {"from": "P32", "to": "P33", "evidence": ["Sec IV-F"]},
+        {"from": "P30", "to": "P31", "evidence": ["Sec IV-F", "Fig. 8", "Fig. 9"]}
+      ]
+    },
+    {
+      "component_id": "C8",
+      "description": "Methodology: reward and optimization design choices",
+      "nodes": [
+        {
+          "id": "P34",
+          "name": "General-sum Dec-MDP formulation",
+          "description": "Racing is formulated as a two-agent, finite-horizon decentralized Markov decision process (general-sum game) between an ego and adversary policy."
+        },
+        {
+          "id": "P35",
+          "name": "Sparse reward composition",
+          "description": "The task reward combines gate-passing precedence, a lap-completion bonus, an energy-minimization penalty, and a crash penalty — with no explicit behavior-shaping term."
+        },
+        {
+          "id": "P36",
+          "name": "IPPO used for joint optimization",
+          "description": "Policies are jointly trained with IPPO, a multi-agent PPO variant without a shared critic, chosen for empirical performance and simplicity over MAPPO."
+        },
+        {
+          "id": "P37",
+          "name": "No explicit behavior reward needed",
+          "description": "Because the reward is purely outcome-based, no reward term explicitly encodes agile flight or tactical behavior."
+        }
+      ],
+      "edges": [
+        {"from": "P34", "to": "P35", "evidence": ["Sec III-A"]},
+        {"from": "P35", "to": "P37", "evidence": ["Sec III-A"]},
+        {"from": "P34", "to": "P36", "evidence": ["Sec III-A Optimization"]}
+      ]
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P38",
+      "name": "MPC/MPCC accuracy dependence",
+      "description": "Classical MPC/MPCC controllers require an accurate drone model, which is difficult to obtain especially under aerodynamic effects during complex maneuvers."
+    },
+    {
+      "id": "P39",
+      "name": "MPC/MPCC compute cost",
+      "description": "Classical MPC/MPCC controllers require significant online computation, limiting them to relatively short-horizon objectives."
+    },
+    {
+      "id": "P40",
+      "name": "Multi-agent MPC/game-theoretic scalability limits",
+      "description": "Multi-drone MPC or game-theoretic formulations face severe scalability issues as environment complexity grows, limiting them to low-speed racing."
+    },
+    {
+      "id": "P41",
+      "name": "Prior multi-agent RL racing adds overtaking term",
+      "description": "Prior multi-agent RL racing work augments single-agent dense rewards with an additional overtaking term, following approaches used in Gran Turismo."
+    },
+    {
+      "id": "P42",
+      "name": "Related work: emergent behavior in abstract multi-agent games",
+      "description": "Prior multi-agent RL research (Capture the Flag, StarCraft, hide-and-seek, autonomous driving) shows complex emergent behavior from simple adversarial rewards, but mostly in abstract or simplified environments."
+    },
+    {
+      "id": "P43",
+      "name": "This work extends emergence to embodied real-world control",
+      "description": "Unlike prior abstract multi-agent emergence studies, this work demonstrates similar emergent effects in a physically realistic setting deployable to real hardware."
+    },
+    {
+      "id": "P44",
+      "name": "Domain randomization used for transfer",
+      "description": "Training relies on domain randomization and rapid test-time adaptation rather than extensive system identification for sim-to-real transfer."
+    },
+    {
+      "id": "P45",
+      "name": "Deeper critic improves performance",
+      "description": "Empirically, making the critic network deeper than the actor network improves performance."
+    },
+    {
+      "id": "P46",
+      "name": "Track design rationale",
+      "description": "The Complex Track and Lemniscate Track were designed to require agile motion even without obstacles, and obstacle placement forces drones away from the direct gate line."
+    },
+    {
+      "id": "P47",
+      "name": "Adversarial domain randomization hypothesis",
+      "description": "The improved sim-to-real transfer of the competitive multi-agent approach is hypothesized to relate to adversarial domain randomization, though this is left to future work."
+    }
+  ],
+  "structural_reasoning": "The graph is organized around one central causal chain (C1): sparse multi-agent competition removes prescriptive behavior shaping, which lets agile flight and strategy emerge, and this becomes advantageous specifically as track complexity increases (obstacles). This connects downstream to three empirically supported consequences: (C2/C3) competitive/tournament superiority in simulation, (C4/C5) improved and more predictable-in-aggregate sim-to-real transfer, and (C6) directly observable strategic behaviors (risk-aversion, blocking). C7 (training stability) is a secondary, partially countervailing thread — multi-agent training is noisier, which is acknowledged but doesn't undermine the main thesis. C8 covers methodological scaffolding (Dec-MDP formulation, reward terms, IPPO) that underlies all empirical components but has no direct causal claims linking it to specific result nodes beyond enabling them. Several background/motivational claims about classical control baselines and related work (isolated_nodes) are contextual rather than argumentatively load-bearing for the paper's core empirical claims."
+}

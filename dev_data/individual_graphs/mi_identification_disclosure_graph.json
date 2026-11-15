@@ -1,0 +1,291 @@
+{
+  "arxiv_id": "2605.08012v1",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Core position statement and its five concrete disclosure requirements.",
+      "nodes": [
+        {"id": "P1", "name": "MI increasingly uses causal vocabulary", "description": "Mechanistic interpretability papers increasingly use causal vocabulary: circuits, mediators, causal abstraction, monosemanticity."},
+        {"id": "P2", "name": "Causal claims require identification assumptions", "description": "Such causal claims require explicit identification assumptions to be meaningful."},
+        {"id": "P3", "name": "Position: MI must disclose identification assumptions", "description": "Mechanistic interpretability research using causal language must disclose identification assumptions: state whether a claim is causal, name the identification strategy, enumerate assumptions, stress at least one, and explain how conclusions shift if assumptions fail."},
+        {"id": "P4", "name": "Validation is not identification", "description": "Validation metrics report what the data show under assumed conditions, while identification assumptions are the conditions under which a causal claim follows; the two are not interchangeable."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["E3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Motivating case sequence: a recurring pattern of undisclosed assumptions followed by downstream diagnosis, across multiple prior works.",
+      "nodes": [
+        {"id": "P5", "name": "Wang et al. circuit claim without stated assumptions", "description": "Wang et al. [2023] identified a GPT-2 circuit for indirect object identification using activation patching but did not state the assumptions under which the circuit claim was identified."},
+        {"id": "P6", "name": "Makelov et al. diagnose a failure mode a year later", "description": "Makelov et al. [2024] diagnosed a failure mode showing naive subspace patching can produce interpretability illusions where the patched direction is not the direction the behavior actually depends on."},
+        {"id": "P7", "name": "Makelov et al. don't generalize the diagnosis into a protocol", "description": "Makelov et al.'s paper is careful and self-aware but does not generalize its diagnosis into a field-wide assumption-disclosure protocol applicable before failure shows up downstream."},
+        {"id": "P8", "name": "Leask et al. produce an analogous SAE correction", "description": "Leask et al. [2025] showed approximately one-third of features in a larger SAE are absent from a smaller one trained on the same data, directly pressuring the dictionary-basis-recoverability assumption monosemanticity work relied on without stating."},
+        {"id": "P9", "name": "Canby et al. surface undeclared probing assumptions", "description": "Canby et al. [2024] formalized completeness and selectivity for causal probing as competing desiderata, surfacing assumptions the underlying probing literature had not declared."},
+        {"id": "P10", "name": "Field absorbs corrections as hazards, not as a disclosure lesson", "description": "This sequence recurs: causal vocabulary is adopted enthusiastically, assumptions are left implicit, downstream work diagnoses a specific identification failure, and the field absorbs the correction as a methodological hazard rather than evidence that disclosure should have come first."}
+      ],
+      "edges": [
+        {"from": "P5", "to": "P6", "evidence": ["E4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P7", "evidence": ["E5"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P10", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P10", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P10", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P3", "evidence": ["E7"], "votes": 2, "confidence": "majority", "note": "cross-component link into C1: recurring pattern motivates the position"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Validation-metric-substitution phenomenon and empirical demonstration that it can mask failed identification.",
+      "nodes": [
+        {"id": "P11", "name": "Validation-metric substitution defined", "description": "The repeated audit finding is 'validation metric substitution': faithfulness, completeness, monosemanticity, behavioral alignment, or alignment-search accuracy are reported in support of causal claims without a separate statement of the identification assumptions those claims require."},
+        {"id": "P12", "name": "Consistency does not establish causal attribution", "description": "A faithful, complete, monosemantic, or behaviorally aligned description is consistent with the model and with itself, but consistency does not establish that the proposed mechanism is the cause rather than a correlate."},
+        {"id": "P13", "name": "High validation scores can coexist with failed identification", "description": "Makelov et al. [2024] and Canby et al. [2024] demonstrate empirically that high validation scores can co-exist with failed identification."}
+      ],
+      "edges": [
+        {"from": "P11", "to": "P12", "evidence": ["E8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P13", "evidence": ["E9"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P11", "evidence": ["E10"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "Econometrics precedent: why the paper borrows the disclosure norm rather than a specific causal framework.",
+      "nodes": [
+        {"id": "P14", "name": "Econometrics institutionalized assumption-based evaluation", "description": "Econometrics did not eliminate identification disputes; it institutionalized the norm that causal claims are evaluated through stated assumptions."},
+        {"id": "P15", "name": "Meta-practice imported, not a specific framework", "description": "The paper imports the meta-practice of stating identification assumptions and offering falsifiability/sensitivity tests, not any specific causal framework (instrumental variables, regression discontinuity, etc.)."},
+        {"id": "P16", "name": "Two frameworks converge on assumption disclosure", "description": "The potential-outcomes framework (SUTVA, unconfoundedness) and the DAG framework (causal graph, Markov/d-separation assumptions) differ in technical detail but converge on the same meta-practice: explicit assumption disclosure as a prerequisite for any causal claim."},
+        {"id": "P17", "name": "Assumption disclosure is a logical requirement, not just convention", "description": "This convergence is not merely disciplinary convention; it is a logical requirement because a causal claim has no meaning without specifying the conditions under which the causal quantity is identified."},
+        {"id": "P18", "name": "MI methods have direct assumption parallels", "description": "For LLM interpretability the parallel is direct: activation patching assumes interventions isolate causal pathways, SAEs assume learned features correspond to the true representational basis, causal abstraction assumes distributed representations align with higher-level causal structures, and probing assumes localized causal interventions are possible."},
+        {"id": "P19", "name": "MI literature almost never states these assumptions", "description": "These are identification assumptions that must hold for causal claims to follow, yet the LLM interpretability literature almost never states them."}
+      ],
+      "edges": [
+        {"from": "P14", "to": "P15", "evidence": ["E11"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["E12"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P18", "evidence": ["E13"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P18", "evidence": ["E13"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P19", "evidence": ["E14"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P3", "evidence": ["E15"], "votes": 2, "confidence": "majority", "note": "cross-component link into C1"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Enumeration of strand-specific identification assumptions and their observed non-disclosure.",
+      "nodes": [
+        {"id": "P20", "name": "Activation patching assumptions: completeness, exclusivity, sufficiency", "description": "Activation patching's identification assumptions are circuit completeness (targeted components account for all causal pathways), pathway exclusivity (patching doesn't activate dormant parallel circuits), and metric sufficiency (the behavioral metric reflects the causal property of interest)."},
+        {"id": "P21", "name": "SAE assumptions: basis recoverability, atomicity, monosemanticity, completeness", "description": "Sparse autoencoders' assumptions are dictionary basis recoverability, feature atomicity, monosemanticity, and feature completeness."},
+        {"id": "P22", "name": "Causal abstraction assumptions: alignment faithfulness, optimization validity", "description": "Causal abstraction's assumptions are alignment faithfulness (structural correspondence preserved under intervention) and optimization validity (gradient search finds genuine alignments, not artifacts)."},
+        {"id": "P23", "name": "Probing assumptions: causal locality, intervention completeness, behavioral sufficiency", "description": "Probing's assumptions are causal locality, intervention completeness (ablation removes the full representational content of the target concept), and behavioral sufficiency."},
+        {"id": "P24", "name": "None of these assumptions formally stated in the reviewed works", "description": "Across the reviewed activation-patching, SAE, causal-abstraction, and probing papers (Wang et al., Makelov et al., Bricken et al., Templeton et al., Wu/Geiger et al., Geiger et al., Huang et al., Canby et al.), none of these assumptions were formally/numerically stated."}
+      ],
+      "edges": [
+        {"from": "P18", "to": "P20", "evidence": ["E16"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P18", "to": "P21", "evidence": ["E16"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P18", "to": "P22", "evidence": ["E16"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P18", "to": "P23", "evidence": ["E16"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P20", "to": "P24", "evidence": ["E17"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P24", "evidence": ["E17"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P24", "evidence": ["E17"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P24", "evidence": ["E17"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Audit design (n=10): sample, coding dimensions, and the Dim A coding-rule sensitivity check.",
+      "nodes": [
+        {"id": "P25", "name": "n=10 purposive sample across four strands", "description": "The audit covers ten papers spanning four methodological strands (circuit discovery, SAEs, causal abstraction, probing) across NeurIPS, ICLR, CLeaR, BlackboxNLP, and the Anthropic Transformer Circuits Thread, purposively rather than randomly selected."},
+        {"id": "P26", "name": "Purposive sampling limits prevalence claims but supports the position", "description": "The audit is meant to support the position rather than estimate prevalence in the broader MI literature; the position depends on the conceptual point, not prevalence statistics, but the audit shows the gap is widespread enough across major venues/strands to warrant a community standard."},
+        {"id": "P27", "name": "Four coding dimensions defined", "description": "Each paper is coded on Dim A (abstract claim type: causal w/ID, causal w/o ID, implicit causal, association only), Dim B (main-text identification-assumptions statement: dedicated section, partial, none), Dim C (falsifiability: yes/partial/no), and Dim D (validation-metric substitution: yes/partial/no)."},
+        {"id": "P28", "name": "Single-coder audit; no inter-rater stats reported for n=10", "description": "The n=10 audit is transparent but single-coder, so Cohen's κ and other inter-rater statistics are not reported for it, since computing κ from a single coder would be unsound."},
+        {"id": "P29", "name": "Dim A hardest call has a uniform decision rule", "description": "The hardest coding call — whether 'causal interventions'/'causal model' language constitutes a causal claim or a method label — is resolved with a uniform decision rule distinguishing method labels, unsupported causal claims, causal claims with named ID strategy, and non-causal language."},
+        {"id": "P30", "name": "Permissive re-coding doesn't change the main argument", "description": "Under a more permissive Dim A rule, three III-coded papers could be re-coded II, but this doesn't affect the main argument since II papers also fail the disclosure protocol and no paper reaches I under either rule."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["E18"], "votes": 2, "confidence": "majority"},
+        {"from": "P25", "to": "P27", "evidence": ["E19"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["E20"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P29", "evidence": ["E21"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P30", "evidence": ["E22"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Audit results (n=10): aggregate findings and concentration of validation-metric substitution.",
+      "nodes": [
+        {"id": "P31", "name": "0/10 dedicated identification-assumptions sections", "description": "Aggregate Dim B results: 0/10 papers contain a dedicated Identification Assumptions section, 6/10 partial discussion, 4/10 no explicit statement."},
+        {"id": "P32", "name": "Majority implicit causal claims, none fully disclosed", "description": "Aggregate Dim A results: 0/10 explicit causal with ID basis, 2/10 explicit without, 8/10 implicit, 0/10 association-only."},
+        {"id": "P33", "name": "No paper has a falsifiability test", "description": "Aggregate Dim C results: 0/10 falsifiability test, 3/10 partial sensitivity, 7/10 no falsifiability evidence."},
+        {"id": "P34", "name": "8/10 fully or partially substitute validation for identification", "description": "Aggregate Dim D results: 5/10 fully substitute a validation metric for causal support (Yes), 3/10 partially (discuss with caveats but don't separate), 2/10 clearly separate validation from identification (No)."},
+        {"id": "P35", "name": "The 2 clean-separation papers are exactly the failure-mode papers", "description": "The two papers that cleanly separate validation from identification are Makelov et al. [2024] and Canby et al. [2024], both of whose primary contribution is to demonstrate failure modes of the validation criteria."},
+        {"id": "P36", "name": "Separation only arises when it is itself the research question", "description": "This concentration supports reading identification-validation separation as not a baseline practice, but something that arises only when separation itself is the research question."}
+      ],
+      "edges": [
+        {"from": "P27", "to": "P31", "evidence": ["E23"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P27", "to": "P32", "evidence": ["E23"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P27", "to": "P33", "evidence": ["E23"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P27", "to": "P34", "evidence": ["E23"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P34", "to": "P35", "evidence": ["E24"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P36", "evidence": ["E25"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P35", "evidence": ["E26"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Anchor cases from the n=10 audit illustrating the pattern concretely: Makelov et al. and Leask et al.",
+      "nodes": [
+        {"id": "P37", "name": "Makelov et al.: orthogonal direction produces same effect", "description": "Patching what appeared to be the correct direction for a known feature produced the expected behavioral change, but activating an orthogonal direction in the same subspace produced the same change, showing the effect was not uniquely attributable to the feature direction."},
+        {"id": "P38", "name": "Even Makelov et al. doesn't formally enumerate its assumptions", "description": "Even Makelov et al., the most methodologically self-aware paper in the sample, does not formally enumerate the assumptions underlying its own critique; the assumptions are described rather than declared."},
+        {"id": "P39", "name": "Leask et al.: stitching experiments challenge basis recoverability", "description": "Leask et al. [2025] ran stitching experiments showing ~1/3 of larger-SAE features are absent from smaller SAEs, directly challenging dictionary basis recoverability."},
+        {"id": "P40", "name": "Leask et al.: meta-SAE experiments challenge feature atomicity", "description": "Leask et al.'s meta-SAE experiments showed larger-SAE features decompose into combinations of smaller-SAE features, challenging feature atomicity."},
+        {"id": "P41", "name": "Unstated SAE assumptions could not be anticipated or hedged", "description": "Both findings invalidate assumptions that the audited SAE papers never stated, so those papers could not anticipate or hedge against these failure modes."}
+      ],
+      "edges": [
+        {"from": "P37", "to": "P38", "evidence": ["E27"], "votes": 2, "confidence": "majority"},
+        {"from": "P6", "to": "P37", "evidence": ["E28"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2: elaborates the Makelov failure-mode finding"},
+        {"from": "P39", "to": "P41", "evidence": ["E29"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P40", "to": "P41", "evidence": ["E29"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P39", "evidence": ["E30"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2: elaborates Leask finding"},
+        {"from": "P8", "to": "P40", "evidence": ["E30"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P38", "to": "P28", "evidence": ["E31"], "votes": 1, "confidence": "single_run", "note": "cross-component link into C6: even the best paper's implicit assumptions motivate systematic single-coder auditing"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "n=30 two-human-coder audit: design, inter-rater reliability, and robustness relative to n=10.",
+      "nodes": [
+        {"id": "P42", "name": "n=30 audit designed to probe robustness of n=10", "description": "To probe robustness of the n=10 single-coder audit and estimate inter-coder agreement, a two-human-coder audit was conducted on n=30 MI papers spanning the four strands plus circuit-discovery scaling work, from additional venues."},
+        {"id": "P43", "name": "Two independent coders, abstract-layer information only", "description": "Two independent bilingual coders coded the n=30 records from title, abstract, strand, venue, and year using the same rubric, without seeing each other's labels or the n=10 codings; this suits auditing the most visible reporting layer but is not full-text recoding."},
+        {"id": "P44", "name": "Agreement moderate on A/C, lower on B/D", "description": "Inter-rater agreement (κ) is moderate on Dim A (0.56) and Dim C (0.52) but lower on Dim B (0.26) and Dim D (0.43)."},
+        {"id": "P45", "name": "Low Dim B agreement itself supports the disclosure recommendation", "description": "Coders disagreed on whether informal limitation language counts as partial assumption disclosure; this ambiguity strengthens rather than weakens the disclosure recommendation, since current papers do not provide stable, easily identifiable assumption statements."},
+        {"id": "P46", "name": "0/30 dedicated identification sections under any rule or coder", "description": "On Dim B, no paper is coded I (dedicated identification-assumptions section) under either the strict or permissive rule, by either coder — 0/30."},
+        {"id": "P47", "name": "Dim D count is coding-rule sensitive: 19/30 strict vs 26/30 permissive", "description": "Disagreements on Dim D were resolved with two rules: a strict rule yields Dim D=Yes on 19/30 papers, a permissive rule yields 26/30; this count should be read as a moderate-confidence structural pattern, not a precise prevalence estimate."},
+        {"id": "P48", "name": "n=30 reproduces direction of n=10 findings and reveals strand heterogeneity", "description": "The n=30 audit reproduces the direction of all n=10 findings and surfaces strand heterogeneity the n=10 obscured: SAE and causal-abstraction strands show stronger substitution than activation patching, where the illusion-and-failure-modes literature has a partial protective effect."}
+      ],
+      "edges": [
+        {"from": "P26", "to": "P42", "evidence": ["E32"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P42", "to": "P43", "evidence": ["E33"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P43", "to": "P44", "evidence": ["E34"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P44", "to": "P45", "evidence": ["E35"], "votes": 2, "confidence": "majority"},
+        {"from": "P44", "to": "P46", "evidence": ["E36"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P44", "to": "P47", "evidence": ["E37"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P46", "evidence": ["E38"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P34", "to": "P47", "evidence": ["E38"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P46", "to": "P48", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P47", "to": "P48", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P39", "to": "P48", "evidence": ["E40"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C8: activation patching's partial protection linked to illusion-literature within that strand"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Further sensitivity checks: single-rater n=20 human audit and second human-coder re-coding.",
+      "nodes": [
+        {"id": "P49", "name": "n=20 single-rater human audit reproduces the headline result", "description": "A stratified n=20 single-rater human audit (Dim B + Dim D, abstracts only) finds Dim B=I: 0/20 and Dim D=Yes: 16/20, reproducing the 0-dedicated-section finding exactly and the substitution direction."},
+        {"id": "P50", "name": "Author-vs-strict-adjudication agreement moderate", "description": "Agreement between the author's n=20 ratings and strict adjudication is 80% on Dim B and 65% on Dim D."},
+        {"id": "P51", "name": "Second human-coder re-coding is more conservative on Dim D", "description": "A second human-coder re-coding of Dim B/D on the n=20 sample shows 80% agreement (κ=0.49) on Dim B and 70% agreement (κ=0.46) on Dim D, with the second coder more conservative (some Dim D labels move from Yes to Partial)."},
+        {"id": "P52", "name": "Second coder differs more on n=30 records", "description": "On the n=30 records, the second coder differs more from the existing strict adjudication (κ=0.08 on Dim B, κ=0.25 on Dim D), using Partial much more often."},
+        {"id": "P53", "name": "0/N structural finding survives all sensitivity checks; exact substitution count is only moderate-confidence", "description": "The low Dim B κ (0.26) means the precise 19-26/30 Dim D count is better read as a moderate-confidence point estimate, but the 0/30 structural finding (no dedicated identification sections) is not threatened by this and is reproduced across all human raters."}
+      ],
+      "edges": [
+        {"from": "P46", "to": "P49", "evidence": ["E41"], "votes": 2, "confidence": "majority", "note": "cross-component link from C9"},
+        {"from": "P49", "to": "P50", "evidence": ["E42"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P49", "to": "P51", "evidence": ["E43"], "votes": 2, "confidence": "majority"},
+        {"from": "P51", "to": "P52", "evidence": ["E44"], "votes": 2, "confidence": "majority"},
+        {"from": "P45", "to": "P53", "evidence": ["E45"], "votes": 2, "confidence": "majority", "note": "cross-component link from C9"},
+        {"from": "P52", "to": "P53", "evidence": ["E45"], "votes": 2, "confidence": "majority"},
+        {"from": "P46", "to": "P53", "evidence": ["E45"], "votes": 2, "confidence": "majority", "note": "cross-component link from C9"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "The proposed disclosure protocol and its worked example.",
+      "nodes": [
+        {"id": "P54", "name": "Protocol adapts the econometrics norm without prescribing a framework", "description": "The protocol adapts the causal-inference convention of opening-section assumption disclosure to MI without prescribing a specific causal framework, requiring only that whatever framework a paper adopts, its core assumptions be stated explicitly."},
+        {"id": "P55", "name": "Five concrete requirements specified", "description": "The five requirements are: (1) state in the abstract whether the claim is causal or associational; (2) if causal, name the identification strategy; (3) include a numbered Identification Assumptions section stating what each assumption asserts, why it's plausible, and what evidence supports it; (4) provide a falsifiability test, sensitivity analysis, or counter-evidence statement for each core assumption; (5) discuss substantively how conclusions change if key assumptions fail."},
+        {"id": "P56", "name": "Worked example: Wang et al. under the protocol", "description": "Applying the protocol to Wang et al. [2023] would require stating the causal claim under circuit completeness and pathway exclusivity, enumerating and testing these assumptions, addressing the parallel-pathway concern Makelov et al. later raised but Wang et al. never engaged with."},
+        {"id": "P57", "name": "Recommendation to incorporate protocol into venue checklists", "description": "The recommendation to NeurIPS, ICLR, ICML, and comparable venues is to incorporate the protocol into existing submission checklists."}
+      ],
+      "edges": [
+        {"from": "P15", "to": "P54", "evidence": ["E46"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P54", "to": "P55", "evidence": ["E47"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P53", "to": "P57", "evidence": ["E48"], "votes": 2, "confidence": "majority", "note": "cross-component link from C10: robust audit finding motivates the venue recommendation"},
+        {"from": "P55", "to": "P56", "evidence": ["E49"], "votes": 2, "confidence": "majority"},
+        {"from": "P55", "to": "P57", "evidence": ["E50"], "votes": 2, "confidence": "majority"},
+        {"from": "P6", "to": "P56", "evidence": ["E51"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C12",
+      "description": "Validation-metric-vs-identification-gap table logic: why specific metrics fail to test specific assumptions.",
+      "nodes": [
+        {"id": "P58", "name": "Reporting validation metrics is necessary but not sufficient", "description": "Reporting metrics like patch effect, steering behavior change, alignment score, or ablation effect is necessary but not sufficient for the causal claims the corresponding methods are typically used to support."},
+        {"id": "P59", "name": "Patch effect doesn't test pathway exclusivity/completeness", "description": "A measurable patch effect can flow through dormant or parallel pathways, so patch-effect/logit-difference metrics do not test pathway exclusivity or circuit completeness."},
+        {"id": "P60", "name": "Steering doesn't test canonical basis/atomicity", "description": "SAE steering shows a feature is causally relevant, but not that the basis is canonical or that features are atomic."},
+        {"id": "P61", "name": "Alignment score doesn't test optimization validity/faithfulness", "description": "High interchange-intervention-accuracy (IIA)/alignment score can reflect spurious alignments learned by the optimizer rather than a faithful abstraction."},
+        {"id": "P62", "name": "Ablation effect doesn't test causal locality/completeness", "description": "A null ablation effect can reflect distributed representation rather than absence of the underlying structure, so ablation effect does not test causal locality or intervention completeness."}
+      ],
+      "edges": [
+        {"from": "P11", "to": "P58", "evidence": ["E52"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P58", "to": "P59", "evidence": ["E53"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P58", "to": "P60", "evidence": ["E53"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P58", "to": "P61", "evidence": ["E53"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P58", "to": "P62", "evidence": ["E53"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P59", "evidence": ["E54"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P21", "to": "P60", "evidence": ["E54"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P22", "to": "P61", "evidence": ["E54"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P23", "to": "P62", "evidence": ["E54"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C13",
+      "description": "Anticipated objections and the paper's responses.",
+      "nodes": [
+        {"id": "P63", "name": "Objection: MI is engineering, not causal science", "description": "One view is that MI is engineering rather than causal science, so causal-claim disclosure requirements shouldn't apply broadly."},
+        {"id": "P64", "name": "Response: protocol only applies to causal-vocabulary papers", "description": "The protocol applies only when papers use causal vocabulary; non-causal papers can avoid the requirement by framing claims descriptively."},
+        {"id": "P65", "name": "Objection: formal disclosure is premature", "description": "A second view is that formal assumption disclosure is premature for the field."},
+        {"id": "P66", "name": "Response: protocol only asks authors to state assumptions their methods already require", "description": "The response is that the protocol does not impose econometric estimators or a single causal framework; it asks authors to state the assumptions their own interventions already require."},
+        {"id": "P67", "name": "Objection: boilerplate sections could become performative", "description": "A third view is that mandated identification-assumptions sections could become performative boilerplate rather than substantive."},
+        {"id": "P68", "name": "Response: reviewer guidance plus templates distinguish substance from checklist", "description": "The response is that reviewer guidance should distinguish substantive assumptions, falsifiers, and sensitivity statements from perfunctory checklists, and method-specific templates are provided to make the norm concrete."}
+      ],
+      "edges": [
+        {"from": "P63", "to": "P64", "evidence": ["E55"], "votes": 2, "confidence": "majority"},
+        {"from": "P65", "to": "P66", "evidence": ["E56"], "votes": 2, "confidence": "majority"},
+        {"from": "P67", "to": "P68", "evidence": ["E57"], "votes": 2, "confidence": "majority"},
+        {"from": "P55", "to": "P64", "evidence": ["E58"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C11"},
+        {"from": "P54", "to": "P66", "evidence": ["E58"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C11"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P69", "name": "Prior evaluation-practice critiques exist but don't target MI identification disclosure specifically", "description": "Schaeffer et al. [2023] showed claimed emergent abilities often vanish under careful evaluation, and Pearl [2009]/Pearl and Mackenzie [2018] established formal foundations arguing causal claims require explicit assumptions, but none of these prior works focused specifically on identification-assumption disclosure in mechanistic interpretability."},
+    {"id": "P70", "name": "Leask et al. is the only prior work directly testing an unstated MI identification assumption", "description": "Leask et al. [2025] is characterized as the only prior work that directly identifies an unstated identification assumption in interpretability and tests it; this paper's contribution is to make such assumption-checking standard practice rather than a post-hoc discovery."}
+  ]
+}

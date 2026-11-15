@@ -1,0 +1,178 @@
+{
+ "arxiv_id": "2609.06489",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Stochastic-Power-HOOT: motivation, algorithm design, theory, and empirical results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "MCTS limits in continuous stochastic settings",
+     "description": "Real-world MCTS applications involve continuous actions and stochastic dynamics, where value estimates are non-stationary and actions cannot be enumerated, complicating both convergence theory and practice."
+    },
+    {
+     "id": "P2",
+     "name": "HOOT lacks guarantees",
+     "description": "HOOT couples MCTS with the HOO hierarchical bandit but uses logarithmic exploration bonuses, which fail to guarantee convergence when value estimates are non-stationary because non-stationary rewards lack concentration."
+    },
+    {
+     "id": "P3",
+     "name": "POLY-HOOT is deterministic-only",
+     "description": "POLY-HOOT adds a polynomial bonus and has non-asymptotic convergence guarantees in deterministic continuous MDPs, but no analogous guarantee exists for stochastic environments."
+    },
+    {
+     "id": "P4",
+     "name": "Stochastic-Power-HOOT",
+     "description": "Stochastic-Power-HOOT is an MCTS algorithm for continuous-action stochastic MDPs that uses a power mean as value backup operator and a polynomial exploration bonus C n^(b/beta)/T_a(n)^(alpha/beta)."
+    },
+    {
+     "id": "P5",
+     "name": "Power mean interpolates",
+     "description": "The power mean f_n(p) interpolates between the arithmetic mean (p=1, conservative) and the maximum (p to infinity, optimistic), enabling tuning of exploration-exploitation across levels of stochasticity."
+    },
+    {
+     "id": "P6",
+     "name": "Enhanced HOO convergence",
+     "description": "For non-stationary continuous-armed bandits satisfying the fixed-arm and optimal-arm convergence properties, an enhanced HOO agent with polynomial bonus achieves ||f_n - f||_inf at most C/n^zeta for some 0<zeta<1/2 (Theorem 1, Mao et al.)."
+    },
+    {
+     "id": "P7",
+     "name": "Power mean preserves concentration",
+     "description": "Power mean aggregation of estimators that concentrate polynomially preserves polynomial concentration at a transformed rate (Theorem 2)."
+    },
+    {
+     "id": "P8",
+     "name": "Tree analysis by induction",
+     "description": "Each internal MCTS node is modeled as a non-stationary bandit whose arms are child nodes; concentration rates are propagated inductively from rollout leaves at depth D upward using Q-value concentration (Lemma 1) and Theorem 2."
+    },
+    {
+     "id": "P9",
+     "name": "Polynomial convergence rate",
+     "description": "Stochastic-Power-HOOT converges at rate O(n^-zeta), zeta in (0,1/2), where n is the number of visited trajectories, matching POLY-HOOT's rate while extending the guarantee to stochastic MDPs (Theorem 4)."
+    },
+    {
+     "id": "P10",
+     "name": "Strong results on stochastic control",
+     "description": "On stochastic classic control, all methods solve basic CartPole but only Stochastic-Power-HOOT handles CartPole with increased gravity optimally, with particular strength on sparse-reward MountainCar and high-gravity Acrobot (Table 2)."
+    },
+    {
+     "id": "P11",
+     "name": "Scales to MuJoCo",
+     "description": "On stochastic MuJoCo tasks it keeps strong performance in 17-dimensional Humanoid, achieving 3.1x the UCT baseline (Table 3)."
+    },
+    {
+     "id": "P12",
+     "name": "Best power depends on environment",
+     "description": "The optimal p varies by environment: Humanoid benefits from p=2 while the more stochastic Hopper needs p=8 (Table 3)."
+    },
+    {
+     "id": "P13",
+     "name": "Moderate p works best",
+     "description": "On CartPole-IG, p=2 and p=4 perform best: too low a p fails to focus search and too high may over-commit to early estimates (Table 4)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 5.2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 5.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P4",
+     "evidence": [
+      "Sec 6.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 6.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 6.2, Thm 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 6.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 6.3, Thm 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 6.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P10",
+     "evidence": [
+      "Sec 7.2, Table 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P11",
+     "evidence": [
+      "Sec 7.3, Table 3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 7.3, Table 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P13",
+     "evidence": [
+      "Sec 7.4, Table 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Environments are noisy variants",
+   "description": "Experiments use stochastic versions of benchmarks with action noise, dynamics noise and observation noise (Gaussian perturbations), and rewards shifted to be strictly positive since power means require positive inputs."
+  }
+ ],
+ "structural_reasoning": "The argument moves from the gap left by HOOT and POLY-HOOT to the power-mean algorithm, the concentration-based convergence theory, and then empirical results on classic control and MuJoCo. The experimental setup note is isolated."
+}

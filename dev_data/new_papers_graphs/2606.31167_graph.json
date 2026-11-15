@@ -1,0 +1,207 @@
+{
+ "arxiv_id": "2606.31167",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Three VLA limitations motivate MIRTH's three components, each validated by ablations and analyses",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Temporal myopia of single-frame VLAs",
+     "description": "Most open-source VLAs decode actions from only the current observation and instruction (a Markovian assumption), discarding motion trends and object permanence under occlusion."
+    },
+    {
+     "id": "P2",
+     "name": "Naive history is too costly",
+     "description": "Naively extending context windows or using video transformers with dense spatio-temporal attention incurs prohibitive compute, quadratic scaling, large memory and high latency for real-time control."
+    },
+    {
+     "id": "P3",
+     "name": "Dual-scale temporal memory hubs",
+     "description": "MIRTH compresses history into fixed-length memory via a workspace hub (K exponential moving averages at different decay rates, mixed with motion-statistics) and a short-horizon hub (attention over the last w frames), fused by a per-patch sigmoid gate; token count stays fixed regardless of history length."
+    },
+    {
+     "id": "P4",
+     "name": "Reasoning gap and many-to-one problem",
+     "description": "Prior VLAs map inputs directly to actions (no interpretability or planning) or use hand-crafted discrete action-language supervision, which is costly to annotate and suffers the many-to-one problem where diverse descriptions map to the same motion."
+    },
+    {
+     "id": "P5",
+     "name": "Latent reasoning tokens with MI objective",
+     "description": "MIRTH inserts m learnable reasoning tokens between context and action tokens, trained with InfoNCE contrastive losses that pull their representation toward both the action representation and the context representation, without text supervision."
+    },
+    {
+     "id": "P6",
+     "name": "Autoregressive scalar decoding is slow",
+     "description": "Scalar-wise quantization of continuous actions needs an autoregressive chain of tokens per action dimension, causing high decoding latency that limits control frequency."
+    },
+    {
+     "id": "P7",
+     "name": "Parallel vector-wise action decoding",
+     "description": "MIRTH uses one action token per full action vector (shortening the action sequence by 1/NF) and decodes the whole trajectory in parallel with a two-layer projection head in a single forward pass, trained with an L1 loss."
+    },
+    {
+     "id": "P8",
+     "name": "Strong LIBERO results",
+     "description": "MIRTH exceeds 98% on LIBERO spatial, goal and object suites and reaches 95.3% on LIBERO-Long (average 98.1%), versus OpenVLA-OFT's 94.5% on Long and 97.1% average."
+    },
+    {
+     "id": "P9",
+     "name": "Real-world LeRobot gains grow with difficulty",
+     "description": "On the LeRobot platform, MIRTH's advantage over baselines widens as task difficulty increases, especially on abstract-instruction reasoning tasks, while maintaining throughput comparable to or above lighter baselines such as OpenVLA."
+    },
+    {
+     "id": "P10",
+     "name": "Memory hub ablation",
+     "description": "On LIBERO-Long, removing the workspace hub drops success by 1.3%, removing the short-term hub by 0.9%, and removing both (single-frame) by 2.1%."
+    },
+    {
+     "id": "P11",
+     "name": "Reasoning ablation",
+     "description": "On LIBERO-Long, removing the MI loss reduces success by 0.8% and removing the reasoning tokens entirely by 1.4%."
+    },
+    {
+     "id": "P12",
+     "name": "Hubs encode motion dynamics",
+     "description": "Linear probes on MIRTH's features give much lower MAE than on OpenVLA for normalized state (0.11 vs 0.32) and velocity (0.04 vs 0.15), showing the hubs encode motion dynamics."
+    },
+    {
+     "id": "P13",
+     "name": "Model uses temporal order",
+     "description": "Randomly shuffling the order of history frames in the short-term hub drops LIBERO-Long success from 95.3% to 88.0%, showing the model exploits sequential structure."
+    },
+    {
+     "id": "P14",
+     "name": "Reasoning tokens cluster by task semantics",
+     "description": "t-SNE of reasoning embeddings shows clusters by task semantics (e.g., container-opening vs pick-and-place) without task-ID supervision."
+    },
+    {
+     "id": "P15",
+     "name": "Emergent error recovery",
+     "description": "On LeRobot failure episodes MIRTH recovers 12.1% of the time versus 8.7% without reasoning tokens and 5.2% for single-frame OpenVLA."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 2.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 1, Sec 3.3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.1, Fig 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.1, Fig 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.3, Table 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.3, Table 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.4, Fig 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.4, Table 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P16",
+   "name": "Prefix and infusion integration",
+   "description": "Memory can be integrated into the current frame by either token prefixing or multiplicative/additive patch infusion, which have complementary advantages."
+  },
+  {
+   "id": "P17",
+   "name": "Cached inference",
+   "description": "EMA memory updates let the model cache embeddings across timesteps, so each control step only encodes the current frame, updates the hubs and decodes actions in one forward pass."
+  }
+ ],
+ "structural_reasoning": "Each of the three identified VLA limitations maps to a design component, evaluated via benchmarks, ablations and targeted probes."
+}

@@ -1,0 +1,183 @@
+{
+ "arxiv_id": "2608.13588",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "IterCOMP: pilot findings drive an iterative, reasoning-aware compression design with measured gains",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Long retrieved inputs hurt RAG",
+     "description": "Long retrieved contexts increase latency and cost linearly with document count and include irrelevant content that distracts LLMs and triggers positional biases like lost-in-the-middle."
+    },
+    {
+     "id": "P2",
+     "name": "Single-query compression fails multi-hop",
+     "description": "Query-focused compression matching one query to individual documents or sentences cannot capture inter-document dependencies and implicit intermediate clues in multi-hop QA, causing information loss."
+    },
+    {
+     "id": "P3",
+     "name": "LLMs judge answerability",
+     "description": "On MuSiQue sub-QA data, LLMs can judge whether evidence suffices; F1 is 70.51 (Llama-3.1-8B), 84.27 (Mistral-7B), 73.12 (GPT-3.5-Turbo) and 83.57 (GPT-4o)."
+    },
+    {
+     "id": "P4",
+     "name": "Full-evidence accuracy falls with hops",
+     "description": "In the Full-evidence setting answerability accuracy declines as hops increase (Mistral-7B 92% at 2-hop to 78.5% at 4-hop), while under Partial evidence it improves with hop length."
+    },
+    {
+     "id": "P5",
+     "name": "LLMs can name missing information",
+     "description": "LLMs generate related follow-up questions for missing information (GPT-4o relatedness 90.6%, BLEU 0.50), but quality declines with hop count."
+    },
+    {
+     "id": "P6",
+     "name": "Iteration budget is bounded",
+     "description": "Because misjudging unanswerable as answerable stops early and the reverse causes noisy extra iterations, with Full-setting accuracy degrading, IterCOMP uses answerability as a stopping signal with a bounded iteration cap (max 5)."
+    },
+    {
+     "id": "P7",
+     "name": "Iterative compression loop",
+     "description": "IterCOMP splits documents into sentence-level evidence segments, filters relevant ones, has an LLM judge answerability, and if insufficient generates a targeted follow-up question to pull in new evidence, accumulating a compact reasoning-oriented prompt."
+    },
+    {
+     "id": "P8",
+     "name": "Dual relevance with percentile filtering",
+     "description": "Relevance combines bge-m3 semantic similarity and lexical weighted-overlap similarity (lambda=0.6), and segments above the k-th score percentile are kept (k=90 for MuSiQue/HotpotQA, 85 for 2Wiki), applied at every reasoning step."
+    },
+    {
+     "id": "P9",
+     "name": "Best QA with large compression",
+     "description": "Training-free IterCOMP achieves the best EM and F1 on MuSiQue, 2Wiki and HotpotQA with a LLaMA-3-8B reader, e.g. MuSiQue F1 19.92 -> 27.36 (7x shorter input) and HotpotQA 43.63 -> 51.78 over raw documents."
+    },
+    {
+     "id": "P10",
+     "name": "Adapts to question complexity",
+     "description": "On MuSiQue the average iterations rise to 3.08 for 4-hop questions and compressed prompt length grows from 228 to 403 tokens from 2-hop to 4-hop, so depth and evidence size adapt to complexity."
+    },
+    {
+     "id": "P11",
+     "name": "Iterative refinement matters most",
+     "description": "In ablations removing Iterative Refinement causes the largest drop, removing Answerability Judgment cuts F1 to 23.63 and gives less compact prompts, and combining semantic and lexical similarity beats either alone."
+    },
+    {
+     "id": "P12",
+     "name": "Percentile k tradeoff",
+     "description": "On MuSiQue F1 rises with k to a peak of 27.36 at k=90 then drops at k=95 because too strict a cutoff discards needed evidence; at k>=90 prompts are shorter than Oracle's."
+    },
+    {
+     "id": "P13",
+     "name": "Cost savings on API LLMs",
+     "description": "On 500 MuSiQue instances, compression cuts reader-LLM cost by 75.5%-79.4% and speeds up inference across API models."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P7",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2, Table 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2, Sec 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2.2-4.2.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.2, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.2, Table 3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.2, Table 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.2, Table 5"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.3, Table 6"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Stated limitations",
+   "description": "IterCOMP depends on the reasoning ability of the underlying LLM (risking error propagation), incurs iterative overhead versus single-pass methods, is sensitive to percentile and iteration-limit hyperparameters, and was evaluated only on general-domain multi-hop QA."
+  },
+  {
+   "id": "P15",
+   "name": "Soft prompts do not transfer",
+   "description": "Soft-prompt compression methods are optimized for specific LLMs, limiting transferability and requiring retraining on model updates, which is impractical for API-based settings."
+  }
+ ],
+ "structural_reasoning": "Pilot studies of LLM answerability and gap identification justify the iterative answerability-gated loop; its retrieval filtering and loop design underlie benchmark gains, adaptivity, ablations and cost savings."
+}

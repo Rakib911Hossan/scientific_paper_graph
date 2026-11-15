@@ -1,0 +1,573 @@
+{
+  "arxiv_id": "2604.17998v1",
+  "note": "Single-pass extraction (no sentence-level indexing available for this document). Evidence fields reference sections/equations/tables/figures instead of indexed sentences (S#). Votes/confidence/fidelity fields from the reference schema are omitted since no multi-run validation was performed.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: correlational deep models lack causal interpretability",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Deep models are strong but correlational",
+          "description": "Recent deep learning models (GNNs, Transformers) show strong empirical anomaly-detection performance but remain primarily correlational, offering limited support for causal interpretation and root-cause localization."
+        },
+        {
+          "id": "P2",
+          "name": "Correlation does not imply causation",
+          "description": "Strong correlation does not necessarily imply that one variable causes or explains another, which can lead to misleading relationships, false alarms, and limited insight into the true source of an anomaly."
+        },
+        {
+          "id": "P3",
+          "name": "Existing models detect but don't explain",
+          "description": "As a result of relying on correlation, many current models can detect abnormal behavior but struggle to determine why it occurred and which component is most likely responsible."
+        },
+        {
+          "id": "P4",
+          "name": "Causal structure improves interpretability and root-cause distinction",
+          "description": "Causal modeling can improve anomaly detection by focusing on stable mechanisms rather than surface-level dependence, and can support root-cause analysis by distinguishing primary anomalies from propagated effects."
+        },
+        {
+          "id": "P5",
+          "name": "CGT proposed to integrate causal graph with deep sequence modeling",
+          "description": "This motivates the Causally Guided Transformer (CGT), which integrates an explicit time-lagged causal graph prior with Transformer-based deep sequence modeling for multivariate anomaly detection."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["Abstract", "Sec I"]},
+        {"from": "P2", "to": "P3", "evidence": ["Sec I"]},
+        {"from": "P3", "to": "P4", "evidence": ["Sec I"]},
+        {"from": "P4", "to": "P5", "evidence": ["Sec I Contributions"]}
+      ]
+    },
+    {
+      "component_id": "C2",
+      "description": "Conceptual case for causal conditioning in anomaly scoring",
+      "nodes": [
+        {
+          "id": "P6",
+          "name": "Anomaly interpretation depends on causal parent behavior",
+          "description": "A variable should be judged relative to the values of the variables that directly (causally) influence it: if B behaves abnormally while its causal parent A remains normal, this may indicate a fault in B or the A→B mechanism; if both change consistently with the learned mechanism, B is less anomalous than a correlation-only model would suggest."
+        },
+        {
+          "id": "P7",
+          "name": "Causal framework distinguishes isolated vs. systemic anomalies",
+          "description": "In a causal framework, anomalies may arise as violations of expected causal relationships, not just unusual values, helping distinguish isolated measurement anomalies (affecting one variable) from systemic anomalies that propagate as a cascade consistent with the dependency structure."
+        },
+        {
+          "id": "P8",
+          "name": "Directional causal graph supports anomaly-source tracing",
+          "description": "Because a causal graph is directional, it provides a principled basis for tracing a disturbance back to a plausible upstream source and attributing anomalies to primary causes vs. downstream consequences, rather than just reporting multiple abnormal variables."
+        },
+        {
+          "id": "P9",
+          "name": "Approximate causal prior still provides useful inductive bias",
+          "description": "Even an approximate/imperfect learned causal graph can reduce reliance on spurious correlations, improve robustness under changing conditions, and produce more actionable explanations (e.g., interpreting a failed valve's downstream effects as one propagated fault rather than multiple unexplained anomalies)."
+        }
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["Sec II-D"]},
+        {"from": "P7", "to": "P8", "evidence": ["Sec II-D"]},
+        {"from": "P8", "to": "P9", "evidence": ["Sec II-D"]}
+      ]
+    },
+    {
+      "component_id": "C3",
+      "description": "Limitations of prior causal-discovery methods and prior causally-guided anomaly detectors",
+      "nodes": [
+        {
+          "id": "P10",
+          "name": "Each causal discovery method class has limitations",
+          "description": "Constraint-based causal discovery methods can become unreliable in noisy/high-dimensional settings, score-based methods can be computationally expensive, and functional causal models may impose overly restrictive assumptions for complex industrial systems."
+        },
+        {
+          "id": "P11",
+          "name": "Learned graphs are imperfect structural priors",
+          "description": "Real systems often contain latent confounders or partially observed variables, so a learned causal graph should be treated as a useful but imperfect structural prior rather than absolute ground truth."
+        },
+        {
+          "id": "P12",
+          "name": "Prior causal graph-based anomaly detectors remain correlational",
+          "description": "Deep multivariate structured models (MSCRED, GDN, MTAD-GAT) highlight the importance of inter-sensor structure, but the learned relationships they use are still typically correlational rather than explicitly causal."
+        },
+        {
+          "id": "P13",
+          "name": "Prior work treats detection and causal analysis as separate stages",
+          "description": "A key limitation of prior causality-guided fault analysis (CauseInfer, MicroDiag, CausalRCA, GReLeN) is that anomaly detection and causal analysis are often treated as separate sequential stages, with causal reasoning applied only after detection, rather than causal structure being integrated directly into the detector."
+        },
+        {
+          "id": "P14",
+          "name": "Open opportunity: integrate causal structure directly into the detector",
+          "description": "This separation-of-stages limitation leaves an open opportunity to integrate causal structure more directly into deep anomaly detectors themselves, rather than using it only after detection or as a loosely connected prior."
+        }
+      ],
+      "edges": [
+        {"from": "P10", "to": "P11", "evidence": ["Sec II-C"]},
+        {"from": "P12", "to": "P14", "evidence": ["Sec III-A", "Sec III-C"]},
+        {"from": "P13", "to": "P14", "evidence": ["Sec III-C"]},
+        {"from": "P11", "to": "P14", "evidence": ["Sec III-B", "Sec III-C"]}
+      ]
+    },
+    {
+      "component_id": "C4",
+      "description": "Causal graph prior and parent-masked causal path",
+      "nodes": [
+        {
+          "id": "P15",
+          "name": "PCMCI-based time-lagged causal discovery",
+          "description": "A time-lagged causal discovery method based on PCMCI is used to estimate directed, lagged dependencies (j,ℓ)→i, identifying sensor j at lag ℓ as a candidate cause of target variable i."
+        },
+        {
+          "id": "P16",
+          "name": "Binary parent mask constructed per target",
+          "description": "For each target variable i, a binary parent mask πi ∈ {0,1}^P is constructed from the discovered causal graph, indicating which sensor-lag pairs are graph-supported parents (Eq. 9)."
+        },
+        {
+          "id": "P17",
+          "name": "Parent mask hard-gates the causal input",
+          "description": "The parent mask is applied as a hard gate restricting the lagged input to only graph-supported parent features before it enters the causal computation path (Eq. 10)."
+        },
+        {
+          "id": "P18",
+          "name": "Causal path restricted to graph-supported causes",
+          "description": "Because only parent features pass the hard mask, the main prediction pathway (Transformer encoder, latent module, causal predictive head) is restricted to computing from graph-supported causes only."
+        }
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["Sec IV-C", "Eq. 9"]},
+        {"from": "P16", "to": "P17", "evidence": ["Sec IV-C", "Sec IV-E", "Eq. 10"]},
+        {"from": "P17", "to": "P18", "evidence": ["Sec IV-C", "Sec IV-E"]}
+      ]
+    },
+    {
+      "component_id": "C5",
+      "description": "Causal Transformer encoder and latent Gaussian probabilistic head",
+      "nodes": [
+        {
+          "id": "P19",
+          "name": "Masked input processed by shared Transformer encoder",
+          "description": "The parent-masked, normalized input is projected and processed by a Transformer encoder to produce a causal summary representation h_t,c (Eqs. 11-13)."
+        },
+        {
+          "id": "P20",
+          "name": "Latent Gaussian variable captures residual uncertainty",
+          "description": "A latent variable z with a conditional Gaussian prior (conditioned on the causal representation) and an amortized posterior (additionally conditioned on the ground-truth target during training) is introduced to capture predictive uncertainty beyond the causal mean (Eqs. 14-17)."
+        },
+        {
+          "id": "P21",
+          "name": "Causal representation and latent sample yield Gaussian predictive distribution",
+          "description": "The causal representation and sampled latent variable are concatenated and mapped to the mean and log-variance of a Gaussian predictive distribution over the target (Eqs. 18-20)."
+        },
+        {
+          "id": "P22",
+          "name": "Causal NLL defined from predictive Gaussian",
+          "description": "A per-sample causal negative log-likelihood loss L_c is defined from the predictive Gaussian distribution's mean and variance relative to the true value (Eq. 21)."
+        },
+        {
+          "id": "P23",
+          "name": "Only causal branch updates trunk/latent/head",
+          "description": "Only this causal branch's loss updates the Transformer trunk, latent module, and causal Gaussian head, preserving the causal-only nature of the main pathway."
+        }
+      ],
+      "edges": [
+        {"from": "P18", "to": "P19", "evidence": ["Sec IV-E", "Eqs. 11-13"]},
+        {"from": "P19", "to": "P20", "evidence": ["Sec IV-E", "Eqs. 14-17"]},
+        {"from": "P19", "to": "P21", "evidence": ["Sec IV-E", "Eq. 18-19"]},
+        {"from": "P20", "to": "P21", "evidence": ["Sec IV-E", "Eq. 18-19"]},
+        {"from": "P21", "to": "P22", "evidence": ["Sec IV-E", "Eq. 21"]},
+        {"from": "P22", "to": "P23", "evidence": ["Sec IV-E"]}
+      ]
+    },
+    {
+      "component_id": "C6",
+      "description": "Shadow auxiliary path with stop-gradient isolation",
+      "nodes": [
+        {
+          "id": "P24",
+          "name": "Auxiliary path exploits non-parent correlations",
+          "description": "The auxiliary path is designed to exploit additional correlations, including non-parent inputs, without modifying the causal trunk, latent module, or causal prediction head through gradient flow."
+        },
+        {
+          "id": "P25",
+          "name": "Stop-gradient prevents interference between branches",
+          "description": "Stop-gradient isolation is used as a standard mechanism to prevent unintended interference between the causal and auxiliary branches during multi-objective training."
+        },
+        {
+          "id": "P26",
+          "name": "Learnable soft gate selects non-parent inputs for auxiliary path",
+          "description": "A learnable soft gate α_i = σ(ℓ_i), detached via stop-gradient before use, determines which (potentially non-parent) input features feed the auxiliary branch (Eqs. 22-23)."
+        },
+        {
+          "id": "P27",
+          "name": "Auxiliary branch reuses trunk without gradient tracking",
+          "description": "The auxiliary branch reuses the same Transformer trunk to encode the auxiliary input, but evaluates it without gradient tracking (stop-gradient wrapped), producing an auxiliary representation h_t,o (Eq. 26)."
+        },
+        {
+          "id": "P28",
+          "name": "Auxiliary branch predicts residual corrections",
+          "description": "The auxiliary branch, using a detached latent sample and its own representation, predicts residual corrections (Δμ, Δlogv) to the causal Gaussian parameters (Eqs. 24-25, 27)."
+        },
+        {
+          "id": "P29",
+          "name": "Auxiliary loss uses detached causal base",
+          "description": "During training, the auxiliary negative log-likelihood is evaluated using a detached causal base, so auxiliary gradients update only the auxiliary residual-prediction layers and not the causal branch (Eqs. 28-29)."
+        },
+        {
+          "id": "P30",
+          "name": "Residual magnitude penalty discourages large overrides",
+          "description": "A residual-magnitude penalty on Δμ and Δlogv is added to discourage large opportunistic overrides from the auxiliary path (Eq. 30)."
+        }
+      ],
+      "edges": [
+        {"from": "P24", "to": "P26", "evidence": ["Sec IV-F", "Eq. 22"]},
+        {"from": "P25", "to": "P26", "evidence": ["Sec IV-F"]},
+        {"from": "P26", "to": "P27", "evidence": ["Sec IV-F", "Eq. 23", "Eq. 26"]},
+        {"from": "P27", "to": "P28", "evidence": ["Sec IV-F", "Eqs. 24-25, 27"]},
+        {"from": "P28", "to": "P29", "evidence": ["Sec IV-F", "Eqs. 28-29"]},
+        {"from": "P28", "to": "P30", "evidence": ["Sec IV-F", "Eq. 30"]},
+        {"from": "P25", "to": "P23", "evidence": ["Sec IV-F"]}
+      ]
+    },
+    {
+      "component_id": "C7",
+      "description": "Gate regularization to keep auxiliary path parent-biased",
+      "nodes": [
+        {
+          "id": "P31",
+          "name": "Parent-alignment prior on gate logits",
+          "description": "Gate logits are biased toward the hard parent mask via a weighted binary cross-entropy term, promoting stable inclusion of graph-supported parents in the soft gate (Eq. 31)."
+        },
+        {
+          "id": "P32",
+          "name": "Asymmetric sparsity and separation margin regularizers",
+          "description": "Additional regularizers penalize gate mass on non-parents, encourage high gate values for parents, and enforce a soft margin separating average parent vs. non-parent gate values (Eq. 32-33)."
+        },
+        {
+          "id": "P33",
+          "name": "Group penalty enforces sensor-level sparsity",
+          "description": "Gate entries are grouped by sensor across lags and penalized as a group, encouraging sensor-level (group) sparsity across lagged features (Eq. 34)."
+        },
+        {
+          "id": "P34",
+          "name": "Combined gate regularization biases α toward causal parents",
+          "description": "The combination of parent-alignment, sparsity/separation, and group penalties together bias the learnable soft gate α to be primarily composed of parent inputs, even though it could in principle include non-parent inputs."
+        }
+      ],
+      "edges": [
+        {"from": "P31", "to": "P34", "evidence": ["Sec IV-G", "Eq. 31"]},
+        {"from": "P32", "to": "P34", "evidence": ["Sec IV-G", "Eqs. 32-33"]},
+        {"from": "P33", "to": "P34", "evidence": ["Sec IV-G", "Eq. 34"]},
+        {"from": "P34", "to": "P26", "evidence": ["Sec IV-G"]}
+      ]
+    },
+    {
+      "component_id": "C8",
+      "description": "Training objective combining causal, auxiliary, KL, and regularization terms",
+      "nodes": [
+        {
+          "id": "P35",
+          "name": "Combined weighted training loss",
+          "description": "The training objective is a weighted sum of the causal NLL, auxiliary NLL, KL regularization of the latent module, residual-magnitude penalty, and gate regularization terms (Eq. 35)."
+        },
+        {
+          "id": "P36",
+          "name": "Shadow and KL weights increased via warmup schedule",
+          "description": "The shadow weight γ_t and KL weight β_t are increased linearly during initial warmup epochs, reaching their final values γ and β respectively (Eq. 36)."
+        }
+      ],
+      "edges": [
+        {"from": "P22", "to": "P35", "evidence": ["Sec IV-H", "Eq. 35"]},
+        {"from": "P29", "to": "P35", "evidence": ["Sec IV-H", "Eq. 35"]},
+        {"from": "P30", "to": "P35", "evidence": ["Sec IV-H", "Eq. 35"]},
+        {"from": "P34", "to": "P35", "evidence": ["Sec IV-H", "Eq. 35"]},
+        {"from": "P35", "to": "P36", "evidence": ["Sec IV-H", "Eq. 36"]}
+      ]
+    },
+    {
+      "component_id": "C9",
+      "description": "Inference-time blended scoring and safety-gated activation",
+      "nodes": [
+        {
+          "id": "P37",
+          "name": "Blended score combines causal and auxiliary NLLs",
+          "description": "At inference, a blended per-target score s_t,i(γ) is defined as a convex combination of the causal NLL and the auxiliary (opportunistic) NLL, weighted by γ (Eq. 37-38)."
+        },
+        {
+          "id": "P38",
+          "name": "Safety statistics computed on unlabeled calibration prefix",
+          "description": "To select a safe blend weight γ_used at deployment time, safety statistics (blended scores under base γ vs. stressed scores after permuting non-parent features) are computed on an unlabeled calibration prefix of the deployment stream."
+        },
+        {
+          "id": "P39",
+          "name": "Sensitivity metric R quantifies reliance on non-parent features",
+          "description": "A sensitivity statistic R is computed from the relative difference between blended scores and scores under permuted non-parent features, quantifying how much the model relies on non-parent (non-causal) information (Eq. 40)."
+        },
+        {
+          "id": "P40",
+          "name": "Gate separation metric M",
+          "description": "A gate-separation statistic M measures how much more strongly the learned soft gate favors parent features over non-parent features on average (Eq. 41)."
+        },
+        {
+          "id": "P41",
+          "name": "Unsafe reliance triggers reduced auxiliary influence",
+          "description": "If R exceeds a threshold or M falls below a threshold (indicating unsafe reliance on non-parent correlations or weak gate separation), auxiliary influence is reduced by hard fallback (γ_used=0) or soft-scaling of γ; otherwise the base γ is used, and this γ_used is fixed for the remainder of inference scoring (Eq. 42)."
+        }
+      ],
+      "edges": [
+        {"from": "P37", "to": "P38", "evidence": ["Sec IV-J"]},
+        {"from": "P38", "to": "P39", "evidence": ["Sec IV-J", "Eq. 40"]},
+        {"from": "P38", "to": "P40", "evidence": ["Sec IV-J", "Eq. 41"]},
+        {"from": "P39", "to": "P41", "evidence": ["Sec IV-J", "Eq. 42"]},
+        {"from": "P40", "to": "P41", "evidence": ["Sec IV-J", "Eq. 42"]}
+      ]
+    },
+    {
+      "component_id": "C10",
+      "description": "Anomaly detection, thresholding, and root-cause attribution",
+      "nodes": [
+        {
+          "id": "P42",
+          "name": "NLL-based aggregated anomaly score",
+          "description": "Per-target blended NLLs are aggregated across all targets (via mean, max, or top-k mean) to produce a scalar anomaly score S_t at each time point (Eq. 39)."
+        },
+        {
+          "id": "P43",
+          "name": "SPOT converts scores to binary decisions",
+          "description": "SPOT (Streaming Peaks-Over-Threshold), an extreme-value-theory-based streaming thresholding procedure, converts the aggregated anomaly score sequence into a dynamic, time-varying threshold and binary anomaly decisions (Eqs. 43-45)."
+        },
+        {
+          "id": "P44",
+          "name": "Per-dimension blended NLL attribution",
+          "description": "A per-variable blended NLL attribution score, standardized against a nominal baseline (Z-score), ranks sensors by their contribution to an anomalous event, with higher values indicating stronger contribution (Eqs. 46-47)."
+        },
+        {
+          "id": "P45",
+          "name": "Counterfactual clamping attribution",
+          "description": "A model-based counterfactual attribution replaces a candidate sensor's historical inputs with a nominal reference value and recomputes the anomaly score; a large negative score change indicates that sensor is likely a root cause (Eq. 48)."
+        },
+        {
+          "id": "P46",
+          "name": "Attributions are model-based, not guaranteed physical interventions",
+          "description": "Both attribution methods quantify how the detector's likelihood/score changes under input replacement and do not constitute guaranteed physical causal interventions."
+        }
+      ],
+      "edges": [
+        {"from": "P37", "to": "P42", "evidence": ["Sec IV-I", "Eq. 39"]},
+        {"from": "P42", "to": "P43", "evidence": ["Sec IV-K", "Eqs. 43-45"]},
+        {"from": "P37", "to": "P44", "evidence": ["Sec IV-L", "Eqs. 46-47"]},
+        {"from": "P42", "to": "P45", "evidence": ["Sec IV-L", "Eq. 48"]},
+        {"from": "P44", "to": "P46", "evidence": ["Sec IV-L"]},
+        {"from": "P45", "to": "P46", "evidence": ["Sec IV-L"]}
+      ]
+    },
+    {
+      "component_id": "C11",
+      "description": "Main detection results",
+      "nodes": [
+        {
+          "id": "P47",
+          "name": "CGT achieves SOTA F1 on SMD",
+          "description": "CGT achieves the best F1-score of 95.32% on the SMD dataset among all compared baselines (Table III)."
+        },
+        {
+          "id": "P48",
+          "name": "CGT achieves SOTA F1 on ASD",
+          "description": "CGT achieves the best F1-score of 96.19% on the ASD dataset, outperforming all baselines (Table III)."
+        },
+        {
+          "id": "P49",
+          "name": "CGT reduces false positives",
+          "description": "The results across both datasets show that CGT can effectively reduce false positives and improve anomaly detection overall."
+        }
+      ],
+      "edges": [
+        {"from": "P47", "to": "P49", "evidence": ["Sec V-G", "Table III"]},
+        {"from": "P48", "to": "P49", "evidence": ["Sec V-G", "Table III"]}
+      ]
+    },
+    {
+      "component_id": "C12",
+      "description": "Scoring ablation (A0/A1/A2)",
+      "nodes": [
+        {
+          "id": "P50",
+          "name": "A0 causal-only baseline",
+          "description": "A0 is the causal-only scoring baseline used in the ablation, isolating inference-time scoring effects using the same trained checkpoint and threshold settings."
+        },
+        {
+          "id": "P51",
+          "name": "A1 fixed residual blend improves slightly over A0",
+          "description": "A1, which adds a fixed blend of the residual/auxiliary branch, slightly improves precision, recall, F1, and AUROC compared to the causal-only baseline A0, indicating the residual branch provides useful extra information (Table IV)."
+        },
+        {
+          "id": "P52",
+          "name": "A2 safety-gated blend achieves best results",
+          "description": "A2, the proposed safety-gated blend, achieves the best results on all metrics among A0/A1/A2, indicating residual information is most effective when applied selectively via the safety gate rather than always blended in (Table IV)."
+        },
+        {
+          "id": "P53",
+          "name": "Step-by-step improvement from A0 to A2 confirms design choices",
+          "description": "The monotonic A0→A1→A2 improvement demonstrates that both adding residual information and gating it selectively are each individually beneficial design choices."
+        }
+      ],
+      "edges": [
+        {"from": "P50", "to": "P51", "evidence": ["Sec V-H", "Table IV"]},
+        {"from": "P51", "to": "P52", "evidence": ["Sec V-H", "Table IV"]},
+        {"from": "P52", "to": "P53", "evidence": ["Sec V-H"]},
+        {"from": "P51", "to": "P53", "evidence": ["Sec V-H"]}
+      ]
+    },
+    {
+      "component_id": "C13",
+      "description": "Safety-gate behavioral diagnostics",
+      "nodes": [
+        {
+          "id": "P54",
+          "name": "Positive M on both datasets shows gate favors parents",
+          "description": "On both ASD and SMD, the gate-separation statistic M is positive, indicating the learned gate places greater importance on parent (causal) features than non-parent features (Table V)."
+        },
+        {
+          "id": "P55",
+          "name": "SMD shows higher R and lower M than ASD",
+          "description": "SMD has a higher sensitivity statistic R and a lower separation statistic M than ASD, suggesting non-parent effects are somewhat stronger and gate separation is less clean on SMD (Table V)."
+        },
+        {
+          "id": "P56",
+          "name": "Weaker separation leads to lower γ_used and higher fallback on SMD",
+          "description": "Because SMD shows weaker causal/non-causal separation, the safety mechanism produces a lower γ_used and a higher fallback rate on SMD than on ASD, showing the gate becomes more conservative when the residual branch appears less reliable (Table V)."
+        },
+        {
+          "id": "P57",
+          "name": "Safety-gate behavior confirms A0-A2 ablation results",
+          "description": "This adaptive, dataset-dependent conservatism supports the ablation finding that the residual branch is helpful but should be used carefully when it is less consistent with the causal structure."
+        }
+      ],
+      "edges": [
+        {"from": "P54", "to": "P57", "evidence": ["Sec V-H", "Table V"]},
+        {"from": "P55", "to": "P56", "evidence": ["Sec V-H", "Table V"]},
+        {"from": "P56", "to": "P57", "evidence": ["Sec V-H"]},
+        {"from": "P52", "to": "P57", "evidence": ["Sec V-H"]}
+      ]
+    },
+    {
+      "component_id": "C14",
+      "description": "Root-cause attribution results",
+      "nodes": [
+        {
+          "id": "P58",
+          "name": "Both CGT attribution variants outperform baselines",
+          "description": "Both the blended-NLL Z-score attribution and the counterfactual-clamping attribution outperform baseline methods on root-cause variable attribution (Table VI)."
+        },
+        {
+          "id": "P59",
+          "name": "Counterfactual clamping outperforms blended NLL Z-score",
+          "description": "The counterfactual clamp variant consistently outperformed the simpler blended-NLL Z-score variant, suggesting intervention-based attribution is more effective at identifying variables that influence the anomaly score."
+        },
+        {
+          "id": "P60",
+          "name": "ASD shows more consistent improvement than SMD",
+          "description": "For ASD, CGT shows more consistent improvements across reported attribution metrics, whereas on SMD, strong baselines (CAE-M, TranAD) remain competitive on certain columns despite CGT achieving the best results on several metrics."
+        }
+      ],
+      "edges": [
+        {"from": "P45", "to": "P59", "evidence": ["Sec V-H", "Table VI"]},
+        {"from": "P44", "to": "P59", "evidence": ["Sec V-H", "Table VI"]},
+        {"from": "P58", "to": "P59", "evidence": ["Sec V-H", "Table VI"]},
+        {"from": "P58", "to": "P60", "evidence": ["Sec V-H", "Table VI"]}
+      ]
+    },
+    {
+      "component_id": "C15",
+      "description": "Sensitivity analysis to design choices",
+      "nodes": [
+        {
+          "id": "P61",
+          "name": "Default configuration balances accuracy and robustness",
+          "description": "The default configuration (W=30, τmax=7, S=4) provides an effective balance between detection accuracy and robustness across the sensitivity analysis (Table VII)."
+        },
+        {
+          "id": "P62",
+          "name": "Smaller window/lag reduces performance",
+          "description": "Reducing the window size or number of lags slightly decreases performance due to limited temporal context, while increasing them yields only marginal improvement and may introduce additional noise."
+        },
+        {
+          "id": "P63",
+          "name": "Diminishing returns beyond S=4 latent samples",
+          "description": "Increasing the number of Monte Carlo latent samples beyond S=4 provides negligible additional benefit, demonstrating diminishing returns."
+        },
+        {
+          "id": "P64",
+          "name": "Mean aggregation is most robust",
+          "description": "Among score aggregation rules, mean aggregation demonstrates the greatest robustness, while max aggregation is more susceptible to noisy per-dimension spikes and performs slightly worse."
+        }
+      ],
+      "edges": [
+        {"from": "P62", "to": "P61", "evidence": ["Sec V-H", "Table VII"]},
+        {"from": "P63", "to": "P61", "evidence": ["Sec V-H", "Table VII"]},
+        {"from": "P64", "to": "P61", "evidence": ["Sec V-H", "Table VII"]}
+      ]
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P65",
+      "name": "SCM definition and interventions",
+      "description": "A structural causal model describes each variable as a function of its causal parents and exogenous noise, and supports reasoning about interventions rather than just co-occurrence."
+    },
+    {
+      "id": "P66",
+      "name": "Granger causality foundational concept",
+      "description": "Granger causality is a foundational temporal-causality concept: X Granger-causes Y if past X improves prediction of future Y beyond what past Y and other variables alone provide."
+    },
+    {
+      "id": "P67",
+      "name": "Constraint-based, score-based, and functional causal discovery families",
+      "description": "Causal discovery methods include constraint-based approaches (PC, PCMCI using conditional independence tests), score-based approaches (GES, NOTEARS, Dynotears), and functional causal models (LiNGAM) with stronger data-generating-process assumptions."
+    },
+    {
+      "id": "P68",
+      "name": "Prior deep multivariate anomaly detectors",
+      "description": "Prior deep models include LSTM encoder-decoders, MSCRED (CNN-LSTM on signature matrices), GDN and MTAD-GAT (graph-based/graph-attention), MAD-GAN and InterFusion (generative), and the Anomaly Transformer (self-attention associations)."
+    },
+    {
+      "id": "P69",
+      "name": "Prior causality-guided fault-analysis systems",
+      "description": "CauseInfer, MicroDiag, CausalRCA, and GReLeN infer dependency structures among system metrics to trace anomaly propagation paths and improve root-cause localization accuracy."
+    },
+    {
+      "id": "P70",
+      "name": "Windowed lagged input construction",
+      "description": "A windowed lag design matrix aligns the forecasting model with the causal graph's time-lagged structure, forming input columns from length-W histories shifted by each candidate lag (Eqs. 6-8)."
+    },
+    {
+      "id": "P71",
+      "name": "Target-specific forecasting blocks with deterministic batch routing",
+      "description": "Each target variable is assigned its own forecasting block with its own parent mask and gate logits, with mini-batches constructed so all samples share the same target variable for simplified block-wise computation."
+    },
+    {
+      "id": "P72",
+      "name": "Datasets: ASD and SMD characteristics",
+      "description": "ASD (12 servers, D=19 metrics, 5-minute sampling) and SMD (12 entities, D=38 metrics, 1-minute sampling) both provide timestamp-level and expert-labeled dimension-level anomaly annotations used for detection and attribution evaluation."
+    },
+    {
+      "id": "P73",
+      "name": "Baseline models compared",
+      "description": "CGT is compared against OmniAnomaly, MSCRED, MAD-GAN, USAD, MTAD-GAT, CAE-M, GDN, and TranAD, each implemented from publicly released code."
+    },
+    {
+      "id": "P74",
+      "name": "Implementation and hyperparameter details",
+      "description": "CGT uses W=30, τmax=7, d_model=64, 2 attention heads, 2 encoder layers, feed-forward dim 128, latent dim 8, 4 MC samples, batch size 16, Adam LR 3.90e-4, gradient clipping 0.823, and SPOT with q=1.53e-3."
+    },
+    {
+      "id": "P75",
+      "name": "Limitation: dependence on causal graph quality",
+      "description": "The method's effectiveness relies on the quality of the estimated causal graph, which may be compromised by noise, limited samples, latent confounding, or nonstationary system behavior — so the learned graph should be regarded as a structural prior rather than exact ground truth."
+    },
+    {
+      "id": "P76",
+      "name": "Future work directions",
+      "description": "Future research directions include joint learning of causal structure and anomaly detection, adaptive causal graph updating under distribution shift, and more accurate intervention-based root-cause analysis in partially observed systems."
+    }
+  ],
+  "structural_reasoning": "The graph follows one dominant design-to-validation arc. The motivation (C1: correlational models can't explain anomalies) argues for causal structure (C2: conceptual benefits of causal conditioning), building on gaps identified in related work (C3: limitations of causal discovery methods and of prior causally-guided detectors that treat detection and causal analysis as separate stages). This directly motivates the architecture: a PCMCI-derived hard parent mask restricting a causal path (C4), feeding a causal Transformer + latent Gaussian head (C5), complemented by a gradient-isolated shadow auxiliary path (C6) whose non-parent leakage is kept in check by gate regularization (C7); these combine into the joint training objective (C8). At inference, a safety-gated blending mechanism (C9) decides how much to trust the auxiliary signal, feeding both the aggregated anomaly score/thresholding pipeline (C10) and root-cause attribution methods. The experimental components (C11-C15) each validate a specific architectural claim: overall SOTA detection (C11) validates the architecture broadly; the A0/A1/A2 ablation (C12) validates the specific value of the safety-gating design; the safety-gate diagnostics (C13) explain *why* gating helps by connecting dataset-level parent/non-parent separation to the ablation results; root-cause attribution results (C14) validate the counterfactual/attribution design choices from C10; and the sensitivity analysis (C15) validates the chosen default hyperparameters. Background causal-inference concepts, related-work method families, and stated limitations/future work are treated as isolated nodes since they are contextual rather than embedded in this specific design-validation chain."
+}

@@ -1,0 +1,387 @@
+{
+  "arxiv_id": "2605.15522v2",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Bounded-gradient theory is standard but restrictive",
+          "description": "Convergence properties of non-smooth first-order methods are typically analyzed assuming global Lipschitz continuity (uniformly bounded gradients), which is mathematically convenient but imposes significant limitations."
+        },
+        {
+          "id": "P2",
+          "name": "Global Lipschitz continuity can fail for simple networks",
+          "description": "Global Lipschitz continuity may fail even for the training loss of simple two-layer ReLU networks."
+        },
+        {
+          "id": "P3",
+          "name": "Bounded-gradient theory doesn't explain Adam's success",
+          "description": "Theory based on bounded gradients provides limited insight into the empirical success of Adam-type methods, since under bounded gradients SGD already attains optimal convergence rates, leaving no theoretical gap for Adam to fill."
+        },
+        {
+          "id": "P4",
+          "name": "Adam/AdamW empirically outperform other methods",
+          "description": "Despite extensive efforts to develop better optimizers, Adam and AdamW remain widely used and highly competitive, often outperforming AdaGrad, SGD, and Signum."
+        },
+        {
+          "id": "P5",
+          "name": "Gap motivates relaxed gradient assumption",
+          "description": "The combination of bounded-gradient theory offering no advantage to Adam-type methods and their proven empirical superiority motivates searching for a relaxation of the bounded-gradient assumption together with a suitable convergence theory."
+        },
+        {
+          "id": "P6",
+          "name": "Paper introduces generalized Lipschitz class",
+          "description": "The paper introduces the class of (M0,M1)-Lipschitz, or generalized Lipschitz, functions, where gradient norms are bounded by an affine function of the optimality gap, as the relaxation motivated above."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P5", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P5", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P7",
+          "name": "(L0,L1)-generalized smoothness precedent",
+          "description": "The (L0,L1)-smoothness / generalized smoothness condition, bounding the Hessian norm by an affine function of the gradient norm, was introduced to relax standard global Lipschitz-gradient smoothness."
+        },
+        {
+          "id": "P8",
+          "name": "Order reduction motivates generalized Lipschitzness",
+          "description": "Reducing the order of derivatives by one in the generalized smoothness condition (Hessian bounded by affine function of gradient), and recalling the zeroth derivative is the function itself, leads precisely to the generalized Lipschitz condition (gradient bounded by affine function of optimality gap)."
+        },
+        {
+          "id": "P9",
+          "name": "Generalized smoothness implies affine gradient bound",
+          "description": "A known lemma shows that generalized (L0,L1)-smoothness implies the gradient norm is bounded by an order term combining L0 times the optimality gap and L1 times the optimality gap."
+        },
+        {
+          "id": "P10",
+          "name": "Analogy between L0/M0 and L1/M1 terms",
+          "description": "Since standard L0-smoothness and M0-Lipschitzness imply analogous bounds on the gradient norm, replacing the L0-part of the smoothness-implied bound with its M0-analogue leads to the proposed generalized Lipschitz condition."
+        },
+        {
+          "id": "P11",
+          "name": "Motivates generalized Hölder smoothness interpolation",
+          "description": "This same parallel between generalized smoothness and generalized Lipschitzness motivates the generalized Hölder smoothness condition studied later, which interpolates between the two."
+        }
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["S2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P10", "evidence": ["S2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P11", "evidence": ["S2.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P12",
+          "name": "Lemma 1: equivalent integral characterization",
+          "description": "Lemma 1 shows Assumption 1 (generalized Lipschitzness) holds iff an equivalent inequality bounding function value differences by an exponential factor in the distance between points, scaled by the optimality gap, holds for all pairs of points."
+        },
+        {
+          "id": "P13",
+          "name": "M1=0 recovers standard Lipschitz definition",
+          "description": "In the special case M1=0, Lemma 1's inequality matches the standard definition of Lipschitz functions, bounding function value differences by a multiple of the distance."
+        },
+        {
+          "id": "P14",
+          "name": "General case has irreducible exponential factor",
+          "description": "In the general case M1>0, Lemma 1's bound includes an additional exponential factor that cannot be removed in general, as illustrated by basic examples."
+        },
+        {
+          "id": "P15",
+          "name": "Restricting to ball QR gives global M-Lipschitz constant",
+          "description": "Lemma 1 implies that restricting the generalized Lipschitz function to the ball QR of radius R yields a globally M-Lipschitz function on QR, with M and F (the max optimality gap) as defined via M0, M1, and R."
+        },
+        {
+          "id": "P16",
+          "name": "M and F scale exponentially in RM1",
+          "description": "The constants M and F resulting from the ball restriction may scale exponentially in R*M1, per Lemma 1 and the preceding discussion."
+        },
+        {
+          "id": "P17",
+          "name": "Naive ball-restriction approach yields pessimistic rates",
+          "description": "Because M and F can scale exponentially, convergence rates obtained by naively reducing to standard Lipschitz continuity on QR can be overly pessimistic, especially when R*M1 is large."
+        },
+        {
+          "id": "P18",
+          "name": "Paper shows direct use of Assumption 1 avoids exponential factors",
+          "description": "In contrast to the naive ball-restriction approach, the paper shows that Assumption 1 can be utilized more directly to obtain fast convergence rates without exponential factors."
+        }
+      ],
+      "edges": [
+        {"from": "P12", "to": "P13", "evidence": ["S2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P14", "evidence": ["S2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P15", "evidence": ["S2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P16", "evidence": ["S2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["S2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S2.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P19",
+          "name": "GD (Theorem 1/Corollary 1) inherits exponential factor",
+          "description": "Constant-stepsize projected GD under Assumption 1 achieves iteration complexity containing an exponential factor exp(O[RM1]), an improvement over the naive ball-restriction reduction but still exponential."
+        },
+        {
+          "id": "P20",
+          "name": "Two-phase interpretation of GD rate",
+          "description": "The GD complexity bound has an informal two-phase interpretation: an initial sublinear-rate regime that can be exponentially long, followed by a slower rate matching standard GD for M0-Lipschitz functions."
+        },
+        {
+          "id": "P21",
+          "name": "Adaptive stepsizes (normalized/Polyak GD) remove exponential factor",
+          "description": "Normalized GD and GD with Polyak stepsizes (Theorem 2) require only a fixed number of initial iterations of order [RM1]^2 before reaching the optimal rate, so their overall complexity contains no exponential factors, significantly improving on plain GD."
+        }
+      ],
+      "edges": [
+        {"from": "P19", "to": "P20", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P22",
+          "name": "SGD and AdaGrad-Norm inherit exponential factors stochastically",
+          "description": "Under the stochastic generalized Lipschitz Assumption 2, both SGD (Theorem 3) and AdaGrad-Norm (Theorem 4) achieve the same iteration complexity, which contains exponential factors, analogous to the deterministic GD case."
+        },
+        {
+          "id": "P23",
+          "name": "Analogous deterministic fix (normalization) does not transfer",
+          "description": "Gradient normalization and Polyak stepsizes, which removed the exponential factor in the deterministic setting, generally break the unbiasedness property crucial to stochastic convergence analysis, so this fix does not directly extend to the stochastic setting."
+        },
+        {
+          "id": "P24",
+          "name": "Normalized SGD can diverge",
+          "description": "Normalized SGD can diverge even on simple one-dimensional convex problems, as shown by a known counterexample, confirming the fix's inapplicability."
+        },
+        {
+          "id": "P25",
+          "name": "Motivates search for alternative stochastic improvement",
+          "description": "Because normalization/Polyak-stepsize fixes do not transfer to the stochastic setting, the paper is motivated to find an alternative construction (leading to clipped AdamW) that still significantly improves upon SGD and AdaGrad-Norm rates."
+        }
+      ],
+      "edges": [
+        {"from": "P22", "to": "P25", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P24", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P25", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {
+          "id": "P26",
+          "name": "Online-to-batch conversion framework (eq 17-19)",
+          "description": "The algorithm construction reduces to an online linear optimization problem with a regret bound, where the iterates z_k are generated by an online learning algorithm and combined via a weighted update rule parameterized by alpha_k and pi_k."
+        },
+        {
+          "id": "P27",
+          "name": "Lemma 2: regret bound implies convergence",
+          "description": "Lemma 2 shows that the expected suboptimality of the resulting iterate x_K is controlled by the initial gap plus the expected regret of the online optimization subroutine, for general choices of the alpha_k/pi_k parameters."
+        },
+        {
+          "id": "P28",
+          "name": "Default averaging (1/alpha_k=pi_k=k) gives Algorithm 1",
+          "description": "Choosing the default schedule 1/alpha_k = pi_k = k, combined with SOLO-FTRL as the online learner, yields Algorithm 1, closely resembling AdamW with scalar stepsizes and clipped updates but using simple (non-decayed) averaging."
+        },
+        {
+          "id": "P29",
+          "name": "Algorithm 1 does not improve over SGD/AdaGrad-Norm",
+          "description": "Theorem 5 and Corollary 2 show the complexity bound for Algorithm 1 (default averaging) does not improve upon the corresponding bounds for SGD and AdaGrad-Norm, still exhibiting exponential factors."
+        },
+        {
+          "id": "P30",
+          "name": "Simple averaging identified as limiting factor",
+          "description": "The main limiting factor behind Algorithm 1's lack of improvement is the default choice of parameters, which corresponds to simple averaging of gradients and squared gradient norms rather than exponential decay."
+        }
+      ],
+      "edges": [
+        {"from": "P26", "to": "P27", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["S4.1", "S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P29", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P30", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {
+          "id": "P31",
+          "name": "Constant alpha_k replaces averaging with exponential decay",
+          "description": "Replacing the default schedule with a constant parameter alpha_k=alpha in eq. (18) yields Algorithm 2, which coincides with scalar-stepsize AdamW with clipped updates, and induces exponential decay in the moment-accumulation lines."
+        },
+        {
+          "id": "P32",
+          "name": "Small constant alpha keeps iterates stable",
+          "description": "With a sufficiently small constant alpha_k, the iterates in the update scheme remain stable (x_k approximately equal to x_{k-1}), which intuitively implies stability of the gradients across iterations."
+        },
+        {
+          "id": "P33",
+          "name": "Iterate/gradient stability improves the regret bound (Lemma 4)",
+          "description": "The stability of function values under small constant alpha is formally exploited to establish an improved regret upper bound in Lemma 4, going beyond the simple-averaging bound in Lemma 3."
+        },
+        {
+          "id": "P34",
+          "name": "Improved regret bound yields Theorem 6 fast linear phase",
+          "description": "Combining Lemmas 2 and 4 yields Theorem 6 and Corollary 3, showing Algorithm 2 achieves a fast linear convergence phase up to precision epsilon-hat=O[G0/G1], significant when R*G1 is large, and eliminating exponential factors from the complexity."
+        },
+        {
+          "id": "P35",
+          "name": "Constant alpha suboptimal below threshold precision",
+          "description": "A constant choice of alpha_k is no longer optimal once the target precision falls below the threshold epsilon-hat, motivating a two-stage schedule."
+        },
+        {
+          "id": "P36",
+          "name": "Two-stage schedule (Theorem 7/Corollary 4) combines both regimes",
+          "description": "A two-stage schedule for alpha_k (large constant value initially, then a second-phase value depending on target accuracy) extends the improved regret bound and yields a combined guarantee achieving fast linear convergence in phase one and optimal sublinear convergence in phase two, with overall complexity order [RG1]^4 + [RG0/epsilon]^2."
+        }
+      ],
+      "edges": [
+        {"from": "P31", "to": "P32", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P34", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P35", "evidence": ["S4.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P35", "to": "P36", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {
+          "id": "P37",
+          "name": "Prior advanced averaging schemes lack proven rate improvement",
+          "description": "Several advanced averaging schemes (primal averaging, online-to-batch conversion, others) are aesthetically appealing and can improve practical performance, but there was previously no theoretical evidence they improve convergence rates over classical Polyak-Ruppert averaging."
+        },
+        {
+          "id": "P38",
+          "name": "Theorem 7 is first proof of improved rates from this averaging scheme",
+          "description": "Theorem 7 is identified as the first result showing that the eq.(18) averaging scheme yields significantly improved convergence guarantees, specifically under the unbounded-gradient Assumption 2."
+        },
+        {
+          "id": "P39",
+          "name": "RMSProp-AdaGrad analogy fails to explain Adam's benefit",
+          "description": "The alternative RMSProp-vs-AdaGrad interpretation of exponential decay yields meaningful convergence guarantees for RMSProp, but these do not improve upon AdaGrad's guarantees and therefore fail to explain the benefit of exponential decay."
+        },
+        {
+          "id": "P40",
+          "name": "This paper's analysis shows RMSProp-AdaGrad analogy is inaccurate",
+          "description": "Because this paper's analysis shows AdamW obtains improved guarantees by exploiting iterate stability (absent in AdaGrad/RMSProp), it demonstrates the RMSProp-AdaGrad analogy for explaining Adam's exponential decay may be inaccurate."
+        }
+      ],
+      "edges": [
+        {"from": "P37", "to": "P38", "evidence": ["S4.4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P39", "to": "P40", "evidence": ["S4.4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P40", "evidence": ["S4.4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P41",
+      "name": "Basic examples showing strict generalization",
+      "description": "The functions f(x)=||Ax-b||_infinity^p and f(x)=exp(||Ax-b||_infinity) are shown to be (M0,M1)-Lipschitz, demonstrating that Assumption 1 strictly generalizes standard global Lipschitz continuity."
+    },
+    {
+      "id": "P42",
+      "name": "AdaGrad projection ensures iterate boundedness",
+      "description": "Restricting optimization to the ball QR is common in adaptive methods such as AdaGrad, where projection steps ensure almost sure boundedness of the iterates, necessary for convergence guarantees."
+    },
+    {
+      "id": "P43",
+      "name": "Assumption 2: stochastic generalized Lipschitz gradient decomposition",
+      "description": "Assumption 2 posits an unbiased stochastic gradient estimator decomposable into a bounded-second-moment part and a part bounded by an affine function of the optimality gap, implying Assumption 1 with M0=G0, M1=G1."
+    },
+    {
+      "id": "P44",
+      "name": "Assumption 3: optimal online-learning regret bound",
+      "description": "Assumption 3 posits a regret bound for the online optimization subroutine that is optimal when no assumptions are imposed on the gradients, achievable by algorithms including AdaGrad-Norm, SOLO-FTRL, and Leon."
+    },
+    {
+      "id": "P45",
+      "name": "Lower complexity bounds confirm genuine improvement",
+      "description": "Appendix A establishes lower complexity bounds for SGD and AdaGrad on stochastic generalized Lipschitz problems, showing the improvement achieved by clipped AdamW is genuine rather than an analysis artifact."
+    },
+    {
+      "id": "P46",
+      "name": "Extension to generalized Hölder smoothness",
+      "description": "Appendix B shows clipped scalar-stepsize AdamW is also effective under the generalized Hölder smoothness assumption, which interpolates between generalized Lipschitzness and (L0,L1)-smoothness."
+    },
+    {
+      "id": "P47",
+      "name": "Extension to quasar-convex setting",
+      "description": "Appendix C extends the results to the quasar-convex setting, which relaxes the standard convexity assumption, bringing the theory closer to practice given observed convexity-like behavior in neural network training."
+    },
+    {
+      "id": "P48",
+      "name": "Extension to diagonal and matrix preconditioners",
+      "description": "Appendix D shows the results are not specific to scalar stepsizes and can be extended to diagonal and matrix preconditioners."
+    },
+    {
+      "id": "P49",
+      "name": "Non-convex Adam analyses limited by exponential function gap",
+      "description": "Prior non-convex analyses of Adam (via exponentiated online-to-non-convex conversion) yield only vague first-order stationarity guarantees depending on the initial function gap, which can be exponential per Lemma 1, unlike this paper's logarithmic dependence for convex functions."
+    },
+    {
+      "id": "P50",
+      "name": "AdaGrad's non-increasing stepsize limitation",
+      "description": "It is well known that AdaGrad's stepsizes are always non-increasing, whereas Algorithm 2's stepsize can be non-monotone due to exponential decay, which this paper's results support as theoretically beneficial for adapting to large early gradients."
+    }
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph is coherent across its major clusters: the motivation for relaxing bounded-gradient theory to explain Adam's empirical success (C1), the analogical derivation of the generalized Lipschitz condition from generalized smoothness (C2), the basic properties and pitfalls of naive ball-restriction analysis (C3), the deterministic algorithm results building from GD to adaptive-stepsize fixes (C4), the stochastic analogue showing the deterministic fix fails to transfer (C5), the online-to-batch conversion framework and its default-averaging instantiation (Algorithm 1) failing to improve rates (C6), the exponential-decay construction (Algorithm 2/AdamW) that succeeds via iterate stability (C7), and the discussion contextualizing this result against prior averaging and exponential-decay interpretations (C8). Edge confidence is high throughout given the paper's explicit, tightly argued theorem-by-theorem narrative connecting each construction's motivation, mechanism, and result. The isolated-node set captures supporting technical assumptions, illustrative examples, and appendix extensions that provide context without being additional links in the paper's central chain of reasoning about why exponential decay (AdamW) succeeds where simple averaging (SGD/AdaGrad) fails under unbounded gradients. No cycles or contested edge directions were identified."
+}

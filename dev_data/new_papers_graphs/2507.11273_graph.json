@@ -1,0 +1,176 @@
+{
+ "arxiv_id": "2507.11273",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "KV-Latent: dimension-level KV cache reduction via down-sampling, two-stage training, frequency-aware RoPE, and results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "KV cache is an efficiency bottleneck",
+     "description": "The KV cache grows linearly with generated tokens, and its large volume and per-request dedicated storage cause memory consumption and bandwidth bottlenecks in LLM decoding."
+    },
+    {
+     "id": "P2",
+     "name": "K,V are low-rank down-sampling transforms",
+     "description": "In MHA, K and V down-sample the d-dimensional hidden state into d_h-dimensional vectors (Q^T and O up-sample), so the KV cache stores low-rank latents and need not keep full-dimension vectors; directly reducing K/V head size is under-explored."
+    },
+    {
+     "id": "P3",
+     "name": "Head dim can be decoupled",
+     "description": "Within a head, the K-Q^T pair and V-O pair need not share dimension: d_h can be split into d_qk and d_vo, decoupling n_h*d_h=d and d_h=d_qk=d_vo."
+    },
+    {
+     "id": "P4",
+     "name": "Down-sample pretrained weights then retrain",
+     "description": "KV-Latent reduces KV cache by directly down-sampling pretrained W_K and W_V (and W_Q, W_O) to smaller head dimension with a RoPE-compatible channel selection, then restores performance with LoRA on FFNs and two-stage training."
+    },
+    {
+     "id": "P5",
+     "name": "Two-stage training recovers performance",
+     "description": "Stage I is in-layer distillation keeping hidden states consistent between original and reduced layers; Stage II is end-to-end training (next-token prediction or KL distillation), using less than 1% of pretraining tokens."
+    },
+    {
+     "id": "P6",
+     "name": "RoPE is unstable at low dimension",
+     "description": "RoPE shows significant numerical instability on low-dimensional vectors: when dimension d < 32 the oscillation range is comparable to the intended attenuation, losing positional encoding ability."
+    },
+    {
+     "id": "P7",
+     "name": "High-frequency channels cause the noise",
+     "description": "Low-numbered (high-frequency) channels contribute most of the RoPE noise, while high-numbered (low-frequency) channels remain relatively stable though decaying more slowly."
+    },
+    {
+     "id": "P8",
+     "name": "Frequency-aware RoPE sampling",
+     "description": "Densifying sampling of low-frequency rotations and avoiding high-frequency rotations (Formula 11) improves RoPE stability at low dimension and reduces negative values while preserving attenuation."
+    },
+    {
+     "id": "P9",
+     "name": "KV-Latent retains performance with smaller cache",
+     "description": "KV-Latent on LLaMA-2 and LLaMA-3-8B retains satisfactory MMLU, OBQA, ARC and needle-in-haystack performance while reducing KV cache size (e.g. 50% and 75% reductions), improving efficiency."
+    },
+    {
+     "id": "P10",
+     "name": "Limits of recovery",
+     "description": "Limited training volume prevents full recovery of model proficiency, and at d_qk = d_vo = 16 performance failed to recover, suggesting a lower bound on KV cache size."
+    },
+    {
+     "id": "P11",
+     "name": "GQA-trained models are harder to compress",
+     "description": "LLaMA-2 (no GQA) outperforms LLaMA-3 relative to its baseline when trained on fewer tokens, indicating models already using GQA are harder to adapt with KV-Latent."
+    },
+    {
+     "id": "P12",
+     "name": "Values carry more information than keys",
+     "description": "Allocating more dimension to d_vo than d_qk consistently yields better efficiency and effectiveness, suggesting keys carry less essential information than values and are more compressible."
+    },
+    {
+     "id": "P13",
+     "name": "Orthogonal to other KV reduction methods",
+     "description": "KV-Latent works with head-level (LLaMA-3 GQA), layer-level and token-level methods, e.g. combined with PyramidInfer at 50% compression, and is orthogonal to mainstream methods."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.3.1-3.3.2, Fig 3-6"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.3.3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3, Sec 4.2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.3, Table 2, Table 6"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.3.3, Table 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "LoRA rank has little effect on log PPL",
+   "description": "Increasing LoRA rank increases training time while log PPL changes only slightly (Table 3), though the effect may be larger at larger scale."
+  },
+  {
+   "id": "P15",
+   "name": "Smaller cache is faster",
+   "description": "KV cache efficiency aligns with its size: the smaller the overall volume, the faster both pre-filling and generation speeds, and the larger the maximum supported cache n_max."
+  }
+ ],
+ "structural_reasoning": "Cache bottleneck and the low-rank view motivate down-sampling with two-stage training; RoPE instability analysis yields the frequency-aware fix; both feed the main results, from which limits, compatibility and parameter-choice findings follow."
+}

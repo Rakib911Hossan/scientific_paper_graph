@@ -1,0 +1,242 @@
+{
+ "arxiv_id": "2606.26775",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Inconsistent evaluation practices (M2E2) -> three pitfall categories -> measured inflation -> StrictEval reevaluation",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "MEE evaluation is inconsistent",
+     "description": "Prior MEE methods adopt diverse task formulations and evaluation protocols on the M2E2 benchmark, hindering fair comparison, and no standardized evaluation scripts exist for multimedia events."
+    },
+    {
+     "id": "P2",
+     "name": "Three categories of pitfalls",
+     "description": "MEE evaluation suffers from inconsistent data processing, inconsistent task assumptions and overly relaxed evaluation settings, plus test data leakage."
+    },
+    {
+     "id": "P3",
+     "name": "Train size discrepancies",
+     "description": "Studies optimize on differing numbers of samples (e.g. 75k vs 100k SWiG images) by adding dev sets of external datasets as training data."
+    },
+    {
+     "id": "P4",
+     "name": "Oracle trigger refinement",
+     "description": "Most reported scores apply post-processing that uses M2E2 ground-truth annotations to adjust textual ED predictions, which does not reflect real-world conditions and is often not clearly specified."
+    },
+    {
+     "id": "P5",
+     "name": "Verb mapping refinement",
+     "description": "Some studies use refined SWiG-to-M2E2 verb mappings (73 verbs instead of the original 67), so performance differences reflect data engineering rather than modeling."
+    },
+    {
+     "id": "P6",
+     "name": "Test subset selection",
+     "description": "Many works restrict test predictions to sentences or images with at least one event, reducing sentences from 6167 to 1086 and images from 1014 to 391, and event-coreference-based evaluation uses only 309 image-text pairs (192 sentences, 203 images)."
+    },
+    {
+     "id": "P7",
+     "name": "Relaxed textual and multimedia trigger evaluation",
+     "description": "Ignoring trigger offsets lets arguments match any same-type event in textual EAE and lets incorrect predictions count as correct at sentence level in multimedia ED."
+    },
+    {
+     "id": "P8",
+     "name": "Relaxed visual many-to-many matching",
+     "description": "Many-to-many IoU-based matching lets multiple predictions match one gold visual argument, rewarding recall-oriented models; the authors propose one-to-one bipartite matching."
+    },
+    {
+     "id": "P9",
+     "name": "Test data leakage",
+     "description": "Some works train on VOA images and captions that include test documents of M2E2, causing information leakage even without ground-truth annotations."
+    },
+    {
+     "id": "P10",
+     "name": "Data processing changes scores",
+     "description": "Oracle trigger refinement and verb refinement give up to +13.9 F1 (textual ED) and +7.0 F1 (visual ED), whereas adding dev sets gives at most +1.3 F1."
+    },
+    {
+     "id": "P11",
+     "name": "Subset selection inflates unimodal scores",
+     "description": "Restricting to event-containing samples raises ED F1 by up to +27.8 (textual) and +30.0 (visual) and EAE by up to +14.5, mainly via higher precision, and does not reflect real-world conditions."
+    },
+    {
+     "id": "P12",
+     "name": "Relaxed settings inflate EAE",
+     "description": "Ignoring trigger attachment changes textual EAE by up to 6.4 F1, and many-to-many visual matching with overlapping detector categories can add up to +8.0 F1."
+    },
+    {
+     "id": "P13",
+     "name": "Multimedia subset evaluation overestimates",
+     "description": "Evaluating only samples with multimedia events gives up to +21.2 F1 for threshold-based coreference methods, and gold image-text coreference gives the highest scores, overestimating real-world performance."
+    },
+    {
+     "id": "P14",
+     "name": "StrictEval framework",
+     "description": "StrictEval is a more rigorous framework that removes these pitfalls and uses predicted rather than gold coreferences and full test sets."
+    },
+    {
+     "id": "P15",
+     "name": "Reevaluation shows large drops",
+     "description": "Under StrictEval, reevaluated recent methods show large degradation, with multimedia ED and EAE dropping by up to 56.8 and 33.6 F1, because precision falls when neither subset selection nor gold coreference is used."
+    },
+    {
+     "id": "P16",
+     "name": "Coreference resolution is the largest challenge",
+     "description": "Cross-modal event coreference resolution remains the largest challenge in a realistic setting, and minor implementation choices can dominate reported gains."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.5"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.5"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.6"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2, Table 6"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.3, Fig 3, Table 3"
+     ]
+    },
+    {
+     "from": "P14",
+     "to": "P15",
+     "evidence": [
+      "Sec 3.7, Sec 5, Table 4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P15",
+     "evidence": [
+      "Sec 5, Table 4"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P15",
+     "evidence": [
+      "Sec 5, Table 4"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P15",
+     "evidence": [
+      "Sec 5, Table 4"
+     ]
+    },
+    {
+     "from": "P15",
+     "to": "P16",
+     "evidence": [
+      "Sec 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P17",
+   "name": "Benchmark limitations",
+   "description": "Existing MEE benchmarks are limited by annotation scarcity, lack of train splits, closed-source release or missing annotations, with only M2E2 and MultiVENT-G publicly releasing complete data."
+  }
+ ],
+ "structural_reasoning": "Pitfalls are identified qualitatively, quantified one by one in controlled experiments, and combined in the StrictEval reevaluation of recent methods."
+}

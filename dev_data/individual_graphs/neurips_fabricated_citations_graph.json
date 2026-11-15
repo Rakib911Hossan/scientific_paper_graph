@@ -1,0 +1,255 @@
+{
+  "arxiv_id": null,
+  "title_ref": "Compound Deception in Elite Peer Review: A Failure Mode Taxonomy of 100 Fabricated Citations at NeurIPS 2025 (Ansari, Feb 6 2026)",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL and 2109.09774v1 example graphs. This preprint has no arXiv ID indicated in the provided text, so a title_ref field is used instead. Evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: fabricated citations found in NeurIPS 2025 proceedings despite expert peer review, and why this matters epistemically.",
+      "nodes": [
+        {"id": "P1", "name": "NeurIPS 2025 accepted 5,290 of 21,575 submissions, each reviewed by 3-5 experts", "description": "NeurIPS 2025 was conducted with 5,290 accepted papers (24.52% acceptance rate from 21,575 submissions), each undergoing peer review by 3-5 expert researchers selected for domain expertise."},
+        {"id": "P2", "name": "53 papers (~1%) contained fabricated citations that evaded detection", "description": "Recent analysis reveals at least 53 of these papers (~1%) contained fabricated citations, invented authors, titles, or false publication details, that evaded detection throughout review."},
+        {"id": "P3", "name": "Fabricated citations collapse the epistemic functions of citation", "description": "Citations establish what prior research has shown, enable reproducibility, and situate new work in existing knowledge; when fabricated, readers cannot verify claims, researchers waste time searching for nonexistent papers, and the citation graph becomes contaminated with false linkages."},
+        {"id": "P4", "name": "LLMs hallucinate precise citation metadata while preserving surface plausibility", "description": "LLMs generate fluent but factually incorrect text, and citations are especially vulnerable because their precise metadata (authors, titles, venues, dates, DOIs) can be blended, paraphrased, or fabricated while looking professionally formatted and plausible."},
+        {"id": "P5", "name": "Contamination at a premier AI-expert venue signals a systemic problem", "description": "Because NeurIPS authors and reviewers are experts in the very systems that produce hallucinations, their failure to catch these fabrications in their own review process suggests the problem is systematic rather than isolated."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P2", "evidence": ["E3"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P5", "evidence": ["E4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Research gap: prior hallucination/citation-misconduct work hadn't systematically analyzed why sophisticated peer review fails to catch AI-fabricated citations, motivating this study's contribution.",
+      "nodes": [
+        {"id": "P6", "name": "Prior hallucination research spans medicine, law, and general QA, but not this intersection", "description": "Previous research documented LLM hallucination in medical information, legal reasoning, and general factual queries, and broader synthetic-content degradation (\"AI Slop\"), but the intersection with fabricated citations in peer-reviewed literature had received limited systematic analysis."},
+        {"id": "P7", "name": "Prior citation-behavior studies covered accuracy/misconduct but not AI-fabrication mechanisms", "description": "Existing studies of citation behavior identified problems with citation accuracy and misconduct generally, without analyzing why sophisticated peer review specifically fails to detect AI-generated fabrications."},
+        {"id": "P8", "name": "Journalistic cases lacked systematic failure-mode analysis", "description": "Recent cases (e.g., Deloitte refund, MAHA report) were documented journalistically but not analyzed systematically to understand the failure modes that let hallucinated citations succeed."},
+        {"id": "P9", "name": "Contribution: a five-category failure-mode taxonomy of 100 NeurIPS 2025 hallucinated citations", "description": "This study addresses the gap through a systematic failure-mode analysis of 100 hallucinated citations from NeurIPS 2025, classifying them by mechanism, how they deviate from legitimate scholarly practice and how those deviations evade detection."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P9", "evidence": ["E5"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P9", "evidence": ["E5"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P9", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P9", "evidence": ["E7"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C1"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Data source and coding methodology underlying the taxonomy.",
+      "nodes": [
+        {"id": "P10", "name": "GPTZero scanned 4,841 of 5,290 accepted papers with an automated Hallucination Check tool", "description": "Citation-level data came from GPTZero's automated Hallucination Check tool, which scanned 4,841 of 5,290 NeurIPS 2025 accepted papers, flagging citations unverifiable via web search, academic databases, and DOI/URL validation."},
+        {"id": "P11", "name": "Flagged citations were human-verified by GPTZero experts", "description": "Each flagged citation was subsequently verified by human experts at GPTZero to confirm it represented a probable hallucination rather than a legitimate archival source or temporary indexing gap."},
+        {"id": "P12", "name": "Analysis yielded 100 verified hallucinations spanning 53 papers", "description": "GPTZero's analysis identified 100 hallucinated citations spanning 53 distinct papers (1% of accepted papers), each of which had undergone standard 3-5 reviewer peer review."},
+        {"id": "P13", "name": "A five-category failure-mode taxonomy was developed: TF, PAC, IH, PH, SH", "description": "The author developed a five-category taxonomy classifying hallucinations by failure mode rather than simply labeling them 'fake': Total Fabrication, Partial Attribute Corruption, Identifier Hijacking, Placeholder Hallucination, and Semantic Hallucination."},
+        {"id": "P14", "name": "Each citation manually coded with primary and secondary failure category", "description": "The author manually classified each of the 100 citations by comparing citation text against GPTZero verification notes, assigning a primary code (most evident failure to a human reviewer) and a secondary code (additional deception mechanisms present)."}
+      ],
+      "edges": [
+        {"from": "P10", "to": "P11", "evidence": ["E8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P12", "evidence": ["E9"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P13", "evidence": ["E10"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P12", "to": "P14", "evidence": ["E11"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P14", "evidence": ["E11"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "Definitions of the five taxonomy categories.",
+      "nodes": [
+        {"id": "P15", "name": "Total Fabrication (TF): zero overlap with real work", "description": "TF citations have zero overlap with any real scholarly work: authors, title, venue, and identifiers are all fabricated, representing complete invention."},
+        {"id": "P16", "name": "Partial Attribute Corruption (PAC): blended real and fake elements", "description": "PAC citations blend real and fabricated elements, e.g. real authors attributed to papers they didn't write, real titles with fake authors, or correct venues with wrong years, exploiting reviewer pattern recognition."},
+        {"id": "P17", "name": "Identifier Hijacking (IH): valid identifier, mismatched metadata", "description": "IH citations use a valid scholarly identifier (arXiv ID, DOI, URL) pointing to a real paper, but the authors/title/metadata don't match, creating false verifiability when a reviewer clicks the working link."},
+        {"id": "P18", "name": "Semantic Hallucination (SH): plausible invented title", "description": "SH citations invent a plausible-sounding, domain-appropriate title that does not correspond to any real work."},
+        {"id": "P19", "name": "Placeholder Hallucination (PH): obvious unfinished generation", "description": "PH citations contain obvious generation failures such as template variables (\"Firstname Lastname\"), incomplete identifiers, or placeholder text (\"To appear\")."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P15", "evidence": ["E12"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C3"},
+        {"from": "P13", "to": "P16", "evidence": ["E12"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C3"},
+        {"from": "P13", "to": "P17", "evidence": ["E12"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C3"},
+        {"from": "P13", "to": "P18", "evidence": ["E12"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C3"},
+        {"from": "P13", "to": "P19", "evidence": ["E12"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C3"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Prevalence results by primary failure mode, illustrated by representative examples.",
+      "nodes": [
+        {"id": "P20", "name": "Primary distribution: TF 66%, PAC 27%, IH 4%, PH 2%, SH 1%", "description": "Of 100 hallucinations, primary codes distribute as Total Fabrication 66%, Partial Attribute Corruption 27%, Identifier Hijacking 4%, Placeholder Hallucination 2%, Semantic Hallucination 1%."},
+        {"id": "P21", "name": "TF dominance indicates wholesale invention over corruption of real metadata", "description": "The overwhelming 66% prevalence of Total Fabrication indicates AI-generated hallucinations primarily involve wholesale invention rather than corrupting real scholarly metadata."},
+        {"id": "P22", "name": "Contamination Inheritance identified as a distinct failure mode", "description": "One TF-coded citation (Z. Zhu et al., NeuralRGB-D) was traced to an earlier arXiv preprint (Beltran et al. v1) that contained the same fabricated citation before later correction, suggesting the LLM inherited a pre-existing training-data error rather than fabricating de novo; the authors term this 'Contamination Inheritance.'"},
+        {"id": "P23", "name": "PAC exploits partial recognition of real authors/venues", "description": "PAC examples (e.g., Paolone et al. with corrupted title/volume/pages; Sprague et al. with omitted/added authors and wrong venue) show that familiar author names can create false legitimacy while granular metadata is wrong."},
+        {"id": "P24", "name": "IH creates false verifiability via working but mismatched links", "description": "The Alex Wang et al. example uses a valid arXiv ID (2107.13586) linking to a real but differently-authored/titled paper, so a reviewer who clicks the link may wrongly assume correctness."},
+        {"id": "P25", "name": "PH and SH examples show the extremes of detection difficulty", "description": "The 'Firstname Lastname' PH citation is trivially detectable yet still passed review, while the Nanda SH citation ('Progress in mechanistic interpretability...') sounds professionally plausible and uses a real researcher's name for a nonexistent title, illustrating medium detection difficulty."}
+      ],
+      "edges": [
+        {"from": "P14", "to": "P20", "evidence": ["E13"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C3"},
+        {"from": "P20", "to": "P21", "evidence": ["E14"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P22", "evidence": ["E15"], "votes": 1, "confidence": "single_run"},
+        {"from": "P15", "to": "P21", "evidence": ["E14"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P16", "to": "P23", "evidence": ["E16"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P17", "to": "P24", "evidence": ["E17"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P19", "to": "P25", "evidence": ["E18"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P18", "to": "P25", "evidence": ["E18"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Distribution of hallucinations across contaminated papers: a bimodal pattern of author behavior.",
+      "nodes": [
+        {"id": "P26", "name": "100 hallucinations span 53 papers, mean 1.89, median 2, range 1-13", "description": "The 100 hallucinations span 53 distinct papers with a mean of 1.89 hallucinations per contaminated paper (range 1-13, median 2)."},
+        {"id": "P27", "name": "Bimodal split: 92% minimal (1-2), a minority heavily reliant (4-13)", "description": "49 of 53 papers (92%) contain only 1-2 hallucinations, while 4 outlier papers contain 4-13 hallucinations each, suggesting two distinct author behaviors: cautious AI consultation for polishing versus systematic reliance on AI-generated citations."},
+        {"id": "P28", "name": "One outlier paper contained 13 fabricated citations", "description": "The paper with the most hallucinations (13), on semantic uncertainty quantification via diversity-steered sampling, demonstrates that fabrication can be extensive rather than isolated, suggesting reliance on AI tools throughout the writing process."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P26", "evidence": ["E19"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P26", "to": "P27", "evidence": ["E20"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["E21"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "The central compound-failure finding: every hallucination exhibits multiple deception mechanisms simultaneously.",
+      "nodes": [
+        {"id": "P29", "name": "Critical finding: 100% of hallucinations show compound failure modes", "description": "Every single hallucination in the dataset (100%) exhibited compound failure modes, displaying characteristics of multiple deception mechanisms simultaneously, revealing multi-layered rather than single-mechanism fabrication."},
+        {"id": "P30", "name": "Secondary distribution dominated by SH (63%) and IH (29%)", "description": "The distribution of secondary failure characteristics was Semantic Hallucination 63%, Identifier Hijacking 29%, Placeholder Hallucination 4%, Partial Attribute Corruption 3%, Total Fabrication 1%."},
+        {"id": "P31", "name": "76% of Total Fabrications specifically layer Semantic Hallucination", "description": "Among the 66 Total Fabrications, 50 cases (76%) used Semantic Hallucination as their secondary mode to ensure the fabricated title appeared domain-appropriate, exemplified by an invented 'financial forecasting' citation with a plausible-sounding fake journal."},
+        {"id": "P32", "name": "Identifier Hijacking often layers onto Total Fabrication or PAC", "description": "IH appeared as a secondary characteristic in 29% of cases, typically combined with TF or PAC as primary mode, e.g. the Mineclip citation pairing invented metadata with a valid-but-mismatched arXiv ID, showing false verifiability is usually layered onto other deception."},
+        {"id": "P33", "name": "Compound structure implies single-attribute checks fail", "description": "Because every hallucination is compound, checking only one attribute (author names, title plausibility, or identifier validity) will fail to catch it; only comprehensive cross-verification confirming all attributes point to the same real source can reliably detect fabrication."},
+        {"id": "P34", "name": "Compound layering reflects structured exploitation of verification heuristics, not random noise", "description": "The 76% co-occurrence of TF with SH demonstrates structured fabrication that anticipates how humans verify citations superficially, exploiting multiple verification heuristics simultaneously rather than producing random errors."}
+      ],
+      "edges": [
+        {"from": "P20", "to": "P29", "evidence": ["E22"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C5"},
+        {"from": "P29", "to": "P30", "evidence": ["E23"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P31", "evidence": ["E24"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P32", "evidence": ["E25"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P33", "evidence": ["E26"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P34", "evidence": ["E27"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P34", "evidence": ["E27"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Why peer review's superficial verification heuristics are systematically defeated by compound structure.",
+      "nodes": [
+        {"id": "P35", "name": "Systematic, not isolated, review failure", "description": "Fabricated citations appeared across multiple institutions, research areas, and paper types, and even obviously flawed placeholder citations were not caught, indicating citation checking is not part of standard reviewer workflow even for AI papers."},
+        {"id": "P36", "name": "Submission volume makes exhaustive manual verification impractical", "description": "NeurIPS 2025's 21,575 submissions required thousands of volunteer reviewers, and under this volume, detailed verification of every citation becomes practically impossible, though this does not excuse the systemic gap."},
+        {"id": "P37", "name": "Heuristic 1 (title plausibility) is defeated by Semantic Hallucination", "description": "A reviewer's 'does the title sound appropriate?' heuristic is defeated because 63% of citations (76% of TFs) use domain-appropriate, plausible-sounding titles despite being fabricated."},
+        {"id": "P38", "name": "Heuristic 2 (working link) is defeated by Identifier Hijacking", "description": "A reviewer's 'does the link work?' heuristic is defeated because 29% of citations include valid but mismatched identifiers, creating false verifiability."},
+        {"id": "P39", "name": "Heuristic 3 (recognized names/venues) is defeated by Partial Attribute Corruption", "description": "A reviewer's 'do I recognize these authors or venues?' heuristic is defeated by PAC (27% primary), which attributes real scholars to papers they didn't write or corrupts metadata around recognizable names."},
+        {"id": "P40", "name": "Conclusion: only comprehensive cross-verification catches compound fabrications", "description": "Because each superficial heuristic is individually defeated by a corresponding failure mode, evading detection requires only satisfying whichever heuristic a reviewer happens to apply, so comprehensive multi-attribute cross-verification is necessary."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P35", "evidence": ["E28"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P36", "to": "P35", "evidence": ["E29"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P37", "evidence": ["E30"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P32", "to": "P38", "evidence": ["E31"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P16", "to": "P39", "evidence": ["E32"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P37", "to": "P40", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P40", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P39", "to": "P40", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P40", "evidence": ["E33"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Rebuttal to the 'harmless error' counterargument about citation fabrication.",
+      "nodes": [
+        {"id": "P41", "name": "Objection: citation errors are minor formatting issues", "description": "Some may argue fabricated citations are minor formatting issues that don't invalidate research findings."},
+        {"id": "P42", "name": "Citations serve three epistemic functions", "description": "Citations provide evidentiary support (claimed prior work exists and says what's claimed), reproducibility (tracing findings to sources/methods), and credit attribution (acknowledging intellectual debt)."},
+        {"id": "P43", "name": "Fabricated citations subvert all three functions", "description": "Fabrications make false evidentiary claims, break reproducibility since readers can't verify nonexistent sources, and misallocate credit, as in the Paolone et al. example where real authors are credited with a paper they never wrote."},
+        {"id": "P44", "name": "Fabrication differs categorically from a typo", "description": "A typo (\"Smtih\" for \"Smith\") leaves the reference identifiable and verifiable, whereas a hallucination fabricates a nonexistent reference entirely, making it fraudulent regardless of intent."},
+        {"id": "P45", "name": "Compounded by 100% compound-failure rate: multi-layered, actively misleading", "description": "Because every hallucination is a compound, multi-layered fabrication rather than a simple mistake, the 'harmless error' framing understates how actively these citations mislead readers via plausibility, familiar names, or working-but-mismatched links."}
+      ],
+      "edges": [
+        {"from": "P41", "to": "P42", "evidence": ["E34"], "votes": 2, "confidence": "majority"},
+        {"from": "P42", "to": "P43", "evidence": ["E35"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P43", "to": "P44", "evidence": ["E36"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P45", "evidence": ["E37"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P44", "to": "P45", "evidence": ["E37"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Generalization beyond NeurIPS and the proposed four-step mandatory verification solution.",
+      "nodes": [
+        {"id": "P46", "name": "Parallel contamination found at ICLR 2026 and beyond academia", "description": "GPTZero's analysis of ICLR 2026 submissions found over 50 hallucinations, some rated 8/10 by reviewers; fabricated citations also appeared in a US government report requiring corrections and a consulting report requiring a $98,000 AUD refund."},
+        {"id": "P47", "name": "Contamination spans elite institutions, indicating systemic rather than individual causes", "description": "Contamination appeared across authors at elite institutions (NYU, Cambridge, MIT, Genentech, Google), suggesting systemic factors, tool accessibility, publication pressure, inadequate verification infrastructure, rather than individual misconduct."},
+        {"id": "P48", "name": "Proposal: mandatory automated citation verification at submission", "description": "The paper proposes conference organizers mandate automated citation verification as part of submission, similgreatly to plagiarism detection, provide authors verification reports before review, and flag unverifiable-citation papers for enhanced scrutiny."},
+        {"id": "P49", "name": "Four-step verification matched to the compound failure structure", "description": "A four-step verification protocol is proposed: (1) existence check via web search/databases catching TF cases, (2) metadata consistency check catching PAC cases, (3) identifier validation catching IH cases, (4) semantic plausibility flagging for human review."},
+        {"id": "P50", "name": "Institutional inertia, not technical barriers, is the primary obstacle", "description": "The verification tools already exist and are used in research integrity investigations; the primary barrier is institutional reluctance to acknowledge the current system has failed and implement requirements despite author pushback."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P46", "evidence": ["E38"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C7"},
+        {"from": "P46", "to": "P47", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P40", "to": "P48", "evidence": ["E40"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"},
+        {"from": "P33", "to": "P49", "evidence": ["E41"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P48", "to": "P49", "evidence": ["E41"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P49", "to": "P50", "evidence": ["E42"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "Limitations of the study's scope and methodology.",
+      "nodes": [
+        {"id": "P51", "name": "Only GPTZero-flagged citations were analyzed", "description": "The analysis covers only citations flagged by GPTZero's automated tool; citations that appear correct but subtly misrepresent source content would not be detected."},
+        {"id": "P52", "name": "Author intent cannot be determined", "description": "The study cannot determine whether hallucinations resulted from deliberate fraud, negligent AI use, or honest mistakes; it focuses on the observable failure and systemic gap rather than attributing blame."},
+        {"id": "P53", "name": "Category boundaries (esp. PAC vs TF) can be ambiguous", "description": "Primary/secondary coding can be ambiguous when citations blend real and fake elements, though the 100% compound-failure rate suggests this reflects the fundamental nature of the hallucinations rather than coding imprecision."},
+        {"id": "P54", "name": "Single conference, single discipline: generalization uncertain", "description": "Data comes from a single conference (NeurIPS 2025) in a single discipline; while parallel ICLR/government/consulting findings suggest broader applicability, the specific 66% TF / 27% PAC distribution may not generalize to all domains or AI tools."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P51", "evidence": ["E43"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P51", "to": "P52", "evidence": ["E44"], "votes": 1, "confidence": "single_run"},
+        {"from": "P14", "to": "P53", "evidence": ["E45"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P29", "to": "P53", "evidence": ["E45"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C7"},
+        {"from": "P46", "to": "P54", "evidence": ["E46"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C10"},
+        {"from": "P20", "to": "P54", "evidence": ["E46"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C12",
+      "description": "Future work: probing Contamination Inheritance and richer multi-dimensional taxonomies.",
+      "nodes": [
+        {"id": "P55", "name": "Open question: how much of 'Total Fabrication' is actually inherited contamination?", "description": "Because Contamination Inheritance was identified in at least one case, future work should ask what proportion of TF-coded citations are actually reproductions of contaminated training data rather than de novo fabrications."},
+        {"id": "P56", "name": "Proposed future tools: training-data audits and citation genealogy mapping", "description": "Addressing the inheritance question requires training-data provenance audits, version-controlled corpus tracking, and citation genealogy mapping to trace hallucination origins."},
+        {"id": "P57", "name": "Governance implications diverge depending on which mechanism dominates", "description": "If Contamination Inheritance dominates, mitigation should focus on cleaning training corpora and temporal watermarking; if pure fabrication dominates, efforts should prioritize model grounding and retrieval-augmented generation."},
+        {"id": "P58", "name": "Proposed matrix-based multi-dimensional classification for future taxonomies", "description": "Given the 100% compound-failure rate, future taxonomies could use a matrix-based classification representing simultaneous fabrication, semantic plausibility, identifier hijacking, and error inheritance rather than a single primary code."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P55", "evidence": ["E47"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P55", "to": "P56", "evidence": ["E48"], "votes": 2, "confidence": "majority"},
+        {"from": "P56", "to": "P57", "evidence": ["E49"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P58", "evidence": ["E50"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P59", "name": "Detection can exploit the fabrication baseline for the majority of cases", "description": "Because 66% of hallucinations are Total Fabrications, automated tools that simply check 'does this exact citation exist?' will catch the majority of cases, matching the current GPTZero web-search/database-lookup approach."},
+    {"id": "P60", "name": "PAC cases require more sophisticated metadata-consistency verification", "description": "The 27% PAC cases require verification tools to check metadata consistency, not just existence, i.e. that claimed authors actually wrote the claimed title in the claimed venue and year, which is computationally more expensive."}
+  ]
+}

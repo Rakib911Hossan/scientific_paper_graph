@@ -1,0 +1,141 @@
+{
+ "arxiv_id": "2609.08253",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Shared perturbation-kernel view yields a spectral alignment regularizer for diffusion, with duality to score distillation and empirical gains",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "REPA needs external encoders",
+     "description": "REPA aligns diffusion hidden states with pretrained encoders such as DINOv2 to speed convergence, but depends on foundation-model representations that are often unavailable for modalities like point clouds or graphs."
+    },
+    {
+     "id": "P2",
+     "name": "Diffusion and spectral SRL share perturbation kernels",
+     "description": "Diffusion models and self-supervised spectral representation learning can both be formulated under a shared stochastic-process parameterization based on perturbation kernels (Sec 3.1-3.2)."
+    },
+    {
+     "id": "P3",
+     "name": "Spectral embeddings preserve neighborhood geometry",
+     "description": "Spectral representations built from the diffusion perturbation kernel give time-dependent multi-scale embeddings whose distances reflect local connectivity: small t separates data, large t collapses distances; the diffusion distance expands in the eigenspace of the kernel operator (Prop 4.2)."
+    },
+    {
+     "id": "P4",
+     "name": "Spectral alignment regularizer",
+     "description": "Diffusion training adds a spectral self-supervised loss L = L_diff + lambda L_s, aligning hidden states with eigenfunctions of a time-varying kernel operator, reusing the same perturbed input plus one additional perturbed view (Sec 4.2, Eq 22)."
+    },
+    {
+     "id": "P5",
+     "name": "Spectral objective equals score distillation",
+     "description": "Minimizing the spectral self-supervised objective is gradient-equivalent to minimizing a KL divergence, i.e. diffusion score distillation, inducing mode-seeking dynamics in representation space (Prop 4.3, Sec 4.3)."
+    },
+    {
+     "id": "P6",
+     "name": "Cleaner synthetic samples",
+     "description": "On synthetic 2D distributions (2spirals, rings) the method produces cleaner, more compact samples with fewer outliers than the baseline (Fig 2)."
+    },
+    {
+     "id": "P7",
+     "name": "Consistent FID gains on images",
+     "description": "Spectral regularization reduces FID by 1.5 on ImageNet-64 (DiT-L/4), 0.2 on ImageNet-256 (DiT-XL/2), 2.8 on CIFAR-10, 3.1 on CelebA and 0.7 on FFHQ, i.e. 15%, 8%, 25%, 11% and 5% relative (Table 1)."
+    },
+    {
+     "id": "P8",
+     "name": "Gains persist later in training",
+     "description": "The method outperforms the baseline in later stages of training as shown by FID against iterations (Fig 3)."
+    },
+    {
+     "id": "P9",
+     "name": "Works for point clouds without encoders",
+     "description": "On ShapeNet Chair, Airplane and Car with DiT-3D S/4, where pretrained encoders are unavailable, the method gives strong performance over the baseline (Table 2)."
+    },
+    {
+     "id": "P10",
+     "name": "REPA still best for large latent ImageNet-256",
+     "description": "For latent-space ImageNet-256, REPA achieves the best overall performance, while the proposed method improves over its baseline without an external pretrained encoder."
+    },
+    {
+     "id": "P11",
+     "name": "Training overhead",
+     "description": "Training time increases by about 10% for ImageNet-64 pixel diffusion, 70% for ImageNet-256 latent diffusion and 20% for Airplane point-cloud diffusion."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P4",
+     "evidence": [
+      "Sec 1-2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3, Sec 4.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.3, Prop 4.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 5.1, Fig 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 5.2, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.3, Table 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [],
+ "structural_reasoning": "Kernel-based unification motivates a spectral alignment regularizer, supported by duality theory and experiments."
+}

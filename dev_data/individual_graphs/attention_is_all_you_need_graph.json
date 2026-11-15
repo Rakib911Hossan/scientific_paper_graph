@@ -1,0 +1,312 @@
+{
+  "arxiv_id": "1706.03762v7",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/tables rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: replacing recurrence with self-attention",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Sequential computation limits parallelization",
+          "description": "Recurrent models factor computation along input/output symbol positions, generating hidden states as a function of the previous hidden state, which precludes parallelization within training examples."
+        },
+        {
+          "id": "P2",
+          "name": "Sequential computation constrains long sequences",
+          "description": "The inherently sequential nature of recurrent computation becomes critical at longer sequence lengths, since memory constraints limit batching across examples."
+        },
+        {
+          "id": "P3",
+          "name": "Transformer proposal",
+          "description": "The paper proposes the Transformer, a model architecture that eschews recurrence and relies entirely on an attention mechanism to draw global dependencies between input and output."
+        },
+        {
+          "id": "P4",
+          "name": "Transformer allows more parallelization",
+          "description": "Because it removes sequential recurrence, the Transformer allows significantly more parallelization than recurrent models."
+        },
+        {
+          "id": "P5",
+          "name": "Transformer reaches new state of the art quickly",
+          "description": "The Transformer can reach a new state of the art in translation quality after training for as little as twelve hours on eight P100 GPUs."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Attention mechanism design",
+      "nodes": [
+        {
+          "id": "P6",
+          "name": "Attention as weighted sum of values",
+          "description": "An attention function maps a query and a set of key-value pairs to an output computed as a weighted sum of the values, where the weight for each value comes from a compatibility function of the query with the corresponding key."
+        },
+        {
+          "id": "P7",
+          "name": "Scaled Dot-Product Attention formula",
+          "description": "Scaled Dot-Product Attention computes Attention(Q,K,V) = softmax(QK^T / sqrt(d_k)) V, dividing dot products by sqrt(d_k) before the softmax."
+        },
+        {
+          "id": "P8",
+          "name": "Unscaled dot products cause vanishing gradients at large d_k",
+          "description": "For large values of d_k, dot products grow large in magnitude, pushing the softmax function into regions with extremely small gradients."
+        },
+        {
+          "id": "P9",
+          "name": "Scaling factor counteracts vanishing gradients",
+          "description": "The dot products are scaled by 1/sqrt(d_k) specifically to counteract the vanishing-gradient effect that would otherwise occur at large d_k."
+        },
+        {
+          "id": "P10",
+          "name": "Dot-product attention is faster and more space-efficient than additive attention",
+          "description": "Dot-product attention can be implemented using highly optimized matrix multiplication code, making it much faster and more space-efficient in practice than additive attention despite similar theoretical complexity."
+        },
+        {
+          "id": "P11",
+          "name": "Single-head attention averaging inhibits information from different subspaces",
+          "description": "With a single attention head, averaging inhibits the ability to jointly attend to information from different representation subspaces at different positions."
+        },
+        {
+          "id": "P12",
+          "name": "Multi-Head Attention introduction",
+          "description": "Multi-Head Attention linearly projects queries, keys, and values h times with different learned projections, performs attention in parallel on each projection, then concatenates and projects the results."
+        },
+        {
+          "id": "P13",
+          "name": "Multi-head computational cost matches single-head",
+          "description": "Because each head uses a reduced dimension (d_k = d_v = d_model/h), the total computational cost of multi-head attention is similar to that of single-head attention with full dimensionality."
+        },
+        {
+          "id": "P14",
+          "name": "Masked self-attention preserves autoregressive property",
+          "description": "The decoder's self-attention sub-layer is modified with masking (setting illegal values to -infinity before softmax) to prevent positions from attending to subsequent positions, preserving the autoregressive property."
+        }
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["S3.2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S3.2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P10", "evidence": ["S3.2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P12", "evidence": ["S3.2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P13", "evidence": ["S3.2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P14", "evidence": ["S3.2.3"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Complexity and path-length comparison across layer types",
+      "nodes": [
+        {
+          "id": "P15",
+          "name": "Path length affects learning long-range dependencies",
+          "description": "The length of the paths forward and backward signals must traverse between any two positions is a key factor affecting the ability to learn long-range dependencies; shorter paths make it easier."
+        },
+        {
+          "id": "P16",
+          "name": "Self-attention has constant maximum path length",
+          "description": "A self-attention layer connects all positions with O(1) sequential operations and O(1) maximum path length between any two positions."
+        },
+        {
+          "id": "P17",
+          "name": "Recurrent layers require O(n) sequential operations",
+          "description": "A recurrent layer requires O(n) sequential operations and has O(n) maximum path length between positions."
+        },
+        {
+          "id": "P18",
+          "name": "Self-attention favorable for typical sentence lengths",
+          "description": "Self-attention layers are faster than recurrent layers when sequence length n is smaller than representation dimensionality d, which is most often the case for sentence representations in state-of-the-art translation models."
+        },
+        {
+          "id": "P19",
+          "name": "Restricted self-attention proposal",
+          "description": "To improve computational performance for very long sequences, self-attention could be restricted to a neighborhood of size r, which would increase the maximum path length to O(n/r)."
+        },
+        {
+          "id": "P20",
+          "name": "Self-attention may yield more interpretable models",
+          "description": "As a side benefit, self-attention could yield more interpretable models, since inspected attention distributions show individual heads learning distinct, often syntactically/semantically meaningful behaviors."
+        }
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["S4", "Table1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P17", "evidence": ["S4", "Table1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P18", "evidence": ["S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P19", "evidence": ["S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P20", "evidence": ["S4"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Positional encoding",
+      "nodes": [
+        {
+          "id": "P21",
+          "name": "No recurrence/convolution requires injected position information",
+          "description": "Because the Transformer contains no recurrence and no convolution, information about the relative or absolute position of tokens must be injected for the model to make use of sequence order."
+        },
+        {
+          "id": "P22",
+          "name": "Sinusoidal positional encoding choice",
+          "description": "Sine and cosine functions of different frequencies are added to the input embeddings as positional encodings, with each dimension corresponding to a sinusoid of a different wavelength."
+        },
+        {
+          "id": "P23",
+          "name": "Sinusoids enable relative-position linear representation",
+          "description": "The sinusoidal function was chosen partly because, for any fixed offset k, PE(pos+k) can be represented as a linear function of PE(pos), hypothesized to help the model learn to attend by relative position."
+        },
+        {
+          "id": "P24",
+          "name": "Sinusoidal encoding may extrapolate to longer sequences",
+          "description": "The sinusoidal positional encoding was chosen over learned positional embeddings partly because it may allow the model to extrapolate to sequence lengths longer than those seen during training."
+        },
+        {
+          "id": "P25",
+          "name": "Learned vs sinusoidal encodings produce nearly identical results",
+          "description": "Experiments substituting learned positional embeddings for the sinusoidal version produced nearly identical results (Table 3, row E)."
+        }
+      ],
+      "edges": [
+        {"from": "P21", "to": "P22", "evidence": ["S3.5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["S3.5"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P24", "evidence": ["S3.5"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P25", "evidence": ["S3.5", "Table3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Machine translation results",
+      "nodes": [
+        {
+          "id": "P26",
+          "name": "EN-DE state of the art",
+          "description": "The big Transformer model achieves 28.4 BLEU on WMT 2014 English-to-German, outperforming the best previously reported models, including ensembles, by more than 2.0 BLEU."
+        },
+        {
+          "id": "P27",
+          "name": "EN-FR state of the art at lower cost",
+          "description": "The big Transformer achieves 41.8 BLEU on WMT 2014 English-to-French, a new single-model state of the art, at less than 1/4 the training cost of the previous state-of-the-art single model."
+        },
+        {
+          "id": "P28",
+          "name": "Base model already competitive at low cost",
+          "description": "Even the base Transformer model surpasses all previously published models and ensembles on English-to-German, at a fraction of the training cost of any competitive model."
+        },
+        {
+          "id": "P29",
+          "name": "Reduced training cost enabled by architecture",
+          "description": "The Transformer's parallelizable, non-recurrent architecture is what allows it to achieve these translation quality results with substantially less training time/compute (FLOPs) than prior RNN- and CNN-based approaches."
+        }
+      ],
+      "edges": [
+        {"from": "P29", "to": "P26", "evidence": ["S6.1", "Table2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P27", "evidence": ["S6.1", "Table2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P28", "evidence": ["S6.1", "Table2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Model variation ablations (Table 3)",
+      "nodes": [
+        {
+          "id": "P30",
+          "name": "Too few or too many heads hurt quality",
+          "description": "Varying the number of attention heads while holding computation constant shows single-head attention is 0.9 BLEU worse than the best setting, and quality also drops off with too many heads."
+        },
+        {
+          "id": "P31",
+          "name": "Reducing attention key size hurts quality",
+          "description": "Reducing the attention key size d_k hurts model quality, suggesting that determining compatibility is not easy and a more sophisticated compatibility function than dot product may help."
+        },
+        {
+          "id": "P32",
+          "name": "Bigger models perform better",
+          "description": "Rows (C) and (D) of the ablation table show that, as expected, bigger models achieve better performance."
+        },
+        {
+          "id": "P33",
+          "name": "Dropout helps avoid overfitting",
+          "description": "The ablation results show dropout is very helpful in avoiding over-fitting."
+        }
+      ],
+      "edges": [
+        {"from": "P30", "to": "P31", "evidence": ["S6.2", "Table3"], "votes": 1, "confidence": "single_run"},
+        {"from": "P32", "to": "P33", "evidence": ["S6.2", "Table3"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Generalization to English constituency parsing",
+      "nodes": [
+        {
+          "id": "P34",
+          "name": "Constituency parsing presents structural/length challenges",
+          "description": "Constituency parsing presents specific challenges because the output is subject to strong structural constraints and is significantly longer than the input."
+        },
+        {
+          "id": "P35",
+          "name": "RNN seq2seq models struggle in small-data regimes",
+          "description": "Prior work found that RNN sequence-to-sequence models have not been able to attain state-of-the-art results on constituency parsing in small-data regimes."
+        },
+        {
+          "id": "P36",
+          "name": "Transformer applied to constituency parsing",
+          "description": "A 4-layer Transformer with d_model=1024 was trained on the WSJ portion of the Penn Treebank, both in a WSJ-only setting and a larger semi-supervised setting."
+        },
+        {
+          "id": "P37",
+          "name": "Transformer performs well despite no task-specific tuning",
+          "description": "Despite only minimal task-specific hyperparameter tuning, the Transformer performs surprisingly well on constituency parsing, outperforming all previously reported models except the Recurrent Neural Network Grammar."
+        },
+        {
+          "id": "P38",
+          "name": "Transformer outperforms BerkeleyParser even with limited data",
+          "description": "In contrast to RNN sequence-to-sequence models, the Transformer outperforms the BerkeleyParser even when trained only on the 40K-sentence WSJ training set."
+        }
+      ],
+      "edges": [
+        {"from": "P34", "to": "P35", "evidence": ["S6.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P35", "to": "P36", "evidence": ["S6.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P36", "to": "P37", "evidence": ["S6.3", "Table4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P37", "to": "P38", "evidence": ["S6.3", "Table4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P39", "name": "Encoder stack structure", "description": "The encoder is composed of a stack of N=6 identical layers, each with a multi-head self-attention sub-layer and a position-wise fully connected feed-forward sub-layer, with residual connections and layer normalization around each sub-layer."},
+    {"id": "P40", "name": "Decoder stack structure", "description": "The decoder is composed of a stack of N=6 identical layers, adding a third sub-layer that performs multi-head attention over the encoder stack's output, in addition to the two sub-layers present in each encoder layer."},
+    {"id": "P41", "name": "Encoder-decoder attention mechanism", "description": "In encoder-decoder attention layers, queries come from the previous decoder layer while memory keys and values come from the encoder output, allowing every decoder position to attend over all input positions."},
+    {"id": "P42", "name": "Position-wise feed-forward network", "description": "Each encoder/decoder layer contains a position-wise fully connected feed-forward network consisting of two linear transformations with a ReLU activation in between, applied identically to each position separately."},
+    {"id": "P43", "name": "Shared embedding and output projection weights", "description": "The same weight matrix is shared between the two embedding layers and the pre-softmax linear transformation, with embedding weights multiplied by sqrt(d_model)."},
+    {"id": "P44", "name": "Adam optimizer with custom learning-rate schedule", "description": "Training uses the Adam optimizer with beta1=0.9, beta2=0.98, epsilon=1e-9, and a learning rate that increases linearly for warmup_steps then decreases proportionally to the inverse square root of the step number."},
+    {"id": "P45", "name": "Residual dropout regularization", "description": "Dropout is applied to the output of each sub-layer before it is added to the sub-layer input and normalized, and to the sums of embeddings and positional encodings, at a rate of 0.1 for the base model."},
+    {"id": "P46", "name": "Label smoothing regularization", "description": "Label smoothing of value 0.1 is used during training; it hurts perplexity, as the model learns to be more unsure, but improves accuracy and BLEU score."},
+    {"id": "P47", "name": "Checkpoint averaging for inference", "description": "The base models use a single model obtained by averaging the last 5 checkpoints, while the big models average the last 20 checkpoints, both written at 10-minute intervals."},
+    {"id": "P48", "name": "Beam search inference settings", "description": "Inference uses beam search with beam size 4 and length penalty alpha=0.6, with maximum output length set to input length plus 50 but with early termination when possible."},
+    {"id": "P49", "name": "First fully self-attention-based transduction model", "description": "To the authors' knowledge, the Transformer is the first transduction model relying entirely on self-attention to compute representations of its input and output, without using sequence-aligned RNNs or convolution."},
+    {"id": "P50", "name": "Future direction: non-text modalities", "description": "The authors plan to extend the Transformer to problems involving input and output modalities other than text, such as images, audio, and video."},
+    {"id": "P51", "name": "Future direction: local/restricted attention for large inputs", "description": "The authors plan to investigate local, restricted attention mechanisms to efficiently handle large inputs and outputs."},
+    {"id": "P52", "name": "Future direction: less sequential generation", "description": "Making generation less sequential is noted as another research goal."}
+  ],
+  "structural_score": 7,
+  "structural_reasoning": "The graph is coherent within each thematic component: the motivation for replacing recurrence (C1) forms a clean causal chain from the sequential-computation bottleneck to the Transformer's parallelization benefits; the attention mechanism component (C2) traces scaled dot-product attention's design rationale and its extension to multi-head attention; the complexity/path-length analysis (C3) and positional encoding rationale (C4) are each self-contained design-justification chains; and the results components (C5, C7) follow the paper's own narrative from architectural properties to empirical outcomes. C6 (ablations) is intentionally left as two small disconnected pairs rather than one chain, since the paper presents rows (A)-(E) largely as parallel, independent probes rather than a dependency chain, and forcing edges between unrelated ablation rows (e.g., head count vs. dropout) would misrepresent the source. A larger number of foundational architectural facts (encoder/decoder structure, feed-forward sub-layers, training regularization and optimizer details) are left as isolated nodes since they are descriptive specifications rather than argumentative claims with clear premise-conclusion links to other propositions in the paper."
+}

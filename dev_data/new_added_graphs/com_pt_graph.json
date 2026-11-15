@@ -1,0 +1,413 @@
+{
+  "arxiv_id": "2604.12391v1",
+  "note": "Single-pass extraction (no sentence-level indexing available for this document). Evidence fields reference sections/tables/figures/equations instead of indexed sentences (S#). Votes/confidence/fidelity fields from the reference schema are omitted since no multi-run validation was performed.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: escalating VFM family pre-training costs and the family-size dilemma",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "CLIP-style VFM pre-training is extremely costly",
+          "description": "Contrastive language-image pre-training enables ViTs to achieve state-of-the-art zero-shot performance and become de facto vision encoders for MLLMs, but pre-training a single ViT-L/14 on LAION-2B requires 1.2x10^5 A100 GPU hours, exceeding $500,000."
+        },
+        {
+          "id": "P2",
+          "name": "Existing acceleration techniques all optimize individual models",
+          "description": "Mixed-precision training, system-level optimizations, mask image modeling, input token reduction, loss optimization, and data-efficient designs all share the common underlying viewpoint of optimizing the training of individual models, despite belonging to different research lines."
+        },
+        {
+          "id": "P3",
+          "name": "VFMs are pre-trained as model families with ever-growing family size",
+          "description": "VFMs are typically pre-trained as a family of architecturally similar models with varying sizes, and family size shows an ever-growing trend driven by demand for specialized model sizes and broadening parameter ranges from larger models."
+        },
+        {
+          "id": "P4",
+          "name": "Growing family size creates a cost-vs-flexibility dilemma",
+          "description": "The ever-growing family size trend creates a dilemma for pre-training model families: affording escalating pre-training costs from ever-growing family size, or compromising deployment flexibility by limiting the number of model sizes offered."
+        },
+        {
+          "id": "P5",
+          "name": "Key question: how to achieve acceleration that scales with family size",
+          "description": "Faced with this dilemma, the paper poses the central question of how to achieve pre-training acceleration that scales efficiently with family size, motivating a reexamination of the standard pre-training pipeline."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["Sec 1"]},
+        {"from": "P3", "to": "P4", "evidence": ["Sec 1"]},
+        {"from": "P2", "to": "P5", "evidence": ["Sec 1"]},
+        {"from": "P4", "to": "P5", "evidence": ["Sec 1"]}
+      ]
+    },
+    {
+      "component_id": "C2",
+      "description": "Analysis: two bottlenecks in standard pre-training pipelines",
+      "nodes": [
+        {
+          "id": "P6",
+          "name": "Micro-level bottleneck: large models dominate pre-training cost",
+          "description": "From the micro view, main pre-training costs stem from large models in the family; computational complexity expands around 4x when selecting a larger ViT variant, and training ViT-H/14 costs over 80x more than training ViT-B/32."
+        },
+        {
+          "id": "P7",
+          "name": "Macro-level bottleneck: individual training is redundant across the family",
+          "description": "From the macro view, inefficiency stems from individual training: models are trained using the same objectives, datasets, and protocols, yielding common knowledge within the family, but this is ignored, making traditional individual training highly repetitive and redundant."
+        },
+        {
+          "id": "P8",
+          "name": "Hypothesis: knowledge reuse from small to large models addresses both bottlenecks",
+          "description": "The paper hypothesizes that both the micro (large-model cost) and macro (redundant training) bottlenecks can be simultaneously addressed by redefining the training pipeline to enable knowledge reuse from small to large models within the family."
+        }
+      ],
+      "edges": [
+        {"from": "P5", "to": "P6", "evidence": ["Sec 1"]},
+        {"from": "P5", "to": "P7", "evidence": ["Sec 1"]},
+        {"from": "P6", "to": "P8", "evidence": ["Sec 1"]},
+        {"from": "P7", "to": "P8", "evidence": ["Sec 1"]}
+      ]
+    },
+    {
+      "component_id": "C3",
+      "description": "Method: the model chain concept and CoM-PT pipeline",
+      "nodes": [
+        {
+          "id": "P9",
+          "name": "Models organized in ascending size order into a model chain",
+          "description": "Models within a family are organized in ascending order of size to form a model chain, a pre-training sequence starting with the smallest model pre-trained individually in the standard manner, then each subsequent model leverages inverse knowledge transfer from its predecessor (Fig. 2)."
+        },
+        {
+          "id": "P10",
+          "name": "Chain design eliminates isolation and reduces cost of larger models",
+          "description": "The model chain eliminates the isolation of individual training by ensuring each model inherits knowledge from its strongest predecessor, drastically reducing the prohibitive pre-training costs of larger models while maintaining performance comparable to individual training."
+        },
+        {
+          "id": "P11",
+          "name": "Efficiency scales favorably with family size, sometimes counterintuitively",
+          "description": "Beyond per-model efficiency gains, the chain design unlocks training efficiency that scales favorably with family size; e.g., the ViT-T->ViT-S->ViT-B->ViT-L chain reduces training costs by an additional 20% versus ViT-B->ViT-L, since the extended chain's smaller models converge in far fewer epochs, making the total overhead of the first three models smaller than training ViT-B from scratch."
+        }
+      ],
+      "edges": [
+        {"from": "P8", "to": "P9", "evidence": ["Sec 1", "Fig. 2"]},
+        {"from": "P9", "to": "P10", "evidence": ["Sec 1"]},
+        {"from": "P10", "to": "P11", "evidence": ["Sec 1"]}
+      ]
+    },
+    {
+      "component_id": "C4",
+      "description": "Method: inverse knowledge transfer concept — dual knowledge representations",
+      "nodes": [
+        {
+          "id": "P12",
+          "name": "Inverse knowledge transfer inverts the teacher-student size relationship",
+          "description": "Inverse knowledge transfer enables a knowledge relay along the model chain where each intermediate model first serves as a student learning from its predecessor, then as a teacher guiding its larger successor, differing from traditional KD in that the teacher-student size relation is inverted and intermediate models serve dual roles."
+        },
+        {
+          "id": "P13",
+          "name": "Knowledge exists statically in parameters and dynamically in features",
+          "description": "Effective relay requires addressing different forms of knowledge representation: a model's knowledge is statically encoded in the parameter space, while exhibited dynamically in the feature space across different samples."
+        },
+        {
+          "id": "P14",
+          "name": "Weight initialization and feature distillation tailored for the two spaces",
+          "description": "Weight initialization and feature distillation are tailored for knowledge reuse in the parameter space and feature space respectively, and their synergy ensures efficient knowledge transfer relay with speedups increasing progressively along the chain (Fig. 1)."
+        }
+      ],
+      "edges": [
+        {"from": "P9", "to": "P12", "evidence": ["Sec 1"]},
+        {"from": "P12", "to": "P13", "evidence": ["Sec 1"]},
+        {"from": "P13", "to": "P14", "evidence": ["Sec 1", "Fig. 1"]}
+      ]
+    },
+    {
+      "component_id": "C5",
+      "description": "Related work positioning: distinguishing CoM-PT from prior weight-reuse, KD, and CLIP acceleration work",
+      "nodes": [
+        {
+          "id": "P15",
+          "name": "Prior weight-reuse methods (Net2Net, NetExpand) initialize larger models from smaller ones",
+          "description": "Net2Net first proposed reusing small model weights to initialize larger models via function-preserving transformations, and NetExpand advanced this using SVD-based width expansion and EMA depth scaling; similar LLM-pretraining approaches were found generally less effective."
+        },
+        {
+          "id": "P16",
+          "name": "Standard knowledge distillation and collaborative learning use large-to-small or same-size transfer",
+          "description": "Vanilla KD and FitNet use large teacher logits/features to supervise smaller students, with further techniques on feature transform/selection/ensemble; collaborative learning approaches (ONE, DML) instead perform online ensemble or bidirectional distillation between same- or similar-sized networks."
+        },
+        {
+          "id": "P17",
+          "name": "Prior CLIP acceleration methods (FLIP, DeCLIP, ALIP, LaCLIP, DreamLIP) optimize single models",
+          "description": "FLIP accelerates CLIP via random patch masking; data-efficient CLIP methods (DeCLIP, ALIP, LaCLIP, MLLM-A, DreamLIP) reduce required data scale via improved supervision/captioning, but all target single-model training efficiency."
+        },
+        {
+          "id": "P18",
+          "name": "CoM-PT instead targets family-level acceleration that scales with family size",
+          "description": "In contrast to weight-reuse, KD/collaborative-learning, and single-model CLIP acceleration lines, CoM-PT focuses on accelerating the training pipeline at the model family level, with the novel objective of scaling efficiently with family size."
+        }
+      ],
+      "edges": [
+        {"from": "P15", "to": "P18", "evidence": ["Sec 2.2"]},
+        {"from": "P16", "to": "P18", "evidence": ["Sec 2", "Sec 2.2"]},
+        {"from": "P17", "to": "P18", "evidence": ["Sec 2.1"]},
+        {"from": "P2", "to": "P18", "evidence": ["Sec 1", "Sec 2.1"]}
+      ]
+    },
+    {
+      "component_id": "C6",
+      "description": "Method detail: inverse weight initialization and inverse feature distillation implementation",
+      "nodes": [
+        {
+          "id": "P19",
+          "name": "Inverse weight initialization handles width and depth differences via insertion and duplication",
+          "description": "For block-block width differences, parameters of the smaller teacher are directly inserted into the larger student with remaining parameters randomly initialized; for layer-layer depth differences, weights of each layer are duplicated and indexed as the succeeding layer (Fig. 3, Step 1)."
+        },
+        {
+          "id": "P20",
+          "name": "Vanilla implementations are prioritized since the model chain drives primary gains",
+          "description": "Since empirical results (Table 4a) reveal the model chain itself drives primary efficiency gains, simplicity is prioritized and both inverse weight initialization and feature distillation are implemented using vanilla approaches rather than sophisticated designs."
+        },
+        {
+          "id": "P21",
+          "name": "Inverse feature distillation mirrors standard feature distillation formulation",
+          "description": "Inverse feature distillation applies a feature transform to project student features into the teacher's feature space, minimizing an L2 loss between transformed student features and teacher features (Eq. 1), balanced against the task loss via coefficient α to ensure the distillation loss remains smaller than the task loss."
+        }
+      ],
+      "edges": [
+        {"from": "P14", "to": "P19", "evidence": ["Sec 3.1.1", "Fig. 3"]},
+        {"from": "P19", "to": "P20", "evidence": ["Sec 3.1.1", "Table 4a"]},
+        {"from": "P14", "to": "P21", "evidence": ["Sec 3.1.1", "Eq. 1"]}
+      ]
+    },
+    {
+      "component_id": "C7",
+      "description": "Method: three principled rules for model chain design",
+      "nodes": [
+        {
+          "id": "P22",
+          "name": "Two structural operations can further improve chain efficiency",
+          "description": "Given a model chain, adding a smaller model before the first model, or inserting a medium-sized model between two chain members, can further accelerate convergence of subsequent models, provided the benefit outweighs the additional training cost."
+        },
+        {
+          "id": "P23",
+          "name": "Rule 1: optimal smallest model selection based on data scale",
+          "description": "The smallest model size should be selected based on pre-training data scale — compact enough to maximize efficiency, yet with proper capacity to fit the data distribution, guaranteeing lossless training acceleration and a robust foundation for the chain."
+        },
+        {
+          "id": "P24",
+          "name": "Rule 2: intermediate model variants chosen via expansion ratio trade-off",
+          "description": "Intermediate model variants are obtained by expanding their teacher's size; expansion ratios of 2x-4x yield considerable efficiency gains, with larger factors (4x) minimizing overall training cost and smaller factors (2x) maximizing acceleration ratio."
+        },
+        {
+          "id": "P25",
+          "name": "Rule 3: training epochs decrease linearly as model size grows exponentially",
+          "description": "Training epoch allocation along the chain decreases linearly as model size increases exponentially under the premise of achieving lossless training acceleration; a linearly decreasing schedule is initialized and validated/relaxed based on the first network pair's outcome."
+        }
+      ],
+      "edges": [
+        {"from": "P11", "to": "P22", "evidence": ["Sec 3.1.2"]},
+        {"from": "P22", "to": "P23", "evidence": ["Sec 3.1.2"]},
+        {"from": "P22", "to": "P24", "evidence": ["Sec 3.1.2"]},
+        {"from": "P22", "to": "P25", "evidence": ["Sec 3.1.2"]}
+      ]
+    },
+    {
+      "component_id": "C8",
+      "description": "Test case: applying CoM-PT to CLIP with LaCLIP baseline and text augmentation",
+      "nodes": [
+        {
+          "id": "P26",
+          "name": "LaCLIP with stronger text augmentation chosen as the baseline",
+          "description": "LaCLIP, a strong data-efficient CLIP variant with a neat formulation, is selected as the baseline and boosted using stronger text augmentation, expanding each image-text pair to 16x more text variations with 4 subcaptions randomly selected per iteration."
+        },
+        {
+          "id": "P27",
+          "name": "Standard CLIP contrastive task loss defined over augmented text-image pairs",
+          "description": "The text-to-image contrastive loss is computed over M augmented positive text pairs per image (Eq. 2), and combined by duality with the image-to-text loss to form the overall task loss (Eq. 3)."
+        },
+        {
+          "id": "P28",
+          "name": "Overall CoM-PT training loss combines task loss and bidirectional inverse feature distillation",
+          "description": "The overall training loss sums the task loss and the averaged inverse feature distillation loss over visual and text teacher-student feature pairs (Eq. 4), applied alongside inverse weight initialization, requiring no modification to the baseline method due to CoM-PT's simplicity."
+        }
+      ],
+      "edges": [
+        {"from": "P21", "to": "P26", "evidence": ["Sec 3.2"]},
+        {"from": "P26", "to": "P27", "evidence": ["Sec 3.2", "Eqs. 2-3"]},
+        {"from": "P27", "to": "P28", "evidence": ["Sec 3.2", "Eq. 4"]}
+      ]
+    },
+    {
+      "component_id": "C9",
+      "description": "Finding: pilot study establishes fair baseline convergence and comparison",
+      "nodes": [
+        {
+          "id": "P29",
+          "name": "Standard 32-epoch CLIP schedules are insufficient on smaller datasets",
+          "description": "Early CLIP studies standardized 32 epochs on large-scale datasets, and follow-up data-efficient methods adopted the same setting, but the paper empirically reveals models remain far from convergence with only 32 epochs on smaller datasets like CC3M."
+        },
+        {
+          "id": "P30",
+          "name": "128 epochs established as converged baseline on CC3M; 64 for Merged-15M",
+          "description": "Evaluation across 32-256 epochs on CC3M shows performance steadily improves up to 128 epochs, establishing 128 epochs as the standard baseline; for Merged-15M, 64 epochs is set to account for its 5x larger data scale (Fig. 4)."
+        },
+        {
+          "id": "P31",
+          "name": "Boosted LaCLIP baseline outperforms leading data-efficient counterparts",
+          "description": "Compared against original LaCLIP and MLLM-A (leading contrastive-loss-only approaches), the paper's baseline outperforms both (Table 1), establishing a solid foundation for validating the performance-lossless property of CoM-PT."
+        }
+      ],
+      "edges": [
+        {"from": "P26", "to": "P29", "evidence": ["Sec 5.1"]},
+        {"from": "P29", "to": "P30", "evidence": ["Sec 5.1", "Fig. 4"]},
+        {"from": "P30", "to": "P31", "evidence": ["Sec 5.1", "Table 1"]}
+      ]
+    },
+    {
+      "component_id": "C10",
+      "description": "Finding: zero-shot classification and retrieval results demonstrate lossless acceleration",
+      "nodes": [
+        {
+          "id": "P32",
+          "name": "CoM-PT models generally exceed baseline on ImageNet-1K, VTAB+, and COCO",
+          "description": "Models pre-trained with CoM-PT generally exceed the baseline on three zero-shot benchmarks, especially for the largest model; e.g., Swin-L on CC3M surpasses baseline by 0.29%/0.88%/1.72% on ImageNet-1K/VTAB+/COCO (Table 2)."
+        },
+        {
+          "id": "P33",
+          "name": "Rare underperformance stays within the 0.5% lossless threshold",
+          "description": "In the rare cases where performance slightly falls below baseline, differences remain within the defined 0.5% lossless threshold, ensuring family-level lossless acceleration is maintained."
+        },
+        {
+          "id": "P34",
+          "name": "Acceleration ratio increases with model size, up to ~7.5x at ViT-L",
+          "description": "The individual acceleration ratio (in MACs and GPU hours) increases with model size, reaching around 7.5x at ViT-L, meaning the total family training cost is lower than training the largest model alone (Fig. 5, Table 2)."
+        },
+        {
+          "id": "P35",
+          "name": "GPU-hour acceleration is slightly lower than MACs acceleration due to smaller-model GPU underutilization",
+          "description": "The accumulated acceleration ratio in GPU hours is slightly lower than in MACs because smaller models have lower GPU utilization, causing disproportionately longer training time; still, CoM-PT achieves 4.10x/3.80x acceleration for ViT/Swin on CC3M and 2.37x for ViT on Merged-15M."
+        }
+      ],
+      "edges": [
+        {"from": "P28", "to": "P32", "evidence": ["Sec 5.2.1", "Table 2"]},
+        {"from": "P32", "to": "P33", "evidence": ["Sec 5.2.1"]},
+        {"from": "P32", "to": "P34", "evidence": ["Sec 5.2.1", "Fig. 5"]},
+        {"from": "P34", "to": "P35", "evidence": ["Sec 5.2.1", "Fig. 5", "Table 2"]}
+      ]
+    },
+    {
+      "component_id": "C11",
+      "description": "Finding: fine-tuning transferability on downstream tasks",
+      "nodes": [
+        {
+          "id": "P36",
+          "name": "CoM-PT-pretrained backbones outperform baseline across segmentation and VL tasks",
+          "description": "Models trained with CoM-PT outperform baselines across all five open-vocabulary segmentation datasets (average improvements of 5.64%/6.14% for ViT-B/16 and ViT-L/16) and across vision-language benchmarks after LoRA-based fine-tuning (Table 3)."
+        },
+        {
+          "id": "P37",
+          "name": "Fine-grained segmentation datasets show especially large gains, suggesting better representations",
+          "description": "For fine-grained datasets ADE-847 and PC-459, the gain from CoM-PT exceeds 3x over baseline, suggesting the acceleration stems from both faster convergence and genuinely better representation capability, not just faster training."
+        }
+      ],
+      "edges": [
+        {"from": "P32", "to": "P36", "evidence": ["Sec 5.2.2", "Table 3"]},
+        {"from": "P36", "to": "P37", "evidence": ["Sec 5.2.2"]}
+      ]
+    },
+    {
+      "component_id": "C12",
+      "description": "Ablation: the model chain drives primary efficiency gain over inverse weight initialization alone",
+      "nodes": [
+        {
+          "id": "P38",
+          "name": "Inverse weight initialization alone loses efficacy as model size increases",
+          "description": "With inverse weight initialization alone (no chain relay), independently trained ViT-S/ViT-B need 1.3x/5.1x more epochs to approach CoM-PT performance, showing IWI alone loses acceleration efficacy as model size increases (Table 4a)."
+        },
+        {
+          "id": "P39",
+          "name": "The knowledge transfer relay along the chain is the pivotal mechanism",
+          "description": "Because IWI alone degrades with scale, the knowledge transfer relay provided by the model chain plays the pivotal role in accelerating the training pipeline, assisted by both components of inverse knowledge transfer applied at each step."
+        }
+      ],
+      "edges": [
+        {"from": "P20", "to": "P38", "evidence": ["Sec 5.4.1", "Table 4a"]},
+        {"from": "P38", "to": "P39", "evidence": ["Sec 5.4.1"]}
+      ]
+    },
+    {
+      "component_id": "C13",
+      "description": "Ablation: complementarity of inverse weight initialization and inverse feature distillation",
+      "nodes": [
+        {
+          "id": "P40",
+          "name": "Both IWI and IFD individually improve zero-shot performance, peaking when combined",
+          "description": "Table 4(b) shows both inverse weight initialization and inverse feature distillation individually improve zero-shot IN-1K/COCO performance over the baseline, with the combination of both components yielding the best performance."
+        },
+        {
+          "id": "P41",
+          "name": "IWI accelerates early training while IFD sustains benefits throughout",
+          "description": "Further analysis reveals IWI primarily accelerates early training, whereas IFD provides sustained benefits throughout training, explaining why combining both components in inverse knowledge transfer yields synergistic gains."
+        }
+      ],
+      "edges": [
+        {"from": "P14", "to": "P40", "evidence": ["Sec 5.4.1", "Table 4b"]},
+        {"from": "P40", "to": "P41", "evidence": ["Sec 5.4.1"]}
+      ]
+    },
+    {
+      "component_id": "C14",
+      "description": "Finding: training epoch allocation follows the third principled rule",
+      "nodes": [
+        {
+          "id": "P42",
+          "name": "Required training epochs decrease roughly uniformly as model size grows",
+          "description": "By interpolating performance curves across epochs, required training epochs for ViT-S, ViT-B, and ViT-L to match baseline decrease in a roughly uniform manner (23.45, 18.28, 12.34 epochs respectively), even as model size grows exponentially along the chain (Fig. 8)."
+        }
+      ],
+      "edges": [
+        {"from": "P25", "to": "P42", "evidence": ["Sec 5.3.2", "Fig. 8"]}
+      ]
+    },
+    {
+      "component_id": "C15",
+      "description": "Finding: robustness of acceleration across training epochs and data scales",
+      "nodes": [
+        {
+          "id": "P43",
+          "name": "Acceleration ratio remains above 4x even with fewer baseline epochs",
+          "description": "Reducing default training epochs on CC3M from 128 to 64 and 32, the overall acceleration ratio stably sustains above 4x, validating that CoM-PT's efficacy does not rely on longer training epochs (Fig. 9a)."
+        },
+        {
+          "id": "P44",
+          "name": "Acceleration stabilizes around 2.8x-2.3x as data scale grows toward 2B",
+          "description": "Across pre-training data scales from 22.0M to 206.8M image-text pairs, acceleration ratio first sharply decreases then stabilizes around 2.8x from 103.4M to 206.8M pairs, with extrapolation to 2B scale maintaining above 2.3x acceleration (Fig. 9b)."
+        }
+      ],
+      "edges": [
+        {"from": "P30", "to": "P43", "evidence": ["Sec 5.4.2", "Fig. 9a"]},
+        {"from": "P30", "to": "P44", "evidence": ["Sec 5.4.2", "Fig. 9b"]}
+      ]
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P45",
+      "name": "VFM scalability and system-level pre-training infrastructure",
+      "description": "VFMs demonstrate extraordinary scalability up to 18B parameters and 2B pre-training data scale, relying on system-level optimizations such as distributed data parallel modules, mixed-precision training, and memory management."
+    },
+    {
+      "id": "P46",
+      "name": "Evaluation protocol overview",
+      "description": "Evaluation spans 45 datasets: zero-shot performance on ImageNet-1K, COCO, and the 35-dataset VTAB+ benchmark; fine-tuning performance on ADE-847/150, PC-459/59, VOC-20 for segmentation (via SAN), and TextVQA, ScienceQA, POPE, VQAv2 for vision-language tasks (via LLaVA-1.5-7B)."
+    },
+    {
+      "id": "P47",
+      "name": "Lossless acceleration definition",
+      "description": "Lossless acceleration is defined as achieving performance with less than 0.5% accuracy loss compared to baseline under the same training protocol while requiring reduced training time and computational complexity; when all models in a family satisfy this, family-level lossless acceleration is considered verified."
+    },
+    {
+      "id": "P48",
+      "name": "Model families and frameworks used for generalization testing",
+      "description": "Generalization is verified on two model families (ViT and Swin) and datasets CC3M/CC12M (merged into Merged-15M), following hyperparameter settings from prior work."
+    }
+  ],
+  "structural_reasoning": "The graph follows a problem-diagnosis-then-solution structure typical of a systems/efficiency paper. C1 (motivation: VFM family cost dilemma) leads into C2 (diagnosis of micro/macro bottlenecks), which motivates the core method components C3 (the model chain concept) and C4 (inverse knowledge transfer's dual parameter/feature-space treatment) — these two form the heart of CoM-PT. C5 positions the method against three related-work lines (weight reuse, KD/collaborative learning, single-model CLIP acceleration), clarifying its family-level novelty. C6 details the concrete vanilla implementations of inverse weight initialization and feature distillation, while C7 supplies three design rules for constructing/extending a model chain in practice; C8 instantiates the full method on CLIP/LaCLIP as the paper's test case. From there, the experimental components fan out: C9 establishes fair baseline convergence prerequisites; C10 and C11 report the flagship zero-shot and fine-tuning transfer results validating lossless acceleration; C12 and C13 are ablations isolating the chain's primacy and the complementarity of the two inverse-transfer components; C14 and C15 examine robustness of the epoch-allocation rule and of acceleration ratios across training budgets and data scales. Background on VFM scalability/infrastructure, the evaluation protocol, the lossless-acceleration definition, and model-family/framework choices are treated as isolated nodes since they are supporting context referenced throughout rather than links in the causal/argumentative chain."
+}

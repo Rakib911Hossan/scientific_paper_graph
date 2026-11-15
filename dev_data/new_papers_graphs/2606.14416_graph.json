@@ -1,0 +1,178 @@
+{
+ "arxiv_id": "2606.14416",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "FedCONST: FL generalization problems, weight-magnitude proxy, convex constraints, and validation",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Local overfitting and aggregation distortion",
+     "description": "In FL with heterogeneous data, local models overfit their own distributions, and even transferable features can be distorted during aggregation, misaligning them with global objectives."
+    },
+    {
+     "id": "P2",
+     "name": "Prior methods neglect generalization",
+     "description": "Regularization, normalization and correction methods align local updates with the global model but neglect generalization, while FedSAM and FedAlign improve local generalization but do not preserve coherent objectives during aggregation, letting generalization become distorted."
+    },
+    {
+     "id": "P3",
+     "name": "GSNR links features to generalization",
+     "description": "Features with higher gradient signal-to-noise ratio (GSNR) yield larger OSGR and contribute more to generalization (Proposition 2.1/Theorem 2.1 from Liu et al.), motivating GSNR-based approaches in domain generalization."
+    },
+    {
+     "id": "P4",
+     "name": "GSNR is infeasible to track in FL",
+     "description": "Directly tracking GSNR in FL is typically infeasible due to communication and computational bottlenecks and the distributed nature of gradient collection."
+    },
+    {
+     "id": "P5",
+     "name": "Weight magnitude as proxy",
+     "description": "Conjecture 1: large weights indicate well-learned (strong) features and small weights indicate weaker features needing more training; weight size correlates positively with GSNR, so global weight magnitudes serve as a proxy for feature strength."
+    },
+    {
+     "id": "P6",
+     "name": "FedCONST",
+     "description": "FedCONST applies client-consistent linear convex constraints derived from the global model's weight magnitudes, keeping well-learned features close to the global model during local updates and emphasizing under-learned ones."
+    },
+    {
+     "id": "P7",
+     "name": "Orthogonality and centering constraints",
+     "description": "Local updates are projected with P_w=(I-pp^T) to be orthogonal to the global parameter direction p=w^k/||w^k||, and centering is enforced; under these constraints, updates to larger-weight features are no larger than to smaller-weight ones (Theorem 3.1)."
+    },
+    {
+     "id": "P8",
+     "name": "Convex constraints survive aggregation",
+     "description": "Because the constraints are linear, convex and shared across clients, the averaged global update also satisfies them, (w^k)^T Delta w^k = 0 and 1^T Delta w^k = 0 (Eqs 20-21), preserving the generalization effect after aggregation."
+    },
+    {
+     "id": "P9",
+     "name": "Weights and GSNR correlate with update size",
+     "description": "Features whose gradient updates are in the top 10% have larger weight magnitudes and larger GSNR than the bottom 10%, supporting the weight-as-feature-strength conjecture (Fig 5)."
+    },
+    {
+     "id": "P10",
+     "name": "Higher GSNR than FedAvg",
+     "description": "FedCONST achieves a higher GSNR on global-model features than vanilla FedAvg, indicating improved generalization (Sec 4.3.3)."
+    },
+    {
+     "id": "P11",
+     "name": "Stabler local training",
+     "description": "FedCONST reduces gradient variance relative to FedAvg while increasing drift diversity, meaning local training is stabilized yet clients still make sufficiently large updates (Fig 3)."
+    },
+    {
+     "id": "P12",
+     "name": "More convex landscape and consistency",
+     "description": "Constraints produce a more convex loss landscape (Table 2), steering away from saddle points, and increase client consistency (Fig 4)."
+    },
+    {
+     "id": "P13",
+     "name": "Outperforms FL baselines",
+     "description": "On CIFAR-10 FedCONST surpasses existing algorithms in all settings and is commendable on CIFAR-100, consistently exceeding others in cross-device settings; applying the constraints to alignment or local-generalization algorithms also improves them (Table 1)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 2.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 2.2, Sec 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P6",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2.1-3.2.2, Thm 3.1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2.3, Eq 20-21"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3, Fig 5"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3.1, Fig 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.3.2, Table 2, Fig 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Evaluation setup",
+   "description": "Experiments use CIFAR-10 and CIFAR-100 with models including LeNet-5 and ResNet-18 in cross-device and cross-silo settings across levels of heterogeneity."
+  }
+ ],
+ "structural_reasoning": "The generalization problem and GSNR/OSGR background motivate a weight-magnitude proxy and the convex-constraint design, which are then validated by stability, alignment and benchmark results. Setup note is isolated."
+}

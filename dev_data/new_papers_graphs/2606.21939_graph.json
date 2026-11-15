@@ -1,0 +1,188 @@
+{
+ "arxiv_id": "2606.21939",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Itemwise evaluation gap motivates the Q-sort value-structure framework, whose human reference, LLM geometries and alignment results are analyzed",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Itemwise evaluations miss structure",
+     "description": "Most LLM value evaluations are itemwise and behavioral, so they do not recover how a model organizes competing values as a whole; models that look similar itemwise may prioritize morals differently once trade-offs are unavoidable."
+    },
+    {
+     "id": "P2",
+     "name": "Symmetric Q-methodology protocol",
+     "description": "Humans (N=35) and 12 LLMs from four families sort the same 140-item, theory-grounded (Schwartz, Moral Foundations) moral Q-set into a nine-column forced distribution; for LLMs strict full rankings are elicited and deterministically mapped to Q-sort buckets."
+    },
+    {
+     "id": "P3",
+     "name": "Human reference has three factors",
+     "description": "By-person factor analysis (PCA plus Varimax) of the 35 human Q-sorts gives a stable three-factor solution: Empathic Protection (F1, 22 sorts), Civic Decency (F2, 8) and Liberty & Accountability (F3, 5)."
+    },
+    {
+     "id": "P4",
+     "name": "Human reference is robust",
+     "description": "Leave-one-out re-estimation gives very high factor stability (mean Spearman F1=0.997, F2=0.981, F3=0.950), so the structure is not driven by any single participant."
+    },
+    {
+     "id": "P5",
+     "name": "LLM geometry via PCA",
+     "description": "For each LLM and temperature, an LLM item geometry is built by PCA over replicate-by-item bucket scores (n=10 replicates); conditions with rank below k=3 are flagged degenerate and geometry metrics left undefined."
+    },
+    {
+     "id": "P6",
+     "name": "Alignment metrics",
+     "description": "Structural alignment with the human geometry is quantified by Procrustes similarity (phi) and RSA-based Spearman correlation (rho) between item-item distance matrices."
+    },
+    {
+     "id": "P7",
+     "name": "Stability varies widely",
+     "description": "Qwen3-32B and Qwen3-8B are fully stable (r_stab=rho_stab=1.000), Gemini-2.5-Pro is highly stable (0.997 at T=0), but GPT-5.1 is much less stable (r_stab=0.473, rho_stab=0.484 at T=0)."
+    },
+    {
+     "id": "P8",
+     "name": "Alignment differs by family and checkpoint",
+     "description": "At T=0 DeepSeek-V3 has the highest Spearman rho (0.176, phi 0.371), GPT-5.1 the highest phi (0.372, rho 0.105), and Gemini-2.5-Flash/Pro are weakly aligned (rho -0.012/-0.033); model recency gives limited guidance."
+    },
+    {
+     "id": "P9",
+     "name": "Temperature effects non-monotonic",
+     "description": "Raising temperature from 0 to 0.7 lowers DeepSeek-V3 alignment (phi 0.371 to 0.234) but raises DeepSeek-V3.1 (0.139 to 0.198) and GPT-3.5-Turbo (0.277 to 0.341)."
+    },
+    {
+     "id": "P10",
+     "name": "Stability is not alignment",
+     "description": "Gemini-2.5-Pro is extremely stable yet weakly aligned while GPT-5.1 is less stable but more aligned, so reliability and validity are distinct properties."
+    },
+    {
+     "id": "P11",
+     "name": "Region-wise misalignment",
+     "description": "Alignment is heterogeneous across Schwartz regions: within one LLM some regions preserve human local trade-offs while others show weak or negative correspondence, so a single scalar can mask local mismatch."
+    },
+    {
+     "id": "P12",
+     "name": "Rank and bucket analyses agree",
+     "description": "Across non-degenerate conditions rank-based and bucket-based results are strongly consistent (Spearman 0.855 for phi, 0.846 for rho), so results are not driven by rank-to-bucket post-processing."
+    },
+    {
+     "id": "P13",
+     "name": "Geometry exceeds profile similarity",
+     "description": "The priority-profile baseline is weak (median rho_best=0.143, max 0.332) and tracks geometry scores only loosely, so the framework captures trade-off organization rather than average endorsement."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3, Sec 4.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 4.2, Sec 5.1, App A.4"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P5",
+     "evidence": [
+      "Sec 3, Sec 4.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.1 Structural Alignment Metrics"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.4, Table 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.4, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3, Sec 4.4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.6, Fig 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.5, Sec 5.2, Table 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.2, Table 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Few replicates suffice",
+   "description": "Geometry estimates are fairly stable with fewer than ten runs: at n_rep=3 median SDs are 0.029 for phi and 0.026 for rho."
+  },
+  {
+   "id": "P15",
+   "name": "Prompt wording matters",
+   "description": "For GPT-5.1 mean-profile Spearman correlation across prompt paraphrases is only 0.099 at T=0 and 0.302 at T=0.7, so wording remains consequential."
+  },
+  {
+   "id": "P16",
+   "name": "Degeneracy is a boundary condition",
+   "description": "Undefined Procrustes/RSA scores in rank-collapsed conditions mean the structure is not estimable, not high or low alignment."
+  }
+ ],
+ "structural_reasoning": "Itemwise-evaluation gap motivates the symmetric Q-sort protocol; human reference and LLM geometries feed the alignment metrics, which yield family-, temperature- and region-level findings plus robustness checks."
+}

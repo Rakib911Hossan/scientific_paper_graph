@@ -1,0 +1,166 @@
+{
+  "arxiv_id": "2604.08537v1",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/figures/tables/equations rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: cross-subject variability as the generalization bottleneck",
+      "nodes": [
+        {"id": "P1", "name": "Mapping sub-problem solved on an individual basis", "description": "High-quality neural activity datasets at scale have provided enough data to solve the brain-activity-to-visual-semantic-representation mapping sub-problem on an individual basis, driving a surge in high-fidelity within-subject reconstructions."},
+        {"id": "P2", "name": "Current models cannot generalize across subjects", "description": "Despite within-subject progress, current brain decoding models cannot generalize across subjects, necessitating per-subject models or subject-specific fine-tuning."},
+        {"id": "P3", "name": "Inter-subject variability arises from multiple interacting sources", "description": "The cross-subject generalization failure is rooted in profound inter-subject variability in neural signals arising from differences in anatomical structure and functional organization shaped by development, individual experience, and neuroplasticity."},
+        {"id": "P4", "name": "Learned mapping for one individual is ineffective for another", "description": "As a result of this variability, the mapping function learned for one individual is ineffective for another, necessitating retraining or fine-tuning via gradient descent, a data-intensive and computationally demanding process."},
+        {"id": "P5", "name": "A data-efficient generalizable model is essential for broader applications", "description": "Developing a data-efficient generalizable cross-subject visual decoding model is essential for building population-wide theories and enabling brain-computer interface, cognitive assessment, and personalized diagnostic applications."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P4", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Decoding as functional inversion, reformulated as meta-learning",
+      "nodes": [
+        {"id": "P6", "name": "Neural decoding is fundamentally an inverse problem", "description": "A principled approach recognizes neural decoding as fundamentally an inverse problem, which should be constrained by an accurate forward model (encoding model) characterizing how a subject's brain represents information."},
+        {"id": "P7", "name": "Ideal inversion requires many error-free voxel encoders", "description": "Given a sufficient number of voxels (far exceeding the embedding dimension) and error-free encoder functions, the stimulus can in principle be uniquely solved for by inverting the encoding model via least-squares minimization over voxel prediction errors."},
+        {"id": "P8", "name": "Real encoders are biased and voxel counts may be insufficient", "description": "In practice, encoder forward models can be biased and inaccurate, the choice of metric/distance may affect the solution, and the system may be under-determined (fewer voxels than stimulus representation dimensionality)."},
+        {"id": "P9", "name": "This motivates a meta-learning view of functional inversion instead of direct decoder learning", "description": "Because real-world inversion is imperfect and under-determined, rather than learning decoders that map neural representations directly to stimuli, the approach takes a meta-learning view and learns a model to perform in-context functional inversion across a variable number of voxels."},
+        {"id": "P10", "name": "Decoding is structured as a two-stage hierarchical in-context process", "description": "Following the meta-learning reformulation, the decoding process first estimates per-voxel encoder weights in-context, then builds a decoder that performs contextual integration across multiple voxels/brain regions for subject-specific functional inversion."},
+        {"id": "P11", "name": "This two-stage process enables fine-tuning-free generalization with small new-subject data", "description": "The two-stage in-context learning process enables generalization to novel subjects without any fine-tuning and with relatively small amounts of new subject data."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["S3.2", "Eq1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P8", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P9", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S1", "S3.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["S1", "S3.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Two-stage hierarchical in-context mechanism",
+      "nodes": [
+        {"id": "P12", "name": "Stage 1: per-voxel encoder parameter estimation via in-context learning", "description": "In Stage 1, a pretrained BrainCoRL-based transformer infers per-voxel response function weights from a context of stimulus-activation pairs for a single voxel, repeated independently across all voxels of interest, without any fine-tuning."},
+        {"id": "P13", "name": "Stage 2: context tokens combine encoder parameters with activations", "description": "In Stage 2, each voxel is represented by a context token formed by concatenating its Stage-1 predicted response parameters with the measured activation for the novel stimulus."},
+        {"id": "P14", "name": "Stage 2 transformer performs aggregated functional inversion across voxels", "description": "A learned transformer takes the voxel context (tokens across a variable number of voxels, up to the subject's total voxel count) as input and approximates the aggregated inverse mapping to estimate the image embedding."},
+        {"id": "P15", "name": "No anatomical alignment or stimulus overlap required", "description": "Because the approach constructs context per-subject over voxels rather than aligning voxels anatomically across subjects, it requires neither anatomical alignment nor stimulus overlap across subjects, and flexibly adapts to novel subjects with different voxel counts."},
+        {"id": "P16", "name": "Variable context length requires order- and length-invariant model design", "description": "Because the number and identity of available voxels varies across subjects, the model must be invariant to both the number and order of voxel tokens, unlike typical sequential language-model transformers."},
+        {"id": "P17", "name": "Logit scaling and omitted positional embeddings achieve length/order invariance", "description": "To accommodate variable-length contexts and remain length/order invariant, the model adopts logit scaling (scaling attention logits by log of context length) and omits positional embeddings, using a [CLS] token for output."},
+        {"id": "P18", "name": "Hybrid cosine-contrastive loss balances alignment and discriminability", "description": "A hybrid loss combining a cosine embedding loss with an InfoNCE contrastive loss is used to jointly achieve fine-grained embedding alignment and instance-level discriminability."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P13", "evidence": ["S3.3", "Eq2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S3.3", "Eq3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["S3.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P16", "evidence": ["S3.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P17", "evidence": ["S3.3", "Eq4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P18", "evidence": ["S3.3", "Eq5"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Three-stage training strategy",
+      "nodes": [
+        {"id": "P19", "name": "Training strategy inspired by LLM pipelines", "description": "The training strategy is inspired by LLM pipelines and consists of three stages: pretraining, contextual extension, and supervised fine-tuning."},
+        {"id": "P20", "name": "Pretraining uses synthetic analysis-by-synthesis data, not real fMRI", "description": "The pretraining stage adopts an analysis-by-synthesis scheme using no real fMRI data, simulating a large population of voxels via sampled synthetic weights and Gaussian-noise beta responses, with a fixed voxel-context size of 200."},
+        {"id": "P21", "name": "Contextual extension introduces variable-length context robustness", "description": "The second stage introduces variable-length contexts by randomly drawing the number of voxels from Uniform(200, 4000), enabling the model to become robust to changes in context length."},
+        {"id": "P22", "name": "Final fine-tuning stage uses real fMRI measurements for fast, effective adaptation", "description": "In the final stage, the model is optimized on real fMRI measurements using subject-specific beta values and voxel response parameters from the pretrained BrainCoRL across different image-context sizes, leading to fast convergence and effective adaptation to biologically realistic neural signals."}
+      ],
+      "edges": [
+        {"from": "P19", "to": "P20", "evidence": ["S3.3", "S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P22", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Results: unseen-subject decoding, contextual scaling, and ablations",
+      "nodes": [
+        {"id": "P23", "name": "BrainCoDec-200 outperforms MindEye2 and TGBD on unseen subjects", "description": "Across all four leave-one-subject-out conditions on NSD, BrainCoDec (using only 200 of 9,000 support images) delivers consistently stronger Top-1/Top-5 retrieval performance than both MindEye2 (with anatomical alignment) and TGBD, without any subject-specific fine-tuning or retraining."},
+        {"id": "P24", "name": "Decoding performance scales positively with image and voxel context size", "description": "Increasing either the image context size (Stage 1) or the voxel context size (Stage 2) consistently improves decoding performance across all subjects and visual backbones (CLIP, DINO, SigLIP)."},
+        {"id": "P25", "name": "A small context (200 images, 4000 voxels) achieves near-full-context accuracy", "description": "With only 200 images and 4,000 voxels, BrainCoDec achieves similar accuracy to inference using the full context (all ~9,000 images and all higher-visual-cortex voxels), showing the framework needs only a fraction of subject-specific data for comparable performance."},
+        {"id": "P26", "name": "Real-data fine-tuned variants greatly outperform synthetic-only or direct-inversion baselines", "description": "Ablation comparing four configurations shows both fine-tuned variants (with and without subject holdout) significantly outperform pretrained-only (synthetic data) and gradient-based direct-inversion baselines in cosine similarity."},
+        {"id": "P27", "name": "Subject-holdout performance gap is marginal", "description": "The performance gap between training with subject holdout (novel-subject generalization scenario) versus training on seen subjects is marginal, underscoring that contextual fine-tuning -- not subject-specific training -- is what drives accurate cross-subject decoding."}
+      ],
+      "edges": [
+        {"from": "P24", "to": "P25", "evidence": ["S4.2", "Figure3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P27", "evidence": ["S4.2", "Figure3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Robustness to functional-region dropout",
+      "nodes": [
+        {"id": "P28", "name": "Category-selective ROIs are systematically masked and evaluated", "description": "For each semantic category (faces, places, food, words), test images eliciting the strongest activation in the corresponding functional voxels are identified, and the corresponding category-selective regions are masked out to evaluate resulting decoding performance."},
+        {"id": "P29", "name": "Masking category-related ROIs causes minimal degradation for most categories", "description": "The model exhibits remarkable robustness to targeted regional dropout, with masking category-related ROIs leading to minimal performance degradation for most categories."},
+        {"id": "P30", "name": "This indicates the model does not rely on any single functional region", "description": "Because masking a specific category's selective region has minimal impact, this indicates BrainCoDec does not rely on any single functional region to perform aggregated decoding, consistent with distributed representation learning."}
+      ],
+      "edges": [
+        {"from": "P28", "to": "P29", "evidence": ["S4.3", "Figure5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P30", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Interpretability via attention analysis",
+      "nodes": [
+        {"id": "P31", "name": "Attention weights are extracted during decoding of category-specific stimuli", "description": "Attention weights from the last layer are extracted while decoding test images from distinct semantic categories, using the same activation-based selection criterion as the ROI-dropout analysis."},
+        {"id": "P32", "name": "Learned attention maps align with known functional regions", "description": "Face-related stimuli elicit elevated attention in face- (FFA) and body-selective (EBA) voxels, while place-related stimuli elicit elevated attention in place-related regions (PPA, OPA, RSC), matching independent functional-localizer t-value maps."},
+        {"id": "P33", "name": "This confirms the model allocates selective focus consistent with cortical semantics", "description": "The correspondence between learned attention patterns and known functional-localizer maps confirms that BrainCoDec learns to allocate selective focus consistent with established cortical semantics."},
+        {"id": "P34", "name": "UMAP projection of attention weights shows semantic clustering across cortex", "description": "Projecting voxelwise attention weights across the full test set via UMAP produces clear semantic clustering (body/face-selective regions vs. scene-selective regions), mirroring known representational gradients in visual areas."},
+        {"id": "P35", "name": "The model internalizes both how and where to find semantically relevant representations", "description": "The emergent semantic clustering in the UMAP embedding demonstrates that the model internalizes not merely how to perform functional inversion, but where to find semantically relevant neural representations."}
+      ],
+      "edges": [
+        {"from": "P31", "to": "P32", "evidence": ["S4.4", "Figure6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["S4.4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P34", "evidence": ["S4.4", "Figure6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P35", "evidence": ["S4.4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "name": "Cross-scanner generalization on BOLD5000",
+      "nodes": [
+        {"id": "P36", "name": "BOLD5000 differs substantially from NSD along several axes", "description": "BOLD5000 was acquired on a 3T scanner (vs. NSD's 7T) with different stimulus timing, a substantially different image set, different voxel size, and a different subject pool, providing a stringent test of new-scanner adaptation."},
+        {"id": "P37", "name": "The model trained on NSD is evaluated directly on BOLD5000 without additional training", "description": "A model trained on the four NSD subjects (no subject held out) is evaluated directly on BOLD5000 subjects using 5-fold cross-validation, without any additional training on BOLD5000 data."},
+        {"id": "P38", "name": "BrainCoDec achieves strong retrieval performance despite these shifts", "description": "Despite the substantial scanner, timing, image-set, voxel-size, and subject-pool shifts, BrainCoDec achieves strong retrieval performance on BOLD5000, consistent across held-out subjects and image-encoder backbones."},
+        {"id": "P39", "name": "A similar contextual scaling trend holds on BOLD5000", "description": "BrainCoDec exhibits a similar contextual scaling trend on BOLD5000 as on NSD, with retrieval performance improving as the number of in-context image-brain pairs increases."},
+        {"id": "P40", "name": "This demonstrates practical value for avoiding costly per-subject/scanner retraining", "description": "Because the model transfers pretrained knowledge to new scanners without retraining, this is valuable in practical applications where retraining new models for new subjects or scanners is resource-intensive and time-consuming."}
+      ],
+      "edges": [
+        {"from": "P36", "to": "P37", "evidence": ["S4.5"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P38", "evidence": ["S4.5", "Table2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P38", "to": "P39", "evidence": ["S4.5", "Figure7"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P40", "evidence": ["S4.5"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P41", "name": "Prior generalization methods implicitly or explicitly require anatomical alignment", "description": "Recent approaches seeking generalization via flatmaps, 1D pooling, or surface learning implicitly (flatmaps, pooling) or explicitly (surface) require anatomical alignment, unlike this paper's approach."},
+    {"id": "P42", "name": "Prior encoder-inversion decoding methods use direct solving/identification", "description": "Prior work reconstructing viewed images by inverting a forward model has used approaches like ordinary least squares (for simple stimuli) and similar techniques for motion direction, orientation, faces, natural images, and movies, generally matching predicted to observed brain activity and solving or identifying the solution directly, rather than learning the inversion via meta-learning."},
+    {"id": "P43", "name": "ICL in LLMs may be an implicit meta-learning mechanism", "description": "Large language models' in-context learning capability -- adjusting behavior at inference time from prompted demonstrations without parameter updates -- may serve as an implicit meta-learning mechanism, whereby transformers develop internal adaptation procedures during pretraining."},
+    {"id": "P44", "name": "NSD and BOLD5000 dataset characteristics", "description": "NSD is the largest available 7T neural dataset (each subject viewing ~10,000 images up to three times, four subjects S1/S2/S5/S7 completing the full scan used mainly in experiments); BOLD5000 is a 3T dataset with ~5,000 images per subject, only a subset viewed four times."},
+    {"id": "P45", "name": "Data preprocessing and quality-control procedures", "description": "Voxelwise betas are z-scored within session and averaged across stimulus repeats; ROI definitions use a t>2 threshold from independent functional localizer data; quantitative evaluation uses an ncsnr>0.2 voxel-quality cutoff for NSD and ncsnr>0.3 for BOLD5000."},
+    {"id": "P46", "name": "Evaluation uses nearest-neighbor image retrieval as the primary task", "description": "Cross-subject decoding is evaluated on the nearest-neighbor image retrieval task using top-1 accuracy, top-5 accuracy, mean rank, and cosine similarity, following prior evaluation protocols; the approach can be extended to full image reconstruction via pretrained generators like IP-Adapter and Stable Diffusion."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph closely follows BrainCoDec's own argumentative structure. C1 establishes the cross-subject variability problem as the paper's central motivating bottleneck. C2 traces the paper's key conceptual move: reframing decoding as functional inversion, identifying why naive inversion fails in practice, and using that failure to motivate the meta-learning reformulation, which is directly implemented by the two-stage hierarchical process detailed in C3 (mirroring the paper's own Stage 1 / Stage 2 structure, including the technical necessities of order/length invariance that follow directly from allowing variable voxel counts). C4 mirrors the three-stage training curriculum as an explicit, sequentially dependent pipeline. C5-C8 mirror the paper's own four-part experimental structure (SOTA comparison and scaling/ablation; ROI-dropout robustness; attention-based interpretability; cross-scanner generalization), with each results claim connected to the interpretive claim the paper draws from it (e.g., minimal ROI-dropout degradation -> distributed representation learning; attention-functional-localizer correspondence -> the model captures where as well as how). Isolated nodes are appropriately limited to related-work context, dataset/preprocessing specifications, and evaluation-metric definitions that support but are not premises within the paper's central argument chain."
+}

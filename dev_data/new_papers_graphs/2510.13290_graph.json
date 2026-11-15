@@ -1,0 +1,157 @@
+{
+ "arxiv_id": "2510.13290",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "MERA derivation: error-probe direction, closed-form strength, calibrated threshold with abstention, and empirical results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Fixed steering strengths cause errors",
+     "description": "Traditional steering uses fixed steering strengths, chosen by costly, model-specific ad hoc hyperparameter sweeps, which leads to understeering (insufficient change) and oversteering (unnecessary, potentially detrimental change)."
+    },
+    {
+     "id": "P2",
+     "name": "Error probes replace contrastive pairs",
+     "description": "MERA identifies steering directions with linear error-estimation probes p(h)=w^T h trained to predict the LM's error E(a) from activations, rather than with contrastive pairs."
+    },
+    {
+     "id": "P3",
+     "name": "Closed-form adaptive steering strength",
+     "description": "Minimising ||v||^2 subject to p(h+v) <= alpha gives the closed form v* = lambda* w with lambda* = max(0,(alpha - w^T h)/||w||^2), so steering is applied only where predicted error exceeds alpha and its strength grows with the predicted error."
+    },
+    {
+     "id": "P4",
+     "name": "Exact token position is at least as good",
+     "description": "Extracting activations at the exact token position of the generated answer performs at least as well as, and often better than, the last position for probe RMSE across most model families (Llama and Gemma)."
+    },
+    {
+     "id": "P5",
+     "name": "SAE features give no probe gain",
+     "description": "Sparse autoencoder representations show no signal of improved probe performance over original activations and impose high compute costs, so MERA uses original activations."
+    },
+    {
+     "id": "P6",
+     "name": "Calibrated threshold with confidence bound",
+     "description": "The threshold alpha* is chosen on a separate calibration set to maximise the accuracy gain among candidates whose gain exceeds epsilon + b(delta,K,N), with b = sqrt(log(2K/delta)/(2N)) from a Hoeffding bound and Bonferroni union bound."
+    },
+    {
+     "id": "P7",
+     "name": "Provable improvement or abstention",
+     "description": "With i.i.d. samples, P(Delta_cal(alpha*) > epsilon) >= 1 - delta, so MERA either provably improves performance or abstains entirely (lambda*=0) when no candidate threshold is valid."
+    },
+    {
+     "id": "P8",
+     "name": "MERA beats baselines",
+     "description": "Across models and datasets MERA improves accuracy over both unsteered models and existing steering approaches in all settings, reducing errors across error percentiles and yielding more corrective transitions with fewer degradations than baselines."
+    },
+    {
+     "id": "P9",
+     "name": "MERA rescues contrastive steering",
+     "description": "Contrastive steering alone is unreliable and sometimes reduces accuracy, but with MERA it consistently improves, turning -0.05 SPI into +0.52 on Yes/No and -0.09 into +0.21 on MMLU-HS."
+    },
+    {
+     "id": "P10",
+     "name": "MERA makes error-probe steering best",
+     "description": "Without MERA, the base probe steering is too weak (+0.00 SPI on MMLU-HS and SMS Spam); with MERA it becomes the best-performing method, improving SPI by +0.64 on Sentiment and +0.53 on Yes/No."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2, Eq 9, App A.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 6.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Sec 6.3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Sec 6.3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P8",
+     "evidence": [
+      "Sec 6.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 6.3, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 6.3, Table 1"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P11",
+   "name": "Linear framework limits",
+   "description": "The framework is inherently linear and limited in capturing non-linear relationships between activations and model error; MMLU subsets are consistently hard to steer."
+  },
+  {
+   "id": "P12",
+   "name": "Base models and small LMs gain most",
+   "description": "Llama-3.2-1B and Qwen-2.5-3B show the largest improvements, especially on binary tasks (SMS Spam, Yes/No) with SPI gains up to +0.87, and base models benefit more than instruction-tuned models."
+  },
+  {
+   "id": "P13",
+   "name": "Calibration is the main cost",
+   "description": "MERA offers efficient inference, with the main computational burden being the one-time offline calibration, a gradient-free grid search of alpha over [0,1] in 10 intervals."
+  },
+  {
+   "id": "P14",
+   "name": "Logistic probe steering unreliable",
+   "description": "Logistic probe-based steering mostly fails (-0.85 SPI on Sentiment) with exceptions (+0.83 SPI), and MERA prevents degradation in such failing cases (+0.00 SPI)."
+  }
+ ],
+ "structural_reasoning": "Problem (fixed strengths) and probe-based direction lead to the closed-form strength, then to calibrated safe thresholds with a guarantee, supporting empirical gains. Other observations are isolated."
+}

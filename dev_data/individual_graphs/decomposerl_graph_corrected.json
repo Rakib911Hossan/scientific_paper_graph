@@ -1,0 +1,298 @@
+{
+  "arxiv_id": "2605.27858v1",
+  "correction_notes": "This is a corrected version of the original graph. Changes: (1) C3 edge P41->P45 reversed to P45->P41, since the leave-one-out necessity definition is the prerequisite mechanism for the reward formulation, not a consequence of it. (2) C8 edges P58->P56, P56->P61, and P61->P60 removed as unsupported by evidence (disjoint statements with no explicit textual/logical link); this split the original C8 into a smaller connected component (P59,P61,P62,P63,P64), a separate 2-node component (P56,P57), and two newly isolated nodes (P58, P60). (3) C9 edge P96->P97 removed since evidence presents P96's two effects as parallel/coordinate consequences joined by 'and', not a dependency; P97 moved to isolated_nodes. All other components are unchanged from the original graph.",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P7",
+          "name": "DECOMPOSERL-7B vs larger models",
+          "description": "DECOMPOSERL-7B matches models up to 4× larger on benchmarks."
+        },
+        {
+          "id": "P8",
+          "name": "DECOMPOSERL-7B vs proprietary",
+          "description": "DECOMPOSERL-7B matches proprietary systems on benchmarks."
+        },
+        {
+          "id": "P9",
+          "name": "DECOMPOSERL-7B in-domain accuracy",
+          "description": "DE-COMPOSERL-7B achieved a balanced accuracy score of 86.3 in in-domain evaluations."
+        },
+        {
+          "id": "P10",
+          "name": "Decomposed Prompting @ 32B accuracy",
+          "description": "Decomposed Prompting @ 32B achieved a balanced accuracy score of 86.5 in in-domain evaluations."
+        },
+        {
+          "id": "P11",
+          "name": "GPT-4.1-mini accuracy",
+          "description": "GPT-4.1-mini Self-Ask frontier achieved a balanced accuracy score of 86.8 in in-domain evaluations."
+        },
+        {
+          "id": "P12",
+          "name": "Reward ensemble scale gap",
+          "description": "The reward ensemble is the component of the DECOMPOSERL framework credited with closing the bulk of the scale gap through parameter-efficient supervision."
+        }
+      ],
+      "edges": [
+        {"from": "P9", "to": "P7", "evidence": ["S186"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P7", "evidence": ["S186"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P12", "evidence": ["S183", "S186", "S188"], "votes": 1, "confidence": "single_run"},
+        {"from": "P9", "to": "P8", "evidence": ["S186"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P8", "evidence": ["S186"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {"id": "P13", "name": "Raw corpus size", "description": "The raw, undistilled claim-verification corpus aggregated from 14 existing sources contains ~155K raw training instances."},
+        {"id": "P17", "name": "Curation funnel output size", "description": "The multi-stage data curation funnel distills the raw claim-verification corpus to 5,464 training claims."},
+        {"id": "P18", "name": "Curation funnel addresses GRPO cost", "description": "Using a compact, distilled subset of highly informative training instances (~4% of a massive, noisy claim-verification corpus) addresses the prohibitive training cost of Group Relative Policy Optimization (GRPO)."},
+        {"id": "P19", "name": "Curation funnel performance", "description": "A model trained on a ~4% subset of a claim-verification corpus distilled by a multi-stage data curation funnel performs better than recent strong baselines."},
+        {"id": "P20", "name": "Facility-Location ablation", "description": "Replacing training data selection via a submodular facility-location objective with uniform random sampling under the same budget degrades downstream accuracy on out-of-domain benchmarks."},
+        {"id": "P22", "name": "Facility-Location objective use", "description": "A Facility-Location objective is used during the subsampling of training data to maximize embedding-space diversity within each bucket."},
+        {"id": "P23", "name": "Curation funnel reduction ratio", "description": "During the data curation funnel, the distilled learning-signal-dense subset is reduced to ~4% of the original training data."},
+        {"id": "P24", "name": "Long-context threshold", "description": "A threshold of 3K tokens is used to identify and add claims to the curated set to increase long-context coverage."},
+        {"id": "P25", "name": "Long-evidence claims count", "description": "464 additional long-evidence claims were added to the training set."},
+        {"id": "P26", "name": "Long-evidence claims average length", "description": "The average evidence length of the additional long-evidence claims added to the training set is 4.7K tokens."},
+        {"id": "P27", "name": "Long-evidence claims max length", "description": "The maximum evidence length of the additional long-evidence claims added to the training set is 9.8K tokens."},
+        {"id": "P28", "name": "Short context distribution shift", "description": "If a policy model is trained only on shorter contexts, distributions-shift occurs at evaluation."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P17", "evidence": ["S34", "S62", "S75", "S76"], "votes": 1, "confidence": "single_run"},
+        {"from": "P25", "to": "P17", "evidence": ["S34", "S62", "S74", "S75", "S76"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P23", "evidence": ["S34", "S62", "S75", "S76"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P23", "evidence": ["S34"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P18", "evidence": ["S30", "S34", "S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P19", "evidence": ["S30", "S34"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P20", "evidence": ["S62", "S69", "S71"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P25", "evidence": ["S73", "S74", "S75"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P26", "evidence": ["S73", "S74", "S75"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P27", "evidence": ["S73", "S74", "S75"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P24", "evidence": ["S73", "S74"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 6,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "correction_applied": "Edge P41->P45 reversed to P45->P41.",
+      "nodes": [
+        {"id": "P36", "name": "Reward ensemble: coverage", "description": "DECOMPOSERL's reward ensemble optimizes coverage to ensure a high-quality decomposition."},
+        {"id": "P37", "name": "Reward ensemble: diversity", "description": "DECOMPOSERL's reward ensemble optimizes diversity to ensure a high-quality decomposition."},
+        {"id": "P41", "name": "Leave-one-out necessity reward introduction", "description": "DECOMPOSERL introduces a leave-one-out necessity reward to jointly capture per-question necessity and question-set-level contribution."},
+        {"id": "P43", "name": "Reward ensemble robustness", "description": "The multi-faceted reward ensemble provides DECOMPOSERL with improved verdict accuracy without trading off out-of-distribution robustness."},
+        {"id": "P44", "name": "Necessity reward ablation", "description": "The model's balanced accuracy drops by 4.8 points when the leave-one-out necessity reward is removed."},
+        {"id": "P45", "name": "Leave-one-out necessity definition", "description": "Under the leave-one-out strategy, a generated question is considered necessary if removing that question changes the final verdict."},
+        {"id": "P46", "name": "Necessity state: necessary", "description": "One of the four states evaluated in the necessity matrix for the leave-one-out reward is necessary."},
+        {"id": "P47", "name": "Necessity state: redundant", "description": "One of the four states evaluated in the necessity matrix for the leave-one-out reward is redundant."},
+        {"id": "P48", "name": "Necessity state: neutral", "description": "One of the four states evaluated in the necessity matrix for the leave-one-out reward is neutral."},
+        {"id": "P49", "name": "Necessity state: harmful", "description": "One of the four states evaluated in the necessity matrix for the leave-one-out reward is harmful."},
+        {"id": "P50", "name": "Out-of-domain reward ablation", "description": "Removing any individual reward from the ensemble degrades the out-of-domain balanced accuracy."},
+        {"id": "P73", "name": "Coverage ablation drop", "description": "Balanced accuracy drops by 3.9 points when coverage signals are removed."},
+        {"id": "P74", "name": "Diversity ablation drop", "description": "Balanced accuracy drops by 3.2 points when diversity signals are removed."},
+        {"id": "P75", "name": "Diversity in-domain ablation drop", "description": "The removal of the diversity reward causes the in-domain balanced accuracy to drop by 0.7 points."}
+      ],
+      "edges": [
+        {"from": "P36", "to": "P73", "evidence": ["S213", "S78"], "votes": 2, "confidence": "majority"},
+        {"from": "P73", "to": "P50", "evidence": ["S211", "S212", "S213", "S214", "S78"], "votes": 1, "confidence": "single_run"},
+        {"from": "P37", "to": "P74", "evidence": ["S210", "S213", "S78"], "votes": 2, "confidence": "majority"},
+        {"from": "P74", "to": "P50", "evidence": ["S211", "S212", "S213", "S214", "S78"], "votes": 1, "confidence": "single_run"},
+        {"from": "P37", "to": "P75", "evidence": ["S210", "S213", "S78"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P44", "evidence": ["S105", "S212"], "votes": 1, "confidence": "single_run"},
+        {"from": "P44", "to": "P50", "evidence": ["S105", "S211", "S212", "S213", "S214"], "votes": 1, "confidence": "single_run"},
+        {"from": "P50", "to": "P43", "evidence": ["S182", "S211", "S212", "S213", "S214"], "votes": 1, "confidence": "single_run"},
+        {"from": "P45", "to": "P41", "evidence": ["S105", "S97"], "votes": 1, "confidence": "single_run", "note": "direction corrected from original P41->P45"},
+        {"from": "P41", "to": "P46", "evidence": ["S105", "S97"], "votes": 1, "confidence": "single_run"},
+        {"from": "P41", "to": "P47", "evidence": ["S105", "S97"], "votes": 1, "confidence": "single_run"},
+        {"from": "P41", "to": "P48", "evidence": ["S105", "S97"], "votes": 1, "confidence": "single_run"},
+        {"from": "P41", "to": "P49", "evidence": ["S105", "S97"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {"id": "P42", "name": "Joint multiplicative quality reward introduction", "description": "DECOMPOSERL introduces a joint multiplicative quality reward to jointly capture per-question necessity and question-set-level contribution."},
+        {"id": "P52", "name": "Multiplicative failure behavior", "description": "A single failure on any question-quality criterion drives the overall per-question reward term to zero."}
+      ],
+      "edges": [
+        {"from": "P42", "to": "P52", "evidence": ["S119", "S132"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {"id": "P53", "name": "Answerability definition", "description": "The question-quality criterion of answerability is defined as whether a generated question is answerable from the evidence."},
+        {"id": "P77", "name": "Abstention criterion: answerability", "description": "In the framework where answer abstentions are handled by dropping the correctness factor and scoring the remaining factors, answerability is a criterion used to define the quality of a generated question."}
+      ],
+      "edges": [
+        {"from": "P53", "to": "P77", "evidence": ["S118", "S133"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 7.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {"id": "P54", "name": "Atomicity definition", "description": "The question-quality criterion of atomicity is defined as whether a generated question isolates a single sub-claim."},
+        {"id": "P78", "name": "Abstention criterion: atomicity", "description": "In the framework where answer abstentions are handled by dropping the correctness factor and scoring the remaining factors, atomicity is a criterion used to define the quality of a generated question."}
+      ],
+      "edges": [
+        {"from": "P54", "to": "P78", "evidence": ["S118", "S133"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {"id": "P55", "name": "Correctness definition", "description": "The question-quality criterion of correctness is defined as whether the answer to a generated question is faithful to the document."},
+        {"id": "P79", "name": "Abstention criterion: correctness", "description": "In the framework where answer abstentions are handled by dropping the correctness factor and scoring the remaining factors, correctness is a criterion used to define the quality of a generated question."}
+      ],
+      "edges": [
+        {"from": "P55", "to": "P79", "evidence": ["S118", "S133"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C8",
+      "correction_applied": "Split from original C8. Contains only the sub-graph with evidence-supported edges (P61/P62/P63/P64 -> P59, P64->P62/P63). Edges P58->P56, P56->P61, and P61->P60 removed as unsupported.",
+      "nodes": [
+        {"id": "P59", "name": "Semi-supervised improvement feasibility", "description": "Decomposition can be improved even when only a fraction of claims have a ground truth verdict."},
+        {"id": "P61", "name": "Pseudo-label scoring for semi-supervised learning", "description": "The DECOMPOSERL reward ensemble scores unlabeled claims with per-prompt majority-vote pseudo-labels to facilitate semi-supervised learning."},
+        {"id": "P62", "name": "10% semi-supervised in-domain performance", "description": "The 10% semi-supervised DECOMPOSERL variant outperforms every same-scale baseline in in-domain accuracy."},
+        {"id": "P63", "name": "10% semi-supervised out-of-domain performance", "description": "The 10% semi-supervised DECOMPOSERL variant outperforms every same-scale baseline in out-of-domain accuracy."},
+        {"id": "P64", "name": "Notation s=0.1", "description": "The notation DECOMPOSERL (s=0.1) denotes the semi-supervised variant trained with 10% ground truth labels."}
+      ],
+      "edges": [
+        {"from": "P64", "to": "P62", "evidence": ["S162", "S165", "S217"], "votes": 1, "confidence": "single_run"},
+        {"from": "P62", "to": "P59", "evidence": ["S162", "S165", "S195", "S217", "S26"], "votes": 2, "confidence": "majority"},
+        {"from": "P64", "to": "P63", "evidence": ["S162", "S165", "S217"], "votes": 1, "confidence": "single_run"},
+        {"from": "P63", "to": "P59", "evidence": ["S162", "S165", "S195", "S217", "S26"], "votes": 2, "confidence": "majority"},
+        {"from": "P61", "to": "P59", "evidence": ["S100", "S195", "S217", "S26"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "edges_removed_low_fidelity": 3,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C9",
+      "correction_applied": "New standalone component split off from original C8, containing only the one evidence-supported edge between these nodes.",
+      "nodes": [
+        {"id": "P56", "name": "Self-consistency pseudo-label value", "description": "The value used as the self-consistency pseudo-label on the unlabeled path to replace the missing ground truth label is mode(ell_j_j=1^G) from the G rollouts."},
+        {"id": "P57", "name": "Self-consistency coverage reward formula", "description": "When using self-consistency pseudo-labels, the coverage reward for each rollout is mathematically calculated as R_textcov^(j) = mathbb1[hatell_j = hatell^*]."}
+      ],
+      "edges": [
+        {"from": "P56", "to": "P57", "evidence": ["S146"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C10",
+      "correction_applied": "Edge P96->P97 removed as evidence presents them as parallel consequences, not a dependency. P97 moved to isolated_nodes.",
+      "nodes": [
+        {"id": "P94", "name": "Reported numbers: decomposition quality", "description": "DECOMPOSERL's reported performance numbers measure decomposition quality given evidence."},
+        {"id": "P95", "name": "Reported numbers: not end-to-end", "description": "DECOMPOSERL's reported performance numbers do not measure end-to-end fact-checking quality."},
+        {"id": "P96", "name": "Fixed evidence document isolation", "description": "The contribution of the reward ensemble is isolated from retrieval quality by using a fixed evidence document."}
+      ],
+      "edges": [
+        {"from": "P96", "to": "P94", "evidence": ["S219", "S220"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P96", "to": "P95", "evidence": ["S219", "S220"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "edges_removed_low_fidelity": 1,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P1", "name": "End-to-end classifiers cost", "description": "End-to-end classifiers have a low inference cost."},
+    {"id": "P2", "name": "End-to-end classifiers opacity", "description": "End-to-end classifiers emit a verdict with no inspectable traces."},
+    {"id": "P3", "name": "Traditional decomposition prompting", "description": "Traditional decomposition-based methods struggle to break down claims effectively without a training signal because they rely on brittle prompting."},
+    {"id": "P4", "name": "Imitation-based decomposers bottleneck", "description": "Fine-tuning imitation-based decomposers to improve their performance is associated with the costly bottleneck of expensive high-quality annotation."},
+    {"id": "P5", "name": "DECOMPOSERL-7B vs decomposition-based", "description": "DECOMPOSERL-7B outperforms comparable-size decomposition-based fact-checkers on benchmarks."},
+    {"id": "P6", "name": "DECOMPOSERL-7B vs end-to-end", "description": "DECOMPOSERL-7B outperforms comparable-size end-to-end fact-checkers on benchmarks."},
+    {"id": "P14", "name": "Raw corpus style heterogeneity", "description": "The raw, undistilled claim-verification corpus aggregated from 14 existing sources is highly heterogeneous in claim style."},
+    {"id": "P15", "name": "Raw corpus evidence length heterogeneity", "description": "The raw, undistilled claim-verification corpus aggregated from 14 existing sources is highly heterogeneous in evidence length."},
+    {"id": "P16", "name": "Raw corpus noise heterogeneity", "description": "The raw, undistilled claim-verification corpus aggregated from 14 existing sources is highly heterogeneous in source-specific noise."},
+    {"id": "P21", "name": "Facility-Location selection behavior", "description": "The Facility-Location objective selects representative claims by favoring representatives that cover the full embedding space of the claim, rather than its dense interior."},
+    {"id": "P29", "name": "Flat sum rewards useless questions", "description": "Using a flat sum of per-question quality scores to evaluate claim decomposition rewards questions that appear useful in isolation but add no evidence."},
+    {"id": "P30", "name": "Flat sum rewards incorrect verdicts", "description": "Using a flat sum of per-question quality scores to evaluate claim decomposition rewards questions that support an incorrect verdict."},
+    {"id": "P31", "name": "Single reward failure: wrong reasons", "description": "A single reward can fail to accurately capture the quality of a decomposition trace when the trace arrives at the right verdict for the wrong reasons."},
+    {"id": "P32", "name": "Single reward failure: unrelated questions", "description": "A single reward can fail to accurately capture the quality of a decomposition trace when the trace asks perfectly atomic questions that are unrelated to the claim."},
+    {"id": "P33", "name": "Single reward failure: hallucinated answers", "description": "A single reward can fail to accurately capture the quality of a decomposition trace when the trace hides a hallucinated answer behind well-formed output."},
+    {"id": "P34", "name": "Reward ensemble: format adherence", "description": "DECOMPOSERL's reward ensemble optimizes format adherence to ensure a high-quality decomposition."},
+    {"id": "P35", "name": "Reward ensemble: verdict correctness", "description": "DECOMPOSERL's reward ensemble optimizes verdict correctness to ensure a high-quality decomposition."},
+    {"id": "P38", "name": "Reward ensemble: length constraints", "description": "DECOMPOSERL's reward ensemble optimizes length constraints to ensure a high-quality decomposition."},
+    {"id": "P39", "name": "Reward ensemble: leave-one-out necessity", "description": "DECOMPOSERL's reward ensemble optimizes a leave-one-out necessity reward to ensure a high-quality decomposition."},
+    {"id": "P40", "name": "Reward ensemble: joint multiplicative quality", "description": "DECOMPOSERL's reward ensemble optimizes a joint multiplicative quality reward to ensure a high-quality decomposition."},
+    {"id": "P51", "name": "Summing vs multiplying scores", "description": "Summing the question-quality scores instead of multiplying them lets the policy compensate for any one failed criterion by inflating the others."},
+    {"id": "P58", "name": "Self-consistency reward variant function", "description": "The self-consistency reward variant leverages intra-prompt agreement to enable semi-supervised training on unlabeled claims.", "note": "Moved to isolated_nodes: its edge to P56 was removed as unsupported by evidence."},
+    {"id": "P60", "name": "Gradient extraction from unlabeled claims", "description": "DECOMPOSERL uses the reward ensemble to extract the gradient from claims to support training a policy without labeled data.", "note": "Moved to isolated_nodes: its edge from P61 was removed as unsupported by evidence."},
+    {"id": "P65", "name": "Notation s=1.0", "description": "The notation DECOMPOSERL (s=1.0) denotes the fully supervised policy."},
+    {"id": "P66", "name": "Format reward classification", "description": "Format (Rfmt) is classified as a structural reward in the DECOMPOSERL framework."},
+    {"id": "P67", "name": "Verification reward classification", "description": "Verification (Rver) is classified as a structural reward in the DECOMPOSERL framework."},
+    {"id": "P68", "name": "Format reward removal effect", "description": "Removing Format (Rfmt) during training in the DECOMPOSERL framework collapses training because the policy loses its output-shape constraint."},
+    {"id": "P69", "name": "Verification reward removal effect", "description": "Removing Verification (Rver) during training in the DECOMPOSERL framework collapses training because the policy loses its output-shape constraint."},
+    {"id": "P70", "name": "Format reward: XML", "description": "Well-formed XML is evaluated to calculate the Format reward of the iterative-QA schema."},
+    {"id": "P71", "name": "Format reward: QA alternation", "description": "Q A alternation is evaluated to calculate the Format reward of the iterative-QA schema."},
+    {"id": "P72", "name": "Format reward: verification label", "description": "A valid final verification label is evaluated to calculate the Format reward of the iterative-QA schema."},
+    {"id": "P76", "name": "In-domain ablation robustness", "description": "Three of the five ablations cost <= 0.1 in in-domain balanced accuracy."},
+    {"id": "P80", "name": "Informative reward definition", "description": "The Informative (Rjoint) reward component in the ensemble evaluates whether a question is atomic, answerable, and grounded in evidence."},
+    {"id": "P81", "name": "Rulebased evaluators count", "description": "Two rulebased evaluators are included in the ensemble to prevent the policy model from collapsing onto a single judge."},
+    {"id": "P82", "name": "Embedding-based evaluators count", "description": "One embedding-based evaluator is included in the ensemble to prevent the policy model from collapsing onto a single judge."},
+    {"id": "P83", "name": "Format reward type", "description": "Format is a deterministic sub-reward in the heterogeneous evaluator ensemble."},
+    {"id": "P84", "name": "Question count reward type", "description": "Question count is a deterministic sub-reward in the heterogeneous evaluator ensemble."},
+    {"id": "P85", "name": "Verification reward type", "description": "Verification is a deterministic sub-reward in the heterogeneous evaluator ensemble."},
+    {"id": "P86", "name": "Diversity reward type", "description": "Diversity is an embedding-based sub-reward in the heterogeneous evaluator ensemble."},
+    {"id": "P87", "name": "Coverage reward type", "description": "Coverage is an LLM-as-a-judge sub-reward in the heterogeneous evaluator ensemble."},
+    {"id": "P88", "name": "Necessity reward type", "description": "Necessity is an LLM-as-a-judge sub-reward in the heterogeneous evaluator ensemble."},
+    {"id": "P89", "name": "Joint reward type", "description": "Joint reward is an LLM-as-a-judge sub-reward in the heterogeneous evaluator ensemble."},
+    {"id": "P90", "name": "Verification reward function", "description": "The 'Verification' reward prevents the policy from drifting from the end task while optimizing proxy rewards by acting as a direct outcome anchor."},
+    {"id": "P91", "name": "Coverage reward evaluation", "description": "To evaluate the 'Coverage' reward, the LLM-as-a-judge collects all answers [Formula: a_1, ldots, a_n] and asks the LLM-as-a-judge to predict a verdict from the answers and the claim alone."},
+    {"id": "P92", "name": "Multiplicative composite judge calls", "description": "The multiplicative composite ((§3.2)) is a design element that requires multiple LLM judge calls to agree, helping to prevent collapse onto a single judge's blind spots."},
+    {"id": "P93", "name": "Leave-one-out necessity judge calls", "description": "The leave-one-out necessity ((§3.2)) is a design element that requires multiple LLM judge calls to agree, helping to prevent collapse onto a single judge's blind spots."},
+    {"id": "P97", "name": "Retriever-agnostic trace structure", "description": "The trace structure is retriever-agnostic.", "note": "Moved to isolated_nodes: its edge from P96 was removed as it represented a parallel consequence, not a dependency."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "This corrected graph resolves all previously flagged low-fidelity edges. The evaluation-results component (C1) and the data curation funnel (C2) remain fully coherent and unchanged. C3's reversed edge (P45->P41) now correctly reflects that the leave-one-out strategy definition precedes and grounds the reward formulation, resolving the prior directional error. The former C8 has been split into two clean components: a semi-supervised results component (C8, now P59/P61/P62/P63/P64) with only evidence-supported edges, and a small self-consistency-formula component (C9, P56->P57); the two nodes whose only edges were unsupported (P58, P60) are now correctly listed as isolated rather than force-connected. C10 (formerly C9) removes the P96->P97 edge, correctly treating decomposition-quality isolation and retriever-agnosticism as parallel, coordinate effects of using a fixed evidence document rather than a causal chain. The remaining low score contributors are the two components with single_run/majority confidence edges only (parts of C1, C3, and the C5 answerability edge at edge_score 7.0), which reflects genuine evidentiary uncertainty in the source paper rather than a structural error in the graph itself."
+}

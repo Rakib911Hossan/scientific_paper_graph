@@ -1,0 +1,188 @@
+{
+ "arxiv_id": "2507.13300",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Benchmark construction through LLM evaluation, user studies, and evaluator reliability",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Experimental design needs expertise",
+     "description": "Designing experiments and selecting experimental settings in empirical science is challenging and requires significant domain expertise; scientists often learn of missing ablations only after peer review."
+    },
+    {
+     "id": "P2",
+     "name": "ABGEN is the first ablation-design benchmark",
+     "description": "ABGEN is the first benchmark evaluating LLMs on designing ablation studies, with 1,500 expert-annotated examples derived from 807 NLP papers."
+    },
+    {
+     "id": "P3",
+     "name": "Task definition",
+     "description": "Given an expert-restructured research context (background, methodology, main experiment setup and results) and a module name, the LLM must generate a research objective and detailed experimental process for an ablation of that module."
+    },
+    {
+     "id": "P4",
+     "name": "Paper filtering criteria",
+     "description": "Papers that are not experimental or have fewer than two ablation studies are excluded; 807 papers remain after filtering."
+    },
+    {
+     "id": "P5",
+     "name": "Three evaluation criteria",
+     "description": "Ablation designs are rated 1-5 on importance, faithfulness to the research context, and soundness."
+    },
+    {
+     "id": "P6",
+     "name": "Annotators agree substantially",
+     "description": "Inter-annotator Cohen's Kappa is 0.735 for importance, 0.782 for faithfulness and 0.710 for soundness."
+    },
+    {
+     "id": "P7",
+     "name": "Best LLM trails human experts",
+     "description": "Even the best LLM, DeepSeek-R1-0528, performs much worse than human experts on importance, faithfulness and soundness."
+    },
+    {
+     "id": "P8",
+     "name": "Automated and human evaluation disagree",
+     "description": "Despite similar LLM-based evaluation scores to o4-mini, DeepSeek-R1-0528 outperforms it on every criterion in human evaluation, suggesting automated evaluation is unreliable here."
+    },
+    {
+     "id": "P9",
+     "name": "Five common error types",
+     "description": "Error analysis of 100 failure cases (average human score below 3) finds five error types: misalignment with research context, ambiguity and difficulty in reproduction, partial or incomplete ablation, insignificant ablation module, and inherent logical inconsistencies."
+    },
+    {
+     "id": "P10",
+     "name": "Researcher feedback improves LLM designs",
+     "description": "On 20 failure cases each, expert feedback of at most 50 words lets GPT-4o improve to 4.8/4.2/4.6 (+0.9/+2.1/+2.6) and Llama-3.1-70B to 4.5/3.9/4.1 on importance/faithfulness/soundness."
+    },
+    {
+     "id": "P11",
+     "name": "Findings generalize to other domains",
+     "description": "User studies in biomedical sciences and computer networks (27 examples over ten papers) give human scores consistent with the NLP domain."
+    },
+    {
+     "id": "P12",
+     "name": "ABGEN-EVAL meta-evaluation benchmark",
+     "description": "ABGEN-EVAL contains 1,800 examples (18 LLM outputs x 100 human assessments) built from the human assessments to meta-evaluate automated evaluators."
+    },
+    {
+     "id": "P13",
+     "name": "LLM judges correlate poorly with humans",
+     "description": "Instance-level and system-level correlations of LLM-based evaluators with human judgments are relatively low, so current automated evaluation is not reliable for ablation designs."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 2.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 2.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2, Sec 4.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2, Table 3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3, Table 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3, Table 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2, Sec 5.1"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.2, Table 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Reference ablation has three parts",
+   "description": "Each reference ablation study consists of a research objective, an experiment process and a result discussion; LLMs are not required to generate the result discussion."
+  },
+  {
+   "id": "P15",
+   "name": "Generation setup",
+   "description": "All LLM generation experiments use temperature 1.0 and a maximum output length of 1024 tokens, since the longest reference ablation study is 518 words."
+  },
+  {
+   "id": "P16",
+   "name": "Evaluator setup",
+   "description": "The base automated evaluator is GPT-4.1-mini, given the research context and reference ablation, scoring each criterion separately after generating a rationale."
+  }
+ ],
+ "structural_reasoning": "Linear pipeline: motivation, benchmark construction, evaluation, analysis, user studies and meta-evaluation of automated judges."
+}

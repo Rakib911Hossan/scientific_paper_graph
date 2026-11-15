@@ -1,0 +1,169 @@
+{
+ "arxiv_id": "2508.12576",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Width-dependent heterogeneity bound in FedAvg, linearization, centralized equivalence, and experiments",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Non-IID data hampers FL",
+     "description": "Client data in federated learning are non-IID, causing divergent local optimizations that degrade global model convergence and generalization."
+    },
+    {
+     "id": "P2",
+     "name": "Prior analyses need restrictive assumptions",
+     "description": "Prior convergence analyses of FedAvg under non-IID data rely on convexity, bounded gradient dissimilarity or bounded gradients, which are hard to satisfy in practice."
+    },
+    {
+     "id": "P3",
+     "name": "Model divergence bounded by width",
+     "description": "For multi-layer overparameterized networks trained with FedAvg and GD, the model divergence caused by data heterogeneity is bounded and decays as O(n^{-1/2}) in the network width n, without convexity or gradient-boundedness assumptions (Theorem 1)."
+    },
+    {
+     "id": "P4",
+     "name": "Heterogeneity slows convergence, vanishes at infinite width",
+     "description": "The heterogeneity term zeta = O(n^{-1/2}) slows the convergence rate and leaves nonzero convergence error, but as n approaches infinity zeta tends to 0 and the impact of data heterogeneity vanishes (Remark 2)."
+    },
+    {
+     "id": "P5",
+     "name": "Global and local models linearize",
+     "description": "As width goes to infinity, both global and local FedAvg models stay within O(n^{-1/2}) of their first-order Taylor linearizations and have constant global and local NTKs (Theorem 2)."
+    },
+    {
+     "id": "P6",
+     "name": "Closed-form linear FedAvg dynamics",
+     "description": "In the infinite-width limit with small learning rate, the linear global model has closed-form parameters and outputs through training (Theorem 3)."
+    },
+    {
+     "id": "P7",
+     "name": "Infinite-width FedAvg equals centralized GD",
+     "description": "Infinite-width FedAvg and centralized GD yield identical model parameters and outputs under matched iterations, hence the same generalization performance."
+    },
+    {
+     "id": "P8",
+     "name": "Test accuracy gap shrinks with width",
+     "description": "On non-IID versus IID data, the test accuracy drop shrinks as width grows: FNN1/2/4/16 drop 17.4%/9.5%/6.3%/2.0%, CNN1/2/8/32 drop 44.9%/26.7%/5.1%/2.4%, ResNet1/2/4/16 drop 44.6%/29.1%/18.7%/14.8%."
+    },
+    {
+     "id": "P9",
+     "name": "Wide nets nearly equal on IID and non-IID",
+     "description": "With learning rate eta0/n, the convergence rate and final accuracy of FNN32 and CNN32 are nearly identical for IID and non-IID data, while FNN1 and CNN1 show a noticeable gap."
+    },
+    {
+     "id": "P10",
+     "name": "NTK and parameters near-constant when wide",
+     "description": "Increasing width diminishes variations in global and local NTKs and model parameters; sufficiently wide networks show nearly constant NTKs and parameters (lazy training)."
+    },
+    {
+     "id": "P11",
+     "name": "Linear approximation tighter for wide nets",
+     "description": "The outputs of the global and local models stay nearly identical to their linear models for FNN512 but visibly differ for FNN16."
+    },
+    {
+     "id": "P12",
+     "name": "FedAvg matches centralized learning empirically",
+     "description": "Experiments comparing overparameterized FedAvg with centralized learning show the same generalization behaviour, confirming Theorem 3."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 4, Remark 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 5, Theorem 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 5, Theorem 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P8",
+     "evidence": [
+      "Sec 6.1, Fig 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P9",
+     "evidence": [
+      "Sec 6.1, Fig 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 6.1, Fig 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.2, Fig 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 6.3, Fig 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Communication-efficient FL idea",
+   "description": "Because model outputs depend linearly on parameters, clients might transmit only model outputs instead of full parameters, potentially reducing communication; this is proposed for future work."
+  },
+  {
+   "id": "P14",
+   "name": "First quantitative width-heterogeneity link",
+   "description": "This is claimed to be the first work quantitatively linking network width to the impact of data heterogeneity on FL training and generalization."
+  },
+  {
+   "id": "P15",
+   "name": "Experimental setup",
+   "description": "Experiments use MNIST and CIFAR-10 with Dirichlet non-IID partition over M=10 clients, FNN/CNN/ResNet architectures with varied width, different losses and optimizers."
+  }
+ ],
+ "structural_reasoning": "Problem and assumptions lead to the width-dependent bound, then linearization and closed-form dynamics yield centralized equivalence; experiments each validate a corresponding theoretical statement."
+}

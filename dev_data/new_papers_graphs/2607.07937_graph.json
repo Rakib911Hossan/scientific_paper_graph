@@ -1,0 +1,174 @@
+{
+ "arxiv_id": "2607.07937",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Preprocessing debiasing reduces target-group stereotypes but causes unpredictable side effects missed by benchmarks and not explained by attention",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Preprocessing mitigation is popular",
+     "description": "Preprocessing-based debiasing, which removes or alters stereotypical content in training data, is widely used because it is simple and imposes no inference-time cost."
+    },
+    {
+     "id": "P2",
+     "name": "Experimental setup",
+     "description": "Debiased Wikipedia corpora target six demographic groups across gender, race and religion, used for pre- and post-training of TinyBERT and GPT-2 under three strategies (removing stereotypical sentences, removing group mentions, swapping group references) at 100% and 5% data scale (12 settings), evaluated with StereoSet and CrowS-Pairs."
+    },
+    {
+     "id": "P3",
+     "name": "Target-group stereotypes decrease",
+     "description": "Stereotype scores for the targeted group typically decrease toward 50 relative to the base model for both TinyBERT and GPT-2 with broadly stable language modeling score (Sec 4)."
+    },
+    {
+     "id": "P4",
+     "name": "Data-efficient mitigation",
+     "description": "Using only 5% of Wikipedia, pre- and post-training still consistently reduce stereotype scores for targeted groups (Sec 4, App A)."
+    },
+    {
+     "id": "P5",
+     "name": "Non-target groups shift unpredictably",
+     "description": "Stereotype scores for non-target groups, including across categories, sometimes move away from 50, i.e. stereotyping or counter-stereotyping increases (Sec 5)."
+    },
+    {
+     "id": "P6",
+     "name": "Within-category asymmetry",
+     "description": "Debiasing for females reduces stereotypes toward males, whereas debiasing for males increases stereotypes toward females (Fig 1a, Fig 2a-b)."
+    },
+    {
+     "id": "P7",
+     "name": "Side effects depend on method",
+     "description": "Spillovers depend on the debiasing method, complicating a simple explanation by changes in the distribution of stereotypical training examples."
+    },
+    {
+     "id": "P8",
+     "name": "Side effects persist across settings",
+     "description": "Side effects occur across three preprocessing strategies, pre- and post-training, reduced data scale, and encoder and decoder architectures, and a larger decoder-only model shows the same phenomenon on one post-training slice (Sec 7)."
+    },
+    {
+     "id": "P9",
+     "name": "Benchmarks often miss side effects",
+     "description": "Standard evaluation benchmarks frequently fail to surface these side effects."
+    },
+    {
+     "id": "P10",
+     "name": "Attention rollout barely changes",
+     "description": "Attention-rollout patterns of mitigated models stay highly consistent with base models, with maximum distances PD 0.0061, SD 0.3029, JSD 0.0925 and AS 0.2235 (Sec 6, Fig 5)."
+    },
+    {
+     "id": "P11",
+     "name": "Mechanism not explained by attention",
+     "description": "Because side-effect cases (e.g. GPT-2 DG-female lowering stereotypes for Christians but raising them for Muslims) show tiny rollout shifts, side effects are not well explained by changes in semantic information routing as captured by attention rollout."
+    },
+    {
+     "id": "P12",
+     "name": "Data-level debiasing unreliable alone",
+     "description": "Data-level debiasing used in isolation is unreliable and unsafe since interventions helping the target group can unpredictably harm others; side-effect-aware diagnostics should be reported."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 4, Sec 7.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 5, Fig 1-2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 5, Sec 7"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 1, Sec 5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 5-6"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 6, Fig 5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P12",
+     "evidence": [
+      "Sec 8"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 8"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P12",
+     "evidence": [
+      "Sec 8"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 8"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [],
+ "structural_reasoning": "Setup leads to benefits for targeted groups, then to documented side effects, their robustness, an unsuccessful mechanistic explanation, and a reliability conclusion."
+}

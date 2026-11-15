@@ -1,0 +1,179 @@
+{
+ "arxiv_id": "2507.01844",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "TDA motivation -> low-perplexity extraction pipeline -> match statistics and categorization",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "TDA is important",
+     "description": "Training data attribution is considered essential for transparency, debugging, accountability, privacy and fairness in LLMs."
+    },
+    {
+     "id": "P2",
+     "name": "Causal TDA does not scale",
+     "description": "Retraining- and gradient-based TDA offers causal guarantees but its computational cost increases dramatically with model size."
+    },
+    {
+     "id": "P3",
+     "name": "Similarity-based TDA is scalable but approximate",
+     "description": "Similarity-based TDA, including exact string matching for verbatim recall, scales well to large models but does not guarantee causal influence."
+    },
+    {
+     "id": "P4",
+     "name": "Hypothesis about low-perplexity sequences",
+     "description": "It is hypothesized that long low-perplexity sequences indicate either degeneration or verbatim copying from training data, which the paper tests empirically."
+    },
+    {
+     "id": "P5",
+     "name": "Experimental setup",
+     "description": "Pythia-6.9B (trained on The Pile) is prompted with 20-40 token Wikipedia quotes from 40 articles per topic over 4 topics (genetics, nuclear physics, drugs, cryptography), with 5 generations each, using top_p 0.8 and temperature 0.7."
+    },
+    {
+     "id": "P6",
+     "name": "Low-perplexity window definition",
+     "description": "A low-perplexity sequence is a contiguous span where each token has probability at least 0.9 (log2 P <= 0.152), analyzed with sliding 6-token windows, long enough to avoid random matches."
+    },
+    {
+     "id": "P7",
+     "name": "Infinigram traces windows",
+     "description": "Windows are matched against the training data with Infinigram, chosen over Elasticsearch for superior scalability, with c denoting the number of occurrences."
+    },
+    {
+     "id": "P8",
+     "name": "Only 40% of windows match",
+     "description": "Surprisingly, only about 40% of low-perplexity windows have at least one exact match in the training data."
+    },
+    {
+     "id": "P9",
+     "name": "Topic affects match counts",
+     "description": "Drugs yield many more long low-perplexity sequences, likely due to repetitive long drug names and heavy biomedical (PubMed) coverage in the Pile, while nuclear physics is likely less represented."
+    },
+    {
+     "id": "P10",
+     "name": "Four behavior categories by match count",
+     "description": "Windows are categorized as synthetic coherence (c=0), memorization (0<c<5), segmental replication (5<=c<50) and frequently encountered text (c>=50), with arbitrary adjustable thresholds."
+    },
+    {
+     "id": "P11",
+     "name": "Synthetic coherence windows are coherent",
+     "description": "Zero-match windows have widely varying stand-alone perplexity, including high values, yet remain coherent rather than nonsensical, so they are not degeneration."
+    },
+    {
+     "id": "P12",
+     "name": "Category distribution varies by topic",
+     "description": "Synthetic coherence share is 62% for cryptography, 33% for drugs, 64% for genetics and 75% for nuclear physics, while frequently encountered text is 14%, 50%, 17% and 8%."
+    },
+    {
+     "id": "P13",
+     "name": "About 20% are reviewable",
+     "description": "Around 20% of low-perplexity windows fall into memorization or segmental replication, matching few enough documents for manual review and enabling efficient attribution."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.1, Table 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.1, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.1, Fig 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 3.2, App B"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P12",
+     "evidence": [
+      "Sec 3.2, Table 3"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P13",
+     "evidence": [
+      "Sec 3.2, Table 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Model size reduces matches",
+   "description": "Across the Pythia suite, increasing model size clearly reduces both the number of low-perplexity windows and their training-data matches, supporting the 6.9B choice."
+  },
+  {
+   "id": "P15",
+   "name": "Generation parameters",
+   "description": "Temperature 0.7 gives a meaningful number of low-perplexity windows while reducing repetition, with non-zero-match fraction and stand-alone perplexity largely unchanged."
+  },
+  {
+   "id": "P16",
+   "name": "Prompt repetition",
+   "description": "A significant fraction of matched windows partially repeats the prompt, likely due to specialized keywords in it."
+  },
+  {
+   "id": "P17",
+   "name": "Thresholds are gradual",
+   "description": "The category thresholds likely mark gradual transitions, and high stand-alone perplexity does not reliably indicate nonsensical text, so it is unreliable as a degeneration detector."
+  }
+ ],
+ "structural_reasoning": "Background on TDA motivates the pipeline; matching statistics feed the categorization and its topic-level distribution."
+}

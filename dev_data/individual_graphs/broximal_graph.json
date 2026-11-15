@@ -1,0 +1,397 @@
+{
+  "arxiv_id": "2604.13483v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Stationary point ambiguity",
+          "description": "A stationary point can be a global minimizer, a poor local minimizer, or a saddle point; first-order information alone does not distinguish among these possibilities."
+        },
+        {
+          "id": "P2",
+          "name": "Near-zero gradient regions far from global solutions",
+          "description": "In highly non-convex landscapes, large regions of near-zero gradient may exist far from any global solution."
+        },
+        {
+          "id": "P3",
+          "name": "Gradient-based methods can stagnate misleadingly",
+          "description": "Algorithms following gradient-based dynamics can stagnate in near-zero-gradient regions, producing iterates certified as theoretically successful while being arbitrarily suboptimal in objective value."
+        },
+        {
+          "id": "P4",
+          "name": "Stationarity is a weak proxy for optimization progress",
+          "description": "Because stationary points can be far from global solutions and gradient-based methods can get stuck there, stationarity-based guarantees are a weak proxy for actual optimization success."
+        },
+        {
+          "id": "P5",
+          "name": "Empirical gradient norm stagnation observed",
+          "description": "In long training runs of modern ML models, the gradient norm has been observed not to decrease, and in some cases to increase, toward the end of training."
+        },
+        {
+          "id": "P6",
+          "name": "Central motivating question",
+          "description": "This state of affairs motivates the central question of the paper: how to obtain global convergence guarantees for non-convex problems without relying on gradient-based dynamics and gradient-norm metrics."
+        },
+        {
+          "id": "P7",
+          "name": "Perturbation/noise methods remain fundamentally local",
+          "description": "Escaping stationary points via explicit perturbed-gradient methods or implicit mini-batch noise typically yields guarantees that remain fundamentally local, at best ensuring convergence to approximate second-order stationary points."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P4", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P6", "evidence": ["S1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P6", "evidence": ["S1.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P8",
+          "name": "BPM as trust-region-style ball oracle method",
+          "description": "The Ball Proximal Point Method (BPM) is a trust-region-type method where each iterate is obtained by minimizing the objective over a ball of radius t centered at the current point, via the set-valued broximal operator."
+        },
+        {
+          "id": "P9",
+          "name": "BPM converges linearly without strong convexity",
+          "description": "BPM was found to converge linearly without the strong convexity assumptions required by methods like the classical Proximal Point Method (PPM)."
+        },
+        {
+          "id": "P10",
+          "name": "BPM can attain exact global minimum in finite steps",
+          "description": "Unlike PPM with finite steps, which can only produce approximate solutions, BPM can attain the exact global minimum in a finite number of iterations using finite radii."
+        },
+        {
+          "id": "P11",
+          "name": "Existing BPM analyses focus on convex objectives",
+          "description": "Despite BPM's strong convergence guarantees and evidence that it can handle non-convexity, existing analyses focus almost exclusively on convex objectives, with only limited non-convex treatment."
+        },
+        {
+          "id": "P12",
+          "name": "Paper revisits BPM to study non-convex global convergence",
+          "description": "Motivated by the gap between BPM's demonstrated non-convex potential and its convex-focused existing analysis, this paper revisits BPM to identify structural conditions enabling global convergence in the non-convex setting."
+        }
+      ],
+      "edges": [
+        {"from": "P8", "to": "P9", "evidence": ["S1.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P10", "evidence": ["S1.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P11", "evidence": ["S1.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P11", "evidence": ["S1.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P12", "evidence": ["S1.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P12", "evidence": ["S1.1", "S1.2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P13",
+          "name": "Broximal oracle is generally intractable",
+          "description": "The broximal oracle is very powerful and generally intractable: if the radius is sufficiently large, a global solution can be found in one step, meaning solving the subproblem can be as hard as solving the original problem."
+        },
+        {
+          "id": "P14",
+          "name": "BPM treated as conceptual tool, not practical algorithm",
+          "description": "Because the broximal oracle is generally intractable, the paper treats BPM as a conceptual tool for isolating a novel class of non-convex functions for which global convergence can be established, rather than as a practical algorithm."
+        },
+        {
+          "id": "P15",
+          "name": "Second Brox Theorem exploits convexity",
+          "description": "The original convex analysis of BPM relies on the Second Brox Theorem, which shows that for convex f there exists a coefficient such that a specific inner-product inequality holds between the current point, the broximal update, and any reference point."
+        },
+        {
+          "id": "P16",
+          "name": "Specializing to global minimizer yields nonnegative inner product",
+          "description": "Specializing the Second Brox Theorem's inequality to the reference point being a global minimizer yields a nonnegative inner-product relation between the step direction and the direction to that minimizer."
+        },
+        {
+          "id": "P17",
+          "name": "Observation motivates dropping convexity, positing inequality directly",
+          "description": "This observation motivates dropping convexity altogether and instead directly postulating the geometric alignment inequality as an assumption (Assumption 3.1), independent of any convexity assumption."
+        }
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["S1.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P16", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P18",
+          "name": "Assumption 3.1: geometric alignment condition",
+          "description": "Assumption 3.1 posits that outside a t-neighborhood of the global minimizer set, the inner product between the step direction (x minus broximal update u) and the direction toward a fixed global minimizer is non-positive, i.e., the broximal step is aligned toward the global minimizer."
+        },
+        {
+          "id": "P19",
+          "name": "Relaxation dist(x,Xf) > t is essential for non-uniqueness",
+          "description": "The relaxation restricting Assumption 3.1 to points outside the t-neighborhood of the minimizer set is essential; imposing the condition for all x would force uniqueness of the global minimizer."
+        },
+        {
+          "id": "P20",
+          "name": "Assumption 3.1 alone does not rule out broxtf(x)={x} away from Xf",
+          "description": "Under Assumption 3.1 alone, having broxtf(x) equal to the singleton {x} does not necessarily imply that x is a global minimizer, leaving a gap that must be addressed by an additional assumption."
+        },
+        {
+          "id": "P21",
+          "name": "Assumption 3.2: no isolated local minima",
+          "description": "Assumption 3.2 states that if the broximal operator at x is the singleton {x} (x is a strict minimizer within its own ball), then x must already be a global minimizer, ruling out 'bad' local minima detectable at scale t."
+        },
+        {
+          "id": "P22",
+          "name": "Definition of Broximal Aligned Functions",
+          "description": "A proper, closed function belongs to the class of Broximal Aligned Functions if it satisfies both Assumption 3.1 and Assumption 3.2 for a given radius t and geometry X."
+        }
+      ],
+      "edges": [
+        {"from": "P17", "to": "P18", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P20", "evidence": ["S3.1", "S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P20", "to": "P21", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P22", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P22", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P23",
+          "name": "Non-decreasing step must be followed by strict decrease",
+          "description": "Under Assumption 3.1, as long as the algorithm makes progress (x_k not equal x_{k+1}), a non-decreasing function-value step must be followed by a strict decrease at the next step."
+        },
+        {
+          "id": "P24",
+          "name": "Consequent separation distance bound (Lemma A.4)",
+          "description": "The non-decrease-then-strict-decrease pattern implies that the distance between iterates two steps apart exceeds the radius t, formalized in Lemma A.4."
+        },
+        {
+          "id": "P25",
+          "name": "Theorem 4.1: every second iterate separated by distance >= t",
+          "description": "Building on Assumptions 3.1 and 3.2, the main convergence theorem (4.1) relies on the fact that every second BPM iterate is separated by a distance of at least t, unless a global minimizer has already been reached."
+        },
+        {
+          "id": "P26",
+          "name": "Distances to minimizer are non-increasing",
+          "description": "Theorem 4.1 shows the distances from the iterates to the global minimizer are non-increasing, with a quantified decrease of at least t^2/3 every third iterate when the current ball does not yet contain a global minimizer."
+        },
+        {
+          "id": "P27",
+          "name": "Finite-iteration exact global convergence",
+          "description": "Theorem 4.1 concludes that after a sufficient finite number of iterations K (of order the squared initial distance over t^2), the BPM iterate is exactly a global minimizer."
+        }
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P24", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P25", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P26", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P27", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {
+          "id": "P28",
+          "name": "Example 1: |x|+10sin(x) has infinitely many local minima",
+          "description": "The one-dimensional function f(x) = |x| + 10*sin(x) has infinitely many local minima spaced every 2*pi, yet satisfies Assumptions 3.1 and 3.2 for any radius t >= 2*pi."
+        },
+        {
+          "id": "P29",
+          "name": "Example 1 shows multiple local minima permitted",
+          "description": "Example 1 demonstrates that the Broximal Aligned function class does not preclude the existence of multiple local minima, in contrast to classical conditions where all stationary points are globally optimal."
+        },
+        {
+          "id": "P30",
+          "name": "Example 2: disconnected minimizer set",
+          "description": "A function with minimizer set Xf = {0, a} for a nonzero vector a is shown to belong to the Broximal Aligned class for any t > 0, despite having a disconnected minimizer set."
+        },
+        {
+          "id": "P31",
+          "name": "Examples 1 and 2 fail all classical conditions",
+          "description": "Both Example 1 and Example 2 belong to the Broximal Aligned class for suitable t, yet fail to satisfy any of the classical generalized-convexity conditions listed in the paper's comparison table."
+        }
+      ],
+      "edges": [
+        {"from": "P28", "to": "P29", "evidence": ["S5.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P31", "evidence": ["S5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P31", "evidence": ["S5.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {
+          "id": "P32",
+          "name": "Theorem 5.1: strict quasiconvexity implies Broximal Alignment",
+          "description": "Strictly quasiconvex functions belong to the Broximal Aligned class for any radius t > 0."
+        },
+        {
+          "id": "P33",
+          "name": "Theorem 5.2: pseudoconvexity implies Broximal Alignment",
+          "description": "Pseudoconvex functions belong to the Broximal Aligned class for any radius t > 0."
+        },
+        {
+          "id": "P34",
+          "name": "Theorem 5.3: quasar convexity implies Broximal Alignment",
+          "description": "Functions that are zeta-quasar convex with respect to a global minimizer belong to the Broximal Aligned class for any radius t > 0."
+        },
+        {
+          "id": "P35",
+          "name": "Theorem 5.4: aiming condition with unique minimizer implies Broximal Alignment",
+          "description": "Functions satisfying the aiming condition with a unique global minimizer belong to the Broximal Aligned class for any radius t > 0."
+        },
+        {
+          "id": "P36",
+          "name": "Broximal Aligned class strictly subsumes classical non-convex frameworks",
+          "description": "Because quasiconvexity, pseudoconvexity, quasar convexity, and aiming (with unique minimizer) all imply Broximal Alignment, while Examples 1 and 2 show functions in the Broximal Aligned class satisfying none of these conditions, the Broximal Aligned framework strictly generalizes these classical non-convex function classes."
+        }
+      ],
+      "edges": [
+        {"from": "P32", "to": "P36", "evidence": ["S5.2", "S5.3", "S5.4", "S5.5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P36", "evidence": ["S5.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P36", "evidence": ["S5.4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P36", "evidence": ["S5.5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P36", "evidence": ["S5.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {
+          "id": "P37",
+          "name": "Broximal oracle intractable for practical objectives",
+          "description": "For many objectives of practical interest, particularly in modern ML, exactly minimizing f over balls B_X(x,t) is computationally intractable."
+        },
+        {
+          "id": "P38",
+          "name": "Approximate broximal subproblem solving",
+          "description": "One practical approximation strategy is to approximately solve the broximal subproblem itself, e.g., via sampling-based approaches or an iterative method run up to prescribed accuracy."
+        },
+        {
+          "id": "P39",
+          "name": "Local model substitution (e.g., linearization)",
+          "description": "A second practical approximation strategy replaces the original objective with a simpler local model, such as a linearized or quadratic trust-region subproblem, which is often tractable and sometimes has closed-form solutions."
+        },
+        {
+          "id": "P40",
+          "name": "Muon optimizer as approximate broximal step in non-Euclidean geometry",
+          "description": "The Muon optimizer can be interpreted as performing approximate broximal steps by minimizing linearized local models over non-Euclidean balls induced by the spectral norm, illustrating that local-model approximations extend beyond the Euclidean setting."
+        }
+      ],
+      "edges": [
+        {"from": "P37", "to": "P38", "evidence": ["S6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P37", "to": "P39", "evidence": ["S6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P39", "to": "P40", "evidence": ["S6"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P41",
+      "name": "Non-convex optimization central to ML",
+      "description": "Matrix factorization, phase retrieval, representation learning, and deep neural networks all lead to objective functions with highly non-convex landscapes."
+    },
+    {
+      "id": "P42",
+      "name": "Non-convex problems can be NP-hard",
+      "description": "Many non-convex optimization tasks are NP-hard to solve, and a number of them are NP-hard even to approximate."
+    },
+    {
+      "id": "P43",
+      "name": "Convex optimization has efficient global toolkit",
+      "description": "Unlike non-convex optimization, convex optimization has an established toolkit for efficiently finding global minimizers."
+    },
+    {
+      "id": "P44",
+      "name": "Intermediate convexity relaxations",
+      "description": "A number of intermediate frameworks (star convexity, quasar convexity, pseudoconvexity, quasiconvexity, invexity, variational coherence, the Polyak-Lojasiewicz condition, and the aiming condition) retain meaningful convergence properties for broader problem classes than convexity, each with its own limitations."
+    },
+    {
+      "id": "P45",
+      "name": "Special-structure tractability examples",
+      "description": "Certain non-convex problems become tractable when the objective has special structure, e.g., one-layer neural networks having no spurious local minima, or SGD finding global minima in sufficiently wide over-parameterized networks."
+    },
+    {
+      "id": "P46",
+      "name": "Particle-based PDE methods for global non-convex solutions",
+      "description": "Particle-based approaches reformulate non-convex problems as PDE-governed dynamics over measures, now admitting provable global solutions, though typically requiring an exponentially large or infinite number of particles."
+    },
+    {
+      "id": "P47",
+      "name": "Contribution: novel non-convex function class",
+      "description": "The paper introduces a novel class of non-convex functions, Broximal Aligned Functions, defined by Assumptions 3.1 and 3.2, enabling global optimization guarantees beyond gradient-based reasoning."
+    },
+    {
+      "id": "P48",
+      "name": "Lemma 5.1: monotone transformation preserves assumptions",
+      "description": "If h satisfies Assumptions 3.1 and 3.2 for radius t, then composing h with a strictly increasing scalar function g also satisfies Assumptions 3.1 and 3.2 with the same t."
+    },
+    {
+      "id": "P49",
+      "name": "Lemma 5.2: X-orthogonal affine transformations preserve assumptions",
+      "description": "Assumptions 3.1 and 3.2 are invariant under affine changes of coordinates that preserve the geometry induced by X."
+    },
+    {
+      "id": "P50",
+      "name": "Lemma 5.3: affine transformations of function value preserve assumptions",
+      "description": "Scaling and shifting the function value (af(x)+b for a>0) preserves Assumptions 3.1 and 3.2 with the same radius and minimizer set."
+    },
+    {
+      "id": "P51",
+      "name": "Framework intentionally conceptual, not efficient algorithm",
+      "description": "The framework is intentionally conceptual since the broximal oracle is generally intractable, so the results do not directly yield efficient algorithms, motivating future work on practical approximations."
+    }
+  ],
+  "structural_score": 9,
+  "structural_reasoning": "The graph is highly coherent, mirroring the paper's tightly argued theoretical structure: the motivation chain critiquing stationarity-based theory (C1) directly motivates revisiting BPM and identifying its underexplored non-convex potential (C2); the intractability of the general broximal oracle and the convex-case Second Brox Theorem motivate dropping convexity in favor of a direct geometric postulate (C3); this postulate is formalized into the two core assumptions defining the Broximal Aligned function class (C4); the main convergence theorem is derived through a clear proof chain building on these assumptions (C5); concrete examples demonstrate the class's generality beyond classical conditions (C6); formal theorems establish that classical generalized-convexity conditions are special cases (C7); and practical approximation strategies are discussed as a natural coda (C8). Edge confidence is high throughout given the paper's explicit deductive theorem-proof style and clearly stated motivational transitions between sections. The isolated-node set reflects broader contextual and background material (application domains, related relaxations, closure-property lemmas, and general framing statements) that support but are not part of the core technical dependency chain. No cycles or ambiguous directions were identified."
+}

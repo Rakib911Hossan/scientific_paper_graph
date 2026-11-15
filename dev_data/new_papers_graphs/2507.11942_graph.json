@@ -1,0 +1,179 @@
+{
+ "arxiv_id": "2507.11942",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Entropy-only compression misses attention-critical tokens and entropy shifts, motivating DAC, which is validated by ablations and benchmarks",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Long prompts need black-box compression",
+     "description": "Techniques such as RAG, CoT and agents lengthen LLM contexts, and for black-box API-only LLMs where model modification is infeasible, prompt compression is needed to cut computation."
+    },
+    {
+     "id": "P2",
+     "name": "Task-aware compression is task-dependent",
+     "description": "Question-aware prompt compression must be repeated for multiple questions or tasks and struggles in extended dialogues where user intent is hard to define."
+    },
+    {
+     "id": "P3",
+     "name": "Prior task-agnostic methods use static entropy only",
+     "description": "Previous task-agnostic methods rely on coarse logits-layer information entropy treated as static, ignoring attention scores and entropy changes during compression."
+    },
+    {
+     "id": "P4",
+     "name": "Attention-critical tokens often have low entropy",
+     "description": "On 200 NarrativeQA sequences with Qwen2-7B, accumulated attention scores and information entropy have an average Pearson correlation of only 0.095, so many attention-critical tokens have low entropy (Obs 1, Fig 2)."
+    },
+    {
+     "id": "P5",
+     "name": "Dropping attention-critical tokens hurts QA",
+     "description": "Removing attention-critical tokens degrades single-document QA F1 on NarrativeQA, QASPER and MultiFieldQA, even below random-selection compression at tau=0.9 (Fig 2)."
+    },
+    {
+     "id": "P6",
+     "name": "Entropy shifts during compression",
+     "description": "Even at a low compression ratio many tokens show substantial entropy shifts, mostly where preceding tokens were dropped, and shifts grow as the compression ratio increases (Obs 2, Fig 3)."
+    },
+    {
+     "id": "P7",
+     "name": "DAC integrated metric",
+     "description": "DAC combines information entropy with accumulated attention scores (additive fusion with weight alpha or multiplicative fusion) as the token importance metric."
+    },
+    {
+     "id": "P8",
+     "name": "DAC dynamic iterative procedure",
+     "description": "DAC compresses in multiple stages, recomputing entropy each stage, limiting compression of consecutive tokens, and adjusting the per-round compression rate by percentile thresholding (Alg 1)."
+    },
+    {
+     "id": "P9",
+     "name": "DAC beats baselines on LongBench",
+     "description": "DAC improves 4.03 points over other entropy-based methods on LongBench and surpasses state-of-the-art approaches by an average of 1.33 (Table 1, Qwen2-7B)."
+    },
+    {
+     "id": "P10",
+     "name": "DAC strong on GSM8K and BBH",
+     "description": "DAC achieves the best performance on GSM8K and BBH at various compression rates (Table 2)."
+    },
+    {
+     "id": "P11",
+     "name": "Generalizes to LLaMA3",
+     "description": "With LLaMA3.2-1B as SLM and LLaMA3.1-8B as the LLM, DAC reaches state-of-the-art results in most task types on LongBench (Table 4)."
+    },
+    {
+     "id": "P12",
+     "name": "Ablation: attention metric matters most",
+     "description": "Removing the attention-aware metric causes the largest single-doc QA F1 drop, removing the dynamic procedure also hurts, and removing consecutive-compression limiting slightly degrades performance (Table 3)."
+    },
+    {
+     "id": "P13",
+     "name": "Compression overhead small vs savings",
+     "description": "On a 12,908-token GovReport prompt at rate 0.2, DAC's compression takes longer than other methods due to the dynamic procedure, but the extra time is small relative to inference time saved (Fig 5)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3, Obs 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3, Fig 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 3, Obs 2, Fig 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 5, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 5, Table 1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 5, Table 2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 5, Table 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Table 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Table 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 5, Fig 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [],
+ "structural_reasoning": "Two observations about attention and entropy shifts drive DAC's design, which is then evaluated."
+}

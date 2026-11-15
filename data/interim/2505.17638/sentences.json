@@ -1,0 +1,1078 @@
+[
+  {
+    "id": "S1",
+    "text": "Diffusion models have achieved remarkable success across a wide range of generative tasks."
+  },
+  {
+    "id": "S2",
+    "text": "A key challenge is understanding the mechanisms that prevent their memorization of training data and allow generalization."
+  },
+  {
+    "id": "S3",
+    "text": "In this work, we investigate the role of the training dynamics in the transition from generalization to memorization."
+  },
+  {
+    "id": "S4",
+    "text": "Through extensive experiments and theoretical analysis, we identify two distinct timescales: an early time τgen at which models begin to generate high-quality samples, and a later time τmem beyond which memorization emerges."
+  },
+  {
+    "id": "S5",
+    "text": "Crucially, we find that τmem increases linearly with the training set size n, while τgen remains constant."
+  },
+  {
+    "id": "S6",
+    "text": "This creates a growing window of training times with n where models generalize effectively, despite showing strong memorization if training continues beyond it."
+  },
+  {
+    "id": "S7",
+    "text": "It is only when n becomes larger than a model-dependent threshold that overfitting disappears at infinite training times."
+  },
+  {
+    "id": "S8",
+    "text": "These findings reveal a form of implicit dynamical regularization in the training dynamics, which allow to avoid memorization even in highly overparameterized settings."
+  },
+  {
+    "id": "S9",
+    "text": "Our results are supported by numerical experiments with standard U-Net architectures on realistic and synthetic datasets, and by a theoretical analysis using a tractable random features model studied in the high-dimensional limit."
+  },
+  {
+    "id": "S10",
+    "text": "Diffusion Models (DMs, [49,) (20,) (54,) [55\\]]() achieve state-of-the-art performance in a wide variety of AI tasks such as the generation of images [\\[45\\]](), audios [\\[64\\]](), videos [\\[33\\]](), and scientific data (\\[31,) [40\\]]()."
+  },
+  {
+    "id": "S11",
+    "text": "This class of generative models, inspired by out-of-equilibrium thermodynamics [\\[49\\]](), corresponds to a two-stage process: the first one, called *forward*, gradually adds noise to a data, whereas the second one, called *backward*, generates new data by denoising Gaussian white noise samples."
+  },
+  {
+    "id": "S12",
+    "text": "In DMs, the reverse process typically involves solving a stochastic differential equation (SDE) with a force field called *score*."
+  },
+  {
+    "id": "S13",
+    "text": "However, it is also possible to define a deterministic transport through an ordinary differential equation (ODE), treating the score as a velocity field, an approach that is for instance followed in flow matching [\\[32\\]]()."
+  },
+  {
+    "id": "S14",
+    "text": "Understanding the generalization properties of score-based generative methods is a central issue in machine learning, and a particularly important question is how memorization of the training set"
+  },
+  {
+    "id": "S15",
+    "text": "†Equal contribution."
+  },
+  {
+    "id": "S16",
+    "text": "Figure 1: Qualitative summary of our contributions."
+  },
+  {
+    "id": "S17",
+    "text": "*(Left)* Illustration of the training dynamics of a diffusion model."
+  },
+  {
+    "id": "S18",
+    "text": "Depending on the training time τ , we identify three regimes measured by the inverse quality of the generated samples (blue curve) and their memorization fraction (red curve)."
+  },
+  {
+    "id": "S19",
+    "text": "The generalization regime extends over a large window of training times which increases with the training set size n. On top, we show a one dimensional example of the learned score function during training (orange)."
+  },
+  {
+    "id": "S20",
+    "text": "The gray line gives the exact empirical score, at a given noise level, while the black dashed line corresponds to the true (population) score."
+  },
+  {
+    "id": "S21",
+    "text": "*(Right)* Phase diagram in the (n, p) plane illustrating three regimes of diffusion models: Memorization when n is sufficiently small at fixed p, Architectural Regularization for n > n⋆ (p) (which is model and dataset dependent, as discussed in (\\[15,) [25\\]]()), and Dynamical Regularization, corresponding to a large intermediate generalization regime obtained when the training dynamics is stopped early, i.e."
+  },
+  {
+    "id": "S22",
+    "text": "τ ∈ [τgen, τmem]."
+  },
+  {
+    "id": "S23",
+    "text": "is avoided in practice."
+  },
+  {
+    "id": "S24",
+    "text": "A model without regularization achieving zero training loss only learns the empirical score, and is bound to reproduce samples of the training dataset at the end of the backward process."
+  },
+  {
+    "id": "S25",
+    "text": "This memorization regime (\\[30,) [6\\]]() is empirically observed when the training set is small and disappears when it increases beyond a model-dependent threshold [\\[24\\]]()."
+  },
+  {
+    "id": "S26",
+    "text": "Understanding the mechanisms controlling this change of regimes from memorization to generalization is a central challenge for both theory and applications."
+  },
+  {
+    "id": "S27",
+    "text": "Model regularization and inductive biases imposed by the network architecture were shown to play a role (\\[25,) [47\\]](), as well as a dynamical regularization due to the finiteness of the learning rate [\\[62\\]]()."
+  },
+  {
+    "id": "S28",
+    "text": "However, the regime shift described above is consistently observed even in models where all these regularization mechanisms are present."
+  },
+  {
+    "id": "S29",
+    "text": "This suggests that the core mechanism behind the transition from memorization to generalization lies elsewhere."
+  },
+  {
+    "id": "S30",
+    "text": "In this work, we demonstrate – first through numerical experiments, and then via the theoretical analysis of a simplified model – that this transition is driven by an implicit dynamical bias towards generalizing solutions emerging in the training, which allows to avoid the memorization phase."
+  },
+  {
+    "id": "S31",
+    "text": "Contributions and theoretical picture."
+  },
+  {
+    "id": "S32",
+    "text": "We investigate the dynamics of score learning using gradient descent, both numerically and analytically, and study the generation properties of the score depending on the time τ at which the training is stopped."
+  },
+  {
+    "id": "S33",
+    "text": "The theoretical picture built from our results and combining several findings from the recent literature is illustrated in Fig. (1.)"
+  },
+  {
+    "id": "S34",
+    "text": "The two main parameters are the size of the training set n and the expressivity of the class of score functions on which one trains the model, characterized by a number of parameters p; when both n and p are large one can identify three main regimes."
+  },
+  {
+    "id": "S35",
+    "text": "Given p, if n is larger than n ∗ (p) (which depends on the training set and on the class of scores), the score model is not expressive enough to represent the empirical score associated to n data, and instead provides a smooth interpolation, approximately independent of the training set."
+  },
+  {
+    "id": "S36",
+    "text": "In this regime, even with a very large training time τ → ∞, memorization does not occur because the model is regularized by its architecture and the finite number of parameters."
+  },
+  {
+    "id": "S37",
+    "text": "When n < n∗ (p) the model is expressive enough to memorize, and two timescales emerge during training: one, τgen, is the minimum training time required to achieve high-quality data generation; the second, τmem > τgen, signals when further training induces memorization, and causes the model to"
+  },
+  {
+    "id": "S38",
+    "text": "increasingly reproduce the training samples (left panel)."
+  },
+  {
+    "id": "S39",
+    "text": "The first timescale, τgen, is found independent of n, whereas the second, τmem, grows approximately linearly with n, thus opening a large window of training times during which the model generalizes if early stopped when τ ∈ [τgen, τmem]."
+  },
+  {
+    "id": "S40",
+    "text": "Our results shows that implicit dynamical regularization in training plays a crucial role in score-based generative models, substantially enlarging the generalization regime (see right panel of Fig. (1\\)), and hence allowing to avoid memorization even in highly overparameterized settings."
+  },
+  {
+    "id": "S41",
+    "text": "We find that the key mechanism behind the widening gap between τgen and τmem is the irregularity of the empirical score at low noise level and large n. In this regime the models used to approximate the score provide a smooth interpolation that remains stable for a long period of training times and closely approximates the population score, a behavior likely rooted in the spectral bias of neural networks [\\[42\\]]()."
+  },
+  {
+    "id": "S42",
+    "text": "Only at very long training times do the dynamics converge to the low lying minimum corresponding to the empirical score, leading to memorization (as illustrated in the one-dimensional examples in the left panel of Fig. (1\\))."
+  },
+  {
+    "id": "S43",
+    "text": "The theoretical picture described above is based on our numerical and analytical results, and builds up on previous works, in particular numerical analysis characterizing the memorization–generalization transition (\\[18,) [63\\]](), analytical works on memorization of DMs (\\[15,) (25,) [24\\]](), and studies on the spectral bias of deep neural networks [\\[42\\]]()."
+  },
+  {
+    "id": "S44",
+    "text": "Our numerical experiments use a class of scores based on a realistic U-Net [\\[46\\]]() trained on downscaled images of the CelebA dataset [\\[34\\]]()."
+  },
+  {
+    "id": "S45",
+    "text": "By varying n and p, we measure the evolution of the sample quality (through FID) and the fraction of memorization during learning, which support the theoretical scenario presented in Fig. (1.)"
+  },
+  {
+    "id": "S46",
+    "text": "Additional experimental results on synthetic data are provided in Supplemental Material (SM, Sects."
+  },
+  {
+    "id": "S47",
+    "text": "On the analytical side, we focus on a class of scores constructed from random features and simplified models of data, following [\\[15\\]]()."
+  },
+  {
+    "id": "S48",
+    "text": "In this setting, the timescales of training dynamics correspond directly to the inverse eigenvalues of the random feature correlation matrix."
+  },
+  {
+    "id": "S49",
+    "text": "Leveraging tools from random matrix theory, we compute the spectrum in the limit of large datasets, high-dimensional data, and overparameterized models."
+  },
+  {
+    "id": "S50",
+    "text": "This analysis reveals, in a fully tractable way, how the theoretical picture of Fig. (1) emerges within the random feature framework."
+  },
+  {
+    "id": "S51",
+    "text": "- The memorization transition in DMs has been the subject of several recent empirical investigations (\\[9,) (50,) [51\\]]() which have demonstrated that state-of-the-art image DMs – including Stable Diffusion and DALL·E – can reproduce a non-negligible portion of their training data, indicating a form of memorization."
+  },
+  {
+    "id": "S52",
+    "text": "Several additional works (\\[18,) [63\\]]() examined how this phenomenon is influenced by factors such as data distribution, model configuration, and training procedure, and provide a strong basis for the numerical part of our work."
+  },
+  {
+    "id": "S53",
+    "text": "- A series of theoretical studies in the high-dimensional regime have analyzed the memorization– generalization transition during the generative dynamics under the empirical score assumption (\\[6,) (1,) [57\\]](), showing how trajectories are attracted to the training samples."
+  },
+  {
+    "id": "S54",
+    "text": "Within this highdimensional framework, (\\[11,) (12,) (60,) [15\\]]() study the score learning for various model classes."
+  },
+  {
+    "id": "S55",
+    "text": "In particular, [\\[15\\]]() uses a Random Feature Neural Network [\\[43\\]]()."
+  },
+  {
+    "id": "S56",
+    "text": "The authors compute the asymptotic training and test losses for τ → ∞ and relate it to memorization."
+  },
+  {
+    "id": "S57",
+    "text": "The theoretical part of our work generalizes this approach to study the role of training dynamics and early stopping in the memorization–generalization transition."
+  },
+  {
+    "id": "S58",
+    "text": "- Recent works have also uncovered complementary sources of implicit regularization explaining how DMs avoid memorization."
+  },
+  {
+    "id": "S59",
+    "text": "Architectural biases and limited network capacity were for instance shown to constrain memorization in (\\[25,) [24\\]](), and finiteness of the learning rate prevents the model from learning the empirical score in [\\[62\\]]()."
+  },
+  {
+    "id": "S60",
+    "text": "Also related to our analysis, [\\[29\\]]() provides general bounds showing the beneficial role of early stopping the training dynamics to enhance generalization for finitely supported target distributions, as well as a study of its effect for one-dimensional gaussian mixtures."
+  },
+  {
+    "id": "S61",
+    "text": "- Finally, previous studies on supervised learning (\\[42,) [65\\]](), and more recently on DMs [\\[59\\]](), have shown that deep neural networks display a frequency-dependent learning speed, and hence a learning bias towards low frequency functions."
+  },
+  {
+    "id": "S62",
+    "text": "This fact plays an important role in the results we present since the empirical score contains a low frequency part that is close to the population score, and a high-frequency part that is dataset-dependent."
+  },
+  {
+    "id": "S63",
+    "text": "To the best of our knowledge, the training time to learn the high-frequency part and hence memorize, that we find to scale with n, has not been studied from this perspective in the context of score-based generative methods."
+  },
+  {
+    "id": "S64",
+    "text": "Setting: generative diffusion and score learning."
+  },
+  {
+    "id": "S65",
+    "text": "Standard DMs define a transport from a target distribution   [Formula: P_0]   in    to a Gaussian white noise   [Formula: mathcalN(0, mathbfI_d)]   through a *forward process* defined as an Ornstein-Uhlenbeck (OU) stochastic differential equation (SDE):"
+  },
+  {
+    "id": "S66",
+    "text": "[Formula: dmathbfx = -mathbfx(t)dt + dmathbfB(t),tag1]"
+  },
+  {
+    "id": "S67",
+    "text": "where    is square root of two times a Wiener process."
+  },
+  {
+    "id": "S68",
+    "text": "Generation is performed by time-reversing the SDE (1) using the score function   ,"
+  },
+  {
+    "id": "S69",
+    "text": "[Formula: -dmathbfx = [mathbfx(t) + 2mathbfs(mathbfx, t)] dt + dmathbfB(t), tag2]"
+  },
+  {
+    "id": "S70",
+    "text": "where    is the probability density at time t along the forward process, and the noise    is also the square root of two times a Wiener process."
+  },
+  {
+    "id": "S71",
+    "text": "As shown in the seminal works [23, 58],    can be obtained by minimizing the score matching loss"
+  },
+  {
+    "id": "S72",
+    "text": "[Formula: hatmathbfs(mathbfx,t) = argmin_mathbfs mathbbE_mathbfx sim P_0, boldsymbolxi sim mathcalN(0, boldsymbolI_d) [ | sqrtDelta_t mathbfs(mathbfx(t), t) + boldsymbolxi |^2 ], tag3]"
+  },
+  {
+    "id": "S73",
+    "text": "where   [Formula: Delta_t = 1 - e^-2t]  ."
+  },
+  {
+    "id": "S74",
+    "text": "In practice, the optimization problem is restricted to a parametrized class of functions    defined, for example, by a neural network with parameters   ."
+  },
+  {
+    "id": "S75",
+    "text": "The expectation over    is replaced by the empirical average over the training set (n iid samples    drawn from   [Formula: P_0]  ),"
+  },
+  {
+    "id": "S76",
+    "text": "[Formula: mathcalL_t(boldsymboltheta, mathbfx^nu_nu=1^n) = 1/n sum_nu=1^n mathbbE_boldsymbolxi sim mathcalN(0, boldsymbolI_d) [ | sqrtDelta_t mathbfs_boldsymboltheta(mathbfx^nu(t)) + boldsymbolxi |^2 ], tag4]"
+  },
+  {
+    "id": "S77",
+    "text": "The loss in (4) can be minimized with standard optimizers, such as stochastic gradient descent [SGD, 44] or Adam [28]."
+  },
+  {
+    "id": "S78",
+    "text": "In practice, a single model conditioned on the diffusion time t is trained by integrating (4) over time [26]."
+  },
+  {
+    "id": "S79",
+    "text": "The solution of the minimization of (4) is the so-called empirical score (e.g."
+  },
+  {
+    "id": "S80",
+    "text": "[6, 30]), defined as   , with"
+  },
+  {
+    "id": "S81",
+    "text": "[Formula: P_t^textemp(mathbfx) = frac1n (2piDelta_t)^d/2 sum_nu=1^n e^-1/2Delta_t |mathbfx - mathbfx^nu e^-t|_2^2.]"
+  },
+  {
+    "id": "S82",
+    "text": "This solution is known to inevitably recreate samples of the training set at the end of the generative process (i.e., it perfectly memorizes), unless n grows exponentially with the dimension d [6]."
+  },
+  {
+    "id": "S83",
+    "text": "However, this is not the case in many practical applications where memorization is only observed for relatively small values of n, and disappears well before n becomes exponentially large in d. The empirical minimization performed in practice, within a given class of models and a given minimization procedure, does not drive the optimization to the global minimum of (4), but instead to a smoother estimate of the score that is independent of the training set with good generalization properties [24], as the global minimum of (3) would do."
+  },
+  {
+    "id": "S84",
+    "text": "Understanding how it is possible, and in particular the role played by the training dynamics to avoid memorization, is the central aim of the present work."
+  },
+  {
+    "id": "S85",
+    "text": "2 Generalization and memorization during training of diffusion models"
+  },
+  {
+    "id": "S86",
+    "text": "**Data & architecture."
+  },
+  {
+    "id": "S87",
+    "text": "** We conduct our experiments on the CelebA face dataset [34], which we convert to grayscale downsampled images of size   [Formula: d=32×32]  , and vary the training set size n from 128 up to 32768."
+  },
+  {
+    "id": "S88",
+    "text": "Our score model has a U-Net architecture [46] with three resolution levels and a base channel width of W with multipliers 1, 2 and 3 respectively."
+  },
+  {
+    "id": "S89",
+    "text": "All our networks are DDPMs [20] trained to predict the injected noise at diffusion time t using SGD with momentum at fixed batch size   [Formula: min(n,512)]  ."
+  },
+  {
+    "id": "S90",
+    "text": "The models are all conditioned on t, i.e."
+  },
+  {
+    "id": "S91",
+    "text": "a single model approximates the score at all times, and make use of a standard sinusoidal position embedding [56] that is added to the features of each resolution."
+  },
+  {
+    "id": "S92",
+    "text": "More details about the numerical setup can be found in SM (Sect."
+  },
+  {
+    "id": "S93",
+    "text": "**Evaluation metrics."
+  },
+  {
+    "id": "S94",
+    "text": "** To study the transition from generalization to memorization during training, we monitor the loss (4) during training using a fixed diffusion time t=0.01."
+  },
+  {
+    "id": "S95",
+    "text": "At various numbers of SGD updates   , we compute the loss on all n training examples (training loss) and on a held-out test set of 2048 images (test loss)."
+  },
+  {
+    "id": "S96",
+    "text": "To characterize the score obtained after a training time   , we assess the originality and quality of samples by generating 10K samples using a DDIM accelerated sampling [52]."
+  },
+  {
+    "id": "S97",
+    "text": "We compute (i) the Fréchet-Inception Distance [FID, 19] against 10K test samples which we use to identify the generalization time   ; and (ii) the fraction of memorized generated"
+  },
+  {
+    "id": "S98",
+    "text": "Figure 2: Memorization transition as a function of the training set size n for U-Net score models on CelebA."
+  },
+  {
+    "id": "S99",
+    "text": "(Left) FID (solid lines, left axis) and memorization fraction    (dashed lines, right axis) against training time    for various n. Inset: normalized memorization fraction    with the rescaled time   ."
+  },
+  {
+    "id": "S100",
+    "text": "(Middle) Training (solid lines) and test (dashed lines) loss with    for several n at fixed t=0.01."
+  },
+  {
+    "id": "S101",
+    "text": "Inset: both losses plotted against   ."
+  },
+  {
+    "id": "S102",
+    "text": "Error bars on the losses are imperceptible."
+  },
+  {
+    "id": "S103",
+    "text": "(Right) Generated samples from the model trained with n=1024 for   [Formula: tau=100]  K or   [Formula: tau=1.62]  M steps, along with their nearest neighbors in the training set."
+  },
+  {
+    "id": "S104",
+    "text": "samples    granting access to   , the memorization time."
+  },
+  {
+    "id": "S105",
+    "text": "Following previous numerical studies [63, 18], a generated sample    is considered memorized if"
+  },
+  {
+    "id": "S106",
+    "text": "[Formula: mathbbE_mathbfx_tau [ frac|mathbfx_tau - mathbfa^mu_1|_2|mathbfx_tau - mathbfa^mu_2|_2 ] < k, tag6]"
+  },
+  {
+    "id": "S107",
+    "text": "where   [Formula: mathbfa^mu_1]   and   [Formula: mathbfa^mu_2]   are the nearest and second nearest neighbors of    in the training set in the   [Formula: L_2]   sense."
+  },
+  {
+    "id": "S108",
+    "text": "In what follows, we choose to work with k=1/3 [63, 18], but we checked that varying k to 1/2 or 1/4 does not impact the claims about the scaling."
+  },
+  {
+    "id": "S109",
+    "text": "Error bars in the figures correspond to twice the standard deviation over 5 different test sets for FIDs, and 5 noise realizations for    and   ."
+  },
+  {
+    "id": "S110",
+    "text": "For   , we report the 95% CIs on the mean evaluated with 1,000 bootstrap samples."
+  },
+  {
+    "id": "S111",
+    "text": "Role of training set size on the learning dynamics."
+  },
+  {
+    "id": "S112",
+    "text": "At fixed model capacity   [Formula: (p=4×10^6)]  , base width W=32), we investigate how the training set size n impacts the previous metrics."
+  },
+  {
+    "id": "S113",
+    "text": "In the left panel of Fig. 2, we first report the FID (solid lines) and    (dashed lines) for various n. All trainings dynamics exhibit two phases."
+  },
+  {
+    "id": "S114",
+    "text": "First, the FID quickly decreases to reach a minimum value on a timescale    (  [Formula: approx 100 rm K]  ) that does not depend on n. In the right panel, the generated samples at   [Formula: tau=100 rm K]   clearly differ from their nearest neighbors in the training set, indicating that the model generalizes correctly."
+  },
+  {
+    "id": "S115",
+    "text": "Beyond this time, the FID remains flat."
+  },
+  {
+    "id": "S116",
+    "text": "is zero until a later time    after which it increases, clearly signaling the entrance into a memorization regime, as illustrated by the generated samples in the right-most panel of Fig. 2, very close to their nearest neighbors."
+  },
+  {
+    "id": "S117",
+    "text": "Both the transition time    and the value of the final fraction    (with    being one to four million SGD steps) vary with n. The inset plot shows the normalized memorization fraction    against the rescaled time   , making all curves collapse and increase at around   [Formula: tau/n approx 300]  , showing that   , and demonstrating the existence of a generalization window for    that widens linearly with n, as illustrated in the left panel of Fig. 1."
+  },
+  {
+    "id": "S118",
+    "text": "As highlighted in the introduction, memorization in DMs is ultimately driven by the overfitting of the empirical score   ."
+  },
+  {
+    "id": "S119",
+    "text": "The evolution of    and    at fixed t=0.01 are shown in the middle panel of Fig. 2 for n ranging from 512 to 32768."
+  },
+  {
+    "id": "S120",
+    "text": "Initially, the two losses remain nearly indistinguishable, indicating that the learned score    does not depend on the training set."
+  },
+  {
+    "id": "S121",
+    "text": "Beyond a critical time,    continues to decrease while    increases, leading to a nonzero generalization loss whose magnitude depends on n. As n increases, this critical time also increases and, eventually, the training and test loss gap shrinks: for n=32768, the test loss remains close to the training loss, even after 11 million SGD steps."
+  },
+  {
+    "id": "S122",
+    "text": "The inset shows the evolution of both losses with   , demonstrating that the overfitting time scales linearly with the training set size n, just like    identified in the left panel."
+  },
+  {
+    "id": "S123",
+    "text": "Moreover, there is a consistent lag between the overfitting time and    at fixed n, reflecting the additional training required for the model to overfit the empirical score sufficiently to reproduce the training samples, and therefore to impact the memorization fraction."
+  },
+  {
+    "id": "S124",
+    "text": "Figure 3: Effect of the number of parameters in the U-Net architecture on the timescales of the training dynamics."
+  },
+  {
+    "id": "S125",
+    "text": "(Left) FID (panels A, B) and normalized memorization fraction    (panels C, D) for various n and W during training."
+  },
+  {
+    "id": "S126",
+    "text": "In panels B and D, time is rescaled such that all curves collapse."
+  },
+  {
+    "id": "S127",
+    "text": "(Right) (n,p) phase diagram of generalization vs memorization for U-Nets trained on CelebA."
+  },
+  {
+    "id": "S128",
+    "text": "Curves show, for   [Formula: tau in tau_rm gen, 3tau_rm gen, 8tau_rm gen]  , the minimal dataset size n(p) satisfying   [Formula: f_rm mem(tau)=0]  ."
+  },
+  {
+    "id": "S129",
+    "text": "The shaded background indicates the memorization–generalization boundary for   ."
+  },
+  {
+    "id": "S130",
+    "text": "**Memorization is** *not* **due to data repetition."
+  },
+  {
+    "id": "S131",
+    "text": "** We must stress that this delayed memorization with n is *not* due to the mere repetition of training samples, as a first intuition could suggest."
+  },
+  {
+    "id": "S132",
+    "text": "A and B, we show that full-batch updates still yield   ."
+  },
+  {
+    "id": "S133",
+    "text": "In other words, even if at fixed    all models have processed each sample equally often, larger n consistently postpone memorization."
+  },
+  {
+    "id": "S134",
+    "text": "This confirms that memorization in DMs is driven by a fundamental n-dependent change in the loss landscape – not by a sample repetition during training."
+  },
+  {
+    "id": "S135",
+    "text": "Effect of the model capacity."
+  },
+  {
+    "id": "S136",
+    "text": "To study more precisely the role of the model capacity on the memorization–generalization transition, we vary the number of parameters p by changing the U-Nets base width   [Formula: W in 8, 16, 32, 48, 64]  , resulting in a total of   [Formula: p in 0.26, 1, 4, 9, 16 × 10^6]   parameters."
+  },
+  {
+    "id": "S137",
+    "text": "In the left panel of Fig. 3, we plot both the FID (top row) and the normalized memorization fraction (bottom row) as functions of    for several width W and training set sizes n. Panels A and C demonstrate that higher-capacity networks (larger W) achieve high-quality generation and begin to memorize earlier than smaller ones."
+  },
+  {
+    "id": "S138",
+    "text": "Panels B and D show that the two characteristic timescales simply scale as   [Formula: tau_rm gen propto W^-1]   and   [Formula: tau_rm mem propto nW^-1]  ."
+  },
+  {
+    "id": "S139",
+    "text": "In particular, this implies that, for W>8, the critical training set size    at which    is approximately independent of p (at least on the limited values of p we focused on)."
+  },
+  {
+    "id": "S140",
+    "text": "When   , the interval    opens up, so that early stopping within this window yields high quality samples without memorization."
+  },
+  {
+    "id": "S141",
+    "text": "In the right panel of Fig. 3, we display this boundary (solid line) in the (n, p) plane by fixing the training time to   , that we identify numerically using the collapse of all FIDs at around   [Formula: Wtau_rm genapprox 3× 10^6]   (see panel **B**), and computing the smallest n such that   [Formula: f_textmem(tau) = 0]  ."
+  },
+  {
+    "id": "S142",
+    "text": "The resulting solid curve delineates two regimes: below the curve, memorization already starts at   ; above the curve, the models generalize perfectly under early stopping."
+  },
+  {
+    "id": "S143",
+    "text": "We repeat this experiment for   [Formula: tau = 3tau_rm gen]   and   [Formula: tau = 8tau_rm gen]  , showing saturation to larger and larger p as    increases."
+  },
+  {
+    "id": "S144",
+    "text": "Eventually, for   , we expect these successive boundaries to converge to the architectural regularization threshold   , i.e."
+  },
+  {
+    "id": "S145",
+    "text": "the point beyond which the network avoids memorization because it is not expressive enough, as found in [15] and highlighted in the right panel of Fig. 1."
+  },
+  {
+    "id": "S146",
+    "text": "In order to estimate   , we measure for a given    the largest    yielding   [Formula: f_textmem approx 0]  ."
+  },
+  {
+    "id": "S147",
+    "text": "The curve    approaches    for large   ."
+  },
+  {
+    "id": "S148",
+    "text": "We therefore estimate    by measuring the asymptotic values of   , which in practice is reached already at   [Formula: tau = tau_max = 2]  M updates for the values of W we focus on."
+  },
+  {
+    "id": "S149",
+    "text": "** We use bold symbols for vectors and matrices."
+  },
+  {
+    "id": "S150",
+    "text": "The   [Formula: L^2]   norm of a vector    is denoted by   [Formula: |mathbfx| = (sum_i mathbfx_i^2)^1/2]  ."
+  },
+  {
+    "id": "S151",
+    "text": "We write    to mean that in the limit   , there exists a constant C such that   ."
+  },
+  {
+    "id": "S152",
+    "text": "** We study analytically a model introduced in [15], where the data lie in d dimensions."
+  },
+  {
+    "id": "S153",
+    "text": "We parametrize the score with a Random Features Neural Network [RFNN, 43]"
+  },
+  {
+    "id": "S154",
+    "text": "[Formula: mathbfs_mathbfA(mathbfx) = fracmathbfAsqrtp sigma(fracmathbfWmathbfxsqrtd)."
+  },
+  {
+    "id": "S155",
+    "text": "An RFNN, illustrated in Fig. 4 (left), is a two-layer neural-network whose first layer weights    are drawn from a Gaussian distribution and remain frozen while the second layer weights    are learned during training."
+  },
+  {
+    "id": "S156",
+    "text": "This model has already served as theoretical framework for studying several behaviors of deep neural network such as the double descent phenomenon [35, 13]."
+  },
+  {
+    "id": "S157",
+    "text": "is an element-wise non-linear activation function."
+  },
+  {
+    "id": "S158",
+    "text": "We consider a training set of n iid samples    for   [Formula: nu = 1, ldots, n]   and we focus on the high-dimensional limit    with the ratios    kept fixed."
+  },
+  {
+    "id": "S159",
+    "text": "We study the training dynamics associated to the minimization of the empirical score matching loss defined in (4) at a fixed diffusion time t. This is a simplification compared to practical methods, which use a single model for all t. It has been already studied in previous theoretical works [11, 15]."
+  },
+  {
+    "id": "S160",
+    "text": "The loss (4) is rescaled by a factor 1/d in order to ensure a finite limit at large d. We also study the evolution of the test loss evaluated on test points and the distance to the exact score   ,"
+  },
+  {
+    "id": "S161",
+    "text": "[Formula: mathcalL_texttest = 1/d mathbbE_mathbfx, boldsymbolxi [ | sqrtDelta_t mathbfs_mathbfA(mathbfx_t(boldsymbolxi)) + boldsymbolxi |^2 ], quad mathcalE_textscore = 1/d mathbbE_mathbfx [ | mathbfs_mathbfA(mathbfx) - nabla log P_mathbfx |^2 ], quad (8)]"
+  },
+  {
+    "id": "S162",
+    "text": "where the expectations    are computed over    and   [Formula: boldsymbolxi sim mathcalN(0,mathbfI_d)]  ."
+  },
+  {
+    "id": "S163",
+    "text": "The generalization loss, defined as   , indicates the degree of overfitting in the model while the distance to the exact score    measures the quality of the generation as it is an upper bound on the Kullback–Leibler divergence between the target and generated distributions [53, 8]."
+  },
+  {
+    "id": "S164",
+    "text": "The weights    are updated via gradient descent"
+  },
+  {
+    "id": "S165",
+    "text": "[Formula: mathbfA^(k+1) = mathbfA^(k) - eta nabla_mathbfA mathcalL_texttrain(mathbfA^(k)), tag9]"
+  },
+  {
+    "id": "S166",
+    "text": "where    is the learning rate."
+  },
+  {
+    "id": "S167",
+    "text": "In the high-dimensional limit, as the learning rate   [Formula: eta to 0]  , and after rescaling time as   [Formula: tau = keta/d^2]  , the discrete-time dynamics converges to the following continuous-time gradient flow:"
+  },
+  {
+    "id": "S168",
+    "text": "[Formula: dotmathbfA(tau) = -d^2 nabla_mathbfA mathcalL_texttrain(mathbfA(tau)) = -2Delta_t d/p mathbfA mathbfU - frac2dsqrtDelta_tsqrtp mathbfV^T, tag10]"
+  },
+  {
+    "id": "S169",
+    "text": "[Formula: mathbfU = 1/n sum_nu=1^n mathbbE_boldsymbolxi [ sigma ( fracmathbfW mathbfx_t^nu(boldsymbolxi)sqrtd ) sigma ( fracmathbfW mathbfx_t^nu(boldsymbolxi)sqrtd )^T ], quad mathbfV = 1/n sum_nu=1^n mathbbE_boldsymbolxi [ sigma ( fracmathbfW mathbfx_t^nu(boldsymbolxi)sqrtd ) boldsymbolxi^T ]."
+  },
+  {
+    "id": "S170",
+    "text": "For our analytical results to hold, we make the following mathematical assumptions which are standard when studying Random Features [41, 17, 22] namely (i) the activation function    admits a Hermite polynomial expansion   [Formula: sigma(x) = sum_s=0^infty alpha_s/s!"
+  },
+  {
+    "id": "S171",
+    "text": "He_s(x)]  ; and (ii) the data distribution    has sub-Gaussian tails and a covariance    with bounded spectrum."
+  },
+  {
+    "id": "S172",
+    "text": "We assume that the empirical distribution of eigenvalues of    converges weakly in the high dimensional limit to a deterministic density    and that    converges to a finite limit (for a more precise mathematical statement see SM Sect."
+  },
+  {
+    "id": "S173",
+    "text": "Moreover, we make additional assumptions that are not essential to the proofs but which simplify the analysis: (iii) the activation function    verifies   [Formula: mu_0 = mathbbE_z[sigma(z)] = 0]  ; and (iv) the second layer    is initialized with zero weights   [Formula: mathbfA(tau=0) = 0]  ."
+  },
+  {
+    "id": "S174",
+    "text": "In numerical applications, unless specified, we use    and   [Formula: P_mathbfx = mathcalN(0, mathbfI_d)]  ."
+  },
+  {
+    "id": "S175",
+    "text": "Figure 4: (Left) Illustration of an RFNN."
+  },
+  {
+    "id": "S176",
+    "text": "(Middle/Right) Spectrum of U. Density    from Theorem 3.1 in the overparameterized Regime I described in Theorem 3.2, with   [Formula: psi_p=64]  ,   [Formula: psi_n=8]  , t=0.01, and   [Formula: rho_Sigma(lambda)=delta(lambda-1)]  ."
+  },
+  {
+    "id": "S177",
+    "text": "The bulk of the spectrum (orange) is between   [Formula: lambdaapprox 10]   and   [Formula: lambdaapprox 45]  ."
+  },
+  {
+    "id": "S178",
+    "text": "The histogram shows the eigenvalues from a single realization of U at d=100."
+  },
+  {
+    "id": "S179",
+    "text": "Inset: zoom near   [Formula: lambda=0]   (in blue) showing the first bulk   [Formula: rho_1]   and the delta peak at   [Formula: lambda=s_t^2]  ."
+  },
+  {
+    "id": "S180",
+    "text": "(Right) Same as (Middle), but with   [Formula: rho_Sigma(lambda)=1/2delta(lambda-0.5)+1/2delta(lambda-1.5)]  ."
+  },
+  {
+    "id": "S181",
+    "text": "The first bulk in blue remains unchanged, as it depends only on   [Formula: sigma_mathbfx^2=mathrmTr(Sigma)/d=1]   in both cases, while the second bulk varies with   ."
+  },
+  {
+    "id": "S182",
+    "text": "Figure 5: **Evolution of the training and test losses for the RFNN."
+  },
+  {
+    "id": "S183",
+    "text": "** (A) Distance to the true score    against training time    for   [Formula: psi_n = 4, 8, 16, 32, psi_p = 64, t = 0.1]   and d = 100."
+  },
+  {
+    "id": "S184",
+    "text": "In the inset, the training time is rescaled by   ."
+  },
+  {
+    "id": "S185",
+    "text": "(B) Training (solid) and test (dashed) losses for various   ."
+  },
+  {
+    "id": "S186",
+    "text": "The inset shows both losses rescaled by   ."
+  },
+  {
+    "id": "S187",
+    "text": "(C) Heatmaps of    for   [Formula: tau = 10^3]   (top) and   [Formula: tau = 10^4]   (bottom) as a function of    and   ."
+  },
+  {
+    "id": "S188",
+    "text": "All the curves use Pytorch [38] gradient descent."
+  },
+  {
+    "id": "S189",
+    "text": "More numerical details can be found in SM Sect."
+  },
+  {
+    "id": "S190",
+    "text": "Emergence of the two timescales during training."
+  },
+  {
+    "id": "S191",
+    "text": "We first show in Fig. 5 that the behavior of training and test losses in the RF model mirrors the one found in realistic cases in Sect."
+  },
+  {
+    "id": "S192",
+    "text": "2, with a separation of timescales    and    which increases with n. Equation (10) is linear in A and hence it can be solved exactly (see SM)."
+  },
+  {
+    "id": "S193",
+    "text": "The timescales of the training dynamics are given by the inverse eigenvalues of the    matrix   ."
+  },
+  {
+    "id": "S194",
+    "text": "Building on the Gaussian Equivalence Principle [GEP, 16, 17, 36] and the theory of linear pencils [7], George et al. (2025) derive a coupled system of equations characterizing the Stieltjes transform of the eigenvalue density    of U for isotropic Gaussian data that lie in a D-dimensional subspace with    and   ."
+  },
+  {
+    "id": "S195",
+    "text": "We offer an alternative derivation presented in SM for general variance using the replica method [37] – a heuristic method from the statistical physics of disordered systems – yielding the more compact formulation for obtaining the spectrum stated in Theorem 3.1."
+  },
+  {
+    "id": "S196",
+    "text": "Before stating the theorem, we introduce"
+  },
+  {
+    "id": "S197",
+    "text": "[Formula: b_t = mathbbE_u,v[vsigma(e^-tsigma_mathbfxu + sqrtDelta_tv)], quad a_t = mathbbE_u,v[sigma(e^-tsigma_mathbfxu + sqrtDelta_tv)fracue^-tsigma_mathbfx], quad (12)]"
+  },
+  {
+    "id": "S198",
+    "text": "[Formula: v_t^2 = mathbbE_u,v,w[sigma(e^-tsigma_mathbfxu + sqrtDelta_tv)sigma(e^-tsigma_mathbfxu + sqrtDelta_tw)] - a_t^2 e^-2tsigma_mathbfx^2, tag13]"
+  },
+  {
+    "id": "S199",
+    "text": "[Formula: s_t^2 = mathbbE_u[sigma(Gamma_t u)^2] - a_t^2 e^-2t sigma_mathbfx^2 - v_t^2 - b_t^2, tag14]"
+  },
+  {
+    "id": "S200",
+    "text": "where   [Formula: sigma_mathbfx^2 = fractextTr(mathbfSigma)d]  ,   [Formula: Gamma_t = e^-2tsigma_mathbfx^2 + Delta_t = 1 + e^-2t(sigma_mathbfx^2 - 1)]   and the expectation is over the u, v, w random variables which are independent standard Gaussian   [Formula: mathcalN(0, 1)]  ."
+  },
+  {
+    "id": "S201",
+    "text": "** Let   [Formula: q(z) = 1/p operatornameTr(mathbfU - zmathbfI_p)^-1]  ,   [Formula: r(z) = 1/p operatornameTr(mathbfSigma^1/2 mathbfW^T (mathbfU - zmathbfI_p)^-1 mathbfW mathbfSigma^1/2)]   and   [Formula: s(z) = 1/p operatornameTr(mathbfW^T (mathbfU - zmathbfI_p)^-1 mathbfW)]  , with   ."
+  },
+  {
+    "id": "S202",
+    "text": "[Formula: hats(q) = b_t^2 psi_p + 1/q,tag15]"
+  },
+  {
+    "id": "S203",
+    "text": "[Formula: hatr(r,q) = fracpsi_p a_t^2 e^-2t1 + fraca_t^2 e^-2t psi_ppsi_n r + psi_p v_t^2/psi_n q.]"
+  },
+  {
+    "id": "S204",
+    "text": "Then q(z), r(z) and s(z) satisfy the following set of three equations:"
+  },
+  {
+    "id": "S205",
+    "text": "[Formula: s = int drho_Sigma(lambda) frac1hats(q) + lambda hatr(r, q), tag17]"
+  },
+  {
+    "id": "S206",
+    "text": "[Formula: psi_p(s_t^2 - z) + fracpsi_p v_t^21 + fraca_t^2 e^-2t psi_ppsi_p r + psi_p v_t^2/psi_p q + 1 - psi_p/q - s/q^2 = 0, tag19]"
+  },
+  {
+    "id": "S207",
+    "text": "The eigenvalue distribution of   ,   , can then be obtained using the Sokhotski–Plemelj inversion formula   [Formula: rho(lambda) = lim_varepsilon to 0^+ 1/pi operatornameIm q(lambda + ivarepsilon)]  ."
+  },
+  {
+    "id": "S208",
+    "text": "We now focus on the asymptotic regime   [Formula: psi_p, psi_n gg 1]  , typical for strongly over-parameterized models trained on large data sets."
+  },
+  {
+    "id": "S209",
+    "text": "In this limit, the spectrum of U can be described analytically by the following Theorem 3.2."
+  },
+  {
+    "id": "S210",
+    "text": "**Theorem 3.2** (Informal)."
+  },
+  {
+    "id": "S211",
+    "text": "Let    denote the spectral density of U."
+  },
+  {
+    "id": "S212",
+    "text": "Regime I (overparametrized):   [Formula: psi_p > psi_n gg 1]  ."
+  },
+  {
+    "id": "S213",
+    "text": "[Formula: rho(lambda) = (1 - 1 + psi_n/psi_p) delta(lambda - s_t^2) + psi_n/psi_p rho_1(lambda) + 1/psi_p rho_2(lambda).]"
+  },
+  {
+    "id": "S214",
+    "text": "Regime II (underparametrized):   [Formula: psi_n > psi_p gg 1]  ."
+  },
+  {
+    "id": "S215",
+    "text": "[Formula: rho(lambda) = (1 - 1/psi_p)rho_1(lambda) + 1/psi_prho_2(lambda).]"
+  },
+  {
+    "id": "S216",
+    "text": "where   [Formula: rho_1]   is an atomless measure with support"
+  },
+  {
+    "id": "S217",
+    "text": "[Formula: s_t^2 + v_t^2 ( 1 - sqrtpsi_p/psi_n )^2,  s_t^2 + v_t^2 ( 1 + sqrtpsi_p/psi_n )^2,]"
+  },
+  {
+    "id": "S218",
+    "text": "and   [Formula: rho_2]   coincides with the asymptotic eigenvalue bulk density of the population covariance   ;   [Formula: rho_2]   is independent of    and its support is on the scale   ."
+  },
+  {
+    "id": "S219",
+    "text": "The eigenvectors associated with   [Formula: delta(lambda - s_t^2)]   leave both training and test losses unchanged and are therefore irrelevant."
+  },
+  {
+    "id": "S220",
+    "text": "In the limit   , the supports of   [Formula: rho_1]   and   [Formula: rho_2]   are respectively on the scales    and   , i.e."
+  },
+  {
+    "id": "S221",
+    "text": "they are well separated."
+  },
+  {
+    "id": "S222",
+    "text": "The proofs of both theorems are shown in SM (Sect."
+  },
+  {
+    "id": "S223",
+    "text": "We recall that training timescales are directly related to eigenvalues    via the relation   [Formula: tau^-1 = psi_p/Delta_t lambda_min]  ."
+  },
+  {
+    "id": "S224",
+    "text": "Theorem 3.2 therefore demonstrates the emergence of the two training timescales    and    in the overparametrized regime of the RFNN model."
+  },
+  {
+    "id": "S225",
+    "text": "They are respectively associated to the measures   [Formula: rho_1]   and   [Formula: rho_2]  , which are well separated in regime I, for   [Formula: psi_p gg psi_n gg 1]  , as shown in Fig. 4."
+  },
+  {
+    "id": "S226",
+    "text": "**Generalization**: The timescale    on which the first relaxation takes place is associated to the formation of the generalization regime."
+  },
+  {
+    "id": "S227",
+    "text": "It is related to the bulk   [Formula: rho_2]   and is or order   [Formula: 1/Delta_t]  ."
+  },
+  {
+    "id": "S228",
+    "text": "This regime only depends on the population covariance    of the data and is independent of the specific realization"
+  },
+  {
+    "id": "S229",
+    "text": "of the dataset."
+  },
+  {
+    "id": "S230",
+    "text": "On this timescale, which is of order one, both the training    and test    losses decrease."
+  },
+  {
+    "id": "S231",
+    "text": "The generalization loss    is zero, and    tends to a value that we find to scale as    with   [Formula: eta simeq 0.59]   numerically (see Fig. 5)."
+  },
+  {
+    "id": "S232",
+    "text": "**Memorization:** The timescale   , on which the second stage of the dynamics takes place, is associated to overfitting and memorization."
+  },
+  {
+    "id": "S233",
+    "text": "It is related to the bulk   [Formula: rho_1]  , and scales as   , where    is the left edge of   [Formula: rho_1]  ."
+  },
+  {
+    "id": "S234",
+    "text": "In the overparameterized regime   ,    becomes large and of order   , thus implying a scaling of    with n. On this timescale, the training loss decreases while the test loss increases, converging to their respective asymptotic values as computed in [15]."
+  },
+  {
+    "id": "S235",
+    "text": "Fig. 5 indeed shows that all training and test curves separate, correspondingly the generalization loss    increases, at a time that scales with   , as shown in the inset."
+  },
+  {
+    "id": "S236",
+    "text": "As n increases, the asymptotic    generalization loss    decreases, indicating a reduced overfitting."
+  },
+  {
+    "id": "S237",
+    "text": "For   , although some overfitting remains (i.e.,   [Formula: mathcalL_mathrmgen > 0]  ), the value of    is sensibly reduced, and the model is no longer expressive enough to memorize the training data, as shown in [15]."
+  },
+  {
+    "id": "S238",
+    "text": "This regime corresponds to the *Architectural Regularization* phase in Fig. 1."
+  },
+  {
+    "id": "S239",
+    "text": "We show in Fig. 5 (panel C) how the generalization loss    varies in the (n,p) plane depending on the time    at which training is stopped."
+  },
+  {
+    "id": "S240",
+    "text": "In agreement with the above results, we find that the generalization–memorization transition line depends on    and moves upward for larger values of   , similarly to the numerical results exposed in Fig. 3 and the illustration in Fig. 1."
+  },
+  {
+    "id": "S241",
+    "text": "We have shown that the training dynamics of neural network-based score functions display a form of implicit regularization that prevents memorization even in highly overparameterized diffusion models."
+  },
+  {
+    "id": "S242",
+    "text": "Specifically, we have identified two well-separated timescales in the learning:   , at which models begins to generate high-quality, novel samples, and   , beyond which they start to memorize the training data."
+  },
+  {
+    "id": "S243",
+    "text": "The gap between these timescales grows with the size of the training set, leading to a broad window where early stopped models generate novel samples of high-quality."
+  },
+  {
+    "id": "S244",
+    "text": "We have demonstrated that this phenomenon happens in realistic settings, for controlled synthetic data, and in analytically tractable models."
+  },
+  {
+    "id": "S245",
+    "text": "Although our analysis focuses on DMs, the underlying score-learning mechanism we uncover is common to all score-based generative models such as stochastic interpolants [3] or flow matching [32]; we therefore expect our results to generalize to this broader class."
+  },
+  {
+    "id": "S246",
+    "text": "Limitations and future works."
+  },
+  {
+    "id": "S247",
+    "text": "- While we derived our results under SGD optimization, most DMs are trained in practice with Adam [28]."
+  },
+  {
+    "id": "S248",
+    "text": "A and D, we show that the two key timescales still arise using Adam, although with much fewer optimization steps."
+  },
+  {
+    "id": "S249",
+    "text": "Studying how different optimizers shift these timescales would be valuable for practical usage."
+  },
+  {
+    "id": "S250",
+    "text": "- All experiments in Sect."
+  },
+  {
+    "id": "S251",
+    "text": "2 are conducted with unconditional DMs."
+  },
+  {
+    "id": "S252",
+    "text": "We additionally verify in SM Sect."
+  },
+  {
+    "id": "S253",
+    "text": "B, using a toy Gaussian mixture dataset and classifier-free guidance [21], that the same scaling of    with n holds in the conditional settings."
+  },
+  {
+    "id": "S254",
+    "text": "Understanding precisely how the absolute timescales    and    depend on the conditioning remains an open question."
+  },
+  {
+    "id": "S255",
+    "text": "- Our numerical experiments cover a range of p between 1M and 16M."
+  },
+  {
+    "id": "S256",
+    "text": "Exploring a wider range is essential to map the full (n,p) phase diagram sketched in Fig. 1 and understand the precise effect of expressivity on dynamical regularization."
+  },
+  {
+    "id": "S257",
+    "text": "- Finally, our theoretical analysis rely on well-controlled data and score models that reproduce the core effects."
+  },
+  {
+    "id": "S258",
+    "text": "Extending these analytical frameworks to richer data distributions (such as Gaussian mixtures or data from the hidden manifold model) and to structured architectures would be valuable to further characterize the implicit dynamical regularization of training score-functions."
+  },
+  {
+    "id": "S259",
+    "text": "In particular investigating how heavy-tailed data distribution [2] affect the picture described here could be valuable."
+  },
+  {
+    "id": "S260",
+    "text": "- Although DMs trained on large and diverse datasets likely avoid the memorization regime we study here, some industrial models were shown to exhibit partial memorization [9, 50]."
+  },
+  {
+    "id": "S261",
+    "text": "Our results provide practical guidelines (early-stopping, control the network capacity) to train DMs robustly and hence avoid memorization, which can be especially helpful in data-scarce domains (e.g., physical sciences)."
+  },
+  {
+    "id": "S262",
+    "text": "Acknowledgments and Disclosure of Funding"
+  },
+  {
+    "id": "S263",
+    "text": "The authors thank Valentin De Bortoli for initial motivating discussions on memorization– generalization transitions."
+  },
+  {
+    "id": "S264",
+    "text": "RU thanks Beatrice Achilli, Jérome Garnier-Brun, Carlo Lucibello and Enrico Ventura for insightful discussions."
+  },
+  {
+    "id": "S265",
+    "text": "RU is grateful to Bocconi University for its hospitality during his stay, during which part of this work was conducted."
+  },
+  {
+    "id": "S266",
+    "text": "This work was performed using HPC resources from GENCI-IDRIS (Grant 2025-AD011016319)."
+  },
+  {
+    "id": "S267",
+    "text": "GB acknowledges support from the French government under the management of the Agence Nationale PR[AI]RIE-PSAI (ANR-23-IACL-0008)."
+  },
+  {
+    "id": "S268",
+    "text": "MM acknowledges the support of the PNRR-PE-AI FAIR project funded by the NextGeneration EU program."
+  },
+  {
+    "id": "S269",
+    "text": "After completing this work, we became aware that A. Favero, A. Sclocchi, and M. Wyart [\\[14\\]]() had also been investigating the memorization–generalization transition from a similar perspective."
+  }
+]

@@ -1,0 +1,198 @@
+{
+ "arxiv_id": "2609.32684",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Self-Contrastive Steering: from the entanglement problem to the method and its results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Conditional embeddings needed",
+     "description": "A single universal text embedding cannot satisfy fine-grained needs, so conditional text embeddings that focus on a specified aspect are crucial."
+    },
+    {
+     "id": "P2",
+     "name": "Fine-tuning approaches are costly",
+     "description": "Existing conditional-embedding methods (InstructOR, C-STS, InBedder, HyperCL) require large data and high fine-tuning cost and sacrifice the LLM's general capabilities."
+    },
+    {
+     "id": "P3",
+     "name": "Prompt-based extraction",
+     "description": "Training-free prompt methods (PromptEOL, PonTE) compress the text (and condition) into the hidden state of the last token via 'in one word' prompts and use it directly as the embedding."
+    },
+    {
+     "id": "P4",
+     "name": "Conditional embeddings stay entangled",
+     "description": "Prompt-conditioned embeddings still encode condition-irrelevant general information, e.g. average cosine similarity between general and conditional embeddings is 0.763 on TweetEmotion, which degrades distance measurements."
+    },
+    {
+     "id": "P5",
+     "name": "SCS method",
+     "description": "Self-Contrastive Steering (SCS) is a training-free plug-and-play method that derives an unconditional embedding and a conditional embedding from the same prompt-wrapped text and contrasts them to steer the embedding toward condition-related information."
+    },
+    {
+     "id": "P6",
+     "name": "Unconditional embedding via attention mask",
+     "description": "The unconditional text embedding is obtained at a chosen layer by modifying the attention mask and positional encoding to mask the condition, costing only one additional multi-head self-attention computation."
+    },
+    {
+     "id": "P7",
+     "name": "Two steering strategies",
+     "description": "Direct elimination (DE) subtracts the unconditional value vector from the conditional one, while projection-based elimination (PE) removes only the component of the conditional vector along the unconditional vector; a scaling factor alpha controls the post-intervention norm."
+    },
+    {
+     "id": "P8",
+     "name": "SCS outperforms baselines",
+     "description": "With LLaMA3-8B-Instruct, SCS is best in 6 of 7 cases across clustering, STS and triplet alignment datasets and best on average, with gains on all seven datasets, e.g. 6% and 8.2% on the two I.STSB metrics."
+    },
+    {
+     "id": "P9",
+     "name": "DE suffices",
+     "description": "The simpler SCS-DE achieves better average performance than PE, indicating projection may be unnecessary."
+    },
+    {
+     "id": "P10",
+     "name": "Comparable to supervised methods",
+     "description": "SCS achieves performance comparable to supervised contrastive learning approaches, showing the potential of directly extracting conditional embeddings from LLMs."
+    },
+    {
+     "id": "P11",
+     "name": "Efficient at inference",
+     "description": "SCS adds only a small runtime overhead per sample (e.g. about 70ms to 80ms in Table 2)."
+    },
+    {
+     "id": "P12",
+     "name": "Generalizes across LLMs",
+     "description": "SCS gives consistent gains across LLaMA3-8B, LLaMA3.1-8B, Qwen2.5-7B and their instruct versions, with larger gains on non-instruction-tuned models due to their weaker instruction following."
+    },
+    {
+     "id": "P13",
+     "name": "Generalizes across prompts and conditions",
+     "description": "SCS improves results across six prompts, reduces variance across prompts, and improves across six conditions."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.3, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.3, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.3, Table 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, Sec 5.4, Table 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.6, Table 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.6, Table 5, Table 6"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Intervention position matters",
+   "description": "Intervening at the attention head, FFN output or hidden state all improve performance, with the optimal position dataset-dependent (Table 3)."
+  },
+  {
+   "id": "P15",
+   "name": "Optimal layer varies",
+   "description": "The optimal intervention layer is 3 for TweetEmo, 7 for Amazon-R and 4 for Amazon-C, while layers 5 or 6 generally help all three datasets (Fig 3a)."
+  },
+  {
+   "id": "P16",
+   "name": "Scaling factor sensitivity",
+   "description": "The optimal scaling factor is 15 for TweetEmo, 10 for Amazon-R and 5 for Amazon-C, and values 7, 10 or 12 work well for all three (Fig 3b)."
+  },
+  {
+   "id": "P17",
+   "name": "Improves middle and later layers",
+   "description": "SCS-DE improves PonTE across all middle and later output layers and shifts the optimal layer for conditional embeddings (Fig 3c)."
+  },
+  {
+   "id": "P18",
+   "name": "Limitations",
+   "description": "SCS requires access to LLM internals so it is inapplicable to black-box LLMs, and it was not validated on 70B-scale models."
+  }
+ ],
+ "structural_reasoning": "The entanglement problem in prompt-based conditional embeddings motivates SCS; its two-view construction and steering strategies lead to benchmark and generalization results. Hyperparameter analyses and limitations are isolated."
+}

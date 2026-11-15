@@ -1,0 +1,145 @@
+{
+ "arxiv_id": "2508.00264",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Instruction tuning degrades calibration; label smoothing helps but fails for large vocabularies, explained by an entropy bound and fixed by logit scaling and an efficient kernel",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "SFT degrades calibration",
+     "description": "Common supervised fine-tuning (instruction tuning) practices significantly degrade the confidence calibration of open-source LLMs (Fig 1, Fig 2)."
+    },
+    {
+     "id": "P2",
+     "name": "Label smoothing regularizes confidence",
+     "description": "Label smoothing mixes the target distribution with a uniform distribution using rate beta, acting as a regularizer that makes the model less confident on all samples."
+    },
+    {
+     "id": "P3",
+     "name": "LS preserves calibration in SFT",
+     "description": "Across Llama, Gemma and Mistral models fine-tuned on Tulu3 and evaluated on MMLU, label smoothing reduces calibration error with negligible effect on downstream accuracy."
+    },
+    {
+     "id": "P4",
+     "name": "LS gains shrink for large-vocabulary LLMs",
+     "description": "The calibration benefit of label smoothing diminishes for smaller Llama3 models (1B, 3B) compared with the 8B model, and is much less visible for large-vocabulary LLMs."
+    },
+    {
+     "id": "P5",
+     "name": "Entropy lower bound tied to hidden and vocab size",
+     "description": "A theoretical result links the lower bound of model output entropy to the hidden size D and vocabulary size |V| through the distribution of the final hidden state, limiting the ability to become overconfident."
+    },
+    {
+     "id": "P6",
+     "name": "Temperature and softcapping steer confidence",
+     "description": "Temperature scaling (T>1 divides logits) and logit softcapping change the logit scale and hence the entropy bound, allowing models to become overconfident so label smoothing's benefits re-emerge."
+    },
+    {
+     "id": "P7",
+     "name": "Large vocab makes cross-entropy memory heavy",
+     "description": "With a large vocabulary, cross-entropy requires materializing an N x |V| logit matrix that dominates the memory footprint of training."
+    },
+    {
+     "id": "P8",
+     "name": "Existing efficient kernels lack LS support",
+     "description": "Existing memory-efficient cross-entropy implementations avoid computing the full logit matrix by using only the target row of the classifier head, and so cannot support label smoothing."
+    },
+    {
+     "id": "P9",
+     "name": "Custom LS kernel is memory-efficient",
+     "description": "The proposed kernel supports label smoothing with over 75% less peak memory than Liger Kernels, and trails compiled torch by under 10 ms while using about 7% of its memory."
+    },
+    {
+     "id": "P10",
+     "name": "Kernel matches CCE speed",
+     "description": "The kernel matches Cut-Cross-Entropy with under 0.5% overhead on the forward pass and under 1% for combined forward/backward."
+    },
+    {
+     "id": "P11",
+     "name": "LS improves ECE/RMS across SFT datasets",
+     "description": "With beta=0.1, label smoothing consistently lowers ECE and RMS calibration error on MMLU, HellaSwag and ARC-Easy across Alpaca, Tulu3Mixture and OpenHermes SFT, while preserving accuracy."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 3, Fig 1-2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 4, Fig 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4, Remark 4.4, Fig 5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.1-5.4, Table 2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P12",
+   "name": "Custom kernel gives same training curves",
+   "description": "Training curves of the custom kernel match torch.nn.CrossEntropyLoss with beta=0.1 on LLaMA3.2-3B with Alpaca (Fig 6)."
+  },
+  {
+   "id": "P13",
+   "name": "Best calibration for Llama3-8B and Mistral-7B",
+   "description": "LLaMA3-8B and Mistral-7B achieve the best calibration results, particularly when trained on OpenHermes and Tulu3Mixture (Sec 5.3)."
+  }
+ ],
+ "structural_reasoning": "Argument runs from SFT miscalibration through label smoothing, its failure on large vocabularies explained by an entropy bound, to logit scaling and an efficient kernel."
+}

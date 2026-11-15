@@ -1,0 +1,191 @@
+{
+  "arxiv_id": "unspecified",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/equations/tables rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: inconsistent evaluation protocols undermine adversarial GNN conclusions",
+      "nodes": [
+        {"id": "P1", "name": "GNNs are vulnerable to adversarial attacks", "description": "A series of recent works demonstrate that even minor perturbations to the input graph can significantly degrade GNN performance."},
+        {"id": "P2", "name": "Many adversarial attack studies use differing experimental setups", "description": "Many studies report substantial gains using differing experimental setups, making results difficult to compare and conclusions potentially misleading."},
+        {"id": "P3", "name": "The vision community's neglect of adaptive attacks and evaluation rigor is a cautionary precedent", "description": "Mujkanovic et al. warn that the graph community has yet to learn the 'bitter lesson' from the vision community, where overlooking adaptive attacks and evaluation rigor once led to a flood of unreliable defense evaluations."},
+        {"id": "P4", "name": "GNNs are often trained with attack-specific hyperparameters or fixed splits, biasing results", "description": "GNNs are often trained using attack-specific hyperparameters or fixed data splits, biasing reported results."},
+        {"id": "P5", "name": "New attacks are frequently tested under more favorable conditions than baselines", "description": "New attack models are frequently tested under more favorable conditions than their baselines, further biasing comparisons."},
+        {"id": "P6", "name": "Target node selection commonly underrepresents high-degree nodes, which are harder to attack", "description": "Evaluations commonly select target nodes in a way that underrepresents high-degree nodes, which are typically more resistant to attacks."},
+        {"id": "P7", "name": "These issues mean reported improvements may reflect favorable setups rather than true methodological advances", "description": "Because of biased hyperparameters/splits, favorable conditions for new attacks, and skewed target-node selection, reported improvements in the literature may reflect favorable experimental setups rather than genuine advances in method design."},
+        {"id": "P8", "name": "This motivates a standardized, fair re-evaluation of widely used gray-box attacks", "description": "These recurring evaluation issues motivate re-evaluating several widely used gray-box attacks under a standardized, robust evaluation framework to demonstrate how variations in evaluation protocol produce inconsistent or overstated findings."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P8", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P8", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Positioning against prior evaluation frameworks and benchmarks",
+      "nodes": [
+        {"id": "P9", "name": "Errica et al. and Shchur et al. established rigorous model selection/assessment practices", "description": "Errica et al. and Shchur et al. standardize evaluation procedures and promote a reproducible experimental environment with rigorous model selection and assessment, focusing on graph classification and node classification respectively."},
+        {"id": "P10", "name": "Shchur et al. showed train/val/test split choice significantly impacts performance ranking", "description": "Shchur et al. have shown that the train/validation/test split of choice used in evaluation significantly impacts the performance ranking, drawing community attention to the necessity of using multiple splits."},
+        {"id": "P11", "name": "These works target rigorous GNN model evaluation generally, not adversarial attack evaluation specifically", "description": "Errica et al. and Shchur et al. focus on designing rigorous evaluation frameworks for GNN models generally, rather than on preventing biased estimates of adversarial attack performance specifically."},
+        {"id": "P12", "name": "The Graph Robustness Benchmark (GRB) exists but omits targeted, poisoning, and homophily/heterophily scenarios", "description": "The Graph Robustness Benchmark focuses mainly on global evasion attacks and does not consider targeted attacks, poisoning scenarios, or the distinction between homophilic and heterophilic graphs."},
+        {"id": "P13", "name": "This paper unifies rigorous model-selection practice with adversarial-attack-specific robust evaluation, filling GRB's gaps", "description": "By unifying the model-selection/assessment rigor of Errica et al. and Shchur et al. with an adversarial-attack-specific evaluation procedure, and by adding targeted evasion, poisoning, and homophily/heterophily coverage that GRB lacks, this paper's benchmark addresses the identified gaps in prior work."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P10", "evidence": ["S2"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P11", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P13", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P13", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Formalizing rigorous risk assessment: separating model selection from attack evaluation",
+      "nodes": [
+        {"id": "P14", "name": "Validation accuracy is often a biased estimator of generalization performance", "description": "Validation accuracy is often a biased estimator of generalization performance, and overreliance on it can lead to overfitting and inflated expectations of model quality."},
+        {"id": "P15", "name": "Model selection and final evaluation are often conflated in adversarial GNN literature", "description": "In adversarial GNN literature, model selection and final evaluation are often conflated, undermining fair comparisons across attack strategies."},
+        {"id": "P16", "name": "Proper separation between model selection and risk assessment is essential to avoid misleading conclusions", "description": "Because validation-based selection is a biased estimator and is often conflated with final evaluation in this literature, proper separation between model selection (choosing hyperparameters via validation) and risk assessment (estimating performance via held-out test splits) is essential to avoid misleading conclusions."},
+        {"id": "P17", "name": "The proposed framework performs model selection on clean data only, before any attack is applied", "description": "The proposed evaluation formalizes this separation: model selection for victim models (and surrogate models) is performed solely on clean, unperturbed data via validation performance, prior to attacking, ensuring an unbiased risk estimate (Section 4.2, Algorithm 1)."}
+      ],
+      "edges": [
+        {"from": "P14", "to": "P15", "evidence": ["S3"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P16", "evidence": ["S3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["S4.2", "Algorithm1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Diagnosing target-node-selection bias in the standard (Nettack) protocol",
+      "nodes": [
+        {"id": "P18", "name": "Most prior works select target nodes via the Nettack strategy (high/low margin plus random)", "description": "Most prior works follow the Nettack strategy for target node selection: 10 highest-margin nodes, 10 lowest-margin (but correctly classified) nodes, and 20 additional randomly chosen nodes."},
+        {"id": "P19", "name": "This strategy ignores node degree, which strongly affects attack difficulty", "description": "The Nettack-style selection strategy ignores structural properties such as node degree, even though richer neighborhood context makes high-degree nodes harder to attack."},
+        {"id": "P20", "name": "This selection strategy therefore underrepresents high-degree, attack-resistant nodes", "description": "Because the standard selection criteria (margin, random) do not account for degree, this strategy may systematically underrepresent high-degree nodes, which are typically more resistant to attacks."},
+        {"id": "P21", "name": "This bias inflates measured attack performance and skews conclusions", "description": "By underrepresenting the harder-to-attack, attack-resistant high-degree nodes, the standard target-selection strategy inflates measured attack performance and skews the resulting conclusions about attack effectiveness."},
+        {"id": "P22", "name": "A rigorous evaluation must therefore include target nodes with diverse structural types, including degree-based selection", "description": "To correct this bias, a high-quality evaluation should select target nodes to include diverse structural types (not just margin and random criteria), explicitly incorporating node degree as a selection axis."}
+      ],
+      "edges": [
+        {"from": "P18", "to": "P19", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P22", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Benchmark design: attacks, defenses, adaptive attacks, and the naive baseline",
+      "nodes": [
+        {"id": "P23", "name": "Seven widely cited attack methods are benchmarked, selected for review status, diversity, and citations", "description": "Seven widely cited attack methods (Nettack, FGA, SGA, GOttack, PR-BCD, PGD, and one more) are benchmarked, selected based on peer-review status, architectural diversity, and citation count."},
+        {"id": "P24", "name": "Vanilla and nine defended victim models are evaluated to test both baseline and defended vulnerability", "description": "Four vanilla GNN victim models (GCN, GSAGE, GIN, PNA) and nine defended victim models are evaluated, so attacks against vanilla models establish baseline vulnerability while defended scenarios test the effectiveness of robustness interventions."},
+        {"id": "P25", "name": "The gray-box, targeted attack setting is adopted to balance realism and diagnostic value", "description": "The gray-box setting (attacker has training data/labels to train a surrogate, but not full model parameters) is adopted as it balances realism with the ability to diagnose vulnerabilities, and targeted attacks on a node subset are used since they are harder to detect in real systems."},
+        {"id": "P26", "name": "Adaptive attacks are included alongside fixed-surrogate attacks to simulate stronger adversaries", "description": "Unlike prior work using fixed surrogates only, adaptive attacks directly optimized against defended victim models are also evaluated (e.g., PR-BCD adaptive vs. non-adaptive variants), simulating stronger adversaries."},
+        {"id": "P27", "name": "A naive L1_D-RND baseline is introduced to contextualize claimed improvements", "description": "A naive yet surprisingly effective baseline, L1_D-RND, which perturbs edges based on node degree and features rather than gradients or learned surrogates, is introduced to contextualize performance claims and enable basic sanity checks against complex new methods."},
+        {"id": "P28", "name": "Together these design choices instantiate the evaluation criteria motivated by the earlier diagnoses", "description": "Diverse attacks/defenses, vanilla and defended victims, gray-box adaptive attacks, and a naive baseline together instantiate the rigorous evaluation criteria (model selection, multiple splits, diverse target nodes, vanilla and defended victims) called for by the preceding diagnostic sections."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P28", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P28", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P28", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P28", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P28", "evidence": ["S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P26", "to": "P28", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P28", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Results: vanilla attack performance depends heavily on budget, homophily, and scale",
+      "nodes": [
+        {"id": "P29", "name": "No single attack dominates at low budget on homophily datasets; PR-BCD and L1_D-RND both lead in some cases", "description": "At budget ∆=1, PR-BCD (NA) has the highest misclassification rate in only 4 of 12 evasion scenarios on homophily datasets, with L1_D-RND surprisingly yielding the highest rate for PUBMED and CITESEER when PNA is the victim."},
+        {"id": "P30", "name": "At higher budgets, Nettack becomes dominant on homophily datasets", "description": "When the budget increases (∆=2...5), Nettack demonstrates superior performance in 36 of 48 cases, while PR-BCD (NA) only remains best on CITESEER and CORA for GCN."},
+        {"id": "P31", "name": "Poisoning attacks are substantially more effective than evasion attacks", "description": "Poisoning attacks are significantly more effective than evasion attacks: at ∆=1 Nettack's average misclassification rate rises 4.72% from evasion to poisoning, and even the naive L1_D-RND baseline improves by 8.9% under poisoning."},
+        {"id": "P32", "name": "GraphSAGE is the most resilient vanilla victim model across both settings", "description": "GraphSAGE is the most resilient victim model in both evasion and poisoning attacks, with Nettack yielding the lowest average misclassification rate (44.8% evasion, 47.97% poisoning) against it compared to other victim models."},
+        {"id": "P33", "name": "Perturbation impact differs qualitatively between homophily and heterophily graphs by budget regime", "description": "At budget 1, average misclassification rate is higher on heterophily (33.96%) than homophily (27.78%) datasets, but by budget 5 homophily datasets show the higher rate (52.21% vs 46.86%), indicating the first perturbation has greater impact under heterophily while later perturbations gain more under homophily."},
+        {"id": "P34", "name": "Attack rankings shift substantially between homophily and heterophily settings", "description": "Nettack is best on homophily datasets (rank 1.64) but drops to rank 5.48 on heterophily datasets, while FGA rises from rank 3.10 on homophily to rank 1.92 (best) on heterophily, and the naive L1_D-RND similarly reverses from worst on homophily (rank 6.27) to competitive on heterophily (rank 2.33)."},
+        {"id": "P35", "name": "Most existing attacks fail to scale to even moderately large graphs like OGB-ARXIV", "description": "On the moderately sized OGB-ARXIV dataset (under 200K nodes), only three of seven attack methods and two of four victim models could be fully evaluated within the 120-hour compute limit, despite ample GPU resources, underscoring a critical scalability limitation."},
+        {"id": "P36", "name": "Attack rankings and robustness conclusions are therefore highly protocol- and setting-dependent, not fixed properties of methods", "description": "Because attack effectiveness rankings, the evasion-vs-poisoning gap, and scalability all shift substantially across budget, homophily/heterophily, and dataset scale, no single attack or ranking generalizes across settings, confirming that prior single-setting evaluations risk overstated or misleading conclusions."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P36", "evidence": ["S6.1", "Table18"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P36", "evidence": ["S6.1", "Table18"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P36", "evidence": ["S6.1", "Table18"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P36", "evidence": ["S6.1", "Table19", "Table20"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P36", "evidence": ["S6.1", "Table19", "Table20"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P36", "evidence": ["S6.1", "Table4"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P36", "evidence": ["S6.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Results: defenses substantially reduce attack effectiveness, unevenly across settings",
+      "nodes": [
+        {"id": "P37", "name": "Defenses substantially reduce misclassification, with poisoning generally easier to defend than evasion", "description": "Defense models substantially reduce misclassification rates on homophily datasets, with poisoning attacks generally easier to defend against than evasion; e.g. Nettack's average rate drops from 49.1% to 32.2% under evasion and from 53.6% to 23.56% under poisoning with defenses applied."},
+        {"id": "P38", "name": "GNNGuard is the most effective defense on homophily datasets", "description": "Among defense methods, GNNGuard is the most effective on homophily datasets, achieving average misclassification rates of just 5.01% (evasion) and 5.92% (poisoning) at ∆=1 across three datasets and seven attacks, with GRAND consistently second-best."},
+        {"id": "P39", "name": "The naive L1_D-RND baseline often outperforms sophisticated attacks against defended models", "description": "The naive L1_D-RND baseline achieves the highest misclassification rate in 19 of 45 defended evasion settings and 18 of 45 defended poisoning settings, despite lacking any optimization or model-specific tuning."},
+        {"id": "P40", "name": "This calls into question the actual gains offered by sophisticated adversarial attack methods", "description": "Because a simple degree/feature-based baseline frequently outperforms optimized, learned adversarial attacks against defended models, this raises doubt about how much genuine gain sophisticated attack methods actually provide over naive perturbation strategies."},
+        {"id": "P41", "name": "Defenses are more effective on heterophily datasets than homophily datasets", "description": "Defenses are more effective on heterophily datasets than on homophily datasets: average misclassification rates under defense are substantially lower on heterophily ([16.08%,23.33%]) than homophily ([20.11%,40.82%]) across budgets, with the best defense (RUNG) reducing most heterophily attack rates to about 2%."},
+        {"id": "P42", "name": "Some defenses that excel on homophily graphs become fragile or degenerate on heterophily graphs", "description": "Despite its strong homophily performance, GNNGuard becomes notably fragile under heterophily, in one case pruning all edges on Chameleon and producing uniformly zero misclassification rates regardless of attack, an artifact rather than genuine robustness."},
+        {"id": "P43", "name": "Robustness conclusions about both attacks and defenses are highly setting-dependent and require standardized multi-setting evaluation", "description": "Because attack rankings against defenses, defense effectiveness, and even defense failure modes (e.g. GNNGuard's edge-pruning degeneracy) all vary sharply between homophily and heterophily graphs, and because a naive baseline frequently rivals sophisticated attacks, robustness conclusions cannot be generalized from a single dataset type or attack set, reinforcing the need for the standardized multi-setting evaluation this benchmark provides."}
+      ],
+      "edges": [
+        {"from": "P37", "to": "P43", "evidence": ["S6.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P43", "evidence": ["S6.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P39", "to": "P40", "evidence": ["S6.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P40", "to": "P43", "evidence": ["S6.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P41", "to": "P43", "evidence": ["S6.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P42", "to": "P43", "evidence": ["S6.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "name": "Empirically confirming the target-node-selection and victim-model-selection critiques",
+      "nodes": [
+        {"id": "P44", "name": "Degree-based target selection yields substantially lower attack success than margin/random selection", "description": "Using node degree as a selection criterion results in substantially lower attack success compared to margin-based or random selection, even in vanilla undefended settings, empirically confirming the earlier bias diagnosis."},
+        {"id": "P45", "name": "High-degree nodes show alarmingly low misclassification rates across all attacks", "description": "All attack methods perform poorly on high-degree nodes, which exhibit misclassification rates of only 0.05 to 0.28 despite the complete absence of any defense, while low-degree and low-margin nodes remain vulnerable."},
+        {"id": "P46", "name": "This vulnerability went undetected because attacks were developed/benchmarked mainly on small, low-average-degree graphs", "description": "Because most attacks were developed and benchmarked on small graphs with low average degree, and scalability limitations prevented testing on larger, high-degree networks, the high-degree robustness gap remained undetected in prior evaluations."},
+        {"id": "P47", "name": "Evaluations ignoring node degree therefore systematically overstate attack effectiveness and GNN fragility", "description": "Because low-degree/margin-biased evaluations miss the strong inherent robustness of high-degree nodes, such evaluations systematically overstate both the effectiveness of attack models and the fragility of GNNs, especially given that real-world networks tend to have much higher average degree."},
+        {"id": "P48", "name": "Incorporating victim-model selection significantly alters measured attack outcomes", "description": "Incorporating model selection into evaluation significantly alters attack outcomes: on CORA and CITESEER, model-selected victim models are generally more vulnerable (e.g. SGA's misclassification rate on GIN under poisoning differs by an average of 15.27% across budgets), while on PUBMED model selection sometimes yields more robust victims, particularly for GraphSAGE."},
+        {"id": "P49", "name": "Perceived attack effectiveness therefore depends on whether the victim model is realistically (validation-)selected", "description": "Because incorporating realistic model selection can substantially shift measured attack success in either direction depending on the dataset, the perceived effectiveness of adversarial attacks depends not only on the attack method but also on whether the victim model is realistically selected, so omitting this step can overstate or understate GNN vulnerability."}
+      ],
+      "edges": [
+        {"from": "P20", "to": "P44", "evidence": ["S6.2", "AppendixTable29"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P44", "to": "P45", "evidence": ["S6.2", "Figure2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P45", "to": "P46", "evidence": ["S6.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P46", "to": "P47", "evidence": ["S6.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P48", "evidence": ["S6.2", "Table30"], "votes": 2, "confidence": "majority"},
+        {"from": "P48", "to": "P49", "evidence": ["S6.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P50", "name": "Definition of node classification margin", "description": "The classification margin Mv for node v is defined as the difference between the model's output score for the true class and the highest score for any incorrect class (Eq. 1), with small/negative margins indicating uncertain or incorrect, more attackable predictions."},
+    {"id": "P51", "name": "Formal definitions of evasion vs. poisoning attacker capacity", "description": "In the evasion setting the victim trains on clean data and is attacked only at inference; in the poisoning setting the attack modifies the graph before training, so the victim is trained on perturbed data."},
+    {"id": "P52", "name": "Formal perturbation budget constraint", "description": "The perturbation budget ∆ bounds the total L1 change to node features and edges between the clean and perturbed graphs (Eq. 2)."},
+    {"id": "P53", "name": "Black-box, white-box, and gray-box attacker knowledge definitions", "description": "Black-box attackers lack access to model parameters and labels, white-box attackers have full access to both, and gray-box attackers can access training data and labels to train a surrogate model approximating the victim; this paper adopts the gray-box setting."},
+    {"id": "P54", "name": "Dataset descriptions and statistics", "description": "The benchmark uses three homophilous datasets (CORA, CITESEER, PUBMED), two heterophilous datasets (SQUIRREL, CHAMELEON), and one large-scale dataset (OGB-ARXIV), with node/edge/feature/label counts given in Table 1."},
+    {"id": "P55", "name": "Computational environment and scale of experiments", "description": "Experiments comprised up to 453,461 training runs, conducted on a Linux cluster with Intel Xeon Gold 6338 CPUs, 251GB RAM, and NVIDIA RTX A40 GPUs, using PyTorch/PyTorch Geometric, with a 120-hour per-run compute cap (OOR marking for runs exceeding it)."},
+    {"id": "P56", "name": "Feature-attack extension largely mirrors structural-attack trends", "description": "The pipeline was also extended to feature-based attacks, and results on homophily datasets largely mirror the trends observed for structural attacks, with Nettack and FGA remaining the best and second-best methods."},
+    {"id": "P57", "name": "Explicit non-goal: fully adaptive attacks against every defense mechanism", "description": "The paper explicitly scopes out evaluating defenses against fully adaptive attacks specifically crafted to circumvent their core mechanisms, focusing instead on a practical setting where neither side has access to the opponent's backbone model or strategy."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph mirrors the paper's diagnose-then-fix-then-validate structure. C1 reconstructs the Introduction's cumulative case that inconsistent protocols (biased hyperparameters/splits, favorable new-attack conditions, skewed target selection) undermine adversarial GNN conclusions, directly motivating the re-evaluation. C2 captures the Related Work's positioning against Errica et al., Shchur et al., and GRB, showing this benchmark's novelty as filling specific gaps (adversarial-attack-specific rigor; targeted/poisoning/heterophily coverage). C3 and C4 formalize the paper's own Sections 3-4.1 diagnostic arguments (model-selection/risk-assessment conflation; Nettack-style target-selection bias) as self-contained derivations, since each grounds a distinct methodological fix embodied in Algorithm 1 and the expanded target-node criteria. C5 assembles these fixes into the concrete benchmark design (attacks, defenses, adaptive attacks, naive baseline). C6-C8 mirror the Results section's three empirical threads (vanilla-attack findings, defended-attack findings, and the explicit empirical validation of the target-node and victim-model-selection critiques from C3/C4), each chain culminating in the paper's own higher-level interpretive claim. Isolated nodes are limited to formal definitions (margin, evasion/poisoning, budget, attacker knowledge), dataset/compute descriptions, and explicitly scoped-out or secondary findings (feature-attack extension) that support but are not premises within the central argument chains."
+}

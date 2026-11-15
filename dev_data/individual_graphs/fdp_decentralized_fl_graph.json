@@ -1,0 +1,390 @@
+{
+  "arxiv_id": "2510.19934v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Local DP strong observability",
+          "description": "Local DP assumes adversaries can observe all local updates, which requires injecting substantial noise and degrades utility."
+        },
+        {
+          "id": "P2",
+          "name": "PN-DP relaxation",
+          "description": "Pairwise Network DP (PN-DP) relaxes Local DP by modeling only pairwise observability between connected nodes, rather than full observability."
+        },
+        {
+          "id": "P3",
+          "name": "PN-DP amplification benefit",
+          "description": "PN-DP's relaxed observability assumption enables privacy amplification by decentralization, improving utility in decentralized learning."
+        },
+        {
+          "id": "P4",
+          "name": "Existing PN-DP relies on RDP",
+          "description": "Existing PN-DP analyses rely mainly on Renyi DP (PN-RDP), which often yields loose privacy bounds."
+        },
+        {
+          "id": "P5",
+          "name": "PN-f-DP introduction",
+          "description": "The paper introduces Pairwise Network f-DP (PN-f-DP), extending PN-DP with the f-DP formalism for tighter, lossless privacy accounting via a hypothesis-testing interpretation."
+        },
+        {
+          "id": "P6",
+          "name": "PN-f-DP captures decentralization amplification",
+          "description": "Unlike previous federated f-DP formulations, PN-f-DP captures additional privacy amplification arising from decentralization, random walks, and iterative communication."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["S1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P5", "evidence": ["S1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["S1.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": 9.5,
+        "flagged_edges": []
+      }
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P7",
+          "name": "SecLDP framework",
+          "description": "Secret-based Local DP (SecLDP) considers user pairs that share secrets with neighbors and coordinate correlated noise injection to improve the privacy-utility trade-off under limited collusion."
+        },
+        {
+          "id": "P8",
+          "name": "Sec-f-LDP introduction",
+          "description": "The paper introduces Secret-based f-Local DP (Sec-f-LDP), generalizing f-DP to regimes with correlated noise and shared secrets."
+        },
+        {
+          "id": "P9",
+          "name": "Sec-f-LDP amplification under collusion",
+          "description": "Sec-f-LDP leverages shared secrets to incorporate correlated noise, achieving additional privacy amplification in structured collusion scenarios not addressed by standard Local DP."
+        }
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["S1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S1.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": 10.0,
+        "flagged_edges": []
+      }
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P10",
+          "name": "Random walk first-visit mixture",
+          "description": "The one-time snapshot observed by user j is a mixture distribution over first-visit times, since the model reaches j from i for the first time at a random step governed by the hitting time."
+        },
+        {
+          "id": "P11",
+          "name": "Joint concavity of trade-off functions",
+          "description": "The paper leverages the joint concavity of trade-off functions to lower bound the privacy loss of the mixture mechanism by a convex combination of per-step trade-off functions."
+        },
+        {
+          "id": "P12",
+          "name": "Lemma 4.1 mixture bound",
+          "description": "Lemma 4.1 establishes a lower bound on the trade-off function of the single-observation mechanism as a weighted combination of per-step trade-off functions, weighted by hitting-time probabilities."
+        },
+        {
+          "id": "P13",
+          "name": "Hitting-time weighting refinement",
+          "description": "The paper defines the mixture weights based on the hitting-time distribution rather than matrix power entries (W^t)_ij, better capturing random walk dynamics and yielding tighter bounds."
+        },
+        {
+          "id": "P14",
+          "name": "Recursive computation of hitting weights",
+          "description": "The hitting-time weights are computed recursively via the Markov property, based on the transition matrix W."
+        },
+        {
+          "id": "P15",
+          "name": "Per-step trade-off via composition",
+          "description": "Each per-step trade-off function is computed using the composition rule of f-DP to account for the cumulative privacy effect of local SGD updates."
+        },
+        {
+          "id": "P16",
+          "name": "Amplification by iteration for strongly convex losses",
+          "description": "For strongly convex and smooth loss functions, privacy amplification by iteration in f-DP is applied, using the contraction effect together with repeated noise injection to yield tighter trade-off functions (Lemma 4.2)."
+        },
+        {
+          "id": "P17",
+          "name": "Standard composition for non-convex losses",
+          "description": "For general non-convex loss functions, the standard f-DP composition rule is used instead, yielding a more conservative bound (Lemma 4.3)."
+        },
+        {
+          "id": "P18",
+          "name": "Markov chain concentration for visit counts",
+          "description": "A Hoeffding-type concentration inequality for Markov chains is used to bound the total number of times node j is visited during training."
+        },
+        {
+          "id": "P19",
+          "name": "Theorem 4.1 user-level guarantee",
+          "description": "Theorem 4.1 combines the single-visit mixture bound with the Markov concentration bound on visit counts to yield the final user-level PN-f-DP guarantee for Algorithm 1, computable numerically though lacking closed form."
+        },
+        {
+          "id": "P20",
+          "name": "Tighter RDP conversion from hitting times",
+          "description": "Converting the f-DP guarantees back into RDP yields improved bounds compared to prior work, primarily due to the more accurate modeling of communication timing via hitting times."
+        }
+      ],
+      "edges": [
+        {"from": "P10", "to": "P11", "evidence": ["S4.1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P12", "evidence": ["S4.1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P12", "evidence": ["S4.1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P13", "evidence": ["S4.1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P16", "evidence": ["S4.1.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P17", "evidence": ["S4.1.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P19", "evidence": ["S4.1.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P19", "evidence": ["S4.1.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P19", "evidence": ["S4.1.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P20", "evidence": ["S4.1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P19", "to": "P20", "evidence": ["S4.1.3"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": 8.8,
+        "flagged_edges": []
+      }
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P21",
+          "name": "Record-level adjacency",
+          "description": "Record-level privacy considers datasets differing by a single record within one user's local dataset, rather than the entire user dataset."
+        },
+        {
+          "id": "P22",
+          "name": "Sub-sampling amplification",
+          "description": "In the record-level setting, each user computes a gradient from a random subset of local data, reducing the probability a given record is selected and amplifying privacy via sub-sampling."
+        },
+        {
+          "id": "P23",
+          "name": "Sub-sampling interacts with iteration amplification",
+          "description": "Sub-sampling interacts with privacy amplification by iteration, making the record-level analysis more intricate than the user-level analysis."
+        },
+        {
+          "id": "P24",
+          "name": "Lemma 4.4 record-level trade-off",
+          "description": "Lemma 4.4 characterizes the record-level trade-off function using a sub-sampling operator applied to the per-step Gaussian trade-off bounds."
+        },
+        {
+          "id": "P25",
+          "name": "Record-level guarantee via substitution",
+          "description": "The record-level privacy guarantee is obtained by substituting the record-level trade-off function from Lemma 4.4 into Lemma 4.1 and Theorem 4.1."
+        }
+      ],
+      "edges": [
+        {"from": "P21", "to": "P22", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P24", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P25", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": 9.5,
+        "flagged_edges": []
+      }
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P26",
+          "name": "Honest-but-curious collusion model",
+          "description": "The correlated-noise analysis models honest-but-curious collusion at level q, where a coalition of up to q users may pool information including shared secrets."
+        },
+        {
+          "id": "P27",
+          "name": "Algorithm 2 correlated + independent noise",
+          "description": "Algorithm 2 (DecoR) incorporates both independent Gaussian noise and pairwise correlated noise via shared secrets before mixing via the transition matrix."
+        },
+        {
+          "id": "P28",
+          "name": "Theorem 4.2 Sec-GDP guarantee",
+          "description": "Theorem 4.2 shows Algorithm 2 satisfies (mu, S)-SecGDP against colluding users, with mu expressed in terms of independent noise variance, correlated noise variance, collusion level, and the graph Laplacian's second eigenvalue."
+        }
+      ],
+      "edges": [
+        {"from": "P27", "to": "P28", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P28", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": 10.0,
+        "flagged_edges": []
+      }
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {
+          "id": "P29",
+          "name": "Tighter (eps,delta) bounds vs RDP",
+          "description": "Experiments on synthetic and real datasets show f-DP-based accounting yields consistently tighter (epsilon, delta) bounds than RDP-based approaches."
+        },
+        {
+          "id": "P30",
+          "name": "Tighter bounds require less noise",
+          "description": "Tighter (epsilon, delta) bounds allow calibrating less noise for a given privacy level."
+        },
+        {
+          "id": "P31",
+          "name": "Improved utility",
+          "description": "Requiring less noise for the same privacy guarantee leads to significantly improved model utility."
+        },
+        {
+          "id": "P32",
+          "name": "Hypercube graph pairwise comparison",
+          "description": "On a hypercube graph with 32 nodes, PN-f-DP yields noticeably smaller pairwise privacy budgets epsilon than PN-RDP across nearly all node pairs."
+        },
+        {
+          "id": "P33",
+          "name": "Refined RDP hitting-time baseline still worse",
+          "description": "Even against a refined RDP baseline using exact hitting times rather than an upper bound, PN-f-DP consistently yields the smallest epsilon."
+        },
+        {
+          "id": "P34",
+          "name": "MNIST/logistic regression accuracy gains",
+          "description": "On MNIST classification and logistic regression tasks under an expander graph topology, the f-DP-calibrated method achieves consistently higher test accuracy than RDP-based methods across graph structures and privacy budgets."
+        },
+        {
+          "id": "P35",
+          "name": "Sec-f-LDP improved trade-off vs SecLDP and LDP",
+          "description": "On ring and torus topologies with logistic regression on the a9a dataset, Sec-f-LDP achieves a better privacy-utility trade-off than both SecLDP and local DP baselines."
+        }
+      ],
+      "edges": [
+        {"from": "P29", "to": "P30", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P31", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P29", "evidence": ["S5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P29", "evidence": ["S5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P31", "to": "P34", "evidence": ["S5.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P35", "evidence": ["S5.3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": 8.5,
+        "flagged_edges": []
+      }
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P36",
+      "name": "FL motivation",
+      "description": "Federated Learning enables user devices to collaboratively train models without sharing raw data, useful when a central server is unavailable, untrusted, or communication is expensive."
+    },
+    {
+      "id": "P37",
+      "name": "Model updates leak information",
+      "description": "Even without access to raw data, model updates can reveal sensitive information, especially under inference or reconstruction attacks."
+    },
+    {
+      "id": "P38",
+      "name": "DP-SGD baseline mechanism",
+      "description": "DP-SGD adds noise to stochastic gradients to provide a formal differential privacy guarantee."
+    },
+    {
+      "id": "P39",
+      "name": "Privacy accounting affects utility",
+      "description": "More accurate privacy accounting allows adding less noise for the same guarantee, improving utility."
+    },
+    {
+      "id": "P40",
+      "name": "Trade-off function definition",
+      "description": "The trade-off function T(P,Q) denotes the minimal type II error at a given level of type I error in the hypothesis-testing formulation of differential privacy."
+    },
+    {
+      "id": "P41",
+      "name": "Gaussian DP special case",
+      "description": "A mechanism satisfies mu-Gaussian DP if its trade-off function equals that of two unit-variance Gaussians separated by mu."
+    },
+    {
+      "id": "P42",
+      "name": "Tensor product composition",
+      "description": "The composition of DP mechanisms corresponds to the tensor product of their trade-off functions."
+    },
+    {
+      "id": "P43",
+      "name": "User-level vs record-level DP granularity",
+      "description": "User-level DP bounds the influence of an entire user's dataset, while record-level DP limits the impact of a single data point within a user's dataset."
+    },
+    {
+      "id": "P44",
+      "name": "Algorithm 1 decentralized DP-SGD",
+      "description": "Algorithm 1 performs K local SGD steps with Gaussian-perturbed gradients at each active node, then sends the model to a randomly chosen neighbor via a random-walk transition matrix."
+    },
+    {
+      "id": "P45",
+      "name": "Privacy amplification by shuffling and decentralization",
+      "description": "Privacy amplification can arise from both shuffling techniques and decentralization of communication."
+    },
+    {
+      "id": "P46",
+      "name": "Privacy amplification by iteration",
+      "description": "In iterative processes, revealing only the final model parameter (not intermediates) contributes additional privacy amplification, previously extended to f-DP via a shifted interpolated process."
+    },
+    {
+      "id": "P47",
+      "name": "Prior random-walk analysis limited to RDP",
+      "description": "The privacy impact of random walks had previously only been studied under RDP, leaving its characterization within f-DP an open question prior to this work."
+    },
+    {
+      "id": "P48",
+      "name": "Communication graph and transition matrix",
+      "description": "Decentralized communication is modeled via a connected graph with an associated Markov transition matrix governing message-passing probabilities between nodes."
+    },
+    {
+      "id": "P49",
+      "name": "Remark 3.1 weak federated f-DP relaxation",
+      "description": "Record-level PN-f-DP is shown to be a relaxation of weak federated f-DP from prior work, connected via a double convex conjugate operation."
+    },
+    {
+      "id": "P50",
+      "name": "Spectral gap assumption in Theorem 4.1",
+      "description": "Theorem 4.1 assumes the transition matrix is irreducible, aperiodic, and symmetric with a positive spectral gap, used to bound the number of node visits with high probability."
+    },
+    {
+      "id": "P51",
+      "name": "Framework generalizes to dynamic graphs",
+      "description": "The proposed framework generalizes to dynamic or time-varying graphs by updating the transition matrices each round, and extends to other decentralized protocols such as gossip-based or push-sum algorithms."
+    }
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph is highly coherent within its major thematic clusters: the PN-DP to PN-f-DP motivation chain (C1), the SecLDP to Sec-f-LDP motivation chain (C2), the detailed user-level privacy analysis pipeline combining random-walk mixtures, joint concavity, and Markov concentration into Theorem 4.1 (C3), the record-level extension via sub-sampling (C4), the correlated-noise Sec-GDP result (C5), and the experimental validation cluster tying tighter bounds to improved utility across three experimental settings (C6). Edges within C3 and C6 carry slightly lower edge_scores reflecting that some connections (e.g., between the RDP-conversion improvement and the final theorem, or between the SecLDP amplification claim and the experimental trade-off result) are supported by the overall narrative and figure captions rather than a single explicit causal sentence. No cycles or reversed dependencies were identified; most nodes are prerequisite building blocks feeding into their respective section's culminating theorem or empirical claim. A relatively large isolated-node set reflects background definitions (f-DP formalism, DP notions, algorithm descriptions) that motivate but are not directly chained to specific downstream results with enough evidentiary specificity."
+}

@@ -1,0 +1,434 @@
+{
+  "arxiv_id": "2601.23207v2",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {"id": "P1", "name": "Algorithmic tasks as a critical benchmark frontier", "description": "Algorithmic tasks are a critical frontier for testing neural network performance, with algorithmic computation benchmarks increasingly used as models become more capable."},
+        {"id": "P2", "name": "Renewed interest in reliable algorithm learning", "description": "This benchmarking trend has contributed to a renewed interest in understanding how neural networks can learn and reliably compute algorithms."},
+        {"id": "P3", "name": "Gap between expressive power and reliable training", "description": "While the computational capabilities of neural networks have been theoretically established, less is known about when training can reliably recover desired representations."},
+        {"id": "P4", "name": "Probabilistic guarantees are inadequate for iterative computation", "description": "Many results provide only probabilistic learning guarantees, which are typically approximate and inadequate for computational tasks requiring iterative execution, where approximation errors can compound and invalidate computations."},
+        {"id": "P5", "name": "Exact learning argued to be essential", "description": "This concern is echoed by György et al., who argue that reliable deductive reasoning in learning-based systems requires moving beyond high performance on sampled reasoning tasks and toward exact learning."},
+        {"id": "P6", "name": "Back de Luca et al. move toward non-approximate guarantees", "description": "Back de Luca et al. move toward non-approximate learning guarantees for binary algorithms by encoding algorithmic instructions directly in the training set rather than using standard input-output examples."},
+        {"id": "P7", "name": "Feedforward architecture limits scope of prior guarantees", "description": "Those results apply only to feedforward networks, which are poorly suited to variable-size inputs, limiting the scope of the guarantees."},
+        {"id": "P8", "name": "This work extends exact learnability to GNNs", "description": "This work extends these results to graph neural networks, using Neural Tangent Kernel theory in the infinite-width regime to derive exact learnability results for graph algorithms."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1", "S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["S2", "S3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["S3", "S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S4", "S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P6", "evidence": ["S5", "S6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P7", "evidence": ["S6", "S7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P8", "evidence": ["S7", "S8"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {"id": "P9", "name": "Every node shares the same local model", "description": "Unlike the feedforward results of Back de Luca et al., this work's architecture is better suited to graphs because every node shares the same local model."},
+        {"id": "P10", "name": "Instruction count grows constant or logarithmically", "description": "Consequently, the number of instructions remains constant or grows only logarithmically with the maximum graph size imposed by finite-memory constraints."},
+        {"id": "P11", "name": "Feedforward instruction counts scale linearly/quadratically", "description": "In contrast, executing the same algorithms with a feedforward model would require encoding the entire graph in the input vector, leading to instruction counts that scale linearly or quadratically with the maximum node count."},
+        {"id": "P12", "name": "Approach applies to arbitrary graph sizes with feature-dimension caveat", "description": "The approach applies to graphs of arbitrary size, but any fixed feature dimension limits the largest graph that can be processed correctly."},
+        {"id": "P13", "name": "Bound on max degree, sometimes node count", "description": "In general, implementations impose a bound on the maximum node degree, and some algorithms additionally require a bound on the node count."},
+        {"id": "P14", "name": "Exact learnability established for LOCAL-model algorithms", "description": "Under these conditions, exact learnability is established for Message Flooding, Breadth-First Search, Depth-First Search, Bellman-Ford, and more generally, any algorithm within the LOCAL model of distributed computation."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P10", "evidence": ["S9", "S10"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["S10", "S11"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P12", "evidence": ["S10", "S12"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P13", "evidence": ["S12", "S13"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S13", "S14"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": ["P10->P11"]}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {"id": "P15", "name": "Back de Luca et al. is the closest related work", "description": "The closest work to this paper is Back de Luca et al., which establishes exact learning guarantees via Neural Tangent Kernel theory."},
+        {"id": "P16", "name": "Both works build on the NTK framework", "description": "Both this work and Back de Luca et al. build on the NTK framework introduced by Jacot et al. and Lee et al."},
+        {"id": "P17", "name": "This work extends NTK analysis to GNNs", "description": "This work adopts a similar proof strategy but extends the analysis to graph neural networks, whose architecture is more naturally aligned with graph algorithms than the feedforward networks of Back de Luca et al."},
+        {"id": "P18", "name": "GNN alignment yields efficiency gains", "description": "This alignment yields a more efficient training dataset and embedding dimension, as extensively discussed in the Results section."}
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["S15", "S16"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["S16", "S17"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S17", "S18"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {"id": "P19", "name": "Shared local MLPs trained to execute local instructions", "description": "The framework is initialized by training a set of shared local MLPs on the same data to exactly execute local instructions for every node."},
+        {"id": "P20", "name": "Trained MLPs used within message-passing architecture", "description": "The trained MLPs are then used within a message passing architecture, enabling processing of entire graphs using the same local rules."},
+        {"id": "P21", "name": "Connection to label propagation for node classification", "description": "This local training and global inference perspective is conceptually related to classical label propagation and its connections to graph neural networks, more commonly studied in node classification."}
+      ],
+      "edges": [
+        {"from": "P19", "to": "P20", "evidence": ["S19", "S20"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["S20", "S21"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {"id": "P22", "name": "Prior probabilistic guarantees rely on distributional assumptions", "description": "Beyond exact learnability, prior work provides probabilistic guarantees for approximating Turing-computable functions, but these are non-exact and rely on distributional assumptions over training and test data."},
+        {"id": "P23", "name": "Instruction-based training avoids input distributions", "description": "Such distributional assumptions are natural when learning from input-output samples, but because this work trains directly on instructions, it avoids input distributions altogether."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["S22", "S23"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {"id": "P24", "name": "Handcrafted-dataset GNN studies force algorithm implementation", "description": "For graph algorithms, other works study specific GNN variants trained on handcrafted datasets, showing that achieving sufficiently low error on a sparsity-regularized objective forces the learned GNN to implement the target algorithm and extrapolate to arbitrarily large graphs under structural constraints."},
+        {"id": "P25", "name": "No guarantee standard training reaches this regime", "description": "However, these results do not guarantee that standard gradient-based training reaches this near-optimal regime."}
+      ],
+      "edges": [
+        {"from": "P24", "to": "P25", "evidence": ["S24", "S25"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {"id": "P26", "name": "Expressive power relates architectures to computation models", "description": "Broader theoretical work studies neural-network computation by relating architectural expressive power to formal models of computation."},
+        {"id": "P27", "name": "Loukas establishes GNN-LOCAL expressive equivalence", "description": "Closest to this work is Loukas, which establishes an expressive-power equivalence between GNNs and the LOCAL model of distributed computing."},
+        {"id": "P28", "name": "This work provides exact learnability beyond expressive-power comparison", "description": "That prior work only focuses on comparing expressive capabilities; in contrast, this work provides exact learnability results by showing that the proposed GNN architecture can learn any algorithmic execution in LOCAL, with explicit upper bounds on both message size and local memory."}
+      ],
+      "edges": [
+        {"from": "P26", "to": "P27", "evidence": ["S26", "S27"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["S27", "S28"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {"id": "P29", "name": "GNN constructed from an ensemble of MLPs", "description": "The approach constructs a GNN from an ensemble of MLPs, each trained on the same non-graph binary data to perform local operations and differing only by random initialization."},
+        {"id": "P30", "name": "Ensemble's mean prediction used within GNN structure", "description": "The central idea is to use the ensemble's mean local prediction within a GNN structure to execute steps of graph algorithms exactly."},
+        {"id": "P31", "name": "GNN defined via node-local function and projection matrices", "description": "The GNN is formally defined as combining a node-local function's output through complementary projection matrices with an aggregation over the adjacency matrix, so local and neighborhood-aggregated components are combined."},
+        {"id": "P32", "name": "Node-local behavior via encoding, ensemble, and Heaviside", "description": "The node-local function represents node-local behavior, computed by applying an input encoding, then the MLP ensemble, then the entry-wise Heaviside step function to binarize outputs."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P30", "evidence": ["S29", "S30"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P31", "evidence": ["S30", "S31"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P32", "evidence": ["S31", "S32"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C9",
+      "nodes": [
+        {"id": "P33", "name": "Encoding orthogonalizes blocks to remove correlations", "description": "The encoding function structures inputs into functional blocks and orthogonalizes values within each block before processing, which removes unwanted correlations and is crucial for correct algorithmic execution, applied efficiently blockwise."},
+        {"id": "P34", "name": "Heaviside binarizes before message passing", "description": "The Heaviside step function is applied to the ensemble outputs before message passing to binarize them, preventing conflicting signs from being mixed during aggregation that could otherwise produce incorrect outputs."},
+        {"id": "P35", "name": "Ensembling better approximates the NTK predictor", "description": "Instead of relying on a single trained local model, the method averages across multiple independently trained MLPs, which from the NTK theory perspective better approximates the NTK predictor capturing the desired algorithmic behavior."},
+        {"id": "P36", "name": "Masking separates local vs propagated information", "description": "The complementary masks separate which parts of the representation are propagated versus kept local, reducing unwanted correlations during message passing while preserving locality; the shared parameter kM is application-dependent since required shared information differs across algorithms."},
+        {"id": "P37", "name": "Local training then global inference realizes the target algorithm", "description": "MLPs are trained on non-graph data for local operations and then integrated into a GNN architecture, so that this separation between local training and global inference via aggregation ensures the target graph-level algorithm can be realized by learning only simple local computations."},
+        {"id": "P38", "name": "Static training with iterative inference executes the full algorithm", "description": "Rather than training on an algorithm's initial input and final output, the method trains at the level of individual instructions embedded in each sample, then applies this learned step iteratively over multiple rounds during inference to execute the full algorithm."}
+      ],
+      "edges": [
+        {"from": "P33", "to": "P34", "evidence": ["S33", "S34"], "votes": 2, "confidence": "majority"},
+        {"from": "P34", "to": "P35", "evidence": ["S34", "S35"], "votes": 2, "confidence": "majority"},
+        {"from": "P35", "to": "P36", "evidence": ["S35", "S36"], "votes": 2, "confidence": "majority"},
+        {"from": "P36", "to": "P37", "evidence": ["S36", "S37"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P37", "to": "P38", "evidence": ["S37", "S38"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": ["P33->P34", "P34->P35", "P35->P36"]}
+    },
+    {
+      "component_id": "C10",
+      "nodes": [
+        {"id": "P39", "name": "Main learnability result for LOCAL-model algorithms", "description": "The main learnability result shows that the GNN architecture can learn to execute exactly any algorithm expressible in the LOCAL model, up to an arbitrarily chosen memory, on graphs with maximum degree D."},
+        {"id": "P40", "name": "Theorem 5.1 formal guarantee", "description": "Theorem 5.1 states that for a LOCAL-model algorithm running for L rounds with finite bounds on state, message, and memory size, there exists a training dataset scaling linearly with state/message size and quadratically with maximum degree, such that the GNN learns to perfectly execute the algorithm in O(L) iterations, with arbitrarily high probability given sufficient ensemble size."},
+        {"id": "P41", "name": "Proof uses the graph template matching framework as a proxy model", "description": "The proof utilizes a proxy computational model, the graph template matching framework, which executes algorithms on graph-structured data using a local function on binary vectors together with an aggregation mechanism for message passing."},
+        {"id": "P42", "name": "Two-step proof structure", "description": "The theorem is proved in two steps: showing any LOCAL-model algorithm with bounded memory on a bounded-degree graph can be expressed in the template matching framework, and showing the GNN can learn to execute that framework."}
+      ],
+      "edges": [
+        {"from": "P39", "to": "P40", "evidence": ["S39", "S40"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P40", "to": "P41", "evidence": ["S40", "S41"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P41", "to": "P42", "evidence": ["S41", "S42"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C11",
+      "nodes": [
+        {"id": "P43", "name": "Node vector split into computation and message sections", "description": "In the graph template matching framework, each node has a binary vector with two sections: a computation section storing local state and algorithm variables, and a message section used solely for communication."},
+        {"id": "P44", "name": "Local function defined by matching templates", "description": "A local function operates on the node vector and is defined by a set of templates, each corresponding to a distinct, non-overlapping block of input bits; the output is the bitwise OR of the labels of all matching templates."},
+        {"id": "P45", "name": "Local IDs create communication slots preventing distortion", "description": "Each node is assigned a local ID unique within its 2-hop neighborhood, dividing its message section into communication slots so a node writes its outgoing message only to its designated slot, preventing distortion during binary aggregation."},
+        {"id": "P46", "name": "Message sections aggregated each round, akin to MPNNs", "description": "At each round, after applying the local function, the message sections of neighboring nodes are aggregated for message passing, similar to the aggregation-and-update mechanism of Message Passing Neural Networks."}
+      ],
+      "edges": [
+        {"from": "P43", "to": "P44", "evidence": ["S43", "S44"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P44", "to": "P45", "evidence": ["S44", "S45"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P45", "to": "P46", "evidence": ["S45", "S46"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C12",
+      "nodes": [
+        {"id": "P47", "name": "Single template application cannot compute any Turing-computable function", "description": "Unlike the LOCAL model's computation step, which is assumed to compute any Turing-computable function in a single iteration, a single application of the local template-matching function cannot; nevertheless, iterative applications of it can compute any Turing-computable function."},
+        {"id": "P48", "name": "A LOCAL Turing machine characterizes the per-round computation", "description": "To show the framework can simulate any LOCAL-model algorithm, a Turing machine (called a LOCAL Turing machine) is characterized that, given a node's previous state and received messages, computes the next state and outgoing message in finitely many steps."},
+        {"id": "P49", "name": "Templates constructed scaling linearly with state/message size, quadratically with degree", "description": "A set of templates implementing this Turing machine is constructed whose number scales linearly with the sizes of the LOCAL state and messages, and quadratically with the maximum degree D."},
+        {"id": "P50", "name": "Induction establishes simulation of LOCAL by the framework", "description": "By initializing the computation and message sections identically to the LOCAL model and applying induction, the template matching framework is shown to simulate the LOCAL model with a number of iterations proportional to the number of LOCAL rounds."}
+      ],
+      "edges": [
+        {"from": "P47", "to": "P48", "evidence": ["S47", "S48"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P48", "to": "P49", "evidence": ["S48", "S49"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P49", "to": "P50", "evidence": ["S49", "S50"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C13",
+      "nodes": [
+        {"id": "P51", "name": "Template-label pairs suffice to train an exact NTK predictor", "description": "A training dataset containing each template-label pair of the local function as a sample, encoded via the input encoding, suffices to train an NTK predictor that, followed by a Heaviside function, exactly recovers the ground truth for any input at inference."},
+        {"id": "P52", "name": "Ensemble mean matches NTK predictor with high probability", "description": "Assuming the MLP ensemble is trained on the same dataset, NTK theory together with a concentration bound for Gaussian random variables shows the ensemble mean, followed by Heaviside, matches the NTK predictor output with arbitrarily high probability determined by the ensemble size."},
+        {"id": "P53", "name": "Projection matrices implement the framework's local/aggregation split", "description": "The message-preserving projection matrix implements the aggregation step of the template matching framework, while the computation-preserving matrix preserves the local component, so together the GNN yields the same node-wise output as one iteration of the template matching framework."}
+      ],
+      "edges": [
+        {"from": "P51", "to": "P52", "evidence": ["S51", "S52"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P52", "to": "P53", "evidence": ["S52", "S53"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C14",
+      "nodes": [
+        {"id": "P54", "name": "Theorem 5.1 does not show how to construct training data for a given algorithm", "description": "The conclusion of Theorem 5.1 shows the architecture can learn any LOCAL-model graph algorithm, but it does not give a direct way to construct training data for a given algorithm."},
+        {"id": "P55", "name": "Concrete learnability results derived for specific algorithms", "description": "To address this, concrete learnability results are derived for Message Flooding, BFS, DFS, and Bellman-Ford, bypassing the need for their LOCAL model implementations and instead encoding local operations directly in the template-matching framework."},
+        {"id": "P56", "name": "These four algorithms are canonical primitives", "description": "These algorithms are canonical primitives spanning traversal (BFS/DFS), local message propagation (Message Flooding), and shortest paths (Bellman-Ford)."}
+      ],
+      "edges": [
+        {"from": "P54", "to": "P55", "evidence": ["S54", "S55"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P55", "to": "P56", "evidence": ["S55", "S56"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C15",
+      "nodes": [
+        {"id": "P57", "name": "Test-graph size unrestricted unless global IDs are needed", "description": "Assuming bounded maximum degree, test-graph size is unrestricted unless the algorithm necessitates unique global node IDs."},
+        {"id": "P58", "name": "Message Flooding needs no global IDs; BFS/DFS/Bellman-Ford do", "description": "Message Flooding does not use global IDs, so it applies to arbitrarily large graphs, whereas BFS, DFS, and Bellman-Ford use global IDs, limiting the test-graph size according to the bit precision used to store variables."}
+      ],
+      "edges": [
+        {"from": "P57", "to": "P58", "evidence": ["S57", "S58"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C16",
+      "nodes": [
+        {"id": "P59", "name": "GNN iterations can exceed classical centralized step complexity", "description": "The number of GNN iterations needed to simulate these algorithms can exceed the step complexity of their classical centralized counterparts."},
+        {"id": "P60", "name": "Gap arises from distributed simulation and execution granularity", "description": "This gap arises because information propagates locally rather than via global access (requiring time proportional to graph diameter), and because the GNN executes bitwise micro-instructions rather than high-level primitives, so one algorithmic step may require multiple GNN iterations."},
+        {"id": "P61", "name": "GNN iteration counts are not directly comparable to LOCAL round counts", "description": "This granularity also makes it inappropriate to directly compare the number of GNN iterations with the number of LOCAL rounds, since LOCAL round complexity abstracts away all local computation performed between communication steps."}
+      ],
+      "edges": [
+        {"from": "P59", "to": "P60", "evidence": ["S59", "S60"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P60", "to": "P61", "evidence": ["S60", "S61"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C17",
+      "nodes": [
+        {"id": "P62", "name": "Main architectural difference from Back de Luca et al.", "description": "The main difference from Back de Luca et al. lies in the architectures: their model is a feedforward network operating on a single input vector, whereas this work's is a GNN with message-passing capabilities."},
+        {"id": "P63", "name": "Distinction has implications for graph size, instructions, ensemble size", "description": "This architectural distinction has important implications for the graph size, instruction count, and ensemble complexity that the two frameworks can handle."},
+        {"id": "P64", "name": "GNN avoids explicitly encoding the whole graph in the input vector", "description": "Whereas the feedforward model must encode the entire graph in the input vector (bounding graph size by vector length), this work's model captures structure via message passing, so the node-feature length scales only with bit precision and does not grow with node count when global IDs are unnecessary."},
+        {"id": "P65", "name": "GNN instruction count scales with degree, not linearly with node count", "description": "In the feedforward setting, instruction count scales at least linearly with maximum node count; in this work's setting, all nodes share the same local processor, so instruction count grows polynomially with maximum degree and only logarithmically with maximum node count when IDs are required."},
+        {"id": "P66", "name": "GNN yields asymptotically smaller ensembles in the large-graph regime", "description": "Since ensemble complexity scales quadratically with embedding dimension in both frameworks, and this work's embedding dimension grows polynomially in maximum degree and only logarithmically in node count (versus at least linearly for the feedforward encoding), this framework yields asymptotically smaller ensembles for large, bounded-degree graphs."}
+      ],
+      "edges": [
+        {"from": "P62", "to": "P63", "evidence": ["S62", "S63"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P63", "to": "P64", "evidence": ["S63", "S64"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P64", "to": "P65", "evidence": ["S64", "S65"], "votes": 2, "confidence": "majority"},
+        {"from": "P65", "to": "P66", "evidence": ["S65", "S66"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": ["P64->P65"]}
+    },
+    {
+      "component_id": "C18",
+      "nodes": [
+        {"id": "P67", "name": "Experiments validate Section 6 results plus an architecture ablation", "description": "The experiments empirically validate the results of Section 6 and include an ablation on the architecture."},
+        {"id": "P68", "name": "All experiments use Message Flooding due to compute constraints", "description": "Since the theory concerns infinite-width MLPs and may require prohibitively large ensembles, all experiments use Message Flooding, the only algorithm feasible with the available computational resources."},
+        {"id": "P69", "name": "Instruction correctness for all four theorems verified separately", "description": "Nevertheless, the correctness of the instructions used in Theorems 6.1-6.4 is empirically verified, as discussed in a supplementary section."}
+      ],
+      "edges": [
+        {"from": "P67", "to": "P68", "evidence": ["S67", "S68"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P68", "to": "P69", "evidence": ["S68", "S69"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": ["P68->P69"]}
+    },
+    {
+      "component_id": "C19",
+      "nodes": [
+        {"id": "P70", "name": "Numerical and theoretical ensemble-size bounds computed for Message Flooding", "description": "Numerical and theoretical lower bounds on the ensemble size required to learn Message Flooding are computed to illustrate the ensemble-complexity scaling outlined in Section 6's theorems."},
+        {"id": "P71", "name": "Numerical bound via NTK output distribution and concentration bound", "description": "The numerical bound is obtained by computing an NTK predictor from the Theorem 6.1 proof dataset, extracting the output's Gaussian mean and covariance, then applying a Gaussian concentration bound with a union bound over all iterations."},
+        {"id": "P72", "name": "Theoretical bound via NTK analysis scaling with input dimension", "description": "The theoretical bound is obtained by analyzing the NTK output mathematically as the input dimension scales with bit precision and squared maximum degree, leveraging Back de Luca et al.'s theoretical NTK analysis."},
+        {"id": "P73", "name": "Both bounds grow polynomially and require large ensembles", "description": "Both the theoretical and numerical bounds grow as a quadratic function of bit precision and a quartic function of maximum degree, indicating that correct execution can require ensembles already in the thousands even for small parameter values."}
+      ],
+      "edges": [
+        {"from": "P70", "to": "P71", "evidence": ["S70", "S71"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P70", "to": "P72", "evidence": ["S70", "S72"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P71", "to": "P73", "evidence": ["S71", "S73"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P72", "to": "P73", "evidence": ["S72", "S73"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C20",
+      "nodes": [
+        {"id": "P74", "name": "Empirical training validates the NTK predictor approximation", "description": "The MLP ensemble is empirically trained to validate the NTK predictor approximation for algorithmic execution, showing that accuracy rises with ensemble size until full accuracy is reached."},
+        {"id": "P75", "name": "Message Flooding on trees chosen for tractability", "description": "Because of its simplicity and the fact that trees typically require smaller ensembles, Message Flooding on trees is used as a suitable testbed, feasible for larger bit precision and degree values."},
+        {"id": "P76", "name": "Perfect accuracy convergence observed, slower for larger l or D", "description": "Perfect accuracy convergence with ensemble growth is observed, with slower convergence for larger message bits or maximum degree, matching the expected increase in required ensemble size."},
+        {"id": "P77", "name": "Empirical results are more optimistic than theoretical bounds", "description": "The empirical results are substantially more optimistic than the theoretical bounds, attributed mainly to the conservativeness of the union bound, which sums per-iteration failure probabilities and ignores dependencies across iterations."}
+      ],
+      "edges": [
+        {"from": "P74", "to": "P75", "evidence": ["S74", "S75"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P75", "to": "P76", "evidence": ["S75", "S76"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P76", "to": "P77", "evidence": ["S76", "S77"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C21",
+      "nodes": [
+        {"id": "P78", "name": "Ablation tests necessity of encoding/Heaviside architectural choices", "description": "An ablation study on Message Flooding tests whether the binary encoding and the Heaviside function are necessary for the theoretical framework's results, comparing applying Heaviside before versus after aggregation, using the NTK predictor to eliminate approximation noise."},
+        {"id": "P79", "name": "Masking scheme excluded from ablation", "description": "The masking scheme is not ablated because removing it breaks the separation between local computation and communication, directly invalidating any execution."},
+        {"id": "P80", "name": "Only the main model generalizes across node counts", "description": "Accuracy decreases with node count for all variants except the main model; because Message Flooding training samples are independent of tree size, the baseline GNN generalizes to arbitrary node counts."},
+        {"id": "P81", "name": "Failure modes: correlation shift and bit-flip corruption", "description": "Without the encoding, correlations with non-matching training samples can shift predictions from ground truth; if Heaviside is applied after aggregation, negative neighbor contributions can flip positive bits and corrupt messages, and without Heaviside these distortions accumulate across iterations and degrade performance further."}
+      ],
+      "edges": [
+        {"from": "P78", "to": "P79", "evidence": ["S78", "S79"], "votes": 2, "confidence": "majority"},
+        {"from": "P78", "to": "P80", "evidence": ["S78", "S80"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P80", "to": "P81", "evidence": ["S80", "S81"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": ["P78->P79"]}
+    },
+    {
+      "component_id": "C22",
+      "nodes": [
+        {"id": "P82", "name": "Results rest on bounded-degree, finite-precision, infinite-width assumptions", "description": "The results rely on assumptions of bounded-degree graphs, finite-precision identifiers, and infinite-width NTK-based analyses, which naturally lead to large ensemble requirements and restrict the class of graphs and algorithms that can be handled efficiently."},
+        {"id": "P83", "name": "Future work: finite-width dynamics and new architectures", "description": "A promising direction for future work is to relax these assumptions by analyzing finite-width training dynamics, improving scalability, and extending the framework and learnability guarantees to other architectures such as transformers and attention-based graph models."}
+      ],
+      "edges": [
+        {"from": "P82", "to": "P83", "evidence": ["S82", "S83"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P84", "name": "Graph and vector notation conventions", "description": "The paper establishes notational conventions: 1 and 0 denote all-ones/all-zeros vectors, [n] denotes {1,...,n}, u1⊕u2 denotes concatenation, In denotes the identity matrix, and G=(V,A,X) denotes an attributed graph with binary adjacency matrix and binary node attribute vectors."},
+    {"id": "P85", "name": "LOCAL distributed computation model (Model 1)", "description": "The LOCAL model is recalled: nodes act as processors and edges are communication links; computation unfolds in discrete rounds where each node sends/receives messages to/from neighbors and performs local computation, constrained only by graph topology, maximum rounds L, and initial local information."},
+    {"id": "P86", "name": "Footnote on LOCAL model conventions", "description": "A footnote clarifies the paper's LOCAL model matches Linial's model up to two conventions: a single update computing both new state and outgoing message, and each node broadcasting one message rather than per-neighbor messages, which are shown to be equivalent."},
+    {"id": "P87", "name": "Figure 1: outline of the training/inference approach", "description": "Figure 1 illustrates that during training, K MLP instances are trained on binary block-structured instructions split into computation and message sections, forming an ensemble; at inference, the ensemble is applied to an attributed graph via local computation followed by masked message passing."},
+    {"id": "P88", "name": "Equation definitions for the GNN and projection matrices", "description": "The GNN is formally defined via Fnode(X)PC + AFnode(X)PM with Fnode(X)=ΨH(µ̂(ΨEnc(X))), and the projection matrices PC, PM are block-diagonal identity/zero matrices of size k−kM and kM respectively, satisfying µ̂(X)C+µ̂(X)M=µ̂(X)."},
+    {"id": "P89", "name": "Figure 2: two-node line-graph AND example", "description": "Figure 2 illustrates the template-matching framework on a two-node line graph computing the logical AND of bits stored at both nodes, showing alternating rounds of local template matching and one communication round filling message slots."},
+    {"id": "P90", "name": "Model 2 pseudocode: graph template matching framework", "description": "Model 2 gives the pseudocode for the graph template matching framework: initializing computation/message sections, iteratively computing new sections via the local function f and aggregating message sections over the closed neighborhood, then returning final node states."},
+    {"id": "P91", "name": "Theorem 6.1: Message Flooding complexity bounds", "description": "Theorem 6.1 states the GNN can learn to exactly simulate Message Flooding with high probability on graphs of maximum degree D after O(D²·dG) iterations, using training set size O(l·D²), embedding dimension O(l·D²), and a specified polynomial-logarithmic ensemble size."},
+    {"id": "P92", "name": "Theorem 6.2: BFS complexity bounds", "description": "Theorem 6.2 states the GNN can learn to exactly simulate BFS with high probability on connected graphs of maximum degree D and node count at most 2^l−1, after O(n(l·D+l·dG+D²·dG)) iterations, using training set size and embedding dimension O(l·D³), and a specified ensemble size."},
+    {"id": "P93", "name": "Theorem 6.3: DFS complexity bounds", "description": "Theorem 6.3 states the GNN can learn to exactly simulate DFS with high probability on connected graphs of maximum degree D and node count at most 2^l−1, after O(n·D(l+D²)) iterations, using training set size and embedding dimension O(l·D³), and a specified ensemble size."},
+    {"id": "P94", "name": "Theorem 6.4: Bellman-Ford complexity bounds", "description": "Theorem 6.4 states the GNN can learn to exactly simulate Bellman-Ford with high probability on connected non-negatively weighted graphs with bounded longest simple path, maximum degree D, and node count at most 2^l−1, using training set size and embedding dimension O(l·D²), and a specified ensemble size."},
+    {"id": "P95", "name": "Figure 3: ensemble complexity vs l and D", "description": "Figure 3 shows numerical and theoretical lower bounds on ensemble size for Message Flooding, growing as O(l²) with message bits l (fixed D=2) and as O(D⁴) with maximum degree D (fixed l=1)."},
+    {"id": "P96", "name": "Figure 4: accuracy vs ensemble size", "description": "Figure 4 shows accuracy on Message Flooding averaged over all 7-node trees rising with ensemble size, with larger message bits l or maximum degree D requiring larger ensembles to match simpler settings."},
+    {"id": "P97", "name": "Figure 5: ablation accuracy vs node count", "description": "Figure 5 shows accuracy on the ablation task (Message Flooding with 3-bit messages, complete graphs of 3-15 nodes) for variants that enable/disable the encoding and Heaviside function or apply Heaviside before versus after aggregation, with omitted curves indicating zero accuracy throughout."},
+    {"id": "P98", "name": "GitHub repository for reproducing experiments", "description": "The code for replicating the experiments is available in the authors' GitHub repository (watcl-lab/exact_gnn)."},
+    {"id": "P99", "name": "Author affiliations and acknowledgments", "description": "The authors are affiliated with the University of Waterloo, and the acknowledgments credit NSERC funding for K. Fountoulakis and A. Back de Luca, and Onassis Foundation funding for G. Giapitzakis."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "This graph decomposes the paper into 22 small-to-medium connected components tracing distinct argumentative threads: the motivation-to-contribution chain (C1-C3, C5-C7) built from the introduction and related work; the architecture description and its component-by-component justification (C8-C9); the core learnability theorem and its two-step proof via the template-matching framework (C10-C13); the concrete per-algorithm results and their scope/complexity implications (C14-C17); the three experimental subsections (C18-C21); and limitations/future work (C22). Components are kept small because the paper's argumentation is largely sequential (motivation -> prior gap -> this paper's mechanism -> consequence) within each subsection, with few explicit cross-references bridging, e.g., the related-work component chains (C3, C5, C6, C7) to the architecture chains (C8-C9), since these appear in separate sections without stated connective sentences. Edge and node fidelity scores are high (9-10) throughout, since most edges directly restate a stated cause-effect, contrast, or sequential-step relationship within a single sentence or adjacent sentence pair; the 9.0 edge-score components (C2, C9, C17, C18, C21) reflect slightly more interpretive links where a contrast or component-list relationship (e.g., linking encoding, Heaviside, ensembling, and masking as sequential architectural roles, or linking feedforward instruction-count contrast to ensemble-size consequence) is strongly implied by proximity and shared subject matter rather than an explicit connective. A substantial isolated_nodes set is retained for notational conventions, the formal LOCAL/template-matching model pseudocode, the four algorithm-specific theorem statements with their precise complexity bounds, figure/model callouts, and acknowledgments/repository details, since these are self-contained technical or reference statements without argued dependencies on other propositions in the paper."
+}

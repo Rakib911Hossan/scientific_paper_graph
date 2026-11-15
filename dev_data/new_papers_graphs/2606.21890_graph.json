@@ -1,0 +1,190 @@
+{
+ "arxiv_id": "2606.21890",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Many-shot ICL for NER motivates in-context annotation (ICA) and its analyses",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "LLMs lag supervised models in NER",
+     "description": "LLMs in few-shot settings still underperform fully supervised small models such as fine-tuned BERT on NER and are slower at inference, and prior ICL-for-NER work mainly explored few-shot settings."
+    },
+    {
+     "id": "P2",
+     "name": "Many-shot ICL formulation",
+     "description": "NER is cast as conditional generation with an XML-style tagging format (entity spans wrapped in typed tags) and k demonstrations, either randomly sampled and fixed, or retrieved per test instance with BM25."
+    },
+    {
+     "id": "P3",
+     "name": "Performance rises with demonstrations",
+     "description": "On MIT-Movie, MIT-Restaurant, CoNLL2003 and WNUT2017, F1 improves consistently as the number of in-context demonstrations increases up to 500."
+    },
+    {
+     "id": "P4",
+     "name": "Retrieval plateaus near 100 shots",
+     "description": "Retrieval-based ICL improves rapidly and plateaus around 100 examples (about 50 on CoNLL2003), while random sampling improves more gradually, and the gap between them narrows to comparable results at 500 shots."
+    },
+    {
+     "id": "P5",
+     "name": "Many-shot ICL matches supervised BERT",
+     "description": "In nearly all cases (except LLaMA3.1-70B on MIT-Restaurant), many-shot ICL matches or exceeds BERT-FT trained on the full training set using only hundreds of demonstrations and no parameter updates."
+    },
+    {
+     "id": "P6",
+     "name": "Many-shot inference is expensive",
+     "description": "Many-shot ICL requires long prompts and repeated calls to large models at each prediction, which is costly at inference time."
+    },
+    {
+     "id": "P7",
+     "name": "ICA framework",
+     "description": "Many-shot In-Context Annotation (ICA) uses about 100 human-labeled examples as fixed demonstrations to have an LLM annotate 2k unlabeled sentences, then trains a BERT-based NER model on the output."
+    },
+    {
+     "id": "P8",
+     "name": "Three refinement strategies",
+     "description": "ICA is refined by self-consistency (majority voting over three outputs), self-correction (a second prompting step), and Error-Aware Refinement (EAR, three correction prompts for common NER errors: spurious, missing and type errors), applied to low-confidence sentences."
+    },
+    {
+     "id": "P9",
+     "name": "ICA beats SOTA on CrossNER by about 10 F1",
+     "description": "On five low-resource CrossNER domains, ICA outperforms data augmentation baselines and SOTA low-resource NER methods by an average absolute F1 of about 10 points, with competitive results with far less human effort."
+    },
+    {
+     "id": "P10",
+     "name": "EAR is best refinement",
+     "description": "EAR consistently outperforms the other refinement variants across all domains, giving an average gain of 1.79 F1 over standard ICA."
+    },
+    {
+     "id": "P11",
+     "name": "Refinement also helps direct inference",
+     "description": "Self-correction and EAR also help when applied directly to ICL-MS inference, but ICA still outperforms ICL-MS with EAR by 2.95 F1 while allowing efficient BERT deployment."
+    },
+    {
+     "id": "P12",
+     "name": "Annotation scale saturates at 2.5k",
+     "description": "Annotating 0.5k to 5k sentences with ICA+EAR, BERT performance rises rapidly over the first 1.5k-2k sentences and plateaus after about 2.5k."
+    },
+    {
+     "id": "P13",
+     "name": "75-100 seed examples suffice",
+     "description": "With 0 to 300 human-annotated seed examples, performance rises significantly up to about 75-100 and then flattens, so about 75-100 examples are enough for strong ICA."
+    },
+    {
+     "id": "P14",
+     "name": "LLM choice matters",
+     "description": "Larger, more capable annotators give better downstream NER: GPT-4o is best, followed closely by DeepSeek-V3 and Qwen-72B, while Qwen-7B lags widely, especially on Literature."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 2.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 2.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 2.2, Fig 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.1, Fig 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2, Fig 5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.3, Fig 6"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Limitations",
+   "description": "ICA still needs a moderate number of high-quality seed labels, adds computational overhead from repeated LLM inference, and was tested only on English NER in a limited set of domains."
+  }
+ ],
+ "structural_reasoning": "Many-shot ICL results motivate converting LLMs into offline annotators (ICA), whose quality, refinement, scale, seed-size and model-choice behavior are analyzed."
+}

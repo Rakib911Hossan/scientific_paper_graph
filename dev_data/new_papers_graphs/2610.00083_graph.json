@@ -1,0 +1,207 @@
+{
+ "arxiv_id": "2610.00083",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "From human uncertainty lookup table to LLM-specific VOCAL and its results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Existing UQ is costly or unnatural",
+     "description": "Logits-based UQ suffers from lexical sensitivity and overhead, sampling-based UQ is slow and costly, and numeric verbal confidence is unnatural compared with qualitative markers like 'likely'."
+    },
+    {
+     "id": "P2",
+     "name": "UM-Lookup built from literature and annotators",
+     "description": "The UM-Lookup maps 115 distinct verbal uncertainty markers to numeric values, built from psychology and decision-science literature, debiased, and aggregated over judgments from more than 300 human annotators."
+    },
+    {
+     "id": "P3",
+     "name": "Multiple markers are averaged",
+     "description": "When a response contains several uncertainty markers, they are averaged into one score (humans average multiple verbal probability terms), giving q = mean(1 - UM-Lookup(u_i))."
+    },
+    {
+     "id": "P4",
+     "name": "Human lookup gives non-trivial UQ",
+     "description": "The human-sourced lookup quantifier Q_VU-H achieves AUROC significantly above 0.5 in 7 of 8 model-dataset configurations; with GPT-4o on SciQ it beats PE and SE by 4.7% and 5.6% AUROC."
+    },
+    {
+     "id": "P5",
+     "name": "Human lookup is unreliable",
+     "description": "Q_VU-H is frequently outperformed by PE and can fail, e.g. AUROC falls below chance for GPT-4o on GSM8K (about 0.41), because a human score for a marker does not always match the LLM's internal uncertainty."
+    },
+    {
+     "id": "P6",
+     "name": "LLMs interpret markers differently from humans",
+     "description": "GPT-4o assigns 0.677 confidence to 'almost certain' (humans 0.92) and 0.355 to 'very likely' (humans 0.853), so human-derived tables do not transfer directly to LLMs."
+    },
+    {
+     "id": "P7",
+     "name": "VOCAL learns marker scores from LLM outputs",
+     "description": "VOCAL learns a numerical score per uncertainty marker by minimizing a binary cross-entropy loss between the aggregated marker uncertainty of a generation and its correctness, a convex problem under logistic loss."
+    },
+    {
+     "id": "P8",
+     "name": "Laplacian smoothing handles sparse markers",
+     "description": "Because rare markers have unstable learned values, VOCAL applies graph Laplacian regularization over a marker similarity graph so semantically similar markers get similar scores."
+    },
+    {
+     "id": "P9",
+     "name": "VOCAL beats human lookup",
+     "description": "VOCAL consistently improves AUROC over Q_VU-H across models and datasets, e.g. raising GPT-4o on GSM8K from 0.41 to around 0.6."
+    },
+    {
+     "id": "P10",
+     "name": "VOCAL beats single-sample UQ",
+     "description": "VOCAL achieves the highest AUROC in 5 of 6 settings against single-sample baselines G-NLL and PPL; on GSM-Hard with DeepSeek-V3.1 it reaches 0.715 versus 0.520 (G-NLL) and 0.567 (PPL)."
+    },
+    {
+     "id": "P11",
+     "name": "VOCAL competitive with multi-sample UQ",
+     "description": "Using one response, VOCAL is competitive with multi-sample UQ baselines (best on SciQ with Qwen2.5-72B, AUROC 0.717), though multi-sample metrics sometimes surpass it on TriviaQA."
+    },
+    {
+     "id": "P12",
+     "name": "Calibration improves post hoc",
+     "description": "VOCAL has average vanilla ECE 0.1314, near the best baseline; with isotonic regression it reaches the best average ECE of 0.0281."
+    },
+    {
+     "id": "P13",
+     "name": "More training data helps",
+     "description": "Increasing VOCAL training samples from 100 to 500 raises AUROC from about 0.52 to 0.60."
+    },
+    {
+     "id": "P14",
+     "name": "Learned scores partly transfer across LLMs",
+     "description": "Training and testing VOCAL on different LLMs' SciQ responses yields AUROC of 0.60-0.72, indicating shared structure but model-specific differences."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P7",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.3, Fig 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.3, Fig 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 5, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 5, Fig 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 5, Fig 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 5, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 5, Fig 5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 5, Fig 9"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P14",
+     "evidence": [
+      "Sec 5, Fig 6"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Advanced LLMs express diverse markers",
+   "description": "Advanced LLMs like GPT-4o and DeepSeek-V3.1 express more diverse uncertainty markers than small models like Llama-3.1-8B, which tend to be overconfident."
+  },
+  {
+   "id": "P16",
+   "name": "Verbal uncertainty prompting is harmless",
+   "description": "Eliciting verbal uncertainty does not impose a significant performance penalty on the models' problem-solving."
+  },
+  {
+   "id": "P17",
+   "name": "Wide model and dataset evaluation",
+   "description": "Experiments evaluate GPT-4o and DeepSeek-V3.1 on GSM-Hard, GSM8K, MedQA and PIQA with five-shot CoT prompting."
+  }
+ ],
+ "structural_reasoning": "Human lookup baseline and its failure motivate VOCAL, whose design leads to the empirical results; peripheral observations are isolated."
+}

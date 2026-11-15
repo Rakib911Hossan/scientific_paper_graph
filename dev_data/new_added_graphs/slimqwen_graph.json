@@ -1,0 +1,141 @@
+{
+  "arxiv_id": "2605.08738v2",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {"id": "P1", "name": "Pruned initialization vs random init", "description": "Pruning a pretrained MoE model to a target architecture provides a significantly better initialization than training the same architecture from scratch, under matched training tokens."},
+        {"id": "P2", "name": "Pruned+KD average score", "description": "The Pruned + KD Loss model achieves an average benchmark score of 73.45."},
+        {"id": "P3", "name": "Random init+KD average score", "description": "The Random Init + KD Loss model achieves an average benchmark score of 61.66."},
+        {"id": "P4", "name": "Pruned recovers teacher performance", "description": "The pruned architecture recovers 86.5% of the teacher's performance (73.45 vs. 82.68) despite being 3.4x smaller."},
+        {"id": "P5", "name": "Faster convergence for pruned init", "description": "Pruned initialization yields considerably faster convergence and lower language modeling (LM) loss than random initialization."},
+        {"id": "P6", "name": "Pruned+KD lowest loss", "description": "The combined Pruned + KD recipe achieves the lowest training loss among the compared initialization/objective setups."}
+      ],
+      "edges": [
+        {"from": "P2", "to": "P1", "evidence": ["S_Q1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P1", "evidence": ["S_Q1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P4", "evidence": ["S_Q1"], "votes": 2, "confidence": "majority"},
+        {"from": "P1", "to": "P5", "evidence": ["S_Q1"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["S_Q1"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {"id": "P7", "name": "Expert compression convergence", "description": "Different one-shot expert compression methods converge to similar final performance after large-scale continual pretraining (400B tokens)."},
+        {"id": "P8", "name": "No dominant one-shot method", "description": "No single one-shot pruning or merging method establishes consistent superiority across all downstream tasks."},
+        {"id": "P9", "name": "Partial-preservation merging strategy", "description": "A partial-preservation expert merging strategy is proposed, retaining half of the target experts intact and merging the rest into selected merge bases."},
+        {"id": "P10", "name": "Partial-preservation improves performance", "description": "The partial-preservation expert merging strategy improves downstream performance across most benchmarks compared to full merging."},
+        {"id": "P11", "name": "Balance preservation vs consolidation", "description": "Expert compression requires balancing pretrained expert specialization preservation against consolidation of discarded experts."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["S_Q2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P9", "evidence": ["S_method"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P10", "evidence": ["S_Q2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S_Q2"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {"id": "P12", "name": "KD + LM loss hybrid", "description": "Combining next-token prediction knowledge distillation (NTP KD) with a standard language modeling (LM) loss outperforms pure KD."},
+        {"id": "P13", "name": "Knowledge benchmark gains from LM loss", "description": "Adding LM loss to KD improves knowledge-intensive benchmarks such as MMLU (74.16→74.93) and MMLU-Pro (50.97→51.44)."},
+        {"id": "P14", "name": "MTP distillation proposal", "description": "Multi-token prediction (MTP) distillation is proposed, extending the distillation objective beyond single tokens."},
+        {"id": "P15", "name": "MTP KD improves backbone quality", "description": "Integrating MTP KD into NTP KD or a joint objective improves performance on several knowledge-intensive benchmarks."},
+        {"id": "P16", "name": "MTP KD improves speculative decoding", "description": "MTP KD yields substantial efficiency gains for speculative decoding across pretraining and SFT stages."},
+        {"id": "P17", "name": "MTP KD improves multi-token acceptance rate", "description": "MTP KD consistently improves the multi-token acceptance rate from acc_1 to acc_4 across benchmarks."},
+        {"id": "P18", "name": "MTP KD gains larger for longer sequences", "description": "The gains from MTP KD are often larger for longer accepted token sequences."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P13", "evidence": ["S_Q3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["S_Q3"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P16", "evidence": ["S_Q3"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P17", "evidence": ["S_Q3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S_Q3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {"id": "P19", "name": "Progressive pruning schedules", "description": "Three progressive, two-stage distillation/pruning schedules are compared: depth-first, width-first, and joint."},
+        {"id": "P20", "name": "Progressive beats one-shot", "description": "Progressive pruning strategies consistently outperform one-shot compression under an identical token budget."},
+        {"id": "P21", "name": "Smoother optimization trajectory", "description": "Staged capacity reduction provides a significantly smoother optimization trajectory for knowledge transfer."},
+        {"id": "P22", "name": "Depth-first designated as SlimQwen", "description": "The depth-first progressive model is officially designated as SlimQwen due to superior overall performance."},
+        {"id": "P23", "name": "MMLU improvement via progressive pruning", "description": "MMLU improves from 75.86 (one-stage) to 77.39 (depth-first) and 77.14 (width-first)."},
+        {"id": "P24", "name": "Finer-grained stages no additional gain", "description": "More fine-grained stage partitions do not provide additional benchmark performance gains."}
+      ],
+      "edges": [
+        {"from": "P19", "to": "P20", "evidence": ["S_Q3prog"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["S_Q3prog"], "votes": 2, "confidence": "majority"},
+        {"from": "P20", "to": "P23", "evidence": ["S_Q3prog"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P22", "evidence": ["S_Q3prog"], "votes": 2, "confidence": "majority"},
+        {"from": "P19", "to": "P24", "evidence": ["S_Q3prog"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {"id": "P25", "name": "Depth pruning method", "description": "Depth pruning directly drops the last N layers of an L-layer model."},
+        {"id": "P26", "name": "Width pruning method", "description": "Width pruning reduces hidden dimension using importance scores derived from RMSNorm activation statistics on a calibration dataset."},
+        {"id": "P27", "name": "Expert importance criteria", "description": "Expert importance is quantified using frequency-based, soft-logits, and router-weighted output activation (REAP) criteria."},
+        {"id": "P28", "name": "Expert merging via similarity", "description": "Discarded experts are merged into their nearest retained neighbor using importance score as scaling factor."}
+      ],
+      "edges": [
+        {"from": "P27", "to": "P28", "evidence": ["S_method_expert"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {"id": "P29", "name": "Final compression: 80A3B to 23A2B", "description": "Qwen3-Next-80A3B is compressed to a 23A2B model (~4x compression) via the proposed pruning and distillation recipe."},
+        {"id": "P30", "name": "Competitive downstream performance", "description": "The compressed 23A2B model retains competitive downstream performance across MMLU variants, BBH, GSM8K, coding, and Chinese benchmarks."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P30", "evidence": ["S_final"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P31", "name": "MoE pretraining cost", "description": "Modern MoE LLMs remain expensive to pretrain and serve."},
+    {"id": "P32", "name": "Pruning avoids sparse kernels", "description": "Structured pruning delivers wall-clock speedups without specialized sparse kernels."},
+    {"id": "P33", "name": "KD recovers pruning loss", "description": "Knowledge distillation is commonly used to recover performance loss after pruning by transferring knowledge from teacher to pruned student."},
+    {"id": "P34", "name": "Minitron limited to dense models", "description": "Minitron is applicable only to non-MoE (dense) models."},
+    {"id": "P35", "name": "DarwinLM/SlimMoE limited scope", "description": "DarwinLM and SlimMoE prune only the experts' intermediate-layer dimensions within MoE modules."},
+    {"id": "P36", "name": "Base model architecture", "description": "The base 80A3B hybrid MoE model includes 48 transformer blocks with 12 full attention and 36 linear attention layers, and 512 experts per MoE module with 10 routed + 1 shared expert active."},
+    {"id": "P37", "name": "MTP module shares components", "description": "The MTP module consists of an embedding layer and output head shared with the backbone model, plus a Transformer block and projection matrix."},
+    {"id": "P38", "name": "Total training objective", "description": "The total training objective combines LM loss, KD loss, MTP LM loss, and MTP KD loss, weighted by hyperparameters λ and β."},
+    {"id": "P39", "name": "Larger models more robust to compression", "description": "Larger models generally exhibit greater robustness to compression scale effects (contextual note from related literature)."}
+  ],
+  "structural_score": 7,
+  "structural_reasoning": "The graph captures four major empirical clusters corresponding to the paper's three research questions (initialization, expert compression, training recipe) plus progressive pruning schedules, each with coherent internal logic linking claims to supporting evidence. Method-description nodes (C5) and the final compression outcome (C6) are well-isolated as supporting/summary components. Several background and architectural facts remain isolated since they serve as context rather than participating in argumentative chains. Edge confidence is generally high within each RQ-specific component, though some inferred edges (e.g., balance-tradeoff to partial-preservation strategy) rely on single-run reasoning rather than explicit multi-vote consensus."
+}

@@ -1,0 +1,173 @@
+{
+ "arxiv_id": "2507.17015",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Hard domains motivate tool-augmented annotator, evaluated in target, out-of-domain and adjacent domains",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Annotation is hard in factual, coding, math domains",
+     "description": "For responses with long-form factual, advanced coding or math content, both AI and many human annotators struggle to give reliable pairwise judgements, often falling back on superficial features such as style."
+    },
+    {
+     "id": "P2",
+     "name": "Tool-using Evaluation Agent framework",
+     "description": "The framework augments existing AI annotators with (1) an initial domain assessment selecting tools, (2) tool execution (web-search fact check, code-execution code check and math check), and (3) a final decision, using structured JSON output."
+    },
+    {
+     "id": "P3",
+     "name": "Fallback to baseline outside tool domains",
+     "description": "If the initial domain assessment finds no tool useful, the agent reverts to the baseline annotator, to avoid regressions on non-target domains."
+    },
+    {
+     "id": "P4",
+     "name": "Existing datasets are saturated",
+     "description": "Some RewardBench subsets are saturated, with state-of-the-art LLM-as-a-judge systems near 100% agreement, so new pairwise datasets (LongFact pairwise, GSM8k hard pairwise, APPS pairwise) were created."
+    },
+    {
+     "id": "P5",
+     "name": "Fact-check agent improves long-form factual annotation",
+     "description": "Augmenting any baseline with the fact-checking agent improves agreement on long-form factual pairs, e.g. GPT-4o pick-best 63% to 81% and ArenaHard 78% to 80% (Fig 4)."
+    },
+    {
+     "id": "P6",
+     "name": "Math results are mixed",
+     "description": "On GSM8k hard pairwise, agents outperform only some baselines, ArenaHard outperforms all agent-based methods, and overall agreement stays around 56% (Fig 5)."
+    },
+    {
+     "id": "P7",
+     "name": "Better on RewardMATH",
+     "description": "On RewardMATH the method outperforms the ArenaHard baseline (App H)."
+    },
+    {
+     "id": "P8",
+     "name": "Code execution greatly improves coding annotation",
+     "description": "On APPS, the agent improves GPT-3.5-Turbo from 31% to 71% and ArenaHard from 38% to 72% (Fig 6)."
+    },
+    {
+     "id": "P9",
+     "name": "Baselines prefer incorrect GPT-4 code on APPS",
+     "description": "Baseline annotators perform worse than random on APPS, preferring the correct response only 26% to 42% of the time, possibly due to self-enhancement bias; the code-execution agent shows no such bias."
+    },
+    {
+     "id": "P10",
+     "name": "Minimal out-of-domain regression",
+     "description": "On out-of-domain RewardBench categories (Chat, Chat Hard, Safety) agreement drops by less than 2% for all baselines (Fig 7)."
+    },
+    {
+     "id": "P11",
+     "name": "Adjacent domains show mixed effects",
+     "description": "On adjacent saturated domains, short-form fact checking and simple math improve consistently while simple coding (HumanEval) decreases by up to 9% (Fig 9)."
+    },
+    {
+     "id": "P12",
+     "name": "Tools are a complexity/cost trade-off",
+     "description": "External validation tools often improve annotation quality, strongest for advanced coding, but trade off complexity and cost and may not suit every use case."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.1, 4.3.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.3.1, Fig 4"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.3.2, Fig 5"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.3.2, App H"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.3.3, Fig 6"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3.3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.4, Fig 7"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.4, Fig 9"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Conclusion"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P12",
+     "evidence": [
+      "Conclusion"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P12",
+     "evidence": [
+      "Conclusion"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Hyperparameters strongly affect baselines",
+   "description": "Baseline annotator configurations such as the prompt have a strong impact on performance, and a simple GPT-4o 'select the better' annotator is competitive on many datasets (Sec 4.3.1, Obs 2)."
+  }
+ ],
+ "structural_reasoning": "Motivation and framework design lead to dataset creation and domain-wise results, summarized in a cost-benefit conclusion."
+}

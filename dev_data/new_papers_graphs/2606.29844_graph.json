@@ -1,0 +1,181 @@
+{
+ "arxiv_id": "2606.29844",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Sparse attention loses recall; MATCH adds an external retriever whose retrieved positions are unmasked, with evidence from benchmarks and ablations",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Full attention is quadratic",
+     "description": "Full softmax attention costs O(N^2) in computation and memory, limiting practical context length."
+    },
+    {
+     "id": "P2",
+     "name": "Sparse attention hurts recall",
+     "description": "Sparse and linear attention (sliding window, Mamba) cut cost but have local windows or fixed-size states that constrain retrieval across distant positions, degrading tasks needing precise long-range recall."
+    },
+    {
+     "id": "P3",
+     "name": "Sparse patterns are context-dependent",
+     "description": "Sparse attention patterns in LLMs are highly context-dependent, so selectively retrieving relevant information needs dynamic, context-adaptive attention."
+    },
+    {
+     "id": "P4",
+     "name": "MATCH retrieval module",
+     "description": "MATCH splits the context into fixed-size chunks (length U), retrieves top-K chunks by bi-encoder (Sentence-BERT) dot product, reranks them with a cross-encoder, and keeps the top-k (K > k) to balance speed and precision."
+    },
+    {
+     "id": "P5",
+     "name": "Retrieved positions unmasked in attention",
+     "description": "MATCH unmasks retrieved token positions in the attention mask (alongside causal and sliding-window masks), so the sparse-attention KV cache stays constant-size and retrieved positions are fixed regardless of sequence length, making memory constant with context length."
+    },
+    {
+     "id": "P6",
+     "name": "KV recomputation in decoding",
+     "description": "During decoding, retrieved raw inputs are fed as auxiliary inputs and their KVs recomputed at each layer once per decoding chunk, then cached in a fixed-size temporary cache for reuse."
+    },
+    {
+     "id": "P7",
+     "name": "MQAR near-perfect",
+     "description": "On MQAR, MATCH matches full attention and, at sequence length 512, stays near-perfect while other sparse baselines (StreamingLLM, Strided, Random) degrade toward random guessing."
+    },
+    {
+     "id": "P8",
+     "name": "MAD gains",
+     "description": "On MAD in-context retrieval tasks, MATCH raises average performance for Hymba from 64.0 to 92.4 (U=2) and for SWA from 59.9 to 89.4, a 45-50% boost."
+    },
+    {
+     "id": "P9",
+     "name": "LongBench gains",
+     "description": "On LongBench, MATCH consistently improves overall average across sparsity levels and models, with up to +15.1 on synthetic tasks, and is mostly on par with or better than RAG using the same retrieved content."
+    },
+    {
+     "id": "P10",
+     "name": "NIAH gains",
+     "description": "On Needle-in-a-Haystack (8K-128K), MATCH outperforms the sparsified baselines Qwen3 and Phi-3 at all context lengths, especially at 32K-128K."
+    },
+    {
+     "id": "P11",
+     "name": "Random retrieval fails",
+     "description": "Replacing the retriever with random indices (Qwen3, 80% SWA, k=8) underperforms both MATCH (34.1 vs 37.0 avg) and the sparse baseline, so gains come from relevant retrieved context, not extra KV pairs."
+    },
+    {
+     "id": "P12",
+     "name": "Beats KV-cache compression baselines",
+     "description": "With 50%-sparsified Qwen3 and k=8, MATCH reaches the highest LongBench average (43.4), beating StreamingLLM and FlexPrefill, with the lowest TTFT and decoding memory at 32K."
+    },
+    {
+     "id": "P13",
+     "name": "Efficiency at 90K tokens",
+     "description": "At 90K tokens MATCH has TTFT of 4.98s (68% below full attention's 15.88s, close to SWA's 4.62s) and 32% less memory than full attention (18.72 vs 27.67 GiB)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 4"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.1, Sec 4.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.1-4.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.2.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 5.1, Fig 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.1, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.2, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.3, Table 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.1, Table 4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P12",
+     "evidence": [
+      "Sec 6.2, Table 5"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P13",
+     "evidence": [
+      "Sec 6.3, Fig 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "k=4 matches k=8",
+   "description": "On LongBench, MATCH with k=4 performs about as well as with k=8."
+  },
+  {
+   "id": "P15",
+   "name": "Chunked prefill",
+   "description": "MATCH uses chunk-wise pre-filling with a retrieval mask, and continual training adapts model parameters to attend to positions outside the sliding window."
+  },
+  {
+   "id": "P16",
+   "name": "KV compression is complementary",
+   "description": "KV cache compression addresses post-hoc memory storage, whereas MATCH enhances sparse attention for in-context retrieval; the two approaches are complementary."
+  }
+ ],
+ "structural_reasoning": "Problem (quadratic cost, sparse-attention recall loss) leads to the retrieval-augmented sparse attention design, then to empirical results, ablation and efficiency analysis."
+}

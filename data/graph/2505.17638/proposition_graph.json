@@ -1,0 +1,1178 @@
+{
+  "Nodes": [
+    {
+      "id": "P1",
+      "name": "Gap grows with training set size",
+      "description": "In diffusion models, the gap between the early timescale (\\tau_{gen}) and the later timescale (\\tau_{mem}) grows as the size of the training set increases."
+    },
+    {
+      "id": "P2",
+      "name": "Timescales emerge under n < n*(p)",
+      "description": "The two distinct timescales in the training dynamics of diffusion models emerge under the condition n < n*(p)."
+    },
+    {
+      "id": "P3",
+      "name": "Timescales correspond to inverse eigenvalues",
+      "description": "In the random feature setting, the timescales of training dynamics of diffusion models correspond to the inverse eigenvalues of the random feature correlation matrix."
+    },
+    {
+      "id": "P4",
+      "name": "Generalization timescale scaling",
+      "description": "The characteristic timescale where high-quality sample generation begins (\\tau_{gen}) scales according to the formula \\tau_{gen} \\propto W^{-1}."
+    },
+    {
+      "id": "P5",
+      "name": "Memorization timescale scaling",
+      "description": "The characteristic timescale where memorization of training data starts to emerge (\\tau_{mem}) scales according to the formula \\tau_{mem} \\propto nW^{-1}."
+    },
+    {
+      "id": "P6",
+      "name": "Generalization timescale is constant",
+      "description": "The generalization timescale (\\tau_{gen}) remains constant regardless of the training set size (n)."
+    },
+    {
+      "id": "P7",
+      "name": "Memorization timescale increases linearly",
+      "description": "The memorization timescale (\\tau_{mem}) increases linearly with the training set size (n)."
+    },
+    {
+      "id": "P8",
+      "name": "Training loss decreases during memorization",
+      "description": "On the timescale where overfitting and memorization occur, the training loss decreases."
+    },
+    {
+      "id": "P9",
+      "name": "Test loss increases during memorization",
+      "description": "On the timescale where overfitting and memorization occur, the test loss increases."
+    },
+    {
+      "id": "P10",
+      "name": "Convergence to empirical score at long times",
+      "description": "The training dynamics of diffusion models converge to the low-lying minimum corresponding to the empirical score only at very long training times."
+    },
+    {
+      "id": "P11",
+      "name": "Low-frequency part close to population score",
+      "description": "The low-frequency part of the empirical score is close to the population score."
+    },
+    {
+      "id": "P12",
+      "name": "High-frequency part is dataset-dependent",
+      "description": "The high-frequency part of the empirical score is dataset-dependent."
+    },
+    {
+      "id": "P13",
+      "name": "n-dependent change in loss landscape",
+      "description": "A fundamental n-dependent change in the loss landscape drives memorization in diffusion models."
+    },
+    {
+      "id": "P14",
+      "name": "Score model not expressive enough when n > n*(p)",
+      "description": "When the training set size n exceeds the threshold n*(p), the score model is not expressive enough to represent the empirical score associated to n data."
+    },
+    {
+      "id": "P15",
+      "name": "Score model provides smooth interpolation when n > n*(p)",
+      "description": "When the training set size n exceeds the threshold n*(p), the score model provides a smooth interpolation, approximately independent of the training set."
+    },
+    {
+      "id": "P16",
+      "name": "Larger W achieves generation earlier",
+      "description": "Higher-capacity networks with larger network width W achieve high-quality generation earlier than smaller networks."
+    },
+    {
+      "id": "P17",
+      "name": "Larger W memorizes earlier",
+      "description": "Higher-capacity networks with larger network width W begin to memorize earlier than smaller networks."
+    },
+    {
+      "id": "P18",
+      "name": "U-Net base widths W tested",
+      "description": "The U-Net base widths W tested to analyze the impact of model capacity are 8, 16, 32, 48, and 64."
+    },
+    {
+      "id": "P19",
+      "name": "Total parameter counts p tested",
+      "description": "The total parameter counts p tested to analyze the impact of model capacity are 0.26, 1, 4, 9, 16 \\times 10^6."
+    },
+    {
+      "id": "P20",
+      "name": "U-Net architecture used",
+      "description": "The score model used in the study has a U-Net architecture [46]."
+    },
+    {
+      "id": "P21",
+      "name": "Three resolution levels",
+      "description": "The score model used in the study has three resolution levels."
+    },
+    {
+      "id": "P22",
+      "name": "Base channel width of W",
+      "description": "The score model used in the study has a base channel width of W."
+    },
+    {
+      "id": "P23",
+      "name": "Channel width multipliers",
+      "description": "The score model used in the study has channel width multipliers of 1, 2, and 3 respectively."
+    },
+    {
+      "id": "P24",
+      "name": "Fixed capacity p=4x10^6 used",
+      "description": "A fixed model capacity with parameters p=4\\times10^6 was used to isolate and investigate the impact of training set size n on the metrics."
+    },
+    {
+      "id": "P25",
+      "name": "Fixed capacity W=32 used",
+      "description": "A fixed model capacity with base width W=32 was used to isolate and investigate the impact of training set size n on the metrics."
+    },
+    {
+      "id": "P26",
+      "name": "Overfitting disappears when n > threshold",
+      "description": "Overfitting disappears even at infinite training times when the training set size n becomes larger than a model-dependent threshold."
+    },
+    {
+      "id": "P27",
+      "name": "n > n*(p) is architectural regularization",
+      "description": "In the (n, p) phase diagram, the condition n > n*(p) corresponds to the architectural regularization regime."
+    },
+    {
+      "id": "P28",
+      "name": "Training set size n is a main parameter",
+      "description": "The size of the training set n is one of the two main parameters that define the diffusion model regimes."
+    },
+    {
+      "id": "P29",
+      "name": "Expressivity is a main parameter",
+      "description": "The expressivity of the class of score functions on which the diffusion model is trained is one of the two main parameters that define the diffusion model regimes."
+    },
+    {
+      "id": "P30",
+      "name": "Expressivity characterized by p",
+      "description": "The expressivity of the class of score functions on which the diffusion model is trained is characterized by a number of parameters p."
+    },
+    {
+      "id": "P31",
+      "name": "Empirical score composition",
+      "description": "The empirical score is composed of a low-frequency part and a high-frequency part."
+    },
+    {
+      "id": "P32",
+      "name": "Irregularity of empirical score drives gap",
+      "description": "At low noise levels and large training set sizes, the irregularity of the empirical score is the key driver behind the widening gap between the generalization and memorization timescales."
+    },
+    {
+      "id": "P33",
+      "name": "Learning bias towards low frequency",
+      "description": "Deep neural networks exhibit a learning bias towards low frequency functions."
+    },
+    {
+      "id": "P34",
+      "name": "High-frequency learning time scales with n",
+      "description": "The training time required to learn the high-frequency, dataset-dependent part of the score scales linearly with the training set size n."
+    },
+    {
+      "id": "P35",
+      "name": "RFNN used to parameterize score",
+      "description": "A Random Features Neural Network [RFNN, 43] is used to parameterize the score function in the study of the training dynamics and timescales of score-based models."
+    },
+    {
+      "id": "P36",
+      "name": "Timescale formula",
+      "description": "The mathematical formula relating the training timescales of score-based models to the eigenvalues of the random feature correlation matrix is tau^-1 = psi_p/Delta_t lambda_min."
+    },
+    {
+      "id": "P37",
+      "name": "Gradient descent used",
+      "description": "Gradient descent is the optimization method used to study the dynamics of score learning both analytically and numerically."
+    },
+    {
+      "id": "P38",
+      "name": "Theorem 3.2",
+      "description": "Theorem 3.2 establishes the emergence of two distinct training timescales in the overparameterized RFNN model."
+    },
+    {
+      "id": "P39",
+      "name": "Random matrix theory tools used",
+      "description": "Tools from random matrix theory are used to compute the eigenvalue spectrum in the limit of large datasets, high-dimensional data, and overparameterized models."
+    },
+    {
+      "id": "P40",
+      "name": "SGD optimization used initially",
+      "description": "The theoretical results regarding the training timescales were initially derived under SGD optimization."
+    },
+    {
+      "id": "P41",
+      "name": "Timescales arise under Adam",
+      "description": "The two key training timescales arise under the Adam optimizer."
+    },
+    {
+      "id": "P42",
+      "name": "Fewer steps under Adam",
+      "description": "The number of optimization steps required for the two distinct training timescales to emerge under the Adam optimizer is much fewer than under the SGD optimizer."
+    },
+    {
+      "id": "P43",
+      "name": "Toy Gaussian mixture dataset used",
+      "description": "A toy Gaussian mixture dataset was used to show that the scaling of the memorization timescale with training set size holds in conditional settings."
+    },
+    {
+      "id": "P44",
+      "name": "Classifier-free guidance used",
+      "description": "Classifier-free guidance [21] was used to show that the scaling of the memorization timescale with training set size holds in conditional settings."
+    },
+    {
+      "id": "P45",
+      "name": "Implicit dynamical regularization enlarges regime",
+      "description": "Implicit dynamical regularization in training substantially enlarges the generalization regime of score-based generative models."
+    },
+    {
+      "id": "P46",
+      "name": "Architectural biases constrain memorization",
+      "description": "Architectural biases are a constraint on memorization."
+    }
+  ],
+  "Edges": [
+    {
+      "from": "P6",
+      "to": "P1",
+      "evidence": [
+        "S112",
+        "S122",
+        "S128",
+        "S243",
+        "S39",
+        "S40",
+        "S41",
+        "S5"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P7",
+      "to": "P1",
+      "evidence": [
+        "S112",
+        "S122",
+        "S133",
+        "S134",
+        "S138",
+        "S243",
+        "S253",
+        "S39",
+        "S40",
+        "S41",
+        "S5"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P1",
+      "to": "P32",
+      "evidence": [
+        "S243",
+        "S39",
+        "S40",
+        "S41",
+        "S42",
+        "S5"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P1",
+      "to": "P45",
+      "evidence": [
+        "S243",
+        "S39",
+        "S40",
+        "S41",
+        "S5"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P28",
+      "to": "P2",
+      "evidence": [
+        "S21",
+        "S34",
+        "S35",
+        "S37"
+      ],
+      "votes": 2,
+      "confidence": "majority"
+    },
+    {
+      "from": "P29",
+      "to": "P2",
+      "evidence": [
+        "S34",
+        "S37"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P30",
+      "to": "P2",
+      "evidence": [
+        "S112",
+        "S136",
+        "S21",
+        "S34",
+        "S35",
+        "S37"
+      ],
+      "votes": 2,
+      "confidence": "majority"
+    },
+    {
+      "from": "P35",
+      "to": "P3",
+      "evidence": [
+        "S153",
+        "S193",
+        "S224",
+        "S32",
+        "S48"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P3",
+      "to": "P36",
+      "evidence": [
+        "S153",
+        "S193",
+        "S223",
+        "S32",
+        "S48"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P4",
+      "to": "P16",
+      "evidence": [
+        "S136",
+        "S137",
+        "S138"
+      ],
+      "votes": 2,
+      "confidence": "majority_direction"
+    },
+    {
+      "from": "P5",
+      "to": "P17",
+      "evidence": [
+        "S136",
+        "S137",
+        "S138",
+        "S5"
+      ],
+      "votes": 2,
+      "confidence": "majority_direction"
+    },
+    {
+      "from": "P24",
+      "to": "P6",
+      "evidence": [
+        "S112",
+        "S122",
+        "S128",
+        "S243",
+        "S34",
+        "S39",
+        "S5"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P25",
+      "to": "P6",
+      "evidence": [
+        "S112",
+        "S122",
+        "S128",
+        "S243",
+        "S39",
+        "S5",
+        "S88"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P24",
+      "to": "P7",
+      "evidence": [
+        "S112",
+        "S122",
+        "S133",
+        "S134",
+        "S138",
+        "S243",
+        "S253",
+        "S34",
+        "S39",
+        "S5"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P25",
+      "to": "P7",
+      "evidence": [
+        "S112",
+        "S122",
+        "S133",
+        "S134",
+        "S138",
+        "S243",
+        "S253",
+        "S39",
+        "S5",
+        "S88"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P7",
+      "to": "P13",
+      "evidence": [
+        "S112",
+        "S122",
+        "S133",
+        "S134",
+        "S138",
+        "S243",
+        "S253",
+        "S39",
+        "S5"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P7",
+      "to": "P43",
+      "evidence": [
+        "S112",
+        "S122",
+        "S133",
+        "S134",
+        "S138",
+        "S243",
+        "S253",
+        "S39",
+        "S5"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P7",
+      "to": "P44",
+      "evidence": [
+        "S112",
+        "S122",
+        "S133",
+        "S134",
+        "S138",
+        "S243",
+        "S253",
+        "S39",
+        "S5"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P31",
+      "to": "P11",
+      "evidence": [
+        "S62"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P31",
+      "to": "P12",
+      "evidence": [
+        "S62",
+        "S63"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P12",
+      "to": "P34",
+      "evidence": [
+        "S61",
+        "S62",
+        "S63"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P30",
+      "to": "P14",
+      "evidence": [
+        "S112",
+        "S136",
+        "S21",
+        "S25",
+        "S34",
+        "S35",
+        "S37",
+        "S7"
+      ],
+      "votes": 2,
+      "confidence": "majority"
+    },
+    {
+      "from": "P30",
+      "to": "P15",
+      "evidence": [
+        "S112",
+        "S136",
+        "S21",
+        "S25",
+        "S34",
+        "S35",
+        "S37",
+        "S7"
+      ],
+      "votes": 2,
+      "confidence": "majority"
+    },
+    {
+      "from": "P18",
+      "to": "P16",
+      "evidence": [
+        "S136",
+        "S137",
+        "S88"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P19",
+      "to": "P16",
+      "evidence": [
+        "S136",
+        "S137"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P18",
+      "to": "P17",
+      "evidence": [
+        "S136",
+        "S137",
+        "S88"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P19",
+      "to": "P17",
+      "evidence": [
+        "S136",
+        "S137"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P22",
+      "to": "P18",
+      "evidence": [
+        "S112",
+        "S136",
+        "S138",
+        "S88"
+      ],
+      "votes": 2,
+      "confidence": "majority"
+    },
+    {
+      "from": "P20",
+      "to": "P21",
+      "evidence": [
+        "S136",
+        "S88"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P20",
+      "to": "P22",
+      "evidence": [
+        "S112",
+        "S136",
+        "S88"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P20",
+      "to": "P23",
+      "evidence": [
+        "S136",
+        "S88"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P27",
+      "to": "P26",
+      "evidence": [
+        "S21",
+        "S35",
+        "S7"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P30",
+      "to": "P27",
+      "evidence": [
+        "S112",
+        "S136",
+        "S21",
+        "S238",
+        "S34",
+        "S35",
+        "S36",
+        "S37",
+        "S59"
+      ],
+      "votes": 2,
+      "confidence": "majority"
+    },
+    {
+      "from": "P33",
+      "to": "P34",
+      "evidence": [
+        "S61",
+        "S62",
+        "S63"
+      ],
+      "votes": 2,
+      "confidence": "majority"
+    },
+    {
+      "from": "P35",
+      "to": "P38",
+      "evidence": [
+        "S153",
+        "S209",
+        "S224",
+        "S48",
+        "S49"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P39",
+      "to": "P38",
+      "evidence": [
+        "S153",
+        "S209",
+        "S224",
+        "S48",
+        "S49"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P40",
+      "to": "P41",
+      "evidence": [
+        "S247",
+        "S248"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P41",
+      "to": "P42",
+      "evidence": [
+        "S247",
+        "S248"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P40",
+      "to": "P42",
+      "evidence": [
+        "S247",
+        "S248"
+      ],
+      "votes": 3,
+      "confidence": "unanimous"
+    },
+    {
+      "from": "P7",
+      "to": "P34",
+      "evidence": [
+        "S112",
+        "S5",
+        "S62",
+        "S63"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P14",
+      "to": "P26",
+      "evidence": [
+        "S25",
+        "S35",
+        "S7"
+      ],
+      "votes": 2,
+      "confidence": "majority"
+    },
+    {
+      "from": "P14",
+      "to": "P27",
+      "evidence": [
+        "S21",
+        "S35"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P15",
+      "to": "P26",
+      "evidence": [
+        "S25",
+        "S35",
+        "S7"
+      ],
+      "votes": 2,
+      "confidence": "majority"
+    },
+    {
+      "from": "P15",
+      "to": "P27",
+      "evidence": [
+        "S21",
+        "S35"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P18",
+      "to": "P19",
+      "evidence": [
+        "S136"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P33",
+      "to": "P32",
+      "evidence": [
+        "S243",
+        "S41"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P36",
+      "to": "P38",
+      "evidence": [
+        "S209",
+        "S223",
+        "S224",
+        "S48",
+        "S49"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P2",
+      "to": "P1",
+      "evidence": [
+        "S243",
+        "S34",
+        "S37",
+        "S39",
+        "S40",
+        "S41",
+        "S5"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P2",
+      "to": "P6",
+      "evidence": [
+        "S112",
+        "S128",
+        "S243",
+        "S34",
+        "S37",
+        "S39",
+        "S5"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P2",
+      "to": "P7",
+      "evidence": [
+        "S112",
+        "S122",
+        "S133",
+        "S134",
+        "S138",
+        "S243",
+        "S253",
+        "S34",
+        "S37",
+        "S39",
+        "S5"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P37",
+      "to": "P3",
+      "evidence": [
+        "S153",
+        "S193",
+        "S32",
+        "S42",
+        "S48"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P3",
+      "to": "P39",
+      "evidence": [
+        "S153",
+        "S193",
+        "S209",
+        "S32",
+        "S48",
+        "S49"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P18",
+      "to": "P4",
+      "evidence": [
+        "S136",
+        "S137",
+        "S138",
+        "S88"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P7",
+      "to": "P5",
+      "evidence": [
+        "S112",
+        "S122",
+        "S133",
+        "S134",
+        "S136",
+        "S137",
+        "S138",
+        "S243",
+        "S253",
+        "S39",
+        "S5"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P18",
+      "to": "P5",
+      "evidence": [
+        "S136",
+        "S137",
+        "S138",
+        "S5",
+        "S88"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P24",
+      "to": "P8",
+      "evidence": [
+        "S112",
+        "S234",
+        "S34"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P25",
+      "to": "P8",
+      "evidence": [
+        "S112",
+        "S234",
+        "S88"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P24",
+      "to": "P9",
+      "evidence": [
+        "S112",
+        "S234",
+        "S34"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P25",
+      "to": "P9",
+      "evidence": [
+        "S112",
+        "S234",
+        "S88"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P37",
+      "to": "P10",
+      "evidence": [
+        "S32",
+        "S42",
+        "S48"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P28",
+      "to": "P14",
+      "evidence": [
+        "S21",
+        "S25",
+        "S34",
+        "S35",
+        "S37",
+        "S7"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P28",
+      "to": "P15",
+      "evidence": [
+        "S21",
+        "S25",
+        "S34",
+        "S35",
+        "S37",
+        "S7"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P20",
+      "to": "P18",
+      "evidence": [
+        "S136",
+        "S138",
+        "S88"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P20",
+      "to": "P19",
+      "evidence": [
+        "S136",
+        "S88"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P30",
+      "to": "P19",
+      "evidence": [
+        "S112",
+        "S136",
+        "S21",
+        "S34",
+        "S35",
+        "S37",
+        "S88"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P22",
+      "to": "P25",
+      "evidence": [
+        "S112",
+        "S136",
+        "S88"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P30",
+      "to": "P24",
+      "evidence": [
+        "S112",
+        "S136",
+        "S21",
+        "S34",
+        "S35",
+        "S37"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P28",
+      "to": "P27",
+      "evidence": [
+        "S21",
+        "S238",
+        "S34",
+        "S35",
+        "S36",
+        "S37",
+        "S59"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    },
+    {
+      "from": "P46",
+      "to": "P27",
+      "evidence": [
+        "S21",
+        "S238",
+        "S36",
+        "S59"
+      ],
+      "votes": 1,
+      "confidence": "single_run"
+    }
+  ],
+  "AmbiguousDirection": [
+    {
+      "between": [
+        "P29",
+        "P30"
+      ],
+      "candidates": [
+        {
+          "from": "P30",
+          "to": "P29",
+          "votes": 1,
+          "evidence": [
+            "S34"
+          ]
+        },
+        {
+          "from": "P29",
+          "to": "P30",
+          "votes": 1,
+          "evidence": [
+            "S112",
+            "S136",
+            "S21",
+            "S34",
+            "S35",
+            "S37"
+          ]
+        }
+      ]
+    },
+    {
+      "between": [
+        "P10",
+        "P32"
+      ],
+      "candidates": [
+        {
+          "from": "P10",
+          "to": "P32",
+          "votes": 1,
+          "evidence": [
+            "S243",
+            "S41",
+            "S42"
+          ]
+        },
+        {
+          "from": "P32",
+          "to": "P10",
+          "votes": 1,
+          "evidence": [
+            "S243",
+            "S41",
+            "S42"
+          ]
+        }
+      ]
+    }
+  ]
+}

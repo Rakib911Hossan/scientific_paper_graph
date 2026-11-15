@@ -1,0 +1,154 @@
+{
+  "arxiv_id": "2508.14285v3",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/equations/tables rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: limitations of fine-tuning, ICL, and existing meta-learning for LLMs",
+      "nodes": [
+        {"id": "P1", "name": "LoRA fine-tunes LLMs cost-effectively but generalizes poorly across domains", "description": "LoRA fine-tunes a pretrained LLM cost-effectively, but the fine-tuned model is often limited to the domain it is trained on, with performance not improving or sometimes worsening on other domains due to catastrophic forgetting."},
+        {"id": "P2", "name": "ICL is an alternative that conditions on examples in the prompt", "description": "In-context learning adapts models to new tasks by conditioning on examples from the task in the prompt, rather than updating model weights."},
+        {"id": "P3", "name": "ICL has limited expressivity and gains diminish with complex information", "description": "Prompt-based ICL approaches have limited expressivity, and their gains may diminish as the complexity of in-context information rises."},
+        {"id": "P4", "name": "In-weights meta-learning (MAML) is another strategy for cross-task generalization", "description": "In-weights meta-learning trains models on a variety of tasks in a way that supports generalization across tasks, with MAML being a popular instantiation of this idea."},
+        {"id": "P5", "name": "MAML-en-LLM adapts MAML to LLMs but is expensive", "description": "MAML-en-LLM adapts the Model-Agnostic Meta-Learning framework to LLMs, but requires a large amount of computation and memory, using second-order gradient updates and saving a model for each task, making it hard to apply at scale."},
+        {"id": "P6", "name": "Reptile scales better but sacrifices MAML's full expressivity", "description": "Reptile is a meta-learning algorithm with constant scaling with respect to the number of tasks, but it does not retain the full expressivity of MAML."},
+        {"id": "P7", "name": "These limitations motivate a scalable meta-learning method usable with ICL", "description": "The generalization limits of LoRA fine-tuning, the expressivity limits of ICL, and the computational cost of MAML-style meta-learning together motivate developing a meta-learning approach for LLMs that is practical at scale and can be combined with ICL."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P6", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P6", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "From ABML to ABMLL: reframing amortized Bayesian meta-learning for LoRA",
+      "nodes": [
+        {"id": "P8", "name": "ABML represents task uncertainty via a Bayesian posterior over parameters", "description": "Amortized Bayesian Meta-Learning improves on MAML-based frameworks by representing uncertainty with a Bayesian approach, treating global parameters as random variables and minimizing a negative evidence lower bound via variational inference."},
+        {"id": "P9", "name": "ABML amortizes inference so memory does not grow with number of tasks", "description": "ABML amortizes inference over the parameters so that memory no longer increases linearly with the number of tasks, unlike MAML which must cache task-specific parameter copies."},
+        {"id": "P10", "name": "Applying ABML to LLMs requires a generative model over LLM weight space", "description": "Extending ABML to LLMs introduces the challenge of specifying a generative model over LLM weight space, since LLM weights are far higher-dimensional than in the small-model settings ABML was originally designed for."},
+        {"id": "P11", "name": "LoRA is used to express both weights and their uncertainty efficiently", "description": "To define the generative model and efficiently characterize uncertainty at LLM scale, ABMLL uses LoRA adapters to express both local/global model weights and their variance, with mean and variance parameters computed as LoRA outputs."},
+        {"id": "P12", "name": "Four pairs of LoRA adapters parameterize global and local mean/variance", "description": "ABMLL introduces four pairs of LoRA adapters (Bµθ Aµθ, Bσθ Aσθ, Bµϕ Aµϕ, Bσϕ Aσϕ) to compute the mean and variance of both global and task-specific (local) weight distributions."},
+        {"id": "P13", "name": "A new prior over global variables accounts for the spread of pretrained weights", "description": "ABMLL introduces a new prior over global variables, p(θ) = N(µθ;0,I)·Gamma(1/σθ²; a0,b0), that accounts for the spread of pretrained parameters."},
+        {"id": "P14", "name": "This yields a practical generative process over global and task-specific weights", "description": "Combining LoRA-parameterized mean/variance adapters with the new prior yields the ABMLL generative process θ~p(θ), ϕi~p(ϕi|θ), Di~LLM(ϕi), giving a concrete, scalable instantiation of amortized Bayesian meta-learning for LLM weights."}
+      ],
+      "edges": [
+        {"from": "P8", "to": "P9", "evidence": ["S3.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P11", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P12", "evidence": ["S4", "Eq"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P13", "evidence": ["S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P14", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Balancing reconstruction and regularization via hyperparameter β",
+      "nodes": [
+        {"id": "P15", "name": "LLMs are overparameterized relative to the data likelihood term", "description": "LLMs are often overparameterized, meaning the dimensionality of the weight-space probabilistic quantities is very large relative to the data space."},
+        {"id": "P16", "name": "KL terms over weight space can overwhelm the data log-likelihood term", "description": "Because of this overparameterization, the KL terms KL(qθ(ϕi|Di)‖p(ϕi|θ)) and KL(q(θ)‖p(θ)) can overwhelm the reconstruction quantity log p(Di|ϕi) in the training objective."},
+        {"id": "P17", "name": "β-VAE and Bayesian NN work suggests tempering likelihood vs. regularization", "description": "Prior work such as β-VAE and Bayesian neural network approaches introduce hyperparameters to temper the likelihood versus regularization terms in similar objectives."},
+        {"id": "P18", "name": "ABMLL introduces β to weight the KL terms in the ELBO", "description": "Inspired by this idea, ABMLL introduces hyperparameter β multiplying both KL terms, giving a modified objective that controls how close task-specific parameters are to global ones and how close global parameters are to the prior."},
+        {"id": "P19", "name": "β must be tuned; both extremes degrade performance", "description": "The value of β must be tuned per the ablation study: β=1 (no tempering) drops performance significantly, and extremely small β (log10β=-16) also degrades performance by making the objective degenerate."}
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S4", "Eq2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P18", "evidence": ["S4", "Eq2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["S5.4", "Table5"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Experimental setup: models, datasets, baselines",
+      "nodes": [
+        {"id": "P20", "name": "Models fine-tuned: LLaMA3-8B and Qwen2-7B", "description": "ABMLL is evaluated by fine-tuning LLaMA3-8B and Qwen2-7B on the CrossFit and UnifiedQA datasets."},
+        {"id": "P21", "name": "Three generalization settings: cls-45, cls-23, and narrow-task transfer", "description": "Experiments use three settings: cls-45 (train and evaluate on distinct classification tasks), cls-23 (train on a mix of task types, evaluate on the same classification tasks), and narrower transfer to NLI, paraphrasing, and MCQA."},
+        {"id": "P22", "name": "Baselines span pretrained, regular/structured LoRA, and Reptile", "description": "Five baselines are compared: the off-the-shelf pretrained model, regular LoRA trained on shuffled data, structured LoRA trained task-by-task without a global variable, and Reptile."},
+        {"id": "P23", "name": "This setup isolates the contribution of ABMLL's generative model design", "description": "Because Structured LoRA matches ABMLL's task-by-task training structure but drops the global variable, comparing it against ABMLL isolates the effect of the proposed generative model itself, separate from just the training data ordering."}
+      ],
+      "edges": [
+        {"from": "P20", "to": "P21", "evidence": ["S5.1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P22", "evidence": ["S5.1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P23", "evidence": ["S5.1.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Results: accuracy and calibration on CrossFit/UnifiedQA",
+      "nodes": [
+        {"id": "P24", "name": "Meta-learning methods (ABMLL, Reptile) beat non-meta-learning baselines", "description": "ABMLL and Reptile achieve evidently higher accuracy than the pretrained, regular LoRA, and structured LoRA baselines on cls-45 accuracy and ECE curves."},
+        {"id": "P25", "name": "ABMLL is consistently slightly better than Reptile on cls-45/cls-23", "description": "Among the meta-learning methods, ABMLL performs best on both accuracy and ECE on cls-45 and cls-23, with performance slightly but consistently better than Reptile."},
+        {"id": "P26", "name": "ABMLL and Reptile converge on harder narrow-transfer tasks", "description": "On tasks with more distinct train-evaluation differences (NLI, Para, MCQA), ABMLL's performance is tied with Reptile, possibly because the tested ability is harder to acquire through training tasks."},
+        {"id": "P27", "name": "ABMLL only increases peak memory by 7.6% over regular LoRA", "description": "Despite introducing four pairs of LoRA adapters, ABMLL increases peak memory by only 7.6% over regular LoRA on cls-45, since pretrained weights must be computed in both cases regardless."},
+        {"id": "P28", "name": "ABMLL achieves strong generalization at LLM scale with minimal overhead", "description": "Together, ABMLL's consistent accuracy/ECE advantage over non-meta-learning baselines and its small memory overhead over regular LoRA demonstrate that meta-learning can work effectively and scalably at the scale of LLaMA3-8B and Qwen2-7B."}
+      ],
+      "edges": [
+        {"from": "P24", "to": "P25", "evidence": ["S5.1.2", "Table1", "Figure2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P26", "evidence": ["S5.1.2", "Table1"], "votes": 2, "confidence": "majority"},
+        {"from": "P25", "to": "P28", "evidence": ["S5.1.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["S5.1.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Combining meta-learning with ICL",
+      "nodes": [
+        {"id": "P29", "name": "Meta-learning is hypothesized to be complementary to ICL", "description": "Meta-learning is a complementary approach to ICL, and scaling meta-learning to LLMs makes it possible to combine the two techniques, motivating a comparison of MetaICL, Reptile-MetaICL, and ABMLL-MetaICL."},
+        {"id": "P30", "name": "ABMLL-MetaICL outperforms regular LoRA and MetaICL substantially", "description": "ABMLL-MetaICL outperforms regular LoRA by over 10% in accuracy on several datasets and significantly outperforms regular MetaICL, showing the strongest synergy with ICL among the compared methods."},
+        {"id": "P31", "name": "Meta-learning + ICL generalizes to legal and chemistry domains", "description": "The two meta-learning methods (Reptile-MetaICL, ABMLL-MetaICL) also generalize better than MetaICL to LegalBench and ChemBench, domains distant from the CrossFit/UnifiedQA training data."},
+        {"id": "P32", "name": "This confirms meta-learning provides complementary gains to ICL", "description": "The combined evidence that ABMLL-MetaICL beats both non-meta-learned LoRA and plain MetaICL, including on out-of-domain legal/chemistry tasks, supports that in-weights meta-learning provides gains complementary to, not merely redundant with, in-context learning."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P30", "evidence": ["S5.2.1", "Table2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P32", "evidence": ["S5.2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P32", "evidence": ["S5.2.1", "Table3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Results: robustness under pruning",
+      "nodes": [
+        {"id": "P33", "name": "Pruning tests robustness by zeroing redundant neurons", "description": "Model pruning removes redundant parameters (a percentage of neurons per layer embedding, sorted by magnitude) to test efficiency and probe robustness to loss of spurious correlations."},
+        {"id": "P34", "name": "Bayesian neural networks are expected to be resource-efficient/robust", "description": "Bayesian neural networks are known to be resource-efficient, motivating the hypothesis that ABMLL's Bayesian formulation should confer added robustness under pruning."},
+        {"id": "P35", "name": "ABMLL degrades far less than other methods as pruning increases", "description": "Across NLI and Para pruning experiments, ABMLL is significantly more robust against pruning than pretrained, regular LoRA, structured LoRA, and Reptile, maintaining much higher accuracy at 20-30% pruning."},
+        {"id": "P36", "name": "This suggests ABMLL learns generalizable features rather than parameter-specific ones", "description": "Because ABMLL's performance is much more robust to pruning than the alternatives, this suggests ABMLL learns generalizable features that are not as tightly tied to specific parameters, consistent with a Bayesian approach to scalable, robust adaptation."}
+      ],
+      "edges": [
+        {"from": "P33", "to": "P34", "evidence": ["S5.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P34", "to": "P35", "evidence": ["S5.3", "Table4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P36", "evidence": ["S5.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P37", "name": "Definition of LoRA fine-tuning", "description": "LoRA fine-tunes a pretrained weight matrix W0 by adding a low-rank product of trainable matrices B and A, updating (dout+din)drank parameters instead of the full dout·din."},
+    {"id": "P38", "name": "Definition of MAML's inner/outer loop updates", "description": "MAML runs an inner loop that adapts task-specific parameters θi via gradient descent on task loss, and an outer loop that updates global parameters θ using a second-order gradient over the sum of adapted losses across tasks."},
+    {"id": "P39", "name": "Definition of Reptile's update rule", "description": "Reptile performs k regular SGD updates per task to obtain θi, then updates global parameters via θ ← θ + ε(θi − θ), avoiding second-order gradients."},
+    {"id": "P40", "name": "Prior extrinsic uncertainty methods for LLM fine-tuning", "description": "Extrinsic approaches to LLM uncertainty include training LoRA with ensembles, Laplace approximation, and variational inference, which ABMLL differs from by using meta-learning to achieve generalization across datasets."},
+    {"id": "P41", "name": "Prior intrinsic uncertainty methods for LLMs", "description": "Intrinsic approaches to LLM uncertainty produce better calibration via prompt engineering and sampling, or by learning an external model, rather than modifying the base model's weights."},
+    {"id": "P42", "name": "Hierarchical Bayesian LoRA meta-learning baseline (Kim & Hospedales 2025)", "description": "A hierarchical Bayesian approach to LoRA meta-learning was proposed by Kim & Hospedales, but its parameter count increases linearly with the number of tasks, unlike ABMLL."},
+    {"id": "P43", "name": "5-shot evaluation protocol", "description": "During validation on unseen datasets, all models perform 5-shot learning: 5 gradient steps on 5 batches from the new dataset before evaluating on the rest."},
+    {"id": "P44", "name": "ABMLL uses one reparameterization sample at inference", "description": "ABMLL takes one sample from the reparameterization step during inference when producing task-specific weights."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph mirrors ABMLL's own progression from motivation to method to empirical validation. C1 traces the paper's introduction argument that LoRA's poor cross-domain generalization, ICL's limited expressivity, and MAML-style meta-learning's computational cost jointly motivate a scalable, ICL-compatible meta-learning method. C2 follows the derivation from ABML's amortized Bayesian formulation to its LLM-scale reframing via LoRA-parameterized mean/variance adapters and a new global prior, matching Section 4's presentation around Figure 1 and the listed equations. C3 isolates the β-tempering argument (Eq. 2) as its own reasoning chain from overparameterization to the tuned hyperparameter, since it is a distinct design decision with its own dedicated ablation (Table 5). C4-C7 mirror the paper's four empirical subsections (setup, CrossFit/UnifiedQA results, ICL combination, pruning robustness), each ending in the paper's own interpretive claim (scalable generalization, complementarity with ICL, and robustness from generalizable Bayesian features). Isolated nodes are limited to background method definitions (LoRA, MAML, Reptile), related-work baselines, and experimental protocol details that support the argument but are not premises within the central derivation chains."
+}

@@ -1,0 +1,131 @@
+{
+  "arxiv_id": "2512.02180v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {"id": "P1", "name": "Existing contrastive methods lack clinical knowledge", "description": "Existing contrastive learning approaches incorporate subject and signal attributes but do not incorporate clinical knowledge, nor handle missing metadata."},
+        {"id": "P2", "name": "Risk scores as contextual metadata", "description": "Clinically validated risk scores translate complex physiological factors into interpretable values that guide clinical actions, and can be leveraged as contextual information for contrastive pretraining."},
+        {"id": "P3", "name": "Clinically-guided contrastive learning proposal", "description": "CLEF introduces a novel contrastive learning approach that uses an established clinical risk score to adaptively weight negative pairs."},
+        {"id": "P4", "name": "Explicit missing metadata mechanism", "description": "CLEF includes an explicit mechanism to handle missing metadata when computing risk-score-based similarity."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P3", "evidence": ["S_intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["S_intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["S_intro"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {"id": "P5", "name": "Weighted contrastive loss", "description": "Negative pairs contribute unequally to representation learning; a weighting term Wik adjusts the relative importance of negatives according to similarity to the positive."},
+        {"id": "P6", "name": "Risk score dissimilarity Di,k", "description": "For a negative pair, dissimilarity Di,k is defined from the squared difference in risk scores, normalized and bounded within [α, 1]."},
+        {"id": "P7", "name": "Missing metadata multiplier Mik", "description": "A multiplier Mik is assigned to negative pairs based on the number of missing metadata variables, functioning as a reliability adjustment."},
+        {"id": "P8", "name": "Weight matrix W = D ⊙ M", "description": "The weight matrix combining dissimilarity and missing-metadata reliability is defined as the Hadamard product of D and M."},
+        {"id": "P9", "name": "Clinically-guided contrastive loss Lw", "description": "The clinically-guided contrastive loss Lw uses the weight matrix W to adaptively weight negative pairs in the batch-averaged contrastive objective."},
+        {"id": "P10", "name": "Dissimilarity alignment loss Ld", "description": "The dissimilarity alignment loss computes MSE between cosine similarity of embeddings and their corresponding weight, encouraging clinically similar signals to map to nearby embeddings."},
+        {"id": "P11", "name": "Final training objective L = Lw + Ld", "description": "The final CLEF objective combines the clinically-guided contrastive loss and the dissimilarity alignment loss with equal weighting."},
+        {"id": "P12", "name": "Missing metadata prevents noisy influence", "description": "When many metadata variables are missing, Mik moves the weighting closer to uniform SimCLR-like behavior, preventing uncertain risk differences from unduly influencing the contrastive objective."}
+      ],
+      "edges": [
+        {"from": "P5", "to": "P9", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P8", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P8", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P12", "evidence": ["S_method"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P11", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {"id": "P13", "name": "Random lead selection during pretraining", "description": "During pretraining, one of the 12 leads is randomly selected per sample with stochastic augmentation, so the model is collectively trained across all leads."},
+        {"id": "P14", "name": "CLEF generalizes to any lead", "description": "Because CLEF is not restricted to a specific lead during pretraining, it can be fine-tuned to any target lead, supporting cross-device use."},
+        {"id": "P15", "name": "Lead-specific pretraining as upper bound", "description": "Pretraining CLEF exclusively on the downstream task's lead yields further AUROC improvements over pretraining on all 12 leads, approaching the performance of supervised ECGFounder."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["S_setup"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["S_results_lead"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {"id": "P16", "name": "CLEF outperforms baselines on lead I/II finetuning", "description": "CLEF outperforms the best baseline across both leads, achieving average AUROC improvement of 3.1% on lead I and 4.8% on lead II."},
+        {"id": "P17", "name": "CLEF robust across leads", "description": "CLEF variants differ by only 0.3%, 0.0%, and 1.4% on average in AUROC across leads I and II, unlike ST-MEM and KED which favor lead I."},
+        {"id": "P18", "name": "CLEF strong on pattern identification tasks", "description": "CLEF performs particularly well on form/rhythm/arrhythmia pattern identification tasks, improving AUROC by 5.9% (lead I) and 8.5% (lead II) over strongest baselines."},
+        {"id": "P19", "name": "CLEF vs ECGFounder on lead I vs II", "description": "CLEF underperforms supervised ECGFounder on lead I (its trained lead) but outperforms it on lead II, since ECGFounder's performance drops on the untrained lead while CLEF maintains performance across leads."}
+      ],
+      "edges": [
+        {"from": "P17", "to": "P19", "evidence": ["S_results_finetune"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P18", "evidence": ["S_results_finetune"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {"id": "P20", "name": "CLEF outperforms self-supervised baselines", "description": "CLEF outperforms SimCLR, BYOL, and MoCo self-supervised pretraining methods, with 100 of 117 instances outperformed by CLEF."},
+        {"id": "P21", "name": "Applying CLEF objective to KED improves performance", "description": "Initializing the best-performing baseline (KED) with its pretrained weights and further applying the clinically-guided pretraining objective improves AUROC on nearly all downstream tasks by 3.0% on average."}
+      ],
+      "edges": [
+        {"from": "P20", "to": "P21", "evidence": ["S_results_kedcombo"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 6.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {"id": "P22", "name": "Missing metadata ablation degrades performance", "description": "Without the missing-metadata handling term M, performance of all CLEF models degrades on the majority of tasks, with AUROC decreasing by 1.9% on average."},
+        {"id": "P23", "name": "Wearable datasets more affected by missing metadata ablation", "description": "The AUROC decrease from removing missing-metadata handling is larger on wearable datasets (4.0% drop) compared to lead I clinical datasets (1.1% drop)."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["S_ablation_missing"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P24", "name": "AI-assisted ECG diagnosis improvement", "description": "Clinicians using AI were 30% more accurate in diagnosing left ventricular dysfunction from ECGs than those without AI support."},
+    {"id": "P25", "name": "Single-lead ECG challenge", "description": "Accurate analysis of single-lead ECGs remains a challenge due to reduced spatial information and increased noise and motion artifacts."},
+    {"id": "P26", "name": "SCORE2 risk score definition", "description": "SCORE2 is a clinically validated function estimating 10-year cardiovascular disease risk based on 7 variables: age, gender, smoking status, systolic blood pressure, diabetes status, total cholesterol, and HDL cholesterol."},
+    {"id": "P27", "name": "MIMIC-IV-ECG limited metadata", "description": "MIMIC-IV-ECG reports only three variables per subject (age, gender, systolic blood pressure) out of the seven needed for full SCORE2 computation, motivating the missing-metadata handling mechanism."},
+    {"id": "P28", "name": "Three model scales", "description": "CLEF is pretrained at three scales: small (448K parameters), medium (30.7M parameters), and large (296M parameters), using ResNeXt1D architecture."},
+    {"id": "P29", "name": "Foundation model baselines", "description": "CLEF is benchmarked against Moirai, Moment, ST-MEM, and KED foundation model baselines, plus SimCLR, BYOL, and MoCo self-supervised algorithms, and supervised ECGFounder."},
+    {"id": "P30", "name": "Linear probing shows larger CLEF models better", "description": "CLEF-M and CLEF-L outperform all baselines in linear probing with 8.5% and 9.9% average AUROC improvement, but CLEF-S does not outperform KED or Moment, indicating larger models produce better representations."},
+    {"id": "P31", "name": "Moment outperforms CLEF on MUSIC SCD", "description": "Moment, a general time series model, outperformed CLEF on MUSIC sudden cardiac death prediction, likely because SCD risk depends on long-range temporal patterns more akin to forecasting."},
+    {"id": "P32", "name": "Loss component ablation on CIFAR-100", "description": "A CIFAR-100 study comparing standard contrastive loss, weighted contrastive loss, dissimilarity alignment loss, and their combinations shows the proposed Lw + Ld achieves clearer separation with lower variance."},
+    {"id": "P33", "name": "Single hospital training limitation", "description": "Models were trained on ECGs from a single hospital, limiting representativeness for the general population."},
+    {"id": "P34", "name": "Incomplete risk score limitation", "description": "Risk scores in this study use only 3 of 7 SCORE2 input variables, so they cannot be considered a holistic cardiovascular risk assessment."}
+  ],
+  "structural_score": 7,
+  "structural_reasoning": "The graph captures the paper's core methodological chain (motivation for clinical-knowledge-guided contrastive learning, the weighted loss and dissimilarity alignment formulation, and the missing-metadata handling mechanism) as well as key empirical findings organized by experimental theme: lead generalization (C3, C4), comparison to self-supervised baselines (C5), and the missing-metadata ablation (C6). The method components (C1, C2) are tightly and confidently linked since they follow directly from the paper's formal definitions. Empirical result components have somewhat lower edge confidence since many findings are reported as parallel observations from the same results section rather than explicit causal claims. Background facts (motivation, dataset limitations, baseline descriptions) are appropriately isolated as supporting context rather than part of the argumentative chain."
+}

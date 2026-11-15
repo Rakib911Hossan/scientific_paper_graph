@@ -1,0 +1,212 @@
+{
+ "arxiv_id": "2604.16087",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Lower bound of T^{-1/(2+p)} for uncoupled last-iterate learning with bandit feedback, matched by two algorithms",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Average-iterate drawback",
+     "description": "Regret-based methods for zero-sum matrix games produce policies that generally do not converge, and the average policy used as a proxy is hard to compute for practical (e.g. neural network) policies."
+    },
+    {
+     "id": "P2",
+     "name": "Prior bandit last-iterate rate",
+     "description": "Prior work (Cai et al. 2023; Dong et al. 2024) obtained only O(T^{-1/8}) exploitability-gap rates for last-iterate convergence with bandit feedback, against a known lower bound of Omega(T^{-1/2}) from K-armed bandits."
+    },
+    {
+     "id": "P3",
+     "name": "Open question on the best rate",
+     "description": "The best attainable rate for last-iterate convergence of uncoupled learning with bandit feedback in matrix games was an open question."
+    },
+    {
+     "id": "P4",
+     "name": "Lower bound for last-iterate convergence",
+     "description": "For any p in (0,2], no uncoupled learning sequence with unobserved opponent actions can achieve Lp last-iterate convergence faster than T^{-1/(2+p)} on all 2x2 games, i.e. Omega(T^{-1/4}) for L2 (Theorem 5.1)."
+    },
+    {
+     "id": "P5",
+     "name": "Intuition for the lower bound",
+     "description": "In some 2x2 games a minimax policy makes all of the other player's actions equivalent so they cannot learn, while a policy converging to it only slows learning, so convergence to the minimax policy is detrimental to learning."
+    },
+    {
+     "id": "P6",
+     "name": "Lower bound extends to p>2",
+     "description": "For p in (2,infinity], norm monotonicity yields the Omega(T^{-1/4}) lower bound for Lp last-iterate convergence (Corollary 5.3)."
+    },
+    {
+     "id": "P7",
+     "name": "Last-iterate harder than average",
+     "description": "Guaranteeing last-iterate convergence is strictly harder than average-iterate convergence, which attains O(T^{-1/2})."
+    },
+    {
+     "id": "P8",
+     "name": "Explore-or-exploit framework",
+     "description": "Algorithm 1 uses a shared random seed to synchronize players, playing the current profile of an anytime algorithm A on exploration steps and its output on exploitation steps, with exploration probabilities p_t summing to infinity."
+    },
+    {
+     "id": "P9",
+     "name": "Framework rate lemma",
+     "description": "If A has output convergence rate g, Algorithm 1 achieves an Lp last-iterate rate f_t built from p_t and g (Lemma 6.1)."
+    },
+    {
+     "id": "P10",
+     "name": "Lower bound is tight for p<=2",
+     "description": "Using EXP3-IX with p_t = t^{-p/(2+p)}, Algorithm 1 attains Lp last-iterate rate O~(t^{-1/(2+p)}), matching the lower bound up to constant and log factors (Theorem 6.2)."
+    },
+    {
+     "id": "P11",
+     "name": "Framework still needs averages and sync",
+     "description": "The first algorithm still needs average-policy computation (since it relies on A's output) and requires synchronizing the two players, so it is not practical."
+    },
+    {
+     "id": "P12",
+     "name": "Regularized EXP3 algorithm",
+     "description": "Algorithm 2 runs mirror descent steps on a KL-regularized game L_tau with an unbiased loss estimate (instead of IX estimation), requiring no average policy."
+    },
+    {
+     "id": "P13",
+     "name": "Regularized EXP3 achieves L2 rate",
+     "description": "With tau = ((A+B)/T)^{1/4} sqrt(2/(log A + log B)) and eta_t = 2/(tau(t+1)), Algorithm 2's final output has ||EG||_2 of order ((A+B)/T)^{1/4} sqrt(log(AB)), i.e. optimal O(T^{-1/4}) (Theorem 7.2)."
+    },
+    {
+     "id": "P14",
+     "name": "Regularization needs the horizon",
+     "description": "The regularization in Algorithm 2 depends on the horizon T, so the rate is only guaranteed near the final output and not anytime."
+    },
+    {
+     "id": "P15",
+     "name": "Doubling trick restores anytime guarantee",
+     "description": "Algorithm 3 (doubling trick with synchronized instances) gives an anytime L2 last-iterate bound of order ((A+B)/t)^{1/4} sqrt(log AB) log t, i.e. O~(T^{-1/4}) (Theorem 8.1)."
+    },
+    {
+     "id": "P16",
+     "name": "Doubling still requires synchronization",
+     "description": "Algorithm 3 shares the weakness of requiring the two players to synchronize which instance to play."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1-2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P4",
+     "evidence": [
+      "Sec 5 intuition"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 5, Cor 5.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 6, Lemma 6.1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 6, Thm 6.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P10",
+     "evidence": [
+      "Sec 6: lower bound tight"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 6"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 7"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P13",
+     "evidence": [
+      "Sec 7, Thm 7.2"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 7"
+     ]
+    },
+    {
+     "from": "P14",
+     "to": "P15",
+     "evidence": [
+      "Sec 8, Thm 8.1"
+     ]
+    },
+    {
+     "from": "P15",
+     "to": "P16",
+     "evidence": [
+      "Sec 8"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P17",
+   "name": "Uncoupled Regularized EXP3 rates in Table 1",
+   "description": "Table 1 lists this paper's Simultaneous Explore or Exploit with Lp rate O~(T^{-1/(2+p)}) for p in (0,2] and Uncoupled Regularized EXP3 with L2 rate O~(T^{-1/4})."
+  },
+  {
+   "id": "P18",
+   "name": "Extensive-form extension",
+   "description": "The two approaches could be adapted to extensive-form games with IXOMD and dilated Shannon entropy regularization, obtaining the same horizon dependence."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the open question to the new lower bound, then to the explore-exploit algorithm showing tightness, then to the more practical regularized algorithm and its doubling-trick extension."
+}

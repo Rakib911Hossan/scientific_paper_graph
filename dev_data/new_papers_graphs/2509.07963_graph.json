@@ -1,0 +1,206 @@
+{
+ "arxiv_id": "2509.07963",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Low-rank bottleneck of attention and high-rank structured scoring functions",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Attention is a general tool with task-dependent biases",
+     "description": "Softmax attention has inductive biases that suit some tasks better than others, and it is computationally expensive in runtime and memory."
+    },
+    {
+     "id": "P2",
+     "name": "Scoring function is a low-rank bilinear form",
+     "description": "The attention scoring function takes a dot product of low-dimensional queries and keys, equivalent to a bilinear form with a rank-r matrix where the head dimension r is much smaller than the embedding dimension D."
+    },
+    {
+     "id": "P3",
+     "name": "Low-rank bottleneck",
+     "description": "The low-rank scoring function loses token information for tasks with intrinsically high-dimensional inputs; for example it cannot represent s(x,x')=x^T x'."
+    },
+    {
+     "id": "P4",
+     "name": "Full-rank heads beat low-rank multi-head attention",
+     "description": "Prior work shows one full-rank attention head can significantly outperform low-rank multi-head attention in in-context linear regression after controlling for model size."
+    },
+    {
+     "id": "P5",
+     "name": "BTT and MLR scoring functions are high rank and efficient",
+     "description": "Block Tensor-Train (BTT) and contiguous Multi-Level Low Rank (MLR) matrices have high rank while remaining parameter- and compute-efficient, and replace the low-rank product in the attention scoring function (Bilinear BTT, Bilinear MLR)."
+    },
+    {
+     "id": "P6",
+     "name": "Standard 8-head attention fails in-context regression",
+     "description": "On in-context regression with input dimension 128, standard 8-head attention cannot learn the task even at model width D=512, while 1-head attention (r=D, full rank) learns it at D=512."
+    },
+    {
+     "id": "P7",
+     "name": "Bilinear BTT solves it at smaller width",
+     "description": "Bilinear BTT with 8 heads is full rank and learns the in-context regression task at only D=256."
+    },
+    {
+     "id": "P8",
+     "name": "Bilinear BTT and MLR beat attention per compute",
+     "description": "At fixed width D=256, both Bilinear MLR and Bilinear BTT attain lower regression error than 1-head or 8-head attention when controlling for training compute."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 2.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 2.2, Sec 4, Fig 3a"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 2.2, Sec 4, Fig 3a"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4, Fig 3a"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4, Fig 3a"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 4, Fig 3b"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    }
+   ]
+  },
+  {
+   "component_id": "C2",
+   "description": "Distance-dependent compute bias with MLR attention",
+   "nodes": [
+    {
+     "id": "P9",
+     "name": "Standard attention has no distance-dependent compute bias",
+     "description": "Standard attention scores every token pair with the same function and weights, and each token can attend to the whole context, which is expensive for long contexts."
+    },
+    {
+     "id": "P10",
+     "name": "Real data exhibits locality",
+     "description": "Real-world datasets often exhibit locality, meaning a token's semantics depend most strongly on nearby tokens."
+    },
+    {
+     "id": "P11",
+     "name": "Contiguous MLR encodes distance-dependent compute",
+     "description": "Using contiguous MLR for the attention score matrix gives nearby tokens higher-rank interactions and distant tokens cheaper ones, saving FLOPs compared to standard attention while keeping high-quality scores for neighbours."
+    },
+    {
+     "id": "P12",
+     "name": "MLR beats standard attention on OpenWebText",
+     "description": "With 6-layer character-level transformers on OpenWebText (T=1024, r=64, D in {256,384,512,768}), 8-level MLR attention (rank split 32|8|6|4|4|4|4|2) outperforms standard attention at all widths throughout training, giving a better scaling law."
+    },
+    {
+     "id": "P13",
+     "name": "MLR beats sliding window variants",
+     "description": "When controlling for compute, MLR attention outperforms sliding window attention (window 128) and a Global+SWA hybrid across model widths."
+    },
+    {
+     "id": "P14",
+     "name": "MLR cuts cost for Chronos time-series",
+     "description": "Replacing T5 attention in Chronos with 6-level MLR attention (rank split 32|10|8|8|4|2) yields slightly lower validation loss with fewer FLOPs for embedding dimensions 128 to 512."
+    },
+    {
+     "id": "P15",
+     "name": "MLR improves long-horizon ETT forecasting",
+     "description": "On the ETT dataset, MLR attention increasingly outperforms standard attention in oil temperature prediction as the forecast horizon grows."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 1, Sec 3.4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 1, Sec 2.3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.1, Fig 4a"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.1, Fig 4b"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.2, Fig 5"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P15",
+     "evidence": [
+      "Sec 5.2, Fig 15"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P16",
+   "name": "Unifying MLBTC family",
+   "description": "BTT and contiguous MLR (including Monarch, Butterfly, Kronecker and low-rank matrices as special cases) fall under a broader family called Multi-Level Block Tensor Contraction (MLBTC)."
+  },
+  {
+   "id": "P17",
+   "name": "Language modeling does not show rank bottleneck",
+   "description": "Some tasks including language modeling do not seem to suffer from the low-rank bottleneck."
+  },
+  {
+   "id": "P18",
+   "name": "muP transfer for MLR",
+   "description": "Learning rates transfer stably across width for MLR attention when adapting Maximum Update Parameterization (muP)."
+  }
+ ],
+ "structural_reasoning": "Two uses of structured matrices in the attention score: high-rank BTT/MLR fixes the low-rank bottleneck, and MLR encodes locality to improve compute efficiency."
+}

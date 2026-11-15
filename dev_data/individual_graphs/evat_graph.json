@@ -1,0 +1,224 @@
+{
+  "arxiv_id": "2607.03075v1",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/equations/tables/figures rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: robustness alone is insufficient without reliable uncertainty for selective classification",
+      "nodes": [
+        {"id": "P1", "name": "Safety-critical deployment requires models that are both robust and uncertainty-aware", "description": "Recent trustworthy machine learning efforts emphasize that reliable systems in safety-critical deployments must be both robust to perturbations and uncertainty-aware."},
+        {"id": "P2", "name": "Adversarial training is the dominant paradigm for improving robustness", "description": "Adversarial training has emerged as the dominant paradigm to improve robustness against imperceptible, often transferable adversarial perturbations."},
+        {"id": "P3", "name": "Robustness alone is insufficient for risk-sensitive decisions; a system must know when not to predict", "description": "When errors are costly, robustness alone is insufficient for risk-sensitive decision making; a system must also know when not to predict, a requirement naturally captured by selective classification, where the model can abstain on inputs it considers unreliable."},
+        {"id": "P4", "name": "Selective behavior depends on the integrity of uncertainty under perturbation, not just accuracy under attack", "description": "Selective behavior depends not only on accuracy under attack but on the integrity of uncertainty under perturbations: errors, especially adversarial ones, must be assigned high uncertainty so they can be rejected."},
+        {"id": "P5", "name": "Standard robustness evaluations reporting only robust accuracy can hide degraded uncertainty ranking", "description": "Robustness evaluations that primarily report robust accuracy can hide a damaging failure mode: a method may become harder to fool while simultaneously degrading uncertainty ranking, producing confident adversarial mistakes that bypass rejection and manifest as silent failures at practically relevant operating points."},
+        {"id": "P6", "name": "This motivates systematically studying the effect of adversarial training on uncertainty reliability via selective classification", "description": "Because robust accuracy alone can mask degraded uncertainty ranking, and selective classification has rarely been systematically analyzed alongside adversarial robustness, this motivates investigating adversarial training's effect on predictive uncertainty through the lens of selective classification."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P6", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "A second gap: confounded, non-standardized robustness-uncertainty evaluation",
+      "nodes": [
+        {"id": "P7", "name": "Robustness and uncertainty are both highly sensitive to experimental confounders", "description": "Both robustness and uncertainty are highly sensitive to experimental confounders (architecture, augmentation, threat model, etc.), making it difficult to draw controlled conclusions about their trade-off."},
+        {"id": "P8", "name": "This methodological gap motivates a unified, standardized benchmark", "description": "The sensitivity of both robustness and uncertainty to uncontrolled confounders motivates introducing a unified benchmark that standardizes these factors and evaluates models as selective systems across clean, adversarial, and common-corruption regimes."},
+        {"id": "P9", "name": "The benchmark reveals that robustness gains do not reliably translate to robust uncertainty across SOTA AT methods", "description": "Across a broad set of state-of-the-art adversarial training methods evaluated under this standardized benchmark, robustness gains do not reliably translate to robust uncertainty, and several strong defenses improve adversarial accuracy while worsening risk-coverage behavior due to degraded uncertainty ranking."},
+        {"id": "P10", "name": "This empirical pattern motivates a new training objective that explicitly targets uncertainty under attack", "description": "Because the standardized benchmark reveals that existing SOTA adversarial training methods do not reliably preserve uncertainty quality under attack, this motivates developing a training objective that explicitly targets predictive uncertainty and regularizes the posterior under attack."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P8", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P9", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Positioning against prior AT, EDL, and robustness-uncertainty literature",
+      "nodes": [
+        {"id": "P11", "name": "Adversarial training induces a clean-vs-robust accuracy trade-off, which prior work (TRADES etc.) addresses on the accuracy side only", "description": "AT often induces a trade-off between clean and robust accuracy; TRADES addresses this by balancing clean classification performance with clean-adversarial prediction consistency, while MART, AWP, SEAT, and Generalist improve robust generalization through other example-aware or ensembling mechanisms, but none explicitly targets uncertainty quality."},
+        {"id": "P12", "name": "Evidential Deep Learning models a Dirichlet posterior over class probabilities to represent evidence", "description": "Evidential Deep Learning parameterizes a higher-order distribution (e.g., a Dirichlet) to represent evidence over class probabilities, and despite known theoretical limitations (e.g., absence of strictly proper scoring rules for second-order distributions), EDL uncertainties are often well-ranked in practice for selective prediction and OOD detection."},
+        {"id": "P13", "name": "Robustness and uncertainty have largely been studied separately despite being closely related", "description": "Robustness and uncertainty are often studied separately despite being closely related; under adversarial perturbations even conformal and representation-distance uncertainty methods may become unreliable, and both conventional and EDL classifiers can produce overconfident adversarial errors."},
+        {"id": "P14", "name": "The effect of adversarial training on uncertainty ranking and selective performance remains comparatively underexplored", "description": "Despite growing recognition that robustness and uncertainty interact, the specific effect of adversarial training on uncertainty ranking and selective performance remains comparatively underexplored in the literature."},
+        {"id": "P15", "name": "This motivates combining EDL's well-ranked uncertainty with an adversarial training objective specifically targeting posterior robustness", "description": "Because prior AT variants target only accuracy-level consistency, EDL provides well-ranked but not adversarially-tested uncertainty, and the AT-uncertainty interaction is underexplored, this motivates a method that combines evidential (Dirichlet) uncertainty modeling with an adversarial training objective explicitly enforcing posterior-level robustness."}
+      ],
+      "edges": [
+        {"from": "P11", "to": "P15", "evidence": ["S2"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P15", "evidence": ["S2"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P14", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "The evidential classifier: Dirichlet parameterization and entropy-based selection",
+      "nodes": [
+        {"id": "P16", "name": "The network outputs non-negative evidence that parameterizes a Dirichlet distribution", "description": "For input x, the network outputs a non-negative evidence vector eθ(x), parameterizing a Dirichlet distribution over categorical probabilities via concentration parameters α = eθ(x) + 1."},
+        {"id": "P17", "name": "The Dirichlet mean gives the predictive distribution; the total concentration (strength) gives a confidence proxy", "description": "This induces a posterior predictive distribution Cat(π̄) with predictive mean π̄ = α/S used for classification, while the total concentration S = Σαc inversely quantifies model uncertainty, so the Dirichlet parameterization structurally separates the classification signal from the confidence signal."},
+        {"id": "P18", "name": "Total predictive uncertainty is defined as the entropy of the posterior predictive distribution", "description": "Total predictive uncertainty is quantified as u(x) = H[Cat(π̄)] = -Σc (αc/S)log(αc/S) (Eq. 1), enabling a threshold-based selective rule that rejects predictions whose entropy exceeds τ."},
+        {"id": "P19", "name": "This structured decomposition gives a principled foundation for selective classification via uncertainty thresholding", "description": "Because the Dirichlet parameterization cleanly separates predictive mean (label) from strength (confidence), and total uncertainty is defined directly from the resulting posterior predictive entropy, this provides a principled basis for the selective rule gτ(x;u) = 1[u(x) ≤ τ] used throughout the paper."}
+      ],
+      "edges": [
+        {"from": "P16", "to": "P17", "evidence": ["S3.2", "Eq"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S3.2", "Eq1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "EV-AT objective: evidence-targeted adversary and robust evidence alignment",
+      "nodes": [
+        {"id": "P20", "name": "Standard AT minimizes worst-case classification loss but does not explicitly enforce uncertainty integrity", "description": "Adversarial training addresses clean accuracy and robustness of the predicted label by minimizing worst-case classification loss over the ℓp-ball, but it does not explicitly enforce integrity of uncertainty; robust-accuracy gains can therefore coincide with degraded uncertainty ranking."},
+        {"id": "P21", "name": "EV-AT instead regularizes uncertainty via posterior-level robustness in log-Dirichlet space", "description": "EV-AT regularizes uncertainty under adversarial perturbation via posterior-level robustness, aligning clean and adversarial evidential representations in log-parameter space (η = log α) to jointly stabilize the predictive mean and the evidence strength/concentration."},
+        {"id": "P22", "name": "Clean evidential learning uses a Type-II maximum likelihood loss plus a KL regularizer toward the uniform prior", "description": "The evidential classification loss LEV combines the negative log marginal likelihood over the Dirichlet-Categorical model (Eq. 2) with a KL regularizer toward the uniform Dirichlet prior on non-ground-truth evidence, encouraging vacuity when evidence is weak (Eq. 3)."},
+        {"id": "P23", "name": "The adversary is evidence-targeted: it maximizes drift in log-Dirichlet parameters rather than just cross-entropy", "description": "Unlike standard AT, which constructs adversarial examples by maximizing classification loss, EV-AT's adversary explicitly maximizes a discrepancy D between clean and adversarial log-Dirichlet parameters η via K-step PGD, directly stress-testing uncertainty integrity rather than only flipping the predicted label."},
+        {"id": "P24", "name": "The robust evidence alignment term penalizes this worst-case evidence drift during training", "description": "The robust evidence alignment loss LREA = D(η, η_adv) is minimized alongside LEV in the overall EV-AT objective L = LEV + β·LREA (Eq. 4), where β trades off clean evidential fitting against robust posterior alignment."},
+        {"id": "P25", "name": "IKL divergence is used to instantiate D, chosen for stable gradients in log-parameter space", "description": "EV-AT instantiates the discrepancy D as the Improved Kullback-Leibler (IKL) Divergence, which measures drift directly in log-parameter space and yields stable gradients for both the evidence-targeted attack and the alignment objective."},
+        {"id": "P26", "name": "This objective enforces posterior-level rather than logit-level consistency, directly discouraging confident adversarial errors", "description": "Because LREA penalizes worst-case discrepancy in the full log-Dirichlet posterior rather than only logits, the EV-AT objective directly discourages confident adversarial errors by jointly limiting attack-induced changes in both the predictive mean and the evidence strength."}
+      ],
+      "edges": [
+        {"from": "P20", "to": "P21", "evidence": ["S3.1", "S3.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P22", "evidence": ["S3.3", "Eq2", "Eq3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P23", "evidence": ["S3.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P24", "evidence": ["S3.3", "Eq4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P25", "evidence": ["S3.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P26", "evidence": ["S3.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P26", "evidence": ["S3.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P26", "evidence": ["S3.3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Theoretical motivation: why align in log-Dirichlet (η) space rather than logits or α",
+      "nodes": [
+        {"id": "P27", "name": "Logit alignment only indirectly constrains the quantities selection actually depends on", "description": "Logits alignment is a common robustness heuristic, but logits are not identifiable (e.g. additive shifts leave softmax unchanged) and standard alignment targets only a single classification vector, not the confidence structure needed for abstention."},
+        {"id": "P28", "name": "The Dirichlet posterior separates label (mean) and confidence (strength) into distinct roles", "description": "In an evidential model, the Dirichlet posterior separates these roles: the mean π̄ determines the predicted class, while the strength S controls uncertainty, so aligning the (log-)posterior directly stabilizes both the predictive distribution and its confidence."},
+        {"id": "P29", "name": "Log-parameters induce the predictive mean via softmax, so constraining η-drift constrains mean-drift", "description": "With η = log α, the predictive mean equals softmax(η) (Eq. 5), so constraining drift in η directly constrains drift in the predictive mean π̄."},
+        {"id": "P30", "name": "Lemma 1 shows η-drift bounds give multiplicative stability of concentrations, strength, and mean simultaneously", "description": "Lemma 1 shows that if the ℓ∞ drift in η is bounded by ρ, then the ratios of perturbed to original αc, S, and π̄c are all bounded within multiplicative factors of e^ρ or e^(2ρ) (Eq. 6), formalizing that log-Dirichlet alignment jointly limits changes in class probabilities and evidence scale."},
+        {"id": "P31", "name": "Lemma 2 shows strength upper-bounds posterior variance, so controlling strength stabilizes confidence", "description": "Lemma 2 shows that for any Dirichlet distribution, the maximum per-class posterior variance is upper-bounded by 1/(4(S+1)) (Eq. 7), so higher, stabilized strength directly limits posterior variance/precision."},
+        {"id": "P32", "name": "Since the selector thresholds entropy of the mean, stabilizing the mean and strength together stabilizes the selection decision", "description": "Because the selective rule thresholds predictive entropy u(x) = H[Cat(π̄)], and η-alignment (via Lemmas 1-2) jointly stabilizes both the mean π̄ (which determines entropy) and the strength S (which governs precision), aligning in η-space is theoretically the appropriate target for robust selective behavior."},
+        {"id": "P33", "name": "Entropy continuity (Lemma 3) and a selection-stability result show bounded mean-drift implies bounded, often unchanged selection decisions", "description": "Lemma 3 (a Fannes-type entropy continuity bound, Eqs. 8-10) shows that if π̄_adv stays close to π̄ in total variation, the resulting uncertainty score changes by a bounded amount, and consequently the accept/reject decision gτ is provably unchanged whenever this uncertainty change is smaller than the margin to the threshold τ."}
+      ],
+      "edges": [
+        {"from": "P27", "to": "P28", "evidence": ["S3.4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P29", "evidence": ["S3.4", "Eq5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P30", "evidence": ["S3.4", "Lemma1", "Eq6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P31", "evidence": ["S3.4", "Lemma2", "Eq7"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P32", "evidence": ["S3.4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P32", "evidence": ["S3.4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["S3.4", "Lemma3", "Eq8", "Eq9", "Eq10"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P21", "evidence": ["S3.4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 6,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Benchmark findings: SOTA AT methods show weak/inconsistent robustness-uncertainty correlation",
+      "nodes": [
+        {"id": "P34", "name": "No SOTA baseline dominates as a selective system across metrics", "description": "Across the standardized benchmark, no SOTA baseline dominates as a selective system: higher AutoAttack accuracy does not reliably imply lower adversarial AUGRC (Table 1)."},
+        {"id": "P35", "name": "Some methods with the strongest AA accuracy show comparatively weak adversarial uncertainty ranking", "description": "Under Basic augmentation, IKL-AT and TRADES-AWP achieve the strongest AA accuracies among baselines yet remain comparatively weak in AUGRC under AA, indicating degraded uncertainty ranking under attack despite strong robust accuracy."},
+        {"id": "P36", "name": "Conversely, some methods with weaker accuracy show the best uncertainty, revealing an internal trade-off", "description": "AT-AWP attains the best Clean/AA AUGRC among baselines under Basic augmentation despite lower AA accuracy than other baselines, revealing an internal robustness-uncertainty trade-off within existing methods."},
+        {"id": "P37", "name": "The robustness-uncertainty correlation across baselines is weak overall", "description": "Plotting average accuracy versus average AUGRC across methods shows a weak correlation: e.g. IKL-AT increases robustness over AT (69.90 vs 68.05) but yields worse uncertainty (8.00 vs 7.85), and AT-AWP matches AT's robustness while degrading uncertainty."},
+        {"id": "P38", "name": "TRADES-AWP offers the best trade-off among baselines but the Pareto structure is non-trivial", "description": "Among SOTA baselines on CIFAR-10/WRN-34-10, TRADES-AWP offers the strongest trade-off (Acc.avg=70.29, AUGRCavg=7.68), illustrating that no single baseline is uniformly best across the robustness-uncertainty space."},
+        {"id": "P39", "name": "Under adversarial attack, failures concentrate as accepted (confident) errors at moderate-to-high coverage", "description": "Under AA perturbations, retention and generalized-risk curves degrade more severely than under common corruptions, with failures concentrating at moderate-to-high coverage where many adversarial errors remain accepted, i.e. overconfident mistakes reflected in low coverage at fixed risk for baselines."},
+        {"id": "P40", "name": "This confirms the paper's central diagnosis: uncertainty no longer separates correct from incorrect predictions under attack for SOTA baselines", "description": "The weak accuracy-uncertainty correlation, internal trade-offs among baselines, and concentrated confident-error failures together confirm that under attack, uncertainty no longer reliably separates correct from incorrect predictions for existing SOTA adversarial training methods, leading to silent failures at practical operating points."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P34", "evidence": ["S4.2", "Table1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P35", "evidence": ["S4.2", "Table1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P36", "evidence": ["S4.2", "Table1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P37", "evidence": ["S4.2", "Figure1", "Figure4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P36", "to": "P37", "evidence": ["S4.2", "Figure1", "Figure4"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P38", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P39", "to": "P40", "evidence": ["S4.2", "Figure5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P37", "to": "P40", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "name": "EV-AT results: shifting the Pareto frontier and generalizing across attacks/architectures",
+      "nodes": [
+        {"id": "P41", "name": "EV-AT improves both robustness and uncertainty simultaneously over the best baseline", "description": "Averaged over augmentations, EV-AT improves Acc.avg from 70.29 (TRADES-AWP) to 71.84, and reduces AUGRCavg from 7.68 to 6.52, moving beyond the Pareto frontier formed by prior objectives (Figure 1a)."},
+        {"id": "P42", "name": "This improvement is consistent across all four augmentation regimes and extends to corruption shift", "description": "The Clean/AA improvement is consistent across all four augmentation regimes in Table 1, and extends to corruption shift, where EV-AT also achieves the best corruption accuracy and corruption AUGRC."},
+        {"id": "P43", "name": "EV-AT reduces the clean-to-adversarial retention gap and increases coverage at fixed risk", "description": "In selective operating point analysis, EV-AT reduces the clean-AA retention-gap and substantially increases coverage at fixed risk relative to strong baselines (Figure 5), directly addressing the confident-error failure mode identified in C7."},
+        {"id": "P44", "name": "Gains generalize across stronger attacks (PGD-20/100, AutoAttack) and both ℓ∞ and ℓ2 threat models", "description": "Compared with the strongest baseline IKL-AT, EV-AT consistently achieves higher accuracy and lower AUGRC under PGD-20, PGD-100, and AutoAttack, for both ℓ∞ and ℓ2 threat models (Table 2), indicating gains are not an artifact of weak attack evaluation."},
+        {"id": "P45", "name": "Gains persist across a swept range of perturbation budgets, not just the standard ε=8/255", "description": "Sweeping the ℓ∞ radius from 0 to 8/255, EV-AT remains consistently best across the full range, with gains persisting at both small and large budgets (Figure 6), indicating improvement beyond a single evaluation radius rather than overfitting to it."},
+        {"id": "P46", "name": "Gains generalize across architectures (WRN-34-10, PreActResNet-18) and datasets (CIFAR-10/100)", "description": "Across architectures and datasets, EV-AT remains on or beyond the Pareto frontier in the Acc.avg-AUGRCavg plane (Figure 4), indicating the advantage is stable across model capacity and dataset choice rather than an artifact of a specific pipeline."},
+        {"id": "P47", "name": "Together this establishes that EV-AT's Pareto improvement is robust and not a narrow evaluation artifact", "description": "Because the robustness-uncertainty improvement holds across augmentations, attack strength/type, perturbation budget, architecture, and dataset, the paper concludes that EV-AT genuinely shifts the robustness-uncertainty Pareto frontier rather than exploiting a narrow or confounded evaluation setting."}
+      ],
+      "edges": [
+        {"from": "P40", "to": "P41", "evidence": ["S4.2", "Figure1"], "votes": 2, "confidence": "majority"},
+        {"from": "P26", "to": "P41", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P42", "evidence": ["S4.2", "Table1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P41", "to": "P43", "evidence": ["S4.2", "Figure5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P41", "to": "P44", "evidence": ["S4.3", "Table2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P41", "to": "P45", "evidence": ["S4.3", "Figure6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P41", "to": "P46", "evidence": ["S4.3", "Figure4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P42", "to": "P47", "evidence": ["S4.2", "S4.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P44", "to": "P47", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P45", "to": "P47", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P46", "to": "P47", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "name": "Ablations: validating REA, the evidential loss, alignment space, and divergence choice",
+      "nodes": [
+        {"id": "P48", "name": "Removing REA (β=0) collapses performance, showing the clean evidential loss alone is not robust", "description": "Removing the robust evidence alignment term (β=0) collapses performance (Acc. 71.51→20.11, AUGRC 6.67→37.67), indicating the clean evidential loss alone is not robust and that posterior alignment prevents pathological evidence mismatch under attack (Table 3)."},
+        {"id": "P49", "name": "AWP provides an additional, non-substitutable gain on top of the evidential+REA objective", "description": "Removing AWP degrades performance (Acc. 68.46, AUGRC 8.21) relative to the full EV-AT, showing AWP contributes an additional gain that is not substitutable by the evidential/REA components alone."},
+        {"id": "P50", "name": "Replacing the evidential clean loss with cross-entropy also degrades the trade-off", "description": "Replacing the evidential clean loss with standard cross-entropy degrades the robustness-uncertainty trade-off (Acc. 69.56, AUGRC 7.88 vs. the full EV-AT's Acc. 71.51, AUGRC 6.67), confirming the evidential formulation itself contributes to the gains."},
+        {"id": "P51", "name": "Aligning in log-Dirichlet space (η) substantially outperforms aligning in α or the mean π̄", "description": "Aligning in α or in the Dirichlet mean π̄ substantially degrades the trade-off (Acc. 67.32/64.64, AUGRC 10.26/10.43) compared to aligning in η=log α (Acc. 71.51, AUGRC 6.67), empirically confirming the theoretical motivation in C6 for log-parameter alignment."},
+        {"id": "P52", "name": "IKL divergence for REA outperforms ℓ2 or KL alternatives", "description": "Using IKL as the REA divergence outperforms ℓ2 or KL divergence alternatives (Acc. 69.81/70.61, AUGRC 7.64/7.60 vs. IKL's Acc. 71.51, AUGRC 6.67), confirming the choice of discrepancy measure matters for alignment quality."},
+        {"id": "P53", "name": "The REA weight β has an intermediate optimum balancing clean structure and adversarial alignment", "description": "Sweeping β shows small values under-emphasize alignment (weaker robustness/selective performance) while overly large values cause over-regularization that harms both AA accuracy and AUGRC, with an intermediate value giving the best joint operating point (Figure 7)."},
+        {"id": "P54", "name": "Together the ablations confirm each EV-AT component (evidential loss, REA, η-alignment, IKL, tuned β) is necessary for the full gain", "description": "Because removing or substituting any individual component (REA, AWP, evidential loss, alignment space, divergence choice) degrades the robustness-uncertainty trade-off relative to the full configuration, the ablations confirm that EV-AT's gains arise from the combination of its evidential objective, evidence-targeted adversary, and η-space alignment via IKL, rather than any single component in isolation."}
+      ],
+      "edges": [
+        {"from": "P24", "to": "P48", "evidence": ["S4.4", "Table3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P48", "to": "P49", "evidence": ["S4.4", "Table3"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P50", "evidence": ["S4.4", "Table3"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P51", "evidence": ["S4.4", "Table4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P52", "evidence": ["S4.4", "Table4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P53", "evidence": ["S4.4", "Figure7"], "votes": 2, "confidence": "majority"},
+        {"from": "P48", "to": "P54", "evidence": ["S4.4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P49", "to": "P54", "evidence": ["S4.4"], "votes": 2, "confidence": "majority"},
+        {"from": "P50", "to": "P54", "evidence": ["S4.4"], "votes": 2, "confidence": "majority"},
+        {"from": "P51", "to": "P54", "evidence": ["S4.4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P52", "to": "P54", "evidence": ["S4.4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P53", "to": "P54", "evidence": ["S4.4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P55", "name": "Formal problem setup: predictor, uncertainty estimator, and selective rule", "description": "The paper formalizes a C-class predictor fθ:X→ΔC-1, an uncertainty estimator u:X→R, and a selective rule gτ(x;u)=1[u(x)≤τ] that accepts/rejects predictions based on a threshold τ, under ℓp-bounded adversarial perturbations Bp(x;ε)."},
+    {"id": "P56", "name": "Adversarial selective risk minimization objective at target coverage", "description": "The stated overall objective is to minimize adversarial selective risk riskadv(θ;τ) subject to adversarial coverage covadv(τ;θ) ≥ γcov at a target coverage level γcov."},
+    {"id": "P57", "name": "AutoAttack as a strong, reliable adversarial evaluation standard", "description": "Because robustness can be overestimated due to weak attack settings or gradient masking, AutoAttack (AA), a strong parameter-free ensemble evaluation framework, is used alongside benchmarks like RobustBench and AttackBench to provide reliable, standardized assessment."},
+    {"id": "P58", "name": "Sampling-based vs. sampling-free uncertainty estimation paradigms", "description": "Uncertainty estimation methods broadly fall into sampling-based approaches (approximating a posterior via multiple evaluations) and sampling-free alternatives (conformal prediction, representation-distance OOD detection, or directly learned predictive distributions like EDL)."},
+    {"id": "P59", "name": "Benchmark design layers: data, method, evaluation, and reporting", "description": "The benchmark comprises four layers: a data layer (CIFAR-10/100 and their corruption variants under four augmentation strategies), a method layer (fixed architecture/optimizer/budget/threat model across compared objectives), an evaluation layer (ℓ∞/ℓ2 threat models, AA/PGD attacks, AURC/AUGRC/AUROC metrics), and a reporting layer (per-regime and clean/AA aggregate statistics)."},
+    {"id": "P60", "name": "Selective classification metrics: AURC, AUGRC, and AUROC", "description": "The benchmark reports retention and risk-coverage curves summarized by scalar metrics AURC, AUGRC (used as the primary metric), and AUROC for error detection, computed consistently across clean, adversarial, and corruption settings."},
+    {"id": "P61", "name": "Baseline method coverage: AT, TRADES, AWP variants, IKL-AT, TRADES-EMFF", "description": "EV-AT is compared against AT, TRADES, AT-AWP, TRADES-AWP, IKL-AT, and TRADES-EMFF, evaluated on WideResNet-34-10 and PreActResNet-18, covering standard adversarial optimization, consistency regularization, adversarial weight perturbation, and recent uncertainty-aware objectives."}
+  ],
+  "structural_score": 9,
+  "structural_reasoning": "The graph closely mirrors EV-AT's own two-part structure: diagnose a robustness-uncertainty gap via a standardized benchmark, then propose and validate a method that closes it. C1 and C2 separate the substantive motivating claim (robustness without reliable uncertainty is unsafe for selective classification) from the methodological motivating claim (confounded evaluation obscures this), since the Introduction advances both as distinct but jointly necessary justifications for building a standardized benchmark. C3 captures the Related Work's positioning across three separate literatures (AT variants, EDL, and robustness-uncertainty interaction) that jointly motivate combining evidential modeling with adversarially-robust posterior alignment. C4-C6 reconstruct Section 3's derivation in the paper's own order: the evidential classifier's structural setup, the EV-AT objective built on top of it (evidence-targeted adversary, REA loss, IKL instantiation), and the theoretical justification (Lemmas 1-3) for the paper's specific design choice of η-space alignment, kept as a separate component since it is a self-contained mathematical argument that the ablations later validate empirically. C7 and C8 mirror the two main empirical claims of Section 4.2 (the diagnostic benchmark finding, then EV-AT's resolution of it) plus Section 4.3's generalization stress tests, and C9 mirrors Section 4.4's ablations, each ablation explicitly tied back to the specific design component it validates from C5/C6. Isolated nodes are limited to formal setup definitions, evaluation-protocol/metric descriptions, and baseline/background coverage that support but are not premises within the central argument chains."
+}

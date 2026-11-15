@@ -1,0 +1,241 @@
+{
+ "arxiv_id": "2608.23493",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Sparse-reward credit assignment problem -> SRPO reflection-based dense supervision -> results and ablations",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Sparse terminal rewards give O(1) bits",
+     "description": "Standard RL such as PPO and GRPO receives only terminal success/failure feedback per episode, about O(1) bits regardless of trajectory length, causing high-variance gradients and sample-inefficient learning on long-horizon tasks."
+    },
+    {
+     "id": "P2",
+     "name": "Existing reflection mechanisms are limited",
+     "description": "Appending reflections within an ongoing trajectory induces semantic drift as context accumulates, and reflections conditioned on frozen parameters or injected prompts can disrupt native thinking."
+    },
+    {
+     "id": "P3",
+     "name": "Reflection generation (Stage 1)",
+     "description": "SRPO has the model analyze a completed trajectory with its outcome and synthesize errors into a compact reflection patch."
+    },
+    {
+     "id": "P4",
+     "name": "Reset-with-memory",
+     "description": "SRPO prepends the compact reflection patch to the original prompt and regenerates from a clean initial state, preserving task specification fidelity while injecting guidance."
+    },
+    {
+     "id": "P5",
+     "name": "Reflection-conditioned teacher is the same model",
+     "description": "The teacher is the same model as the student operating with hindsight reflection, so no larger teacher, critic or separate reward model is needed."
+    },
+    {
+     "id": "P6",
+     "name": "Dense on-policy distillation (Stage 2)",
+     "description": "SRPO teacher-forces the reflection-augmented teacher on the student's own rollouts and minimizes per-token reverse KL, yielding O(T) bits of token-level supervision while staying strictly on-policy."
+    },
+    {
+     "id": "P7",
+     "name": "Train with reflection, infer without",
+     "description": "At inference the learned policy must reach comparable quality without any reflection, because the reflection guidance has been internalized through distillation."
+    },
+    {
+     "id": "P8",
+     "name": "SRPO AIME'24 and compute efficiency",
+     "description": "With Qwen3-8B, SRPO reaches 73.3% on AIME'24 with 8% of the training FLOPs of scaled SFT, 3.3 points above standard on-policy distillation and 5.3 above GRPO."
+    },
+    {
+     "id": "P9",
+     "name": "Agentic benchmark results",
+     "description": "SRPO reaches 64.7% on WebShop (+7.9% over SFT), 76.8% on ALFWorld (+5.6% over Reflexion) and 31.2% on SWE-Bench-Lite (+4.4% over Reflexion)."
+    },
+    {
+     "id": "P10",
+     "name": "SRPO beats reflection-trained baselines",
+     "description": "SRPO outperforms the reflection-trained baselines SCoRe, R3L and RISE."
+    },
+    {
+     "id": "P11",
+     "name": "Fewer total FLOPs than GRPO",
+     "description": "Counting Stage 1 and 2, SRPO uses 5.4e18 FLOPs versus 20.8e18 for GRPO, about 3.8x fewer."
+    },
+    {
+     "id": "P12",
+     "name": "Self-distillation matches larger teacher",
+     "description": "SRPO's self-distillation outperforms distillation from Qwen3-72B by 0.8 points while using 9x fewer teacher FLOPs."
+    },
+    {
+     "id": "P13",
+     "name": "Reflections are usually helpful",
+     "description": "In a GPT-4 rating of 500 reflections, 67% score 4 or higher for helpfulness and only 8% score 2 or lower."
+    },
+    {
+     "id": "P14",
+     "name": "Reflection helpfulness correlates with improvement",
+     "description": "Reflection helpfulness correlates with rethinking-rollout success improvement at r = 0.72; score-5 reflections give a 34% average improvement versus 5% for score 1-2."
+    },
+    {
+     "id": "P15",
+     "name": "Removing reflection hurts",
+     "description": "Replacing reflection with a direct retry drops AIME'24 accuracy by 7.5 points."
+    },
+    {
+     "id": "P16",
+     "name": "State reset is essential",
+     "description": "Appending reflections iteratively without state reset performs 7.0 points worse on AIME'24."
+    },
+    {
+     "id": "P17",
+     "name": "Reverse KL beats forward KL",
+     "description": "Switching from reverse KL to forward KL drops AIME'24 accuracy by 3.9 points."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2, Table 5, Fig 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3, Fig 3, Table 6"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2-4.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.9, Table 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.8, Fig 7"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.8, Fig 7"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.6, Table 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P16",
+     "evidence": [
+      "Sec 4.6, Table 1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P17",
+     "evidence": [
+      "Sec 4.6, Table 1"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P18",
+   "name": "LoRA retains most performance",
+   "description": "LoRA-128 reaches 97.8% of full fine-tuning accuracy on AIME'24 with 1.3% of the trainable parameters and 34% of the GPU memory."
+  },
+  {
+   "id": "P19",
+   "name": "Inference-time self-refinement gains",
+   "description": "SRPO gains +1.8% per self-refinement iteration versus +1.2% for GRPO and +0.9% for SFT, reaching 78.5% on AIME'24 at 3 iterations."
+  },
+  {
+   "id": "P20",
+   "name": "Continual learning retention",
+   "description": "In continual learning (math then coding), SRPO retains 95.2% of original math performance."
+  },
+  {
+   "id": "P21",
+   "name": "Failure modes of reflections",
+   "description": "Unsuccessful reflections are generic advice (42%), incorrect diagnosis (35%) or beyond the model's capability (23%)."
+  }
+ ],
+ "structural_reasoning": "Credit-assignment motivation leads to the two-stage SRPO design; empirical results and ablations each tie to a specific mechanism component."
+}

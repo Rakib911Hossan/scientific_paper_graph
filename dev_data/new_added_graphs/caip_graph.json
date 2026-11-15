@@ -1,0 +1,145 @@
+{
+  "arxiv_id": "2606.17256v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {"id": "P1", "name": "Robotic datasets lack pretraining scale", "description": "Existing vision encoders for robotics face a fundamental bottleneck: robotic datasets lack the scale necessary for large-scale pre-training."},
+        {"id": "P2", "name": "Existing paradigms lack paired vision-action data", "description": "Prior work circumvents data scarcity using internet-scale image/language data or egocentric human video, but neither paradigm learns from paired vision and action data that downstream visuomotor control policies require."},
+        {"id": "P3", "name": "Robot trajectories unavailable at scale", "description": "Robot trajectories, the most direct source of paired vision-action signal, are not available at pre-training scale."},
+        {"id": "P4", "name": "Motivation to extract actions from human video", "description": "The unavailability of robot trajectories at scale motivates extracting action signals from abundant human video instead."},
+        {"id": "P5", "name": "Hand poses as action proxy", "description": "CAIP treats human hand poses from large-scale egocentric video as a proxy for end-effector actions, since this representation aligns naturally with downstream robot action spaces."},
+        {"id": "P6", "name": "CAIP proposal", "description": "CAIP is introduced as a vision encoder that learns a unified action-image representation through a contrastive objective."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S_intro"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["S_intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S_intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P6", "evidence": ["S_intro"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P6", "evidence": ["S_intro"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {"id": "P7", "name": "Three-encoder architecture", "description": "CAIP's architecture consists of three encoders: vision (ViT-L/16), language (24-layer transformer), and action (lightweight 4-layer transformer), initialized from SigLIP 2 where applicable."},
+        {"id": "P8", "name": "No global pooling of patch features", "description": "The vision encoder retains the full patch sequence without global pooling, so text tokens can attend to spatially localized features in the next step."},
+        {"id": "P9", "name": "Two-stage text-conditioned image pooling", "description": "Language tokens attend to image patch features to produce text-grounded visual features, then a learnable query token attends over these to produce a single text-conditioned image embedding."},
+        {"id": "P10", "name": "Action encoder trained from scratch", "description": "The action encoder is a lightweight 4-layer transformer trained from scratch, processing an action sequence and extracting a CLS token as the action embedding."},
+        {"id": "P11", "name": "SigLIP-style contrastive alignment", "description": "A SigLIP-style sigmoid contrastive loss aligns text-conditioned image embeddings with action embeddings, treating each pair independently as binary classification rather than requiring global batch normalization."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P11", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["S_method"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {"id": "P12", "name": "Hand pose keypoint representation", "description": "Hand poses are represented as 42 keypoints (21 per hand including wrist), each expressed as an SE(3) transform following the MANO hand convention."},
+        {"id": "P13", "name": "Action chunking via relative transforms", "description": "Actions are formed by emulating end-effector delta control: the action at offset i is the relative SE(3) transform between the pose at time t and time t+i, for i=1,...,T (T=64)."},
+        {"id": "P14", "name": "Large-scale egocentric training data", "description": "CAIP trains on 32,041 hours of annotated human egocentric data (lab and in-the-wild) plus ~88 hours of tabletop humanoid manipulation data for embodiment diversity."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P13", "evidence": ["S_data"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {"id": "P15", "name": "CAIP highest average success rate", "description": "CAIP achieves the highest average success rate at 76% across six real-world manipulation tasks, outperforming the strongest baseline (SigLIP 2, 43.4%) by over 30 points."},
+        {"id": "P16", "name": "CAIP top on five of six tasks", "description": "CAIP attains the top success rate on five of the six manipulation tasks."},
+        {"id": "P17", "name": "Baselines show inconsistent task performance", "description": "Baselines do not exhibit consistent behavior: encoders competitive on one task (e.g., MVP on Dispense Soap, DINOv2 on Pour) degrade significantly on others, suggesting non-manipulation-centric representations suit some tasks over others."},
+        {"id": "P18", "name": "CAIP maintains strong performance across all tasks", "description": "In contrast to baselines, CAIP maintains strong performance across all tasks, indicating that action-centric contrastive pre-training produces generalizing representations."},
+        {"id": "P19", "name": "CAIP outperforms larger SigLIP 2 SO400M", "description": "CAIP outperforms the larger SigLIP 2 SO400M baseline despite being initialized from the smaller SigLIP 2 ViT-L backbone, isolating the performance gain to action-centric pre-training."}
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["S_results_real"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S_results_real"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P19", "evidence": ["S_results_real"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {"id": "P20", "name": "CAIP outperforms baselines in zero-shot action classification", "description": "CAIP consistently outperforms all baselines, including the strongest (DINOv2), by a substantial margin across the full data-efficiency curve on held-out action classification."},
+        {"id": "P21", "name": "Zero-shot retrieval exceeds baseline linear probes", "description": "Zero-shot retrieval with CAIP, despite requiring no in-domain supervision, exceeds the linear-probe performance of every baseline up to 16 samples per class."},
+        {"id": "P22", "name": "CAIP transfers to unseen data", "description": "These results suggest CAIP's learned representations transfer effectively to unseen data and capture semantically meaningful structure for action understanding."}
+      ],
+      "edges": [
+        {"from": "P20", "to": "P22", "evidence": ["S_zeroshot"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P22", "evidence": ["S_zeroshot"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {"id": "P23", "name": "CAIP achieves highest success under perturbations", "description": "CAIP achieves the highest success rate under every lighting and distractor perturbation, despite all policies being trained only on unperturbed demonstrations."},
+        {"id": "P24", "name": "CAIP most robust in absolute terms", "description": "CAIP outperforms Qwen3.5 ViT by roughly 20-30% and degrades far less than MVP under perturbations, making it the most robust encoder in absolute terms despite Qwen3.5 ViT retaining a larger relative fraction of its (much lower) original performance."}
+      ],
+      "edges": [
+        {"from": "P23", "to": "P24", "evidence": ["S_robustness"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {"id": "P25", "name": "Encoder scale ablation", "description": "Scaling the vision encoder across ViT-B, ViT-L, and ViT-SO400M shows increasing scale leads to substantial performance improvements, with ViT-B to ViT-L yielding the largest gain of over 30% on average."},
+        {"id": "P26", "name": "ViT-L selected as primary encoder", "description": "Based on the scaling ablation, ViT-L is selected as the primary vision encoder, providing the best trade-off between performance, model size, and inference speed."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["S_scaling"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P27", "name": "Semantic encoders lack action-centric structure", "description": "Semantic encoders like CLIP and SigLIP provide high-level semantic knowledge, and encoders like DINO capture fine-grained geometric detail, but neither class receives direct action supervision or sees manipulation environments during training."},
+    {"id": "P28", "name": "Robot trajectory datasets remain small-scale", "description": "While large-scale datasets such as DROID and Open X-Embodiment have led to significant progress, the volume of available robot trajectories remains orders of magnitude smaller than internet-scale video corpora."},
+    {"id": "P29", "name": "Prior egocentric methods use non-action objectives", "description": "Prior approaches such as R3M and MVP resort to alternative objectives like frame-level contrastive loss or masked autoencoder reconstruction, omitting action-conditioned information critical for downstream control."},
+    {"id": "P30", "name": "Direct action regression fails as pretraining objective", "description": "Direct action regression pre-training, tested both via MLP head on pooled embeddings and via transformer decoder on full patch sequence, did not produce useful representations."},
+    {"id": "P31", "name": "Downstream policy architecture", "description": "The downstream policy uses a decoder-only transformer (Qwen3.5-0.8B) trained from scratch on frozen encoder outputs, with an MLP action head predicting flow-matching velocity."},
+    {"id": "P32", "name": "R3M time-contrastive pretraining", "description": "R3M was among the first frozen backbones pretrained explicitly on human video, using time-contrastive learning and video-language alignment over 3,700 hours of Ego4D, without exposure to ground-truth actions or poses."},
+    {"id": "P33", "name": "HRP uses affordance-based supervision", "description": "HRP is a step toward explicit action-annotated pre-training, fine-tuning encoders to predict hand-object affordances like contact points and future hand poses, though these signals remain distant from downstream actions."},
+    {"id": "P34", "name": "Latent action token methods lack explicit action supervision", "description": "A family of methods discretizes inter-frame transitions into latent action tokens via VQ-VAE objectives, relying on ungrounded latent action tokens rather than explicit action supervision."},
+    {"id": "P35", "name": "Real-world evaluation setup", "description": "Policies are evaluated on a Dexmate Vega bimanual manipulator with 22-DoF Sharpa Wave dexterous hands, using three cameras, trained from scratch with only 200 demonstrations per task."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph captures the paper's complete narrative: the motivation chain from data scarcity to the hand-pose-as-action-proxy insight and CAIP's proposal (C1), the detailed architectural design (C2), the action representation scheme (C3), and four empirical validation components covering real-world manipulation performance (C4), zero-shot action classification (C5), environmental robustness (C6), and scaling ablations (C7). These components mirror the paper's logical and section structure closely, with high-confidence edges for the architecture and results components since these follow directly from stated causal claims. Related-work context and setup details are appropriately isolated as they serve as background rather than part of the paper's own argumentative chain. Overall structural coherence is strong given the paper's clear problem-motivation-method-validation arc."
+}

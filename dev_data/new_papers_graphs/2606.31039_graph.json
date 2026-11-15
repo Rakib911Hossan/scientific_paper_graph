@@ -1,0 +1,171 @@
+{
+ "arxiv_id": "2606.31039",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "LoFa design to metric to findings and mechanistic analysis",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Prior work studies identification, not resistance",
+     "description": "Prior work on logical fallacies in LLMs focuses on identifying or classifying fallacies; robustness of LLMs when passively targeted by fallacious persuasion is largely unexplored."
+    },
+    {
+     "id": "P2",
+     "name": "Controversial debate topics have no ground truth",
+     "description": "Debate frameworks such as LOGICOM use non-absolute, controversial topics, so they cannot distinguish a genuine logical failure from a shift between equally valid stances."
+    },
+    {
+     "id": "P3",
+     "name": "LoFa uses unique verifiable answers",
+     "description": "Every LoFa item is a question with a unique, scientifically verifiable answer, so a cognitive shift is measurable as a transition from a correct to an incorrect state."
+    },
+    {
+     "id": "P4",
+     "name": "Dataset construction",
+     "description": "LoFa adapts the Farm dataset (questions from Natural Questions, TruthfulQA and BoolQ, all derived from Wikipedia) into about 2000 structured MCQ/Boolean items, and uses 10 fallacy types merged from prior taxonomies into two categories: Distraction/Distortion and Flaws in Reasoning/Evidence."
+    },
+    {
+     "id": "P5",
+     "name": "Three-step test procedure",
+     "description": "Each item is tested in three steps: baseline knowledge check, false-claim resistance screening on the standalone false claim, and a fallacy-driven attack of up to three rounds with a cognitive check after each argument."
+    },
+    {
+     "id": "P6",
+     "name": "LFR@k metric isolates fallacy persuasion",
+     "description": "LFR@k is the share of valid instances (correct at Step 1 and not accepting the bare false claim at Step 2) that avoid an incorrect answer after the k-th fallacy attack, separating fallacy-induced failures from knowledge gaps and simple misinformation susceptibility."
+    },
+    {
+     "id": "P7",
+     "name": "Distraction/Distortion fallacies are most effective",
+     "description": "LLMs resist Flaws in Reasoning/Evidence fallacies (Hasty Generalization, Slippery Slope, Circular Reasoning) better than Distraction/Distortion fallacies; Equivocation and Straw Man are most effective, and Llama-3.1-405B reaches LFR@3 of only 29.4% on Equivocation and 57.0% on Straw Man (Finding I, Table 4)."
+    },
+    {
+     "id": "P8",
+     "name": "GPT-4 defers to authority",
+     "description": "GPT-4 shows cognitive deference to fabricated authoritative cues, with LFR@3 of 39.2% on Appeal to Authority, likely a side effect of RLHF prioritizing context adherence."
+    },
+    {
+     "id": "P9",
+     "name": "Resistance improves with scale",
+     "description": "Average LFR@3 for Llama-3.1 rises from 59.75% (8B) to 70.38% (70B) to 77.17% (405B), with diminishing returns for some fallacies such as Slippery Slope (75.38%, 87.04%, 88.07%) (Finding II)."
+    },
+    {
+     "id": "P10",
+     "name": "Architectural fingerprint",
+     "description": "A model family has a consistent pattern of strengths and weaknesses across fallacies at different scales, so scale acts as an amplifier on an architecture-determined profile rather than correcting its vulnerabilities (Finding III, Fig 6)."
+    },
+    {
+     "id": "P11",
+     "name": "Layer-wise three-phase failure",
+     "description": "In Llama-3.1-8B-Instruct failures, layers 0-19 are semantically unrelated to the answer, layers 20-25 collapse onto null tokens like 'None' or 'neither' (a cognitive void), and layers 25+ converge on the fallacious answer (Sec 6.1, Fig 7)."
+    },
+    {
+     "id": "P12",
+     "name": "CoT helps except for authority",
+     "description": "Chain-of-thought improves GPT-4's average LFR@3 by 7% to 13% for most fallacies (largest 13.16% for Straw Man) but decreases it by 1.87% for Appeal to Authority."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Fig 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 5.2.1, Table 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.2.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.2.1, Table 4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.2.1, Fig 6"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.1"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 6.2, Fig 8"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 6.2, Fig 8"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Limited benchmark scale",
+   "description": "LoFa has only about 2000 data items, which may limit statistical generalizability."
+  },
+  {
+   "id": "P14",
+   "name": "Models evaluated are dense decoder-only",
+   "description": "The evaluation covers mostly dense decoder-only models, so the architectural fingerprint's generality to Mixture-of-Experts models is unknown."
+  }
+ ],
+ "structural_reasoning": "Benchmark design (verifiable questions, 3-step test, LFR@k) leads to empirical findings and mechanism/mitigation analysis."
+}

@@ -1,0 +1,370 @@
+{
+  "arxiv_id": "2607.04153v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {"id": "P1", "name": "RL requires substantial data", "description": "The learning process of reinforcement learning requires a substantial amount of data resources."},
+        {"id": "P2", "name": "Real-world data collection costly and risky", "description": "Collecting a large amount of training data in the real world is costly and often poses risks."},
+        {"id": "P3", "name": "Data-efficient RL is crucial", "description": "Therefore, data-efficient reinforcement learning is crucial."},
+        {"id": "P4", "name": "Pixel-based state representations aid data efficiency", "description": "Utilizing pixel data to learn effective state representations has proven to be a potent strategy for achieving data-efficient reinforcement learning."},
+        {"id": "P5", "name": "Inspiration from NLP/CV masked pretraining", "description": "Inspired by the success of mask-based pretraining in the fields of natural language processing and computer vision, the authors explore mask-based modeling in RL."},
+        {"id": "P6", "name": "MPR introduced", "description": "Building upon this analysis and directly inspired by prior joint-embedding work, the authors introduce the Mask-based Predictive Representation (MPR) learning method."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S3", "S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S4", "S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["S5", "S6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S6", "S7"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["S7", "S17"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {"id": "P7", "name": "Pre-trained models cannot update with evolving agent", "description": "In reinforcement learning, agents continuously update their own experiences through interaction with the environment, but pre-trained models cannot be updated along with the agent as it evolves."},
+        {"id": "P8", "name": "Most pre-training reconstructs pixel space", "description": "Most pre-training methods learn compressed representations by reconstructing the pixel space."},
+        {"id": "P9", "name": "MPR reconstructs latent space, not pixel space", "description": "MPR reconstructs the masked image sequence within the latent space using contextual cues from continuous frames, rather than the input space."},
+        {"id": "P10", "name": "Latent reconstruction reduces computational complexity", "description": "This strategic choice of reconstructing in latent rather than pixel space effectively reduces the computational complexity usually associated with pixel-level reconstruction."}
+      ],
+      "edges": [
+        {"from": "P8", "to": "P9", "evidence": ["S11", "S18"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P10", "evidence": ["S18", "S19"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {"id": "P11", "name": "Replay buffer disrupts sequence correlation", "description": "The replay buffer disrupts the correlation between sequences to train a more robust policy."},
+        {"id": "P12", "name": "MPR leverages consecutive-frame correlation", "description": "MPR leverages the correlation between consecutive frames to enhance the informativeness, predictiveness, and consistency of the learned representations in both spatial and temporal dimensions."},
+        {"id": "P13", "name": "Continuous frame prediction enhances global context awareness", "description": "This continuous frame prediction enhances the agent's awareness of the global context information in the entire input observations and encourages the state representations to be more predictive in spatial and temporal dimensions."},
+        {"id": "P14", "name": "Global predictive info encoded per frame improves representation and policy learning", "description": "The encoding of global predictive information is encouraged into each frame-level state representation, achieving better representation learning and further promoting policy learning."}
+      ],
+      "edges": [
+        {"from": "P11", "to": "P12", "evidence": ["S20", "S21"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P13", "evidence": ["S21", "S22"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S22", "S23"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {"id": "P15", "name": "MPR predicts in embedding space, not pixel space", "description": "Instead of predicting the features of a state in pixel space, MPR learns to predict them in the embedding space, drawing inspiration from joint-embedding predictive architectures."},
+        {"id": "P16", "name": "Embedding-space prediction reduces redundant-info interference", "description": "This approach of predicting in embedding space helps to reduce the interference of redundant information in high-dimensional state-action spaces."}
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["S54", "S55"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {"id": "P17", "name": "Masking process definition", "description": "The original observation sequence is divided into equal blocks, and the same mask is applied to each image in the same block to form the masked observation sequence."},
+        {"id": "P18", "name": "R controls sequence replication", "description": "Whether to generate another mask for the sequence can be determined by setting R, which provides different perspectives of information; when R=2, the length of the masked sequence doubles."},
+        {"id": "P19", "name": "R differs between DMControl and Atari", "description": "In DMControl experiments, R=1, while in Atari benchmarks, R=2."}
+      ],
+      "edges": [
+        {"from": "P17", "to": "P18", "evidence": ["S59", "S60"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["S60", "S61"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {"id": "P20", "name": "Center mask placement", "description": "Context sequence images have a 40x40 mask randomly added to the center of each 100x100 image, since crucial task information is often located at the image center in many RL benchmarks."},
+        {"id": "P21", "name": "Context encoder trained to predict missing center features", "description": "The aim is to encourage the context encoder f to predict the missing features to provide a better representation for the policy network effectively."}
+      ],
+      "edges": [
+        {"from": "P20", "to": "P21", "evidence": ["S64", "S65"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {"id": "P22", "name": "Target features contain contextual information", "description": "The high-level features of images obtained through the target encoder contain contextual information, serving as the learning targets."},
+        {"id": "P23", "name": "Targets guide model to acquire better representations", "description": "These contextual-information targets can guide the model to acquire more effective representations and enhance the agent's understanding of the specific task."},
+        {"id": "P24", "name": "Target encoder updated by EMA", "description": "The parameters of the target encoder are updated by an exponential moving average of the context encoder weights with momentum coefficient τ."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["S67", "S68"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P23", "evidence": ["S68", "S69"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": ["P24->P23"]}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {"id": "P25", "name": "Sequence correlation motivates joint prediction", "description": "Considering the correlation between sequences in reinforcement learning, MPR uses not only single images but also rich contextual information within sequences to assist in predicting missing information in images."},
+        {"id": "P26", "name": "Two-layer attention predictive decoder used", "description": "A network consisting of two layers of attention mechanisms, referred to as the predictive decoder, is employed to generate prediction information."},
+        {"id": "P27", "name": "Decoder predicts mask features, not pixels", "description": "Following mask-based modeling in computer vision, the decoder primarily predicts mask features to fill in missing information, rather than reconstructing images in pixel space, since pixel-space reconstruction is computationally expensive."},
+        {"id": "P28", "name": "Target features predicted directly in latent space", "description": "MPR directly predicts the target feature in the latent space to avoid redundant learning, similar to prior joint-embedding approaches."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["S72", "S73", "S74"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["S75", "S76", "S77"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C9",
+      "nodes": [
+        {"id": "P29", "name": "MPR fewer parameters and higher performance than MLR", "description": "Considering the MPR model has fewer network parameters and higher performance, it can be argued that the proposed masking strategy effectively improves upon the MLR model."},
+        {"id": "P30", "name": "Higher sample efficiency achieved", "description": "The masking strategy improving upon MLR results in MPR achieving higher sample efficiency."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P30", "evidence": ["S162", "S163"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C10",
+      "nodes": [
+        {"id": "P31", "name": "MPR outperforms MLR on DMControl-100k (7.5% avg gain)", "description": "In the DMControl-100k experiment, MPR achieved performance improvement in 5/6 tasks, with an average task score of 830.0, a 7.5% increase compared to MLR's 772.8, and a 4.1% median score improvement."},
+        {"id": "P32", "name": "MPR outperforms MLR on DMControl-500k (1.5% avg gain)", "description": "In the DMControl-500k experiment, MPR outperforms MLR in 5 of 6 tasks, with average task performance improved by 1.5%."},
+        {"id": "P33", "name": "MPR requires less compute than MLR at similar 500k performance", "description": "MPR and MLR perform similarly on DMControl-500k, but MPR requires less computational resources and achieves higher average scores."}
+      ],
+      "edges": [
+        {"from": "P31", "to": "P32", "evidence": ["S162", "S166"], "votes": 1, "confidence": "single_run"},
+        {"from": "P32", "to": "P33", "evidence": ["S166", "S167"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 7.0, "flagged_edges": ["P31->P32"]}
+    },
+    {
+      "component_id": "C11",
+      "nodes": [
+        {"id": "P34", "name": "Atari discontinuity between adjacent states", "description": "In discrete control tasks (Atari), there is significant discontinuity between adjacent states."},
+        {"id": "P35", "name": "Multi-view info benefits smoother learning in Atari", "description": "The incorporation of multi-view information (via R) benefits MPR by facilitating smoother learning in the presence of state discontinuity, thereby enhancing its policy."},
+        {"id": "P36", "name": "MPR outperforms other models in 11/26 Atari games", "description": "MPR outperforms other models in 11 out of 26 games in the Atari benchmark, with competitive scores in the remaining games."},
+        {"id": "P37", "name": "MPR exceeds human performance in 5 Atari games", "description": "MPR achieves scores exceeding human performance in 5 games: Boxing, Freeway, Jamesbond, Krull, and Road Runner."}
+      ],
+      "edges": [
+        {"from": "P34", "to": "P35", "evidence": ["S176", "S177"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C12",
+      "nodes": [
+        {"id": "P38", "name": "Mask ratio has significant performance impact", "description": "Previous works on masked image modeling reveal that the mask ratio has a significant impact on model performance, consistent with which MPR investigates varying mask proportions from 10% to 90%."},
+        {"id": "P39", "name": "Performance rises then falls with increasing mask ratio", "description": "The performance of MPR initially improves and then declines with the increasing mask ratio."},
+        {"id": "P40", "name": "Optimal mask ratio is 40%", "description": "The performance of MPR is optimal when the mask ratio is 40%."}
+      ],
+      "edges": [
+        {"from": "P38", "to": "P39", "evidence": ["S182", "S183", "S184"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P39", "to": "P40", "evidence": ["S184", "S185"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C13",
+      "nodes": [
+        {"id": "P41", "name": "Mask strategy tied to block size", "description": "Mask strategy has a significant impact on representation learning, and in MPR the mask strategy is related to the block size."},
+        {"id": "P42", "name": "Block size 8 = MPR_time, block size 1 = MPR_spatial", "description": "A block size of 8 corresponds to the same mask being used at every time step (MPR_time), while a block size of 1 corresponds to a different mask at every time step (MPR_spatial); sizes 2 and 4 correspond to spatial-temporal masking."},
+        {"id": "P43", "name": "Different tasks favor different mask strategies", "description": "Different tasks require different mask strategies: Finger-spin, Walker-walk, and Ball-in-cup-catch favor the time strategy (block size 8); Cheetah-run favors the spatial strategy (block size 1); Cartpole-swingup and Reacher-easy favor spatial-temporal strategies (block sizes 4 and 2 respectively)."}
+      ],
+      "edges": [
+        {"from": "P41", "to": "P42", "evidence": ["S187", "S188", "S189"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P42", "to": "P43", "evidence": ["S190", "S191", "S192"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C14",
+      "nodes": [
+        {"id": "P44", "name": "Deeper decoder implies lower sample efficiency", "description": "Generally, a deeper predictive decoder depth implies lower sample efficiency and more wall clock time."},
+        {"id": "P45", "name": "Optimal decoder depth is 2", "description": "MPR achieves optimal performance when the predictive decoder depth is 2; increasing the depth beyond this reduces the effectiveness of the model's policy learning."}
+      ],
+      "edges": [
+        {"from": "P44", "to": "P45", "evidence": ["S194", "S196"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C15",
+      "nodes": [
+        {"id": "P46", "name": "Short sequences limit contextual information", "description": "A smaller sequence length means that the model cannot use contextual information, resulting in a lower average score of 737."},
+        {"id": "P47", "name": "Performance improves with sequence length up to a point", "description": "As the sequence length increases, the model's performance improves, reaching an average score of 830 at length 8."},
+        {"id": "P48", "name": "Excessive sequence length degrades performance", "description": "Further increasing the sequence length leads to a significant decline in model performance because longer sequences provide more contextual information, and MPR tends to over-rely on the predictive decoder to predict latent embeddings by learning from other states."}
+      ],
+      "edges": [
+        {"from": "P46", "to": "P47", "evidence": ["S198", "S199"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P47", "to": "P48", "evidence": ["S199", "S200"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C16",
+      "nodes": [
+        {"id": "P49", "name": "MSE-loss variants score below cosine-similarity threshold", "description": "All models with mean squared error as the loss function have average task scores lower than 767 (the lowest score among cosine-similarity models), indicating precise latent reconstruction is unnecessary."},
+        {"id": "P50", "name": "It is unnecessary to precisely reconstruct embeddings", "description": "This indicates that in MPR or reinforcement learning with similar auxiliary prediction targets, it is unnecessary to precisely reconstruct embeddings in the latent space."},
+        {"id": "P51", "name": "Cosine-similarity MPR variants match or surpass MLR", "description": "Several MPR variants with cosine similarity as the loss function are close to (MPR-a: 769) or surpass (MPR-r: 786) the average task score of MLR (772.8), demonstrating the effectiveness of MPR."}
+      ],
+      "edges": [
+        {"from": "P49", "to": "P50", "evidence": ["S203", "S204"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C17",
+      "nodes": [
+        {"id": "P52", "name": "Adding action token or R=2 decreases MPR performance", "description": "Adding action token to MPR or setting R=2 both lead to a decrease in MPR performance."},
+        {"id": "P53", "name": "Excessively long context sequences reduce representation efficiency", "description": "This may be because excessively long context sequences fail to provide effective information for the agent and instead reduce the efficiency of representation learning."}
+      ],
+      "edges": [
+        {"from": "P52", "to": "P53", "evidence": ["S207", "S208"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C18",
+      "nodes": [
+        {"id": "P54", "name": "MPR masking independent of patch size", "description": "MPR's masking method is independent of patch size, allowing the predictor to decouple from patch size and masking method, unlike MLR."},
+        {"id": "P55", "name": "Mask independence opens door to varied mask types", "description": "Since the mask is independent of patch size, a variety of masks (e.g., SAM segmentation instance masks or BLIP language-image masks) can be adopted to enhance self-supervised learning effectiveness."},
+        {"id": "P56", "name": "Varied masks could improve RL sample efficiency", "description": "Adopting varied mask types could thereby improve the sample efficiency of RL agents."}
+      ],
+      "edges": [
+        {"from": "P54", "to": "P55", "evidence": ["S224", "S225"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P55", "to": "P56", "evidence": ["S225", "S226"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C19",
+      "nodes": [
+        {"id": "P57", "name": "No action sequence info incorporated", "description": "MPR does not incorporate action sequence information in its implementation, as a difference from MLR."},
+        {"id": "P58", "name": "Action sequences shown not to enhance MPR in continuous control", "description": "This design choice is because action sequence information has been demonstrated not to enhance MPR performance in continuous control."}
+      ],
+      "edges": [
+        {"from": "P58", "to": "P57", "evidence": ["S219", "S220"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C20",
+      "nodes": [
+        {"id": "P59", "name": "Single projection predictor, no separate online projection head", "description": "MPR employs only one projection predictor with no online projection head following the predictive decoder, as a difference from MLR."},
+        {"id": "P60", "name": "Reduced parameter count promotes policy learning", "description": "In comparison to MLR, this reduction in the model's parameter count promotes policy learning, rendering MPR an enhanced version of MLR."}
+      ],
+      "edges": [
+        {"from": "P59", "to": "P60", "evidence": ["S221", "S222"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P61", "name": "DRL surpasses human performance in many scenarios", "description": "Deep reinforcement learning has made significant progress in sequential decision-making problems, often surpassing human performance in many scenarios."},
+    {"id": "P62", "name": "MDP formalization", "description": "The environment is formulated as a Markov Decision Process defined by a tuple (S, A, T, r, d0, γ), with the RL goal of finding an optimal policy that maximizes cumulative discounted reward."},
+    {"id": "P63", "name": "MPR combined with SAC/Rainbow for policy learning", "description": "MPR's auxiliary objective can be combined with different reinforcement learning algorithms, such as Soft Actor-Critic, to promote policy learning and enhance sample efficiency."},
+    {"id": "P64", "name": "Contribution: introducing mask-based sequence modeling to RL", "description": "The paper introduces mask-based sequence modeling into reinforcement learning, leveraging self-predictive learning to acquire adaptive representations for various tasks, enhancing sample efficiency."},
+    {"id": "P65", "name": "Contribution: MPR model utilizing contextual info", "description": "The paper proposes the mask-based predictive representation RL model, which utilizes contextual information among observation sequences to reconstruct masked information within the latent space."},
+    {"id": "P66", "name": "Contribution: empirical leading performance", "description": "Empirical experiments demonstrate that MPR achieves leading performance across multiple continuous control tasks and top results in 11 of 26 Atari games."},
+    {"id": "P67", "name": "Related work: representation learning via auxiliary tasks", "description": "Recent research addresses the challenge of redundant high-dimensional information by employing self-supervised auxiliary tasks such as pixel reconstruction, bisimulation, and dynamics prediction, using BYOL- or CURL-style losses without negative samples."},
+    {"id": "P68", "name": "Related work: sample-efficient RL branches", "description": "Sample-efficient RL research includes model-free approaches using data augmentation and auxiliary tasks, as well as model-based approaches (world models) that learn transition dynamics for planning or imagination."},
+    {"id": "P69", "name": "Related work: masked modeling in RL prior methods", "description": "Prior masked-modeling-in-RL works include MVP (transferring pretrained visual representations), TT (autoregressive next-token prediction), and MaskDP (randomly masking trajectory portions); this paper builds on Yu et al. (2022)'s mask-based modeling approach by investigating different masking schemes and a joint prediction framework."},
+    {"id": "P70", "name": "Convolutional context/target encoders and transformer decoder", "description": "The context encoder and target encoder are convolutional networks, while the predictive decoder is a transformer encoder."},
+    {"id": "P71", "name": "Positional encodings added to features", "description": "Learnable position encodings are incorporated into the feature representations before being fed into the predictive decoder's transformer layers."},
+    {"id": "P72", "name": "Transformer decoder architecture (MHSA + LN + MLP)", "description": "The predictive decoder's transformer layers consist of multi-headed self-attention, layer normalization, and MLP blocks, following standard transformer block equations."},
+    {"id": "P73", "name": "Cosine similarity loss for MPR objective", "description": "The MPR loss is computed as the cosine similarity distance between predicted latent representations and target representations, averaged over the sequence."},
+    {"id": "P74", "name": "Total loss combines RL loss and MPR auxiliary loss", "description": "The overall training objective combines the base reinforcement learning loss and the MPR self-supervised loss weighted by hyperparameter λ."},
+    {"id": "P75", "name": "Only target encoder used at test time", "description": "In the testing phase, the context encoder and predictive decoder cease operation, leaving only the trained momentum target encoder in use."},
+    {"id": "P76", "name": "DMControl/Atari evaluation setup", "description": "The model is evaluated on 6 DeepMind Control Suite tasks (continuous action) at 100k and 500k steps, and on the 26-game Atari-100k benchmark (discrete action) using 10 random seeds of 100 episodes each."},
+    {"id": "P77", "name": "SAC and Rainbow/MLR baselines used per domain", "description": "SAC is used as the baseline agent for continuous control, while Rainbow and MLR are used as baseline agents for discrete control."},
+    {"id": "P78", "name": "Masking hyperparameters for DMControl and Atari", "description": "Masks of size 40×40 are used on 100×100 DMControl images (resized to 84×84 after augmentation); Atari uses 32×32 masks on 84×84 images to maintain approximately 40% mask rate."},
+    {"id": "P79", "name": "λ, T, and block size settings", "description": "The MPR loss weight λ is set to 1, sequence length T is uniformly set to 8, and the Atari block size is uniformly set to 8."},
+    {"id": "P80", "name": "Harder tasks: MPR excels on Reacher-hard 500k", "description": "On harder DMControl tasks (Reacher-hard and Walker-run) without hyperparameter search, MPR performs similarly to MLR but excels on the Reacher-hard 500k task with an average score improvement of 130."},
+    {"id": "P81", "name": "Limitation: random masking requires hyperparameter tuning", "description": "MPR's masking method is randomly sampled, similar to MLR, and thus requires tuning of multiple hyperparameters."},
+    {"id": "P82", "name": "Conclusion: MPR enhances RL sample efficiency across two benchmarks", "description": "Experimental results on DMControl and Atari demonstrate that the proposed MPR model enhances the sample efficiency of reinforcement learning agents."},
+    {"id": "P83", "name": "Implementation: base network architecture", "description": "The base network includes a representation learning network with 4 convolutional layers each followed by ReLU, a fully connected layer, a normalization layer, and a policy network composed of an MLP."},
+    {"id": "P84", "name": "Implementation: auxiliary network architecture and EMA sharing", "description": "The auxiliary self-supervised network includes an online encoder, predictive decoder, and prediction head, with the target encoder's parameters shared with the online encoder via momentum updates."},
+    {"id": "P85", "name": "Sine/cosine positional embeddings", "description": "Positional embeddings for the predictive decoder's independent per-timestep tokens are constructed using sine and cosine functions following Vaswani et al. (2017)."},
+    {"id": "P86", "name": "Algorithm 1 pseudocode for MPR training loop", "description": "The training algorithm interacts with the environment, samples and masks a trajectory, encodes and predicts latent features, computes MPR and RL losses, and updates online and momentum parameters each iteration."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "This graph decomposes the MPR paper into 20 tightly-scoped components, each capturing a short argumentative or empirical chain from the paper's linear structure: motivation-to-method (C1-C4), architectural design choices (C5-C8), and a series of ablation-result chains (C9-C17) plus discussion-section design-choice justifications (C18-C20). The paper's prose is largely sequential (motivation → design decision → consequence, or ablation setup → finding → interpretation), which naturally yields many small 2-4 node components rather than a few large ones; cross-component edges are rare because the paper does not explicitly tie e.g. the mask-ratio ablation (C12) to the block-size ablation (C13) or to the sequence-length ablation (C15), even though they are analyzed in the same subsection using the same experimental setup. Edge scores dip to 7-8 in a few components (C7, C10, C14) where the connective relationship between adjacent claims is inferred from proximity and shared experimental context rather than an explicit causal/logical connective in the text (e.g., linking EMA-based target updates to the guidance role of targets, or linking the two-experiment DMControl-100k/500k results as a single narrative arc). The isolated_nodes set is large, reflecting the substantial share of self-contained descriptive content in this paper: background/related-work summaries, the MDP formalism, architectural component descriptions, hyperparameter and implementation details, and standalone experimental setup facts that are not framed as depending on or causing other propositions in the paper."
+}

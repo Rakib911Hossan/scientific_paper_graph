@@ -1,0 +1,255 @@
+{
+ "arxiv_id": "2605.23239",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Decoupling accuracy and robustness via a self-supervised purifier (GPR-GAE) with convergent multi-step purification",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "GNNs vulnerable to structural attacks",
+     "description": "GNNs rely on the underlying graph structure, so even small structural perturbations can drastically degrade their performance."
+    },
+    {
+     "id": "P2",
+     "name": "Accuracy-robustness trade-off",
+     "description": "Defending against attacks requires balancing accuracy on clean data and robustness to adversarial attacks; prioritizing one can harm the other."
+    },
+    {
+     "id": "P3",
+     "name": "Adversarial training decomposes into two terms",
+     "description": "The adversarial training objective decomposes into an accuracy term over nodes unaffected by perturbation (weighted by lambda) and a robustness term over affected nodes (weighted by 1-lambda), with the attack budget epsilon controlling lambda (Theorem 3.1)."
+    },
+    {
+     "id": "P4",
+     "name": "Adversarial training intertwines conflicting objectives",
+     "description": "Adversarial training and robust GNN architectures couple accuracy and robustness in a single model, limiting achievable robustness because higher robustness comes at significant accuracy loss."
+    },
+    {
+     "id": "P5",
+     "name": "Existing purification is heuristic or classifier-dependent",
+     "description": "Existing purifiers rely on predefined heuristics (Jaccard pruning, SVD low-rank) or on classifier-derived edge representations, which lack adaptivity and fail to capture structural differences between clean and adversarial edges."
+    },
+    {
+     "id": "P6",
+     "name": "Self-supervised purifier decoupled from classifier",
+     "description": "The accuracy objective is assigned to a standard GNN classifier trained on the clean graph, while a separate purifier is trained self-supervised to reconstruct the clean graph G from randomly sampled perturbed graphs G' with a large budget, independent of node labels."
+    },
+    {
+     "id": "P7",
+     "name": "Single-step purification is too coarse",
+     "description": "Single-step purification that prunes or keeps edges by fixed criteria makes abrupt, discretized changes, limiting precise recovery under complex or heavy perturbations."
+    },
+    {
+     "id": "P8",
+     "name": "Multi-step purification converges linearly",
+     "description": "Under the local Lipschitz assumption induced by the self-supervised objective, iterative purification G(t+1)=G(t)+alpha*dG(t) converges linearly to a stationary point for any step size alpha in (0,1] (Theorem 3.3)."
+    },
+    {
+     "id": "P9",
+     "name": "Empirical Lipschitz check supports convergence",
+     "description": "The paper empirically estimates the local Lipschitz constant of the one-step purifier on test graphs from 100 random perturbed adjacency pairs to support Theorem 3.3."
+    },
+    {
+     "id": "P10",
+     "name": "Standard GAEs are poor purifiers",
+     "description": "Standard GAEs stack static GNN layers that smooth local variations (making adversarially connected nodes similar), suffer oversmoothing for higher-order information, and use proximity-based decoders that reconstruct spurious connections."
+    },
+    {
+     "id": "P11",
+     "name": "GPR-GAE uses multiple GPR filters",
+     "description": "GPR-GAE encodes nodes with multiple Generalized PageRank filters whose learnable coefficients weight different adjacency powers, capturing diverse multi-scale structure without oversmoothing."
+    },
+    {
+     "id": "P12",
+     "name": "Edge encoder and order-aware decoder",
+     "description": "Edge embeddings are computed from concatenated node embeddings and decoded into directed link scores, which are averaged over both directions for undirected graphs."
+    },
+    {
+     "id": "P13",
+     "name": "Two-part training loss",
+     "description": "GPR-GAE is trained with L = L_restore + delta*L_sym, a restoration loss over original edges and injected negative edges plus a symmetry loss, with delta balancing them."
+    },
+    {
+     "id": "P14",
+     "name": "Test-time purification procedure",
+     "description": "At test time the adjacency is iteratively updated with step size alpha until ||dA||/||A|| <= tau, and the final continuous (non-discretized) adjacency is passed to the classifier; the paper uses alpha=1, tau=1/1000 and at most 5 steps."
+    },
+    {
+     "id": "P15",
+     "name": "Accuracy improves with each purification step",
+     "description": "Classification accuracy improves with each purification step and converges consistently across all alpha values under the termination condition (Fig 2)."
+    },
+    {
+     "id": "P16",
+     "name": "State-of-the-art adaptive-attack robustness",
+     "description": "Under adaptive attacks GPR-GAE attached to vanilla classifiers achieves higher robustness than vanilla, self-trained, adversarially trained and robust GNN baselines (EvenNet, SoftMedianGDC)."
+    },
+    {
+     "id": "P17",
+     "name": "Large gain under severe perturbation",
+     "description": "Against PRBCD with epsilon=0.5, adversarially trained GPRGNN reaches 48.5% test accuracy, and GPR-GAE with vanilla GPRGNN improves on this by 15.7 percentage points."
+    },
+    {
+     "id": "P18",
+     "name": "Plug-and-play and clean accuracy preserved",
+     "description": "GPR-GAE preserves clean accuracy and works as a plug-and-play defense module compatible with GNN classifiers."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3.1, Thm 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2: convergence governed by purifier in isolation, decoupling needed"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 6.2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    },
+    {
+     "from": "P14",
+     "to": "P15",
+     "evidence": [
+      "Sec 5.3, Fig 2"
+     ]
+    },
+    {
+     "from": "P14",
+     "to": "P16",
+     "evidence": [
+      "Sec 6.1, Table 1, Fig 3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P16",
+     "evidence": [
+      "Sec 6.1"
+     ]
+    },
+    {
+     "from": "P16",
+     "to": "P17",
+     "evidence": [
+      "Sec 6.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P18",
+     "evidence": [
+      "Sec 7, Table 2"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P19",
+   "name": "Datasets and inductive setting",
+   "description": "Experiments use Cora, Cora ML, Citeseer, Pubmed, OGB-arXiv and Chameleon in an inductive split with 20 labeled nodes per class, excluding validation and test nodes from training."
+  },
+  {
+   "id": "P20",
+   "name": "Evasion attack setting",
+   "description": "The work targets evasion (test-time) structural attacks with edge insertions/deletions rather than poisoning attacks."
+  },
+  {
+   "id": "P21",
+   "name": "Jaccard and SVD purifiers",
+   "description": "Jaccard-GCN prunes edges between nodes with low Jaccard similarity, and SVD-GCN applies a low-rank approximation because attacks affect high-rank components."
+  }
+ ],
+ "structural_reasoning": "Argument runs from vulnerability and the accuracy-robustness trade-off, through the decomposition of adversarial training, to the decoupled self-supervised purifier, its convergence theory and GPR-GAE design, to test procedure and empirical results."
+}

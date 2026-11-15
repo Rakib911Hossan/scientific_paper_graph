@@ -1,0 +1,180 @@
+{
+  "arxiv_id": "2605.08192v1",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/tables/figures rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "The evidential inversion: motivating diagnosis",
+      "nodes": [
+        {"id": "P1", "name": "Twelve leading AI companies published Frontier AI Safety Frameworks in 2025", "description": "Twelve leading AI companies published or updated Frontier AI Safety Frameworks in 2025, each containing safety claims, many of which are consequential and used to justify release decisions."},
+        {"id": "P2", "name": "Sector-average transparency score is low and declining", "description": "The 2025 Foundation Model Transparency Index reports an average sector score of 40/100 (down 9 points year-over-year for weighted-average flagship developers), with six major developers at zero on model-information disclosures and no developer adequately reporting train-test overlap."},
+        {"id": "P3", "name": "ASR comparisons are often low-validity measurements", "description": "Independent measurement-theory work shows attack-success-rate comparisons in red-teaming are often founded on apples-to-oranges comparisons or low-validity measurements, with measurement choices rather than attack quality often driving reported differences."},
+        {"id": "P4", "name": "Frontier models can fool output-based jailbreak monitors", "description": "Frontier models can generate strategic-dishonesty responses that fool every output-based jailbreak monitor tested, rendering benchmark scores unreliable."},
+        {"id": "P5", "name": "Pre-deployment safety testing has become harder and evaluation-aware", "description": "The 2026 International AI Safety Report concludes that reliable pre-deployment safety testing has become harder to conduct and that models now distinguish evaluation from deployment contexts and alter their behaviour accordingly."},
+        {"id": "P6", "name": "The evidential inversion defined", "description": "The result of rising claim consequence alongside declining transparency is an evidential inversion: in most of ML, more consequential claims carry stronger disclosure/rerunnability norms, but in frontier AI safety the relationship is often inverted."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P6", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P6", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P6", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["S1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Defining and scoping frontier AI safety claims",
+      "nodes": [
+        {"id": "P7", "name": "Frontier AI safety claim defined", "description": "A frontier AI safety claim is a published assertion about the safety, controllability, or societal-risk mitigation of a highly capable general-purpose model or frontier deployment, where the assertion is liable to inform public governance, standards, or procurement decisions."},
+        {"id": "P8", "name": "Quantitative compute anchor", "description": "A model is anchored as frontier if it exceeds the EU AI Act's systemic-risk training-compute threshold of 10^25 FLOPs or California SB-53's 10^26 FLOPs threshold."},
+        {"id": "P9", "name": "Functional-frontier capability backstop", "description": "Regardless of compute, a paper is also in scope if it presents evidence of emergent dangerous capabilities (CBRN uplift, autonomous cyber-offence, self-replication, or strategic-deception capability)."},
+        {"id": "P10", "name": "Capability backstop closes small-dangerous-model gaming pathway", "description": "The capability-based backstop closes the principal gaming pathway of training a small but dangerously capable model under the FLOP gate, without requiring reviewers to second-guess training compute."},
+        {"id": "P11", "name": "Textual trigger closes the converse non-claiming gaming pathway", "description": "To prevent authors avoiding the capability anchor by simply not claiming emergence, the trigger is textual rather than interpretive: a paper is in scope if it reports any evaluation of CBRN uplift, autonomous cyber-offence, self-replication, or strategic-deception capability, regardless of headline finding."},
+        {"id": "P12", "name": "Normative vs. descriptive claim distinction", "description": "The defining feature separating in-scope from out-of-scope claims is that the claim is normative (asserting the model is safe enough or adequately mitigated) rather than merely descriptive (e.g., a benchmark score) that authors do not use to license a deployment conclusion."},
+        {"id": "P13", "name": "Operative decision rule for normativity", "description": "A claim is normative (and in scope) if the paper's abstract, conclusion, or policy implications argue for a deployment decision, threshold crossing, or mitigation adequacy."},
+        {"id": "P14", "name": "Governance-relevance test is functional, not intent-based", "description": "The operative test for whether a claim is liable to inform governance is what the claim is reasonably likely to be used for, not what the authors intend."},
+        {"id": "P15", "name": "Reproducibility failures concentrate where claim consequence is highest", "description": "Across the five principal claim types (harmlessness evaluation, alignment reduction, red-team summary, controllability, risk-card summary), the disclosure gap (missing prompt sets, withheld reward models/pipelines, unpublished protocols and thresholds) is concentrated where claim consequence is highest."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P8", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P9", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["S2"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P12", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P13", "evidence": ["S2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P14", "evidence": ["S2"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P15", "evidence": ["S2", "Table1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Why the inversion is an evaluation-methodology failure (not a governance complaint)",
+      "nodes": [
+        {"id": "P16", "name": "Frontier claims sit at intersection of release justification and artefact sensitivity", "description": "Frontier AI safety claims justify release decisions, regulatory compliance, and public assurances, yet the artefacts needed to evaluate them may themselves be sensitive, producing partial transparency without scientific reproducibility."},
+        {"id": "P17", "name": "Current disclosure practice is structurally mixed but optional/fragmented", "description": "Current practice (e.g., Anthropic's RSP public risk reports with redactions and external reviewers, OpenAI's Preparedness Framework external evaluators, METR's cross-policy analyses) shows reproducibility is not impossible, but is currently optional, fragmented, and unstandardised."},
+        {"id": "P18", "name": "Claude Mythos Preview case illustrates the gap under a cooperative regime", "description": "The Claude Mythos Preview release -- with a public technical report, updated RSP risk assessment, and independent AISI/CETaS evaluations -- still has redacted risk-report sections, internally-reliant capability evaluations, and structurally unavailable third-party reproducibility, illustrating the gap even under the most cooperative disclosure regime currently observable."},
+        {"id": "P19", "name": "Black-box access is insufficient for rigorous AI audits", "description": "Prior work argues that black-box access is insufficient for rigorous AI audits, supporting the case that current disclosure practices fall short of enabling genuine evaluation."},
+        {"id": "P20", "name": "Each cited finding is a measurement-validity finding, not a governance complaint", "description": "The ASR low-validity finding, the jailbreak-monitor-fooling finding, and the harder-pre-deployment-testing finding are each measurement-validity findings; reproducibility is the standard mechanism by which such distortions are identified and corrected."},
+        {"id": "P21", "name": "Applying the reproducibility mechanism to frontier safety claims is the paper's proposal", "description": "Because reproducibility is the standard mechanism for correcting measurement distortions, the present proposal applies that mechanism specifically to frontier safety claims."}
+      ],
+      "edges": [
+        {"from": "P16", "to": "P17", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P18", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P20", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P20", "to": "P21", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "The case for NeurIPS as the right site",
+      "nodes": [
+        {"id": "P22", "name": "NeurIPS already sets reproducibility and scope norms", "description": "NeurIPS has already established the ML Reproducibility Checklist (2019), the mandatory ethics statement (2020), the Datasets and Benchmarks track (2021), and the Position Paper Track (2025), each subsequently adopted by ICML, ICLR, and ACL."},
+        {"id": "P23", "name": "Reproducibility standards for frontier safety claims are the natural next extension", "description": "Given this track record of NeurIPS setting field-level norms that are later adopted elsewhere, requiring reproducibility standards for frontier safety claims is presented as the natural next extension of that pattern."},
+        {"id": "P24", "name": "NeurIPS is where frontier safety claims already acquire scientific legitimacy", "description": "System cards for major frontier models cite NeurIPS-published research, alignment benchmark papers are NeurIPS-family, and dominant alignment methods (RLHF, Constitutional AI, DPO) were published at or around NeurIPS."},
+        {"id": "P25", "name": "Existing legitimacy implies NeurIPS should require a matching evidentiary standard", "description": "Because frontier safety claims already draw scientific legitimacy from NeurIPS-adjacent publication, NeurIPS should require an evidentiary standard commensurate with that legitimacy."},
+        {"id": "P26", "name": "The proposal extends five accepted 2025 NeurIPS position papers", "description": "The proposal is presented as direct continuity with, and operationalization of, five accepted 2025 NeurIPS position papers on AI policy leadership, post-hoc refutation tracks, ASR measurement validity, clinical AI monitoring standards, and a six-pillar view of rigor."},
+        {"id": "P27", "name": "ACM's graduated artefact-badging precedent supports a non-binary framework", "description": "ACM's artefact-review badging framework distinguishes available, reviewed, and validated statuses rather than requiring a binary release/trust choice, and proprietary artefacts may be shown to reviewers without public release -- offered as the model for the paper's own graduated disclosure proposal."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P25", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P26", "evidence": ["S4"], "votes": 1, "confidence": "single_run"},
+        {"from": "P27", "to": "P25", "evidence": ["S4"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "The three-tier disclosure and claim-inventory proposal",
+      "nodes": [
+        {"id": "P28", "name": "Mandatory claim inventory required for in-scope papers", "description": "NeurIPS should require a claim inventory for any paper making frontier AI safety claims, where authors list each claim, state its scope, identify required artefacts, declare a requested disclosure tier, and specify relevant uncertainty sources."},
+        {"id": "P29", "name": "Three-tier framework: T1 Public, T2 Controlled, T3 Restricted", "description": "The framework defines T1 (public release, when it does not materially raise risk, supporting full ordinary empirical support), T2 (controlled/confidential review when public release would create material risk, supporting strong but qualified support), and T3 (restricted, when even confidential review is infeasible, supporting only limited contextual use)."},
+        {"id": "P30", "name": "T3 right-scales rather than removes claims", "description": "The critical design principle for T3 is that if authors cannot share artefacts even confidentially, the associated claim does not disappear from the paper, but it loses the right to function as a strong scientific warrant -- it may appear as context but not as basis for threshold-crossing or release-justifying conclusions."},
+        {"id": "P31", "name": "Tier classification is itself reviewable to prevent gaming", "description": "Because authors might misclassify a claim's tier to reduce disclosure burden or avoid scrutiny, tier selection is reviewable at submission (ordinary reviewers checking tier-claim-form consistency) and at Phase 2 (a confidential panel that can downgrade T2 classifications)."},
+        {"id": "P32", "name": "Lightweight single-reviewer path for non-hazardous T2 claims", "description": "A single domain-matched reviewer may sign a public adequacy statement in place of the full panel for T2 claims whose artefacts contain no CBRN-uplift, cyber-offence, deception, or systemic-risk-threshold content, while the full 5-7 person panel is required whenever such categories are present, preventing mission creep on the highest-impact claims."},
+        {"id": "P33", "name": "Mandatory scope statements specify evaluated system and pipeline", "description": "The claim inventory must include a scope statement specifying the evaluated system (checkpoint type), evaluation environment, pipeline components present, and applicable uncertainty (distribution shift, judge-model error, evaluation-awareness effects)."},
+        {"id": "P34", "name": "Scope-statement failure limits claim regardless of disclosure tier", "description": "A failure to adequately specify the scope statement makes the corresponding claim scope-limited regardless of which disclosure tier was assigned."},
+        {"id": "P35", "name": "Confidential-panel capture risk requires structural mitigation", "description": "Because the pool of qualified frontier-safety reviewers is small and partially overlaps with the labs being audited, panel membership is restricted to unaffiliated academics and AI Safety Institute personnel, with fixed three-year terms, mandatory five-year recusal on prior collaboration, and auditable access logs."},
+        {"id": "P36", "name": "Federated colloquium of secure-review hosts handles conference-scale T2 review", "description": "Because NeurIPS lacks existing secure infrastructure for T2 review at scale, the pilot is bounded to at most five papers per cycle and hosted via a federated colloquium of national AI Safety Institutes, independent evaluators, and trusted academic secure-review labs, with host selection based on claim domain."}
+      ],
+      "edges": [
+        {"from": "P28", "to": "P29", "evidence": ["S5.1", "S5.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P30", "evidence": ["S5.2", "Table3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P31", "evidence": ["S5.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P32", "evidence": ["S5.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P33", "evidence": ["S5.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P34", "evidence": ["S5.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P35", "evidence": ["S5.4"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P36", "evidence": ["S5.4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Phased implementation path",
+      "nodes": [
+        {"id": "P37", "name": "Phase 1: checklist and claim inventory (Year 1)", "description": "NeurIPS adds a five-question frontier safety claim section to the author checklist; the gating question (S1) takes minutes for most papers, and full claim inventories are required only when S1=Yes, using existing ordinary reviewers under extended ethics-review guidelines with no new confidential infrastructure required."},
+        {"id": "P38", "name": "Phase 2: bounded confidential panel pilot (Year 2)", "description": "NeurIPS pilots a small confidential panel (5-7 unaffiliated academics and AISI personnel, fixed three-year terms, five-year COI recusal), bounded to at most five papers per cycle, receiving T2 artefacts under NDA-equivalent confidentiality with auditable access logs, producing a public adequacy statement while ordinary reviewers continue assessing scientific contribution."},
+        {"id": "P39", "name": "Phase 3: disclosure labels, sanctions, and cross-conference adoption (Year 3)", "description": "Accepted papers receive a visible disclosure label (Publicly Reproducible, Confidentially Reviewed, or Restricted Claim); graduated sanctions apply for non-compliance (revision request, claim-strength reduction, or desk rejection plus senior-PC referral); NeurIPS publishes aggregate tier statistics; ICML and ICLR are invited to co-adopt."},
+        {"id": "P40", "name": "Phased rollout allows testing before scaling confidential infrastructure", "description": "Because Tier 2 controlled review is capacity-constrained, it should begin only as a bounded pilot after the Year-1 baseline (claim inventory, scope statement, claim-strength labelling) has been tested in practice, minimizing the risk of a serious proposal failing due to premature scale."}
+      ],
+      "edges": [
+        {"from": "P37", "to": "P38", "evidence": ["S6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P38", "to": "P39", "evidence": ["S6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P37", "to": "P40", "evidence": ["S6", "S8"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Objections and responses",
+      "nodes": [
+        {"id": "P41", "name": "Objection: safety-sensitive information cannot be released", "description": "The most important safety evaluations cannot be released because doing so creates safety risks, making a reproducibility mandate incompatible with responsible safety evaluation."},
+        {"id": "P42", "name": "Response: T2/T3 do not require public release", "description": "The three-tier framework addresses this directly, since T2 and T3 do not require public release; the relevant precedent is confidential expert review (medical ethics boards, classified peer review, coordinated vulnerability disclosure), and NeurIPS assesses evidentiary status of claims, not model safety certification."},
+        {"id": "P43", "name": "Objection: frontier labs do not need NeurIPS legitimacy", "description": "Frontier AI labs can publish through corporate or government channels; NeurIPS legitimacy is not a precondition for governance impact."},
+        {"id": "P44", "name": "Response: labs seek NeurIPS legitimacy in practice, so the standard should match", "description": "In practice labs submit significant technical work to NeurIPS because peer review confers legitimacy that other channels do not, and regulators distinguish peer-reviewed from non-peer-reviewed findings, so governance-relevant claims made at NeurIPS should meet a governance-relevant evidentiary standard."},
+        {"id": "P45", "name": "Objection: stricter standards would deter industry participation", "description": "Stricter standards would push frontier labs toward non-peer-reviewed channels instead of complying."},
+        {"id": "P46", "name": "Response: current frameworks already mix public/redacted/trusted disclosure", "description": "Current frameworks already assume mixes of public reporting, redaction, and trusted-actor disclosure, so the proposal simply asks labs to map existing practice onto a conference-standard format or accept narrower claims; inability to satisfy even T2 is itself informative about the claim."},
+        {"id": "P47", "name": "Objection: deployment-context shift undermines reproducibility", "description": "Reproducibility presupposes a fixed evaluation context, but frontier safety operates under distribution shift, adversarial prompting, and deployment mismatch."},
+        {"id": "P48", "name": "Response: mandatory scope statements make this uncertainty traceable", "description": "The mandatory scope statement addresses this by explicitly scope-limiting claims about deployment made from offline evaluation; reproducibility does not eliminate deployment-context uncertainty but makes that uncertainty traceable, which is the precondition for reducing it."},
+        {"id": "P49", "name": "Objection: confidential review is vulnerable to capture or leakage", "description": "The confidential panel is vulnerable to conflict-of-interest capture and to leakage of sensitive artefacts."},
+        {"id": "P50", "name": "Response: governance mechanisms, not waiver, address the capture risk", "description": "The response to capture/leakage risk is governance rather than abandoning the framework: restricting the panel to unaffiliated academics and AISI personnel, fixed terms, five-year COI recusal, auditable access logs, and public tier rationales, following precedent already operating in Anthropic's external-review design."}
+      ],
+      "edges": [
+        {"from": "P41", "to": "P42", "evidence": ["S7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P43", "to": "P44", "evidence": ["S7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P45", "to": "P46", "evidence": ["S7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P47", "to": "P48", "evidence": ["S7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P49", "to": "P50", "evidence": ["S7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P42", "evidence": ["S7"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P48", "evidence": ["S7"], "votes": 2, "confidence": "majority"},
+        {"from": "P35", "to": "P50", "evidence": ["S7"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P51", "name": "Paper's scope is explicitly methodological and review-time", "description": "The paper's scope is methodological and review-time: it does not address governance of frontier AI deployment, propose new evaluation methods, or redefine the conference's remit."},
+    {"id": "P52", "name": "Term choice: 'frontier' over 'AGI'", "description": "The paper uses 'frontier AI safety claims' rather than 'AGI safety claims' deliberately, since 'frontier' is the operative vocabulary in current risk frameworks and policy instruments, whereas 'AGI' is operationally unstable and unsuitable as a reviewable scientific object."},
+    {"id": "P53", "name": "Timeliness reason: governance dependence on published frameworks", "description": "Frontier-AI governance now depends heavily on published safety frameworks and external evaluations, which the 2026 IAISR notes vary substantially in scope with external assessments remaining limited and non-standardised."},
+    {"id": "P54", "name": "Timeliness reason: policy instruments formalizing transparency duties", "description": "Major policy instruments (Seoul AI commitments, EU GPAI Code of Practice, California Report on Frontier AI Policy, IASEAI'26, the Delhi Declaration) have begun to formalise transparency duties for advanced models and treat peer-reviewed research as governance input."},
+    {"id": "P55", "name": "Timeliness reason: NeurIPS Position Paper Track broadening", "description": "The NeurIPS 2026 Position Paper Track is explicitly broadening toward technically grounded positions, and the 2025 cohort included multiple exemplars redefining evaluation, measurement, and rigor norms for frontier AI."},
+    {"id": "P56", "name": "In-scope claim categories enumerated", "description": "At minimum, in-scope claim categories include dangerous-capability assessments, threshold-crossing or threshold-absence claims, mitigation-adequacy claims, evaluation-sufficiency claims supporting release decisions, residual-risk claims, and absence-of-concerning-capability claims under a stated evaluation regime."},
+    {"id": "P57", "name": "EU AI Act Article 55 requires standardised evaluation protocols", "description": "The EU AI Act's Article 55 requires systemic-risk providers to evaluate against standardised protocols reflecting the state of the art, and the EU AI Office is treating peer-reviewed research as input to standardisation."},
+    {"id": "P58", "name": "Precedent: confidential expert review exists outside ML", "description": "The general pattern of a small confidential panel reviewing artefacts that cannot be released publicly is well-established outside ML, in medical research ethics boards, classified peer review for defense-adjacent agencies, and CERT-based coordinated vulnerability disclosure; the novelty here is the venue and trigger, not the mechanism."},
+    {"id": "P59", "name": "Threshold-anchor obsolescence risk and mitigation", "description": "The compute-based frontier anchor may become stale as training efficiency improves; mitigation is the existing capability-based alternative anchor plus an annual programme-committee review of thresholds, following the reproducibility checklist's iterative-revision precedent."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph closely mirrors this position paper's own argumentative structure. C1 establishes the empirical 'evidential inversion' diagnosis from converging 2025-2026 evidence sources. C2 captures the paper's careful operational definition and anti-gaming mechanisms (compute anchor, capability backstop, textual trigger, normative/descriptive test) as a tightly reasoned definitional chain. C3 explains why the inversion is framed as a measurement-validity failure rather than a governance complaint, directly motivating the paper's chosen remedy (reproducibility) rather than a regulatory one. C4 traces the argument for NeurIPS specifically as the intervention site, combining institutional precedent, existing legitimacy, and direct continuity with prior accepted position papers. C5 is the core proposal chain (claim inventory -> three tiers -> right-scaling -> reviewability/anti-gaming -> scope statements -> panel-capture mitigations), matching the paper's own Section 5 structure closely including Table 3's tier semantics. C6 captures the three-phase rollout as a dependency chain where each phase is explicitly built on the prior one's outcomes. C7 mirrors the paper's own objection-response structure as five clearly paired argumentative units, with a few cross-component edges linking specific framework features (three tiers, scope statements, panel design) to the objections they are built to answer. Isolated nodes are limited to genuine scoping statements, terminological choices, contextual/timeliness claims, and precedent citations that support but are not premises within the paper's central deductive chain."
+}

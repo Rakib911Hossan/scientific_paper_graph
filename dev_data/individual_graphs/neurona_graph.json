@@ -1,0 +1,416 @@
+{
+  "arxiv_id": "2603.03343v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "Most fMRI decoding focuses on isolated concepts or holistic reconstruction",
+          "description": "Most large-scale fMRI decoding studies focus on either isolated concepts or holistic stimulus reconstruction, leaving open how to decode high-level relational meaning between multiple visual concepts."
+        },
+        {
+          "id": "P2",
+          "name": "Central question: decoding predicate-driven concepts via arguments",
+          "description": "The paper asks whether decoding predicate-driven concepts (e.g., holding) can be improved by explicitly accounting for their constituent arguments (e.g., person and baseball-bat) and their representations across brain regions."
+        },
+        {
+          "id": "P3",
+          "name": "Naturalistic stimuli suited for probing compositional decoding",
+          "description": "Naturalistic images and videos often involve multiple interacting concepts, making them well-suited for probing how to decode entities and their relations from neural activity."
+        },
+        {
+          "id": "P4",
+          "name": "Proposal of fMRI-QA datasets",
+          "description": "Motivated by the need for compositional supervision, the paper proposes fMRI-QA datasets (BOLD5000-QA, CNeuroMod-QA) pairing fMRI recordings with structured queries about corresponding visual stimuli."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P5",
+          "name": "Linear models lack capacity for interactions",
+          "description": "Linear models lack the capacity to capture interactions between multiple interacting components in fMRI decoding."
+        },
+        {
+          "id": "P6",
+          "name": "Large neural decoders encode stimuli holistically",
+          "description": "Large neural decoders with language model backbones tend to encode stimuli holistically without explicitly modeling modular concepts or their relations, leading to coarse alignment between neural activity and language."
+        },
+        {
+          "id": "P7",
+          "name": "Neither approach sufficient for compositional fMRI-QA",
+          "description": "Because neither simple linear models nor purely end-to-end neural decoding models can capture compositional concept interactions, neither is found sufficient for solving the fMRI-QA task."
+        },
+        {
+          "id": "P8",
+          "name": "Proposal of neuro-symbolic approach",
+          "description": "To address the insufficiency of linear and purely end-to-end models, the paper proposes a neuro-symbolic approach that integrates the compositionality of symbolic systems with the expressivity of neural networks."
+        },
+        {
+          "id": "P9",
+          "name": "NEURONA framework introduced",
+          "description": "From this paradigm, the paper proposes NEURONA, a neuro-symbolic framework integrating symbolic reasoning and compositional execution with fMRI grounding across brain regions."
+        }
+      ],
+      "edges": [
+        {"from": "P5", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P8", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P10",
+          "name": "fMRI lacks canonical entity notion unlike LEFT's visual domains",
+          "description": "Unlike the LEFT framework's original visual domains where candidate entities (e.g., object proposals) are specified a priori, fMRI has no canonical notion of entities analogous to objects in a scene; relevant neural representations must be inferred."
+        },
+        {
+          "id": "P11",
+          "name": "NEURONA jointly evaluates hypotheses and learns composition",
+          "description": "To address the lack of canonical entities, NEURONA jointly evaluates hypotheses over candidate neural entities derived from parcellated fMRI signals and learns how these entities should be composed for decoding."
+        },
+        {
+          "id": "P12",
+          "name": "Soft role-conditioned aggregation replaces hard selection",
+          "description": "To make differentiable program execution compatible with the uncertainty over neural entities, NEURONA introduces execution semantics that replace hard selection with a soft, role-conditioned aggregation mechanism guiding predicate grounding."
+        }
+      ],
+      "edges": [
+        {"from": "P10", "to": "P11", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P12", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P13",
+          "name": "Parcellation defines candidate neural entities",
+          "description": "Fine-grained fMRI signals are mapped to P functional networks using a functional atlas (e.g., Yeo-17), yielding parcel-level embeddings that define candidate neural entities onto which concepts may ground."
+        },
+        {
+          "id": "P14",
+          "name": "Unary concept grounding via linear projection",
+          "description": "Unary concepts (e.g., person, baseball-bat) are scored over entity embeddings using a linear projection, producing concept-specific grounding logits over parcels."
+        },
+        {
+          "id": "P15",
+          "name": "Relational concept grounding via parcel-pair logits",
+          "description": "Relational concepts (predicates like holding) are scored over parcel pairs by augmenting entity embeddings with learnable parcel features, concatenating pairwise embeddings, and applying a learnable transformation and linear classifier."
+        },
+        {
+          "id": "P16",
+          "name": "Guided scores combine unary and relational groundings",
+          "description": "For concept classification queries, guided unary and relational similarity scores are computed by combining subject/object unary groundings with unary and relational answer-candidate similarity tensors, then summed into a final score for answer selection."
+        }
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P15", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P16", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P16", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P17",
+          "name": "Five grounding-structure hypotheses defined",
+          "description": "The paper defines five hypotheses about how concepts may be grounded: single-region (H1), multi-region co-activation (H2), subject-guided (H3), object-guided (H4), and full argument-guided multi-region (H5)."
+        },
+        {
+          "id": "P18",
+          "name": "Modularity of NEURONA enables hypothesis testing",
+          "description": "Because NEURONA is modular, it can explicitly test guided grounding by conditioning predicate representations on their arguments rather than treating each concept independently, enabling comparison of the five grounding hypotheses."
+        }
+      ],
+      "edges": [
+        {"from": "P18", "to": "P17", "evidence": ["S3.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {
+          "id": "P19",
+          "name": "NEURONA outperforms prior fMRI decoding baselines",
+          "description": "NEURONA consistently outperforms prior works (linear, UMBRAE, SDRecon, BrainCap) across both BOLD5000-QA and CNeuroMod-QA, achieving a 47% relative improvement over the strongest prior method."
+        },
+        {
+          "id": "P20",
+          "name": "Largest gains on action/position queries requiring relational reasoning",
+          "description": "NEURONA demonstrates significant gains specifically on queries about actions and positions, which involve precise relational reasoning over subject and object roles."
+        },
+        {
+          "id": "P21",
+          "name": "Gains attributed to predicate-argument grounding",
+          "description": "The gains on relational queries highlight the strength of the neuro-symbolic framework, which explicitly grounds neural activity using predicate-argument structure to answer relational queries."
+        }
+      ],
+      "edges": [
+        {"from": "P19", "to": "P20", "evidence": ["S5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P20", "to": "P21", "evidence": ["S5.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {
+          "id": "P22",
+          "name": "Disjoint train/test compositions test systematic generalization",
+          "description": "Evaluation splits with disjoint training and testing queries, with no overlapping entity-relation combinations, force models to generalize compositionally."
+        },
+        {
+          "id": "P23",
+          "name": "NEURONA achieves strongest generalization performance",
+          "description": "NEURONA achieves the strongest performance across both datasets on unseen compositions, while prior methods show significant degradation, often falling to near-chance levels."
+        },
+        {
+          "id": "P24",
+          "name": "Language-model baselines retain some performance via linguistic priors",
+          "description": "Language model-based baselines retain slightly better generalization performance than other baselines due to their use of pre-trained language models carrying general linguistic priors, but still perform well below NEURONA since they lack explicit concept grounding."
+        },
+        {
+          "id": "P25",
+          "name": "NEURONA learns groundings supporting systematic recombination",
+          "description": "The generalization results suggest that NEURONA learns meaningful groundings that support robust generalization to novel decoding queries via systematic recombination of concepts."
+        }
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["S5.1.gen"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P23", "evidence": ["S5.1.gen"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P25", "evidence": ["S5.1.gen"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {
+          "id": "P26",
+          "name": "Multi-region grounding alone does not consistently improve accuracy",
+          "description": "Allowing concepts to ground to combinations of regions (multi-region, unguided) does not yield consistent gains over single-region grounding in overall accuracy, especially in vocabulary classification tasks where both overfit to frequent labels."
+        },
+        {
+          "id": "P27",
+          "name": "Guided variants outperform unguided multi-region baselines",
+          "description": "Guiding multi-region grounding using subject and/or object arguments of relational concepts consistently outperforms unguided multi-region baselines."
+        },
+        {
+          "id": "P28",
+          "name": "Object-guided more effective than subject-guided",
+          "description": "Object-guided grounding is generally more effective than subject-guided grounding among the guided variants."
+        },
+        {
+          "id": "P29",
+          "name": "Full argument guidance yields best performance",
+          "description": "Using both subject and object arguments together yields the best performance, notably on action and position queries requiring precise relational reasoning."
+        },
+        {
+          "id": "P30",
+          "name": "Structural guidance is crucial beyond representational expansion",
+          "description": "These ablation results suggest that while multi-region grounding expands the representational space, explicit structural guidance based on predicate-argument dependencies is crucial for accurate and generalizable decoding."
+        }
+      ],
+      "edges": [
+        {"from": "P26", "to": "P27", "evidence": ["S5.1.abl"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P28", "evidence": ["S5.1.abl"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P29", "evidence": ["S5.1.abl"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P30", "evidence": ["S5.1.abl"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P30", "evidence": ["S5.1.abl"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C9",
+      "nodes": [
+        {
+          "id": "P31",
+          "name": "No ground truth for intermediate groundings",
+          "description": "There is no ground truth for intermediate concept groundings, motivating the introduction of a consistency metric measuring whether the same concept tends to ground to similar regions across different fMRI-QA instances."
+        },
+        {
+          "id": "P32",
+          "name": "NEURONA achieves higher consistency than null model",
+          "description": "NEURONA achieves significantly higher grounding consistency scores than a multinomial null model that randomly assigns region groundings while preserving total sample counts per concept."
+        },
+        {
+          "id": "P33",
+          "name": "Higher consistency suggests reproducible, non-random groundings",
+          "description": "The significantly higher consistency of NEURONA's groundings compared to the null baseline suggests its learned groundings are reproducible across stimuli rather than arising from chance."
+        }
+      ],
+      "edges": [
+        {"from": "P31", "to": "P32", "evidence": ["S5.1.consist"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["S5.1.consist"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C10",
+      "nodes": [
+        {
+          "id": "P34",
+          "name": "Same predicate grounds differently depending on object",
+          "description": "Qualitative analysis shows the same predicate (e.g., hold or look) can be best decoded from different regions depending on the object, e.g., holding(person,kite) uses Control B while holding(person,surfboard) relies on Somatomotor B and Control A."
+        },
+        {
+          "id": "P35",
+          "name": "Pattern consistent with argument-dependent modulation",
+          "description": "This pattern of predicate groundings varying with object identity is consistent with the paper's quantitative results on guided grounding, suggesting predicate decoding benefits from argument-dependent modulation."
+        }
+      ],
+      "edges": [
+        {"from": "P34", "to": "P35", "evidence": ["S5.2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P36",
+      "name": "Language of Thought hypothesis",
+      "description": "The Language of Thought (LoT) hypothesis proposes that human cognition operates over structured representations that compose systematically, motivating the study of whether explicit structural modeling improves neural decoding."
+    },
+    {
+      "id": "P37",
+      "name": "Prior semantic-mapping and concept-grounding fMRI work",
+      "description": "Prior influential works (Mitchell et al., Palatucci et al., Huth et al., Pereira et al.) studied how concepts are organized and grounded across the cortex, forming background for this paper's compositional extension."
+    },
+    {
+      "id": "P38",
+      "name": "Visual reconstruction works target stimulus appearance, not semantics",
+      "description": "Prior visual decoding works (e.g., diffusion-based reconstruction methods like SDRecon, MinD-Vis, MindEye) focus on recovering stimulus appearance from neural data, in contrast to this paper's focus on decoding fine-grained semantic concepts and relations."
+    },
+    {
+      "id": "P39",
+      "name": "Prior fMRI-QA methods use BLEU without verifying relational correctness",
+      "description": "Prior fMRI-QA methods (SDRecon, BrainCap, UMBRAE) map neural activity to visual embeddings and generate answers via pretrained VLMs, commonly using BLEU scores that do not verify whether predicted answers capture exact underlying concepts and relational structure."
+    },
+    {
+      "id": "P40",
+      "name": "Neuro-symbolic paradigm background",
+      "description": "Neuro-symbolic models decompose queries into symbolic expressions over concepts and differentiably execute those expressions using learned concept grounding modules, a paradigm established in prior work (e.g., Yi et al., Mao et al., Hsu et al.)."
+    },
+    {
+      "id": "P41",
+      "name": "NEURONA adapts and extends the LEFT framework",
+      "description": "NEURONA is proposed as a differentiable neuro-symbolic model that adapts and extends the LEFT framework, originally designed for concept grounding across visual domains like 2D images and 3D scenes."
+    },
+    {
+      "id": "P42",
+      "name": "Cross-entropy training objective",
+      "description": "NEURONA is trained with a standard cross-entropy objective over the predicted answer distribution, using only final-answer supervision without direct supervision on intermediate concept groundings."
+    },
+    {
+      "id": "P43",
+      "name": "Dataset construction via VLM-generated scene graphs",
+      "description": "fMRI-QA datasets are constructed by using a pre-trained vision-language model to produce scene graphs from visual stimuli, capturing unary entities and higher-arity predicates, which are then converted into structured question-answer pairs with negative sampling."
+    },
+    {
+      "id": "P44",
+      "name": "BOLD5000-QA dataset details",
+      "description": "BOLD5000-QA is derived from the BOLD5000 fMRI dataset (~5000 naturalistic images across four participants), yielding 4,258 unary and 135 relational concepts with 133,146 train and 2,095 test examples."
+    },
+    {
+      "id": "P45",
+      "name": "CNeuroMod-QA dataset details",
+      "description": "CNeuroMod-QA is derived from the CNeuroMod dataset using the Friends video series (seasons 1-5 train, season 6 test), sampling frames by motion energy, yielding 1,966 unary and 106 relational concepts with 157,046 train and 30,059 test examples."
+    },
+    {
+      "id": "P46",
+      "name": "Multiple functional atlases tested, all yield strong performance",
+      "description": "NEURONA is tested across multiple functional atlases (Yeo-7, Yeo-17, DiFuMo-64, DiFuMo-128, Schaefer-100), all yielding consistently strong performance, with Yeo-17 reported in the main text."
+    },
+    {
+      "id": "P47",
+      "name": "Object-related regions engage somatomotor networks",
+      "description": "Model-inferred groundings are not confined to early visual areas; objects such as baseball-bat and surfboard often receive high grounding scores in somatomotor-associated networks, consistent with prior work linking action-related object perception to motor and premotor engagement."
+    },
+    {
+      "id": "P48",
+      "name": "Predicates decoded via prefrontal attention networks",
+      "description": "Both hold and look predicates are frequently decoded using prefrontal networks (dorsal attention and salience/ventral attention networks), associated with high-level cognitive control and abstract rule processing in prior literature."
+    },
+    {
+      "id": "P49",
+      "name": "NEURONA does not establish representational compositionality",
+      "description": "While NEURONA's performance gains provide evidence that compositional assumptions can inform neural decoding, the paper does not claim to establish representational compositionality in neural activity itself."
+    },
+    {
+      "id": "P50",
+      "name": "Lack of combinatorial data limits validation",
+      "description": "Existing visual fMRI datasets provide rich naturalistic stimuli but rarely include the systematic combinatorial manipulations needed to directly test how isolated parts compose, limiting validation of representational compositionality."
+    },
+    {
+      "id": "P51",
+      "name": "Passive viewing and automated parsing limit cognitive conclusions",
+      "description": "Participants engaged only in passive viewing, and symbolic expressions were derived through automated scene-graph parsing rather than participant-driven reasoning, limiting the cognitive conclusions that can be drawn."
+    },
+    {
+      "id": "P52",
+      "name": "Future work: scaling to whole-brain voxel-level data",
+      "description": "Despite robust decoding across different atlas granularities, scaling NEURONA to incorporate whole-brain voxel-level data is identified as a promising next step."
+    }
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph is coherent across its major clusters: the motivation for compositional fMRI decoding and dataset creation (C1), the critique of linear/end-to-end baselines motivating the neuro-symbolic approach (C2), the adaptation of LEFT to handle fMRI's lack of canonical entities (C3), the detailed grounding formulation mechanics (C4), the five-hypothesis experimental design (C5), the main comparative performance results (C6), the compositional generalization results (C7), the ablation study identifying guided grounding as key (C8), the grounding consistency analysis (C9), and the qualitative argument-dependent modulation findings (C10). Edge confidence is high throughout because the paper's introduction, method, and results sections each follow an explicit problem-motivation-solution-validation narrative that clearly links consecutive claims. The isolated-node set captures background literature, dataset construction details, and secondary qualitative/discussion points (neuroscientific interpretation, limitations, future work) that contextualize but are not tightly chained into the paper's central argument connecting compositional structural priors to improved and more generalizable neural decoding. No cycles or contested edge directions were identified in this construction."
+}

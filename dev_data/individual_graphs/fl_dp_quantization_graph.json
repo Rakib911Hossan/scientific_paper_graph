@@ -1,0 +1,227 @@
+{
+  "arxiv_id": "2604.23426v1",
+  "notes": "Claim/reasoning graph constructed in the same schema as the prior example graphs. Evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: FL's communication, privacy, and non-IID challenges, and the gap this paper targets.",
+      "nodes": [
+        {"id": "P1", "name": "FL trains models across devices without sharing raw data", "description": "Federated learning is a distributed method where multiple devices collaboratively train a model under a central server's coordination without sharing underlying data, addressing centralized-data privacy concerns."},
+        {"id": "P2", "name": "Device heterogeneity causes communication bottlenecks", "description": "Devices in an FL network differ in storage, processing power, battery life, and connectivity, leading to communication bottlenecks that reduce training efficiency, making it important to minimize communication rounds and transmitted package size."},
+        {"id": "P3", "name": "Gradient/model updates can still leak sensitive information", "description": "Despite not sharing underlying data, recent studies show sensitive information can be exposed through gradient analysis during training, e.g. Carlini et al. show credit card numbers can be revealed from RNNs trained on user language data."},
+        {"id": "P4", "name": "Non-IID data distribution biases training", "description": "Data size and distribution vary widely across devices due to local environment and usage patterns; this non-IID data generation process introduces bias, causing slow convergence or divergence."},
+        {"id": "P5", "name": "Gap: no prior work combines DP and adaptive quantization at large non-IID scale", "description": "To the authors' knowledge, no previous studies explored combining differential privacy and adaptive quantization on non-IID datasets at large scale (e.g., 1000 clients), despite both being key real-world FL challenges."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 2, "confidence": "majority"},
+        {"from": "P1", "to": "P3", "evidence": ["E2"], "votes": 2, "confidence": "majority"},
+        {"from": "P1", "to": "P4", "evidence": ["E3"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P5", "evidence": ["E4"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P5", "evidence": ["E4"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["E4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Positioning against prior communication-efficiency and joint privacy-quantization work.",
+      "nodes": [
+        {"id": "P6", "name": "Prior quantization methods (signSGD, TernGrad, QSGD, ATOMO) trade off accuracy for compression", "description": "Static/probabilistic quantization methods reduce gradients to low-precision representations to cut communication, but require careful level selection to balance accuracy and quantization error, with 32-bit as the common baseline capping compression at 1/32."},
+        {"id": "P7", "name": "Adaptive quantization methods (AdaQuantFL, FedDQ, FedAQ) have specific unaddressed gaps", "description": "AdaQuantFL dynamically adjusts quantization via stochastic uniform quantization; FedDQ uses descending quantization but assumes uniform client contributions and ignores data heterogeneity; FedAQ optimizes joint uplink/downlink quantization but ignores non-IID data and privacy."},
+        {"id": "P8", "name": "Prior joint privacy+quantization methods (JoPEQ, MSPDQ-FL, RQM, Nguyen et al.) each have a specific limitation", "description": "JoPEQ uses static rather than adaptive quantization; MSPDQ-FL's dynamic quantization targets only submodel parameters; RQM focuses on privacy-accuracy trade-offs without adaptive mechanisms; Nguyen et al.'s framework lacks adaptive quantization and scalability analysis."},
+        {"id": "P9", "name": "Proposed solution: descending adaptive quantization (uplink+downlink) with a novel non-IID-aware client importance mechanism, tested at scale", "description": "To overcome these limitations, the paper proposes a descending quantization strategy for both uplink and downlink using a novel client importance estimation mechanism for non-IID data, rigorously evaluated up to 1000 clients, addressing downlink optimization and heterogeneity gaps in existing approaches."}
+      ],
+      "edges": [
+        {"from": "P5", "to": "P6", "evidence": ["E5"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P6", "to": "P7", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P8", "evidence": ["E7"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P9", "evidence": ["E8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["E8"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Choice of Laplacian-based DP over Gaussian-based DP and its integration order with quantization.",
+      "nodes": [
+        {"id": "P10", "name": "DP randomizes outputs to hide individual-sample membership", "description": "Differential privacy is a randomized method reducing the relation between input and output so a change in one input feature doesn't much change the output distribution, aiming to hide whether a specific sample was used in training."},
+        {"id": "P11", "name": "Laplacian-based DP is relatively underexplored and offers tighter guarantees than Gaussian DP", "description": "The paper uses Laplacian-based DP, which is relatively underexplored in FL, chosen for its sharper privacy guarantees under l1-sensitivity, making it ideal for bounded updates in FL, versus Gaussian- or Binomial-based noise used elsewhere."},
+        {"id": "P12", "name": "Laplace noise is applied before adaptive quantization, in that order", "description": "The method first applies Laplace noise to secure model updates, then applies adaptive quantization that reduces bit-lengths via client importance estimation, ensuring noise is effectively incorporated into the quantized updates."},
+        {"id": "P13", "name": "This ordering balances privacy, accuracy, and communication cost in non-IID, large-scale FL", "description": "The consecutive noise-then-quantize usage is designed to maintain a balance between privacy, accuracy, and communication cost, particularly under non-IID and large-scale FL settings."}
+      ],
+      "edges": [
+        {"from": "P10", "to": "P11", "evidence": ["E9"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P11", "evidence": ["E10"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P11", "to": "P12", "evidence": ["E11"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P13", "evidence": ["E12"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "FedAvg framework, model architectures, and datasets underpinning the proposed methods.",
+      "nodes": [
+        {"id": "P14", "name": "Standard synchronous FedAvg loop with quantization/DP inserted at aggregation", "description": "A central server manages training via client selection, broadcasting, local update, aggregation (where quantization and DP are applied), and global update, using FedAvg to aggregate local models."},
+        {"id": "P15", "name": "Objective is to minimize a sample-weighted average of local losses", "description": "The FL objective minimizes the sample-weighted sum of local cross-entropy losses across clients, solved in a distributed manner with each client running SGD locally."},
+        {"id": "P16", "name": "MNIST (1000 users, 2-layer CNN) and CIFAR10 (VGG7) with Dirichlet/user-based non-IID partitioning", "description": "MNIST is partitioned naturally by its 1,000 users (power-law sample counts) with a 2-layer CNN (1.6M params); CIFAR10 uses a Dirichlet(alpha=0.5) partition among clients with a VGG7 model (300K params), simulating realistic non-IID heterogeneity."},
+        {"id": "P17", "name": "Medical imaging datasets (PAP-Smear, Pneumonia, BreakHisV1) added via EfficientNet-B0", "description": "Additional experiments use PAP-Smear, Chest X-ray Pneumonia, and BreakHisV1 with an ImageNet-pretrained EfficientNet-B0 model to test applicability to a real-world healthcare classification scenario."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P14", "evidence": ["E13"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P14", "to": "P15", "evidence": ["E14"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P16", "evidence": ["E15"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P17", "evidence": ["E16"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Stochastic uniform quantization mechanics used by both scheduling strategies.",
+      "nodes": [
+        {"id": "P18", "name": "Symmetric quantization with stochastic rounding maps floats to signed b-bit integers", "description": "The paper employs symmetric quantization (zero offset) with stochastic rounding, mapping a real value range to a signed b-bit integer range via a scale factor s, clipping out-of-range values to the nearest bound."},
+        {"id": "P19", "name": "Stochastic rounding probabilistically rounds proportional to distance from integer values", "description": "The stochastic rounding operation rounds a value down or up to its nearest integers with probability proportional to distance from those values, ensuring quantization error is uniformly distributed rather than deterministic."},
+        {"id": "P20", "name": "Per-tensor granularity is used for computational tractability", "description": "The paper uses per-tensor granularity, sharing the same quantization parameters across each tensor in a layer, rather than the more expensive per-element granularity."},
+        {"id": "P21", "name": "Unbiased rounding preserves expected values, avoiding systematic bias when combined with DP noise", "description": "Because stochastic uniform quantization rounds probabilistically so the expected quantized value equals the original (as proven by Alistarh et al.), and Laplace DP noise is zero-mean, combining the two introduces higher variance but no systematic bias into model updates."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P18", "evidence": ["E17"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P18", "to": "P19", "evidence": ["E18"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P20", "evidence": ["E19"], "votes": 1, "confidence": "single_run"},
+        {"from": "P19", "to": "P21", "evidence": ["E20"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P21", "evidence": ["E20"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C3"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "The adaptive bit-length scheduling design: cosine annealing plus entropy-based client importance.",
+      "nodes": [
+        {"id": "P22", "name": "Descending bit-length schedule motivated by training-stage-dependent quantization needs", "description": "High quantization precision early accelerates loss reduction while later training needs fewer bits, so a descending schedule (following Qu et al.) is more efficient for FL than a fixed level."},
+        {"id": "P23", "name": "Round-based cosine annealing globally schedules bit-length from bmax to bmin", "description": "A global bit-length scheduler uses cosine annealing over communication rounds to smoothly reduce precision from an initial bmax (e.g. 32 bits) to a final bmin (e.g. 2 bits), used directly for server-to-client (downlink) transmission."},
+        {"id": "P24", "name": "Client importance score combines dataset size ratio and Shannon-entropy homogeneity", "description": "A client importance score νi combines the client's dataset-size ratio to the largest client's dataset (|Di|/ntmax) and normalized Shannon entropy of its label distribution, weighted by λh, so larger and more class-balanced datasets score higher."},
+        {"id": "P25", "name": "Client-to-server (uplink) bit-length is the cosine schedule adjusted by client importance", "description": "The client-based (\"Dynamic\") scheduler combines the cosine annealing schedule with client importance νi for uplink transmissions, while downlink uses cosine annealing alone, so higher-importance clients retain higher precision."},
+        {"id": "P26", "name": "Rationale: higher entropy/larger datasets should compress less to preserve their contribution", "description": "The high entropy indicates a balanced, multi-class dataset that leads to increased accuracy and easier convergence, so clients with higher entropy get less compression, contributing more to the global model."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P22", "evidence": ["E21"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2"},
+        {"from": "P22", "to": "P23", "evidence": ["E22"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P24", "evidence": ["E23"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P25", "evidence": ["E24"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P26", "evidence": ["E25"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "DP mechanics: sensitivity computation, Lipschitz-based noise scaling, and the full algorithm.",
+      "nodes": [
+        {"id": "P27", "name": "Gradient clipping bounds each sample's influence on the update", "description": "During local training, gradient clipping bounds the l1-norm of gradients, restricting any single data point's effect on the update and enabling controlled noise addition for sensitivity analysis."},
+        {"id": "P28", "name": "Per-client L1-sensitivity depends on clipping bound, learning rate, epochs, and Lipschitz smoothness", "description": "Client sensitivity Ξ_i^t is computed via a piecewise formula depending on the local Lipschitz smoothness λ_i, clipping bound ξ, learning rate η, and number of local epochs E, differing by whether λ_i=0, or λ_i>0 with E below/above a threshold E0."},
+        {"id": "P29", "name": "Laplace noise scaled by sensitivity and privacy budget is added client-side before upload", "description": "Each client adds noise w_i^t ~ Laplace(0, Ξ_i^t·T_i/ϵ) to its trained weights before uploading, where sensitivity is scaled by T_i=PT/(NE), so noise magnitude is tied to both the DP budget and how much each client's updates could influence the global model."},
+        {"id": "P30", "name": "Full pipeline: Server broadcasts quantized model; clients locally train, clip, add DP noise, then quantize and upload", "description": "Algorithm 1 combines FedAvg with adaptive quantization and DP: the server quantizes/broadcasts the global model each round, clients dequantize, train locally with gradient clipping, add Laplace noise, compute importance/bit-length, quantize their update, and the server dequantizes and aggregates."}
+      ],
+      "edges": [
+        {"from": "P11", "to": "P27", "evidence": ["E26"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P27", "to": "P28", "evidence": ["E27"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P29", "evidence": ["E28"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P30", "evidence": ["E29"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P29", "to": "P30", "evidence": ["E29"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "DP-only experiments: gradient-clipping norm and privacy-budget trade-offs.",
+      "nodes": [
+        {"id": "P31", "name": "Lower gradient-clipping norm reduces accuracy by generating more noise", "description": "With 100 clients, reducing the gradient norm ξ diminishes accuracy: ξ=100 causes a 6.67% CIFAR10 and 5.22% MNIST accuracy drop versus unbounded (ξ=∞), because increasing ξ generates more noise per Eq.(12), obscuring true gradients."},
+        {"id": "P32", "name": "ξ=100 is chosen as the balance point for subsequent experiments", "description": "Because accuracy diminishes as ξ shrinks but privacy weakens as ξ grows, ξ=100 is selected to balance privacy and model stability in later experiments."},
+        {"id": "P33", "name": "Fewer clients yields higher accuracy at fixed sample count and clipping norm", "description": "At ξ=100, decreasing total client count increases test accuracy (e.g. MNIST 95.06% at 50 clients vs 88.17% at 1000), because fewer clients means each has a larger, more diverse local dataset, improving local model convergence."},
+        {"id": "P34", "name": "Smaller privacy budget (stronger privacy) reduces accuracy, more severely as client count grows", "description": "Across client counts and privacy budgets ϵ, lower ϵ (stronger privacy) reduces accuracy, and the accuracy gap widens as client count increases because per-client sample count ni shrinks, raising sensitivity-driven noise per Eq.(12)."},
+        {"id": "P35", "name": "At 1000 clients, very low privacy budgets cause convergence failure", "description": "With 1000 clients, convergence failures occur for ϵ≤10^3 on MNIST and ϵ≤10^5 on CIFAR10, motivating higher minimum privacy budgets (e.g. ϵ≥5×10^5) for CIFAR10 at that scale."}
+      ],
+      "edges": [
+        {"from": "P30", "to": "P31", "evidence": ["E30"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P31", "to": "P32", "evidence": ["E31"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["E32"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P34", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P34", "evidence": ["E34"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C7"},
+        {"from": "P34", "to": "P35", "evidence": ["E35"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Adaptive quantization experiments on MNIST/CIFAR10: choosing λh and comparing Cosine/Dynamic against static bit-lengths.",
+      "nodes": [
+        {"id": "P36", "name": "Increasing client count per round raises total communication cost", "description": "Across λh values, increasing the number of clients per round significantly raises total communicated gigabytes for both CIFAR10 and MNIST."},
+        {"id": "P37", "name": "At large client counts, dataset size matters more than homogeneity for both accuracy and communication", "description": "For large client counts (e.g. 1000), lower λh (favoring dataset size over homogeneity) slightly reduces communicated gigabytes; dataset size becomes more influential than homogeneity as per-client dataset size shrinks with more clients."},
+        {"id": "P38", "name": "λh has minimal effect on CIFAR10 accuracy but a larger effect on MNIST", "description": "λh changes accuracy by at most 1.12% on CIFAR10 (at 200 clients) but up to 9.75% on MNIST (at 1000 clients), so λh=0.75 (or 0.5) is chosen as the value balancing accuracy and communication cost across both datasets."},
+        {"id": "P39", "name": "8-bit static quantization is a practical accuracy/communication sweet spot; 4-bit destabilizes training", "description": "Across all client counts, 8-bit quantization offers a practical balance between accuracy and communication, while 4-bit quantization introduces severe quantization error and training instability, especially with non-IID data."},
+        {"id": "P40", "name": "Cosine reduces communication ~37% and Dynamic ~45-53% versus 32-bit, at comparable accuracy", "description": "The Cosine method reduces total communicated gigabytes by about 37.46% versus 32-bit; the Dynamic method achieves 49.54-52.64% reduction on MNIST and 43.45-45.06% on CIFAR10 across 50-1000 clients, while maintaining comparable accuracy."},
+        {"id": "P41", "name": "Dynamic scheduler's advantage is most pronounced at large client counts (e.g. 1000)", "description": "At 1000 clients, the Dynamic scheduler achieves better accuracy and communication cost than Cosine on MNIST specifically, demonstrating the client-importance strategy's effectiveness at scale, while for CIFAR10 Cosine slightly edges out Dynamic on accuracy at a marginally higher cost."}
+      ],
+      "edges": [
+        {"from": "P24", "to": "P36", "evidence": ["E36"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P36", "to": "P37", "evidence": ["E37"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P38", "evidence": ["E38"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P39", "evidence": ["E39"], "votes": 1, "confidence": "single_run"},
+        {"from": "P39", "to": "P40", "evidence": ["E40"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P40", "to": "P41", "evidence": ["E41"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Medical imaging results validating adaptive quantization generalizes to real-world healthcare classification.",
+      "nodes": [
+        {"id": "P42", "name": "Dynamic method cuts communication 31-39% on medical datasets with modest accuracy loss", "description": "On PAP-Smear, Dynamic cuts communication by 37% with F1 dropping only from 90.94% to 89.41%; on Pneumonia, Cosine cuts communication by 31% with near-baseline F1 (93.79% vs 93.99%); on BreakHisV1, Dynamic cuts communication ~39% with F1 dropping from 89.80% to 87.03%."},
+        {"id": "P43", "name": "16-bit static quantization sometimes beats Cosine/Dynamic on both accuracy and communication", "description": "In some cases (e.g. PAP-Smear), 16-bit static quantization achieves higher F1/BACC than Cosine and Dynamic while also communicating less data, suggesting a fixed moderate bit-length can sometimes offer a better trade-off."},
+        {"id": "P44", "name": "Adaptive schedulers can occasionally use higher bit-lengths than a fixed setting, adding overhead", "description": "Because Cosine/Dynamic dynamically adjust bit-lengths, they may occasionally use higher precision during certain rounds than a fixed 16-bit setting, increasing communication overhead and introducing more performance variability from quantization-noise fluctuation."},
+        {"id": "P45", "name": "Laplace noise and quantization error jointly complicate stability", "description": "Laplacian DP noise and quantization error interact and can amplify performance variability, so adaptive quantization's success depends on careful management of the noise-precision trade-off."}
+      ],
+      "edges": [
+        {"from": "P17", "to": "P42", "evidence": ["E42"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P40", "to": "P42", "evidence": ["E42"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C9"},
+        {"from": "P42", "to": "P43", "evidence": ["E43"], "votes": 2, "confidence": "majority"},
+        {"from": "P43", "to": "P44", "evidence": ["E44"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P45", "evidence": ["E45"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5"},
+        {"from": "P44", "to": "P45", "evidence": ["E45"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "Overall contribution synthesis, practical advantages, limitations, and future work.",
+      "nodes": [
+        {"id": "P46", "name": "Contribution: joint Laplacian-DP + adaptive quantization framework validated at scale and across domains", "description": "The paper contributes a global cosine-annealing bit-length scheduler, an entropy-based client-adaptive scheduler, and their combination with Laplacian-based DP, extensively evaluated across model architectures, client counts, privacy budgets, and non-IID vision and medical datasets."},
+        {"id": "P47", "name": "Adaptive methods are simple, fast (linear-time entropy), and broadly applicable without heavy tuning", "description": "The methods are easy to implement, the entropy calculation has linear time complexity, and they are adaptable to any problem without extensive modification, though the Dynamic scheduler's λh parameter may need fine-tuning."},
+        {"id": "P48", "name": "Limitation: methods ignore per-sample data quality, only dataset size/homogeneity", "description": "The methods do not account for the quality of samples on clients, a potential limitation that could be mitigated with client/data valuation methods estimating each client's contribution to model performance."},
+        {"id": "P49", "name": "Future work: better client-importance estimation and integration with SMC", "description": "Future work will refine adaptive quantization with more advanced client-importance estimation algorithms and investigate integrating secure multiparty computation to further strengthen privacy guarantees."}
+      ],
+      "edges": [
+        {"from": "P40", "to": "P46", "evidence": ["E46"], "votes": 2, "confidence": "majority", "note": "cross-component link from C9"},
+        {"from": "P42", "to": "P46", "evidence": ["E46"], "votes": 2, "confidence": "majority", "note": "cross-component link from C10"},
+        {"from": "P46", "to": "P47", "evidence": ["E47"], "votes": 2, "confidence": "majority"},
+        {"from": "P47", "to": "P48", "evidence": ["E48"], "votes": 1, "confidence": "single_run"},
+        {"from": "P45", "to": "P49", "evidence": ["E49"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C10"},
+        {"from": "P48", "to": "P49", "evidence": ["E49"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P50", "name": "Regularization effect of moderate quantization can occasionally boost accuracy", "description": "For 50 clients on MNIST, 16-bit static quantization achieves the highest accuracy (94.61%) among tested settings while cutting communication by 50% versus full precision, likely due to a regularization effect from information loss during quantization."},
+    {"id": "P51", "name": "8-bit quantization shows surprisingly strong accuracy retention at 100 clients", "description": "At 100 clients, 8-bit quantization maintains competitive accuracy (81.50% MNIST, 72.70% CIFAR10) versus 32-bit while cutting communication cost by a factor of four, showing surprisingly efficient performance at this scale."}
+  ]
+}

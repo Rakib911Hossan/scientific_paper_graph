@@ -1,0 +1,230 @@
+{
+ "arxiv_id": "2609.38998",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Solution-manifold structure of two-layer linear networks and its consequences for representational analysis",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Networks are non-identifiable",
+     "description": "Artificial and biological networks are typically non-identifiable: structurally distinct parametrisations implement the same input-output mapping, e.g. through neuron permutation and ReLU scale symmetries in overparametrised networks."
+    },
+    {
+     "id": "P2",
+     "name": "Linear networks have a solution manifold",
+     "description": "Under a convex differentiable loss and a non-bottlenecked network, all local minima of a deep linear network are global and equivalent to single-layer linear regression, and the global solutions form a high-dimensional manifold."
+    },
+    {
+     "id": "P3",
+     "name": "Complete parametrisation of global solutions",
+     "description": "The paper derives exact parametric equations (general linear solutions, GLS) for the full solution manifold of a two-layer linear network, without assuming data structure or a learning algorithm."
+    },
+    {
+     "id": "P4",
+     "name": "Four nested solution types",
+     "description": "The manifold is partitioned into GLS, least-squares-norm-of-function solutions (LSS), minimal representation norm solutions (MRNS) and minimal weight norm solutions (MWNS), each progressively constraining the weights (MWNS most restrictive)."
+    },
+    {
+     "id": "P5",
+     "name": "Function and representation dissociate",
+     "description": "Hidden-layer representations can vary continuously along the solution manifold while the network output is unchanged, e.g. a GLS can be chosen so representations form the shape of an elephant."
+    },
+    {
+     "id": "P6",
+     "name": "Task-agnostic RSMs for GLS and LSS",
+     "description": "GLS and LSS permit RSMs that depend on the specific choice of input weights (including irrelevant input directions), so they are task-agnostic, non-identifiable and non-comparable representations."
+    },
+    {
+     "id": "P7",
+     "name": "Unique task-specific RSMs",
+     "description": "The RSM of MRNS is uniquely RSM=ONO^T and that of MWNS is uniquely X^T V S V^T X, both determined by training data and independent of input-weight choice; these are task-specific representations."
+    },
+    {
+     "id": "P8",
+     "name": "Linear predictivity driven by solution type",
+     "description": "Linear predictivity (R2) between networks is governed predominantly by solution type rather than functional alignment, since task-agnostic higher-rank representations cannot be linearly predicted from lower-rank task-specific ones."
+    },
+    {
+     "id": "P9",
+     "name": "RSA reflects function only for unique RSMs",
+     "description": "RSA correlations fluctuate unpredictably when task-agnostic solutions are involved, and RSA reliably reflects functional similarity only when constraints enforce unique RSMs; MWNS and MRNS differ from each other even within the same function."
+    },
+    {
+     "id": "P10",
+     "name": "Representational drift need not mean functional change",
+     "description": "Because representations can change without changing function, an optimal linear decoder trained on an initial representation degrades rapidly along a random walk on the manifold, so drift may be reparametrisation within a functionally equivalent subspace."
+    },
+    {
+     "id": "P11",
+     "name": "Stability-plasticity dilemma may not apply at network level",
+     "description": "Since many synapse and representation configurations implement the same function regardless of solution type, the stability-plasticity dilemma need not hold at the network level and isolated synaptic or representational changes do not suffice to infer function."
+    },
+    {
+     "id": "P12",
+     "name": "Input noise does not force task-specificity",
+     "description": "Expected loss under i.i.d. input noise is exclusively minimised by LSS, which include MWNS as a subspace, so input-noise robustness does not constrain representations to be task-specific (Corollary 5.3)."
+    },
+    {
+     "id": "P13",
+     "name": "Generalisation does not force task-specificity",
+     "description": "The secondary (unseen-data) error is minimised by LSS plus a perturbation in unobserved null directions, so minimising secondary error permits task-agnostic solutions (Theorem 5.1)."
+    },
+    {
+     "id": "P14",
+     "name": "Parameter noise selects task-specific solutions",
+     "description": "Robustness to additive parameter noise selects solutions with task-specific representations, ensuring representational alignment (Theorem 5.4, Corollary 5.5)."
+    },
+    {
+     "id": "P15",
+     "name": "Nonlinear networks show analogous freedom",
+     "description": "In two-layer ReLU networks on MNIST, function-preserving transformations (permutation, scaling, nuisance, duplicate, input-null) expand minimal networks into non-minimal ones with task-agnostic RSMs; non-minimal ones degrade faster under parameter noise, input-null changes have no effect, and test error is not inflated at near-zero noise."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1-2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 2-3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3, Defs 3.2-3.6, Thm 3.3-3.7"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3, Fig 1, Fig 3C"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.1, Cor 3.9"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.1, Cor 3.11-3.12"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Fig 4A"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Fig 4A"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2, Fig 4B"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2, Fig 4B"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3, Fig 4C"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.2, Cor 5.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.1, Thm 5.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.2, Thm 5.4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P15",
+     "evidence": [
+      "Sec 6, Fig 5"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P15",
+     "evidence": [
+      "Sec 6.3"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P15",
+     "evidence": [
+      "Sec 6.3"
+     ]
+    },
+    {
+     "from": "P14",
+     "to": "P15",
+     "evidence": [
+      "Sec 6.3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P16",
+   "name": "Related-work gap",
+   "description": "Little analytical understanding exists of how a network's representation relates to its function, despite this being essential for any quantitative notion of functional similarity."
+  }
+ ],
+ "structural_reasoning": "The solution-manifold characterisation underpins the dissociation claims, implications for neural data analysis, noise/generalisation analyses and nonlinear validation. One framing claim is isolated."
+}

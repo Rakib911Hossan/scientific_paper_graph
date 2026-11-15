@@ -1,0 +1,205 @@
+{
+ "arxiv_id": "2610.17767",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "RPO: learning only the root routing token for adaptive reasoning",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Overthinking in LRMs",
+     "description": "Large reasoning models apply long explicit <think> reasoning uniformly regardless of query complexity, wasting compute and latency on trivial questions."
+    },
+    {
+     "id": "P2",
+     "name": "Prior policy-optimization hurdles",
+     "description": "Prior approaches to learning when to reason suffer from training inefficiency (long-trajectory GRPO has prohibitive VRAM and time cost), data curation difficulty, and an initialization gap from training from scratch."
+    },
+    {
+     "id": "P3",
+     "name": "Difficulty signal from mode contrast",
+     "description": "A model-specific difficulty proxy is obtained by contrasting mode-conditioned accuracy (e.g. Pass@k) of SHORT (<think>\\n\\n</think>) versus LONG reasoning mode on the same query."
+    },
+    {
+     "id": "P4",
+     "name": "Root token selects mode",
+     "description": "Under the template, the first newline token(s) after <think> select LONG (\\n) versus SHORT (\\n\\n), and p_short(x) at this root decision point gives a threshold-based router with calibration knob tau."
+    },
+    {
+     "id": "P5",
+     "name": "LONG has heavy-tailed length",
+     "description": "LONG-mode generation length is heavy-tailed, with a small fraction of queries triggering disproportionately long traces, so routing directly translates into cost control."
+    },
+    {
+     "id": "P6",
+     "name": "Threshold trades accuracy and routing",
+     "description": "Larger tau routes more queries to LONG, and intermediate thresholds preserve overall accuracy while reducing LONG usage (Table 1, Fig 3)."
+    },
+    {
+     "id": "P7",
+     "name": "SFT for mode selection",
+     "description": "Offline synthesis produces paired reasoning and non-reasoning responses via forced chat templates, and SFT on self-generated correct samples teaches mode-following at the template level."
+    },
+    {
+     "id": "P8",
+     "name": "RPO updates only root token",
+     "description": "RPO restricts gradient updates to the single initial branching token (T=1) with group-normalized per-mode advantages and KL regularization to the post-SFT reference, treating the rest of the rollout as environment output."
+    },
+    {
+     "id": "P9",
+     "name": "Memory efficiency",
+     "description": "Since backprop activation memory scales with the number of updated tokens, setting T=1 removes the linear dependence on CoT length, cutting peak VRAM for long-context GRPO (Table 2)."
+    },
+    {
+     "id": "P10",
+     "name": "Training compute savings",
+     "description": "With matched accounting on an 8B model, RPO reduces total training compute to about 0.02x that of AdaptThink (Table 5)."
+    },
+    {
+     "id": "P11",
+     "name": "RPO improves accuracy-routing tradeoff",
+     "description": "On larger and mid-scale backbones RPO reduces Think% with modest accuracy change, e.g. Qwen3-8B Avg Think% 57.3% to 44.8% with Pass@1 63.8% to 62.0% (RAR 0.90 to 0.72), and Exaone4-1.2B Think% 43.4% to 23.6% (RAR 0.85 to 0.49)."
+    },
+    {
+     "id": "P12",
+     "name": "SFT already enables routing",
+     "description": "SFT alone strongly reduces Think% and tokens, and RPO then refines the root decision to match query difficulty, with direction configuration-dependent."
+    },
+    {
+     "id": "P13",
+     "name": "Comparison with AdaptThink",
+     "description": "On R1-1.5B RPO routes 20.5% to LONG with average accuracy 51.3 (RAR 0.96); AdaptThink reaches Avg P@1 56.5 (RAR 0.74) at a far larger training budget, so the two are points on a budget-accuracy frontier."
+    },
+    {
+     "id": "P14",
+     "name": "Controllable operating points",
+     "description": "Intermediate RPO checkpoints give multiple feasible Think%/Pass@1 operating points, so a checkpoint can be chosen to satisfy a compute budget, but the frontier depends on the RL prompt set."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.1, Fig 3, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.1, Fig 4"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P8",
+     "evidence": [
+      "Sec 1, Sec 3.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.3, Fig 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3, Eq 1, Table 2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4, Table 5"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 4, Table 3, Table 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4, Table 3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P13",
+     "evidence": [
+      "Sec 4, Table 4, Table 5"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P14",
+     "evidence": [
+      "Sec 5, Fig 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Root confidence weakly calibrated",
+   "description": "The root SHORT confidence p_short is informative but sensitive to bucket composition and only weakly calibrated to query difficulty (Fig 6, ECE/MCE)."
+  },
+  {
+   "id": "P16",
+   "name": "Gains configuration-dependent",
+   "description": "On Qwen3-1.7B post-SFT routing already saturates achievable RAR, and on Qwen3-32B (LoRA) RPO traces a comparable but not dominating frontier, so RPO is a controllable routing layer rather than a replacement for SFT."
+  },
+  {
+   "id": "P17",
+   "name": "Limited to binary routing",
+   "description": "The method optimizes only the binary reasoning decision, not intra-mode behavior such as how long to think, and has not been evaluated on agentic tasks."
+  },
+  {
+   "id": "P18",
+   "name": "Generalizes to science and code",
+   "description": "RPO also improves the accuracy-routing tradeoff on LiveCodeBench and GPQA-Diamond across models (Table 6)."
+  }
+ ],
+ "structural_reasoning": "Overthinking and training-cost hurdles motivate a root-token router; its definition, SFT initialization and RPO objective lead to efficiency and accuracy-routing results. Calibration and limitations are isolated."
+}

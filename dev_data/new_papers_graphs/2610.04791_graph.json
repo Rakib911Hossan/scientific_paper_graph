@@ -1,0 +1,176 @@
+{
+ "arxiv_id": "2610.04791",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Repetition is not accumulating evidence: convergence theory, answer-shift prediction, and empirical validation",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Accumulating-evidence intuition",
+     "description": "A widely held but unexamined intuition treats repeated contextual assertions as accumulating evidence, so that sufficient repetition of a candidate answer should always alter a model's prediction."
+    },
+    {
+     "id": "P2",
+     "name": "Heterogeneous repetition effects",
+     "description": "Under a controlled single-round setting where only repetition varies, LLM predictions behave heterogeneously: some flip immediately, some change only after substantial repetition, some saturate early, and some stay stable under unbounded repetition."
+    },
+    {
+     "id": "P3",
+     "name": "Controlled repetition setup",
+     "description": "The analysis uses inputs of the form y||x||...||x||z, with a query prefix y, a loop template x repeated N times, and a suffix z, at a fixed suffix target position, isolating repetition from added evidence or multi-turn interaction."
+    },
+    {
+     "id": "P4",
+     "name": "RoPE logits are bounded",
+     "description": "With RoPE, attention logits are finite trigonometric polynomials in relative distance, hence uniformly bounded (Proposition 3.2)."
+    },
+    {
+     "id": "P5",
+     "name": "Representations converge as repetition grows",
+     "description": "For a decoder-only Transformer under the stated architecture assumptions, the final-layer target representation at every layer converges to a finite limit as N goes to infinity (Theorem 3.6), proved by layerwise induction."
+    },
+    {
+     "id": "P6",
+     "name": "Repetition is not accumulating evidence",
+     "description": "Because representations converge to stable query-dependent limits, repeated assertions do not act as accumulating evidence and may fail to alter a prediction even under unbounded repetition, while in other cases a flip is inevitable."
+    },
+    {
+     "id": "P7",
+     "name": "Answer-shift metric and limit estimator",
+     "description": "The answer-shift g(ea,eb) projects the final representation onto the answer-embedding difference direction; its infinite-repetition limit is estimated from a single forward pass at large N via Monte Carlo estimates of the loop attention terms."
+    },
+    {
+     "id": "P8",
+     "name": "Layers converge empirically at N=1000",
+     "description": "At N=1000 on OpenBookQA, MINTAKA and SimpleQA, a large fraction of layers (typically over 90% at tolerance 0.1) show negligible residual variation in attention and FFN answer-shift contributions across six LLMs."
+    },
+    {
+     "id": "P9",
+     "name": "KL divergence plateaus",
+     "description": "KL divergence between next-token distributions at different repetition lengths plateaus as repetition grows, showing answer-level distribution stabilization."
+    },
+    {
+     "id": "P10",
+     "name": "Estimator matches forward shifts",
+     "description": "The representation-level estimate of the limiting answer shift closely tracks the forward-computed output answer shift on OpenBookQA at N=1000 across models, with points concentrated on the diagonal."
+    },
+    {
+     "id": "P11",
+     "name": "Predicting answer preference changes",
+     "description": "The sign of the estimated shift predicts repetition-induced preference changes across Transfer, Correct and Mislead regimes at N=500/750/1000, with mean accuracy around 80-86% (mean F1 up to about 92% for Transfer)."
+    },
+    {
+     "id": "P12",
+     "name": "Consistent with sycophancy benchmarks",
+     "description": "The stability measure shows trends broadly consistent with prior evaluations on SYCON, Farm, BeHonest and SycoEval, apart from a few exceptions."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.1-3.5, Thm 3.6"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.2, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.3, Fig 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.3, Fig 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.3, Table 2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.4, Table 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Robustness depends on query and model",
+   "description": "Susceptibility to input-level manipulation is not uniform but depends systematically on both the query and the model; robustness assessments should distinguish intrinsically stable inputs from vulnerable ones."
+  },
+  {
+   "id": "P14",
+   "name": "Repetition works only along malleable directions",
+   "description": "Contextual repetition changes predictions only when it aligns with malleable inference directions; otherwise inference converges to a stable regime where more repetition is ineffective."
+  },
+  {
+   "id": "P15",
+   "name": "Six models across three families",
+   "description": "Experiments cover six LLMs (Falcon3-7B/3B-Base, Mistral-7B-v0.1, Apollo-1-4B, Qwen3-4B, Qwen2.5-1.5B) from three families spanning under 3B to over 6B parameters."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the evidence-accumulation intuition and controlled setup, through the convergence theorem, to the answer-shift estimator and its empirical validation."
+}

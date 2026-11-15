@@ -1,0 +1,238 @@
+{
+  "arxiv_id": "2603.13994v3",
+  "notes": "Claim/reasoning graph constructed in the same schema as the prior example graphs. Evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: object grouping as a shared challenge for brains and AI, and the gap in testing naturalistic alignment.",
+      "nodes": [
+        {"id": "P1", "name": "Grouping visual input into objects is fundamental for both brains and AI", "description": "Grouping visual input into coherent whole objects is a fundamental problem for the brain and AI systems, with the human visual system relying on cues from part-whole/Gestalt processes to prior semantic knowledge of object categories."},
+        {"id": "P2", "name": "Association fields model grouping via long-range feature-similarity-dependent connections", "description": "Visual integration has been proposed to be mediated by association fields, long-range lateral connections in retinotopic visual cortex whose effective connectivity depends on similarity between locally represented features."},
+        {"id": "P3", "name": "Prior modeling work focused on Gestalt cues with clear object boundaries, not natural scenes", "description": "Most behavioral and modeling experiments in this domain have focused on Gestalt cues and objects with clear boundaries, not natural contexts where objects are less spatially separated or have unclear contours."},
+        {"id": "P4", "name": "Self-attention in vision transformers resembles association fields and yields emergent grouping", "description": "Self-supervised training of transformer models produces object grouping properties, with self-attention forming dynamic contextual connections analogous to association fields; contour integration also emerges and improves with training data/model scale."},
+        {"id": "P5", "name": "Contour integration is a low-level Gestalt cue; naturalistic generalization is untested", "description": "Contour integration is a hallmark of human object perception but remains a low-level Gestalt cue, and it remains untested whether these findings extend to naturalistic settings."},
+        {"id": "P6", "name": "This paper tests whether vision foundation models' object grouping aligns with human perception in naturalistic scenes", "description": "The paper addresses this gap by testing whether the object grouping properties of vision foundation models align with human object perception, using a naturalistic behavioral benchmark and model representation readouts."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["E2"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["E3"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P6", "evidence": ["E4"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P6", "evidence": ["E4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Positioning against related work on self-supervised transformers and object/part discovery.",
+      "nodes": [
+        {"id": "P7", "name": "Self-distillation objectives (DINO family) yield object-centric attention without labels", "description": "Vision transformers trained with self-distillation losses (DINO, DINOv2, DINOv3) develop attention maps containing explicit semantic segmentation information for foreground objects and parts, without label supervision, unlike classification-trained models."},
+        {"id": "P8", "name": "These models also excel at predicting visual-cortex brain activity", "description": "Self-distillation-trained models have also been shown to achieve state-of-the-art performance predicting brain activity in visual areas responding to complex scenes, further supporting their plausibility as models of human-like visual processing."},
+        {"id": "P9", "name": "MAE learns object-centric features via masked reconstruction", "description": "In masked autoencoding, heavy occlusion forces the model to reconstruct the full image from few visible patches, and minimizing this loss enables learning object-centric features useful for downstream tasks."},
+        {"id": "P10", "name": "Unsupervised object/part discovery methods confirm patch-affinity reflects object identity", "description": "Methods like LOST and TokenCut use similarity graphs for unsupervised object discovery (successful with one salient object), and other work uses feature similarity for part co-segmentation, corroborating that self-supervised transformers represent object-centric information at the patch level."},
+        {"id": "P11", "name": "Visual-anagram probes show global, configural shape sensitivity emerging across layers", "description": "Work using visual anagrams shows self-supervised transformers exhibit strong sensitivity to global part configuration via long-range interactions, transitioning from local to global coding across layers, suggesting integration of spatially distributed part information rather than reliance on local texture alone."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["E5"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P7", "to": "P8", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P9", "evidence": ["E7"], "votes": 1, "confidence": "single_run"},
+        {"from": "P7", "to": "P10", "evidence": ["E8"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P11", "evidence": ["E9"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "The two-dot behavioral paradigm design, scaled up from prior small psychophysics studies.",
+      "nodes": [
+        {"id": "P12", "name": "Two-dot same/different object judgment paradigm directly probes grouping", "description": "A two-dot paradigm places two dots on an image and has participants indicate by button press whether they lie on the same object or two different objects, with one dot fixed at image center and the other peripheral."},
+        {"id": "P13", "name": "Reaction time indexes grouping difficulty and tracks known Gestalt effects", "description": "Reaction time is the primary measure and has been shown to track known perceptual grouping effects such as the same-object advantage and Gestalt cues, supporting its use as a measure of object segmentation difficulty."},
+        {"id": "P14", "name": "Prior work using this paradigm was small-scale or used simple stimuli", "description": "Previous two-dot paradigm studies were limited in scale or focused on simpler stimuli, e.g. one prior study used only 24 hand-selected images of two vehicle or animal instances."},
+        {"id": "P15", "name": "This study scales the paradigm to over 1000 trials on naturalistic COCO images", "description": "The present work significantly scales up this effort, using naturalistic scenes and collecting over 1000 trials, an order of magnitude beyond prior small-stimulus-set studies."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P12", "evidence": ["E10"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P12", "to": "P13", "evidence": ["E11"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P15", "evidence": ["E12"], "votes": 2, "confidence": "majority"},
+        {"from": "P13", "to": "P15", "evidence": ["E12"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "Stimulus construction and experimental procedure, ensuring dots fall on well-defined, distance-matched object locations.",
+      "nodes": [
+        {"id": "P16", "name": "Images selected from COCO2017 with center dot always on a well-bounded object", "description": "Images were selected from COCO2017 validation using object-level annotations, first requiring an object overlapping the image center (where the center dot was placed) to ensure a well-defined object boundary."},
+        {"id": "P17", "name": "Peripheral markers algorithmically placed with distance matched across same/different conditions", "description": "Four peripheral markers (same/different x close/far) were placed algorithmically with distances matched between same and different conditions to prevent judgments based on distance alone, retaining only images with valid locations for all four conditions."},
+        {"id": "P18", "name": "Manual inspection excluded ambiguous or annotation-inaccurate placements, yielding 255 experimental images / 1020 trials", "description": "After manual inspection excluding images with dots outside object boundaries or ambiguous intended objects, 288 images remained (32 practice, 256 experimental); one further image was excluded for ambiguous ground truth, leaving 255 experimental images and 1020 trials (255×4 conditions)."},
+        {"id": "P19", "name": "Fixation was gaze-tracked and enforced throughout each trial", "description": "Participants maintained gaze on the center dot throughout the trial (recorded via EyeLink 1000 eye-tracking at 1000 Hz), with trials terminated on excessive gaze deviation; 7% of trials were excluded due to fixation breaks."},
+        {"id": "P20", "name": "72 participants, counterbalanced condition assignment, average 90% accuracy", "description": "72 undergraduates (mean age 20.4) participated, with image-to-condition assignment counterbalanced across groups of four participants, and average subject accuracy on the task was 90%."}
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["E13"], "votes": 2, "confidence": "majority", "note": "cross-component link from C3"},
+        {"from": "P16", "to": "P17", "evidence": ["E14"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P18", "evidence": ["E15"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["E16"], "votes": 1, "confidence": "single_run"},
+        {"from": "P18", "to": "P20", "evidence": ["E17"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Core behavioral findings: same-object advantage and its interaction with dot distance.",
+      "nodes": [
+        {"id": "P21", "name": "Subjects respond faster when dots are on the same object (same-object advantage)", "description": "Subjects were faster to respond when the two dots were on the same object than when the peripheral dot was on a different object, an effect known as the same-object advantage, indicating the first dot facilitates selection of the whole object."},
+        {"id": "P22", "name": "Distance effect is specific to the same-object condition", "description": "The same-object advantage interacted with dot distance: the fastest RTs occurred in the close-separation same-object condition, whereas dot separation had little effect on RTs when dots were on different objects, consistent with prior work."},
+        {"id": "P23", "name": "Within-condition RT variability reflects finer-grained grouping difficulty factors", "description": "Task difficulty and RTs increase with within-object part boundaries, differing textures between dot locations, narrower object parts, proximity to object boundaries, or presence of multiple same-category objects, capturing variable real-world grouping conditions."}
+      ],
+      "edges": [
+        {"from": "P20", "to": "P21", "evidence": ["E18"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C4"},
+        {"from": "P21", "to": "P22", "evidence": ["E19"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P23", "evidence": ["E20"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "Modeling setup: diverse vision models and the MLP readout used to predict human same/different judgments.",
+      "nodes": [
+        {"id": "P24", "name": "Diverse model set spans Transformer/CNN architectures and self-supervised/supervised/distilled objectives", "description": "The study evaluates ViT-Base models trained with self-distillation (DINO, DINOv2, DINOv3), masked autoencoding (MAE), and supervised ImageNet training (with/without IN-21K), alongside ConvNext-Base models trained supervised or distilled from a DINOv3 transformer."},
+        {"id": "P25", "name": "Patch features extracted from final layer/last convolutional layer, matched spatial resolution", "description": "Patch features are extracted from the last Transformer layer or last convolutional layer, with convolutional input sizes adjusted so feature-map dimensions match a ViT-Base patch-16 model."},
+        {"id": "P26", "name": "Two-layer MLP readout predicts same/different from concatenated center+peripheral patch features", "description": "A two-layer MLP readout is trained to predict same/different responses from the concatenation of central and peripheral patch features, trained on ~30,000 auto-generated trials from COCO2017 training images and evaluated on the 1,020 held-out behavioral trials."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P24", "evidence": ["E21"], "votes": 2, "confidence": "majority", "note": "cross-component link from C1"},
+        {"from": "P24", "to": "P25", "evidence": ["E22"], "votes": 2, "confidence": "majority"},
+        {"from": "P25", "to": "P26", "evidence": ["E23"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P26", "evidence": ["E23"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C4"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Grouping-accuracy results: DINO-objective transformers dominate; objective matters more than architecture.",
+      "nodes": [
+        {"id": "P27", "name": "DINOv3 ViT B achieves the highest grouping accuracy (91.9%)", "description": "Self-supervised Transformer models trained with the DINO objective achieve the strongest grouping-task performance, with DINOv3 ViT B reaching 91.9% accuracy."},
+        {"id": "P28", "name": "Supervised transformers of identical architecture perform far worse", "description": "Supervised Transformer models (IN21k/IN1K ViT B: 72.2%/70.6%) perform considerably lower than DINO models despite sharing the same architecture, suggesting training objective rather than architecture alone drives object-centric representations."},
+        {"id": "P29", "name": "MAE ViT B falls between DINO and supervised models (80.7%)", "description": "MAE ViT B's 80.7% grouping accuracy falls between self-supervised DINO models and supervised models, consistent with learning some object-centric structure via reconstruction but not to the same degree as self-distillation."},
+        {"id": "P30", "name": "DINOv3-distilled ConvNext substantially outperforms supervised ConvNext counterparts", "description": "Among convolutional models, DINOv3 ConvNext B (86.7%) substantially outperforms its supervised counterparts (IN21k/IN1K ConvNext B: 67.4%/60.0%), further highlighting the quality of DINOv3's dense features regardless of architecture."}
+      ],
+      "edges": [
+        {"from": "P26", "to": "P27", "evidence": ["E24"], "votes": 3, "confidence": "unanimous", "note": "cross-component link from C6"},
+        {"from": "P27", "to": "P28", "evidence": ["E25"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P29", "evidence": ["E26"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P30", "evidence": ["E27"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Behavior-prediction (reaction time) results using noise-ceiling-normalized correlation, confirming the grouping-accuracy pattern.",
+      "nodes": [
+        {"id": "P31", "name": "Noise ceiling computed via split-half subject correlation for fair normalization", "description": "A human noise ceiling is estimated independently of any model by splitting subjects into two halves 20 times, computing the Spearman correlation of mean RTs between halves each time, and averaging; model-human correlations are then normalized by this ceiling."},
+        {"id": "P32", "name": "DINOv3 ViT B again achieves the highest normalized behavioral alignment", "description": "The same DINO-objective advantage observed in the grouping task holds for RT prediction: self-supervised DINO-trained transformers achieve the strongest behavioral alignment, with DINOv3 ViT B reaching the highest normalized Spearman correlation among all models."},
+        {"id": "P33", "name": "Supervised models again show weaker alignment; MAE intermediate; ConvNext weakest except DINOv3-distilled", "description": "Supervised models show considerably weaker alignment despite identical architecture, MAE ViT B falls intermediate, and convolutional models are weakest overall except for the DINOv3 ConvNext B exception, mirroring the grouping-accuracy ordering."},
+        {"id": "P34", "name": "DINOv3 ViT B's predicted RTs reproduce the same-object advantage and same-object distance effect", "description": "The mean RTs predicted by DINOv3 ViT B, broken down by condition, reproduce the same-object advantage and the distance effect specific to the same-object condition observed in human behavior, confirming the model captures the qualitative structure of grouping behavior."}
+      ],
+      "edges": [
+        {"from": "P26", "to": "P31", "evidence": ["E28"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6"},
+        {"from": "P31", "to": "P32", "evidence": ["E29"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P32", "evidence": ["E29"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P32", "to": "P33", "evidence": ["E30"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P34", "evidence": ["E31"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P34", "evidence": ["E31"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5"},
+        {"from": "P22", "to": "P34", "evidence": ["E31"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C5"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "description": "Object-centric affinity/ROC metric: definition, layer/head analysis, and its role in explaining alignment.",
+      "nodes": [
+        {"id": "P35", "name": "Affinity maps and ROC analysis quantify how well patch similarity tracks true object boundaries", "description": "Affinity maps are computed via cosine similarity between a patch's feature and all other patches; ROC analysis across trials computes TPR (within-object patches above threshold) and FPR (outside-object patches above threshold) across a range of similarity thresholds."},
+        {"id": "P36", "name": "TPR rises sharply before FPR for DINOv3, indicating strong object-centric signal", "description": "In a sample trial, TPR increases substantially as the threshold decreases while FPR remains low, and only once TPR is high does FPR begin to rise, reflecting a strong object-centric signal in DINOv3's affinity map."},
+        {"id": "P37", "name": "Object-centric structure strengthens in deeper DINOv3 layers", "description": "ROC curves across all 12 DINOv3 ViT B layers show deeper layers have progressively stronger object-centric structure (higher AUC)."},
+        {"id": "P38", "name": "Object-centricity is broadly distributed across attention heads in the last layer", "description": "ROC curves across the 12 attention heads of DINOv3's last layer show broadly similar object-centricity across heads, each contributing similarly to patch-level object representation."},
+        {"id": "P39", "name": "AUC-based model comparison replicates the DINO-objective ordering seen in behavior", "description": "Comparing last-layer AUC across all evaluated models, self-supervised DINO-trained models achieve the highest object-centricity, DINOv3 ViT B leading, followed by DINOv2 ViT B, with supervised models progressively weaker and MAE intermediate, mirroring the grouping-accuracy/behavioral-alignment ordering; DINOv3 ConvNext B again substantially outperforms supervised ConvNext counterparts."},
+        {"id": "P40", "name": "Object-centric AUC strongly predicts behavioral alignment across models (r=0.950)", "description": "Across all 9 models, object-centricity AUC correlates strongly with noise-normalized behavioral alignment (Spearman r=0.950, p=0.0001), a relationship holding across both Transformer and convolutional architectures, suggesting object-centricity is a general principle linking representations to human perceptual behavior."}
+      ],
+      "edges": [
+        {"from": "P34", "to": "P35", "evidence": ["E32"], "votes": 2, "confidence": "majority", "note": "cross-component link from C8"},
+        {"from": "P35", "to": "P36", "evidence": ["E33"], "votes": 2, "confidence": "majority"},
+        {"from": "P36", "to": "P37", "evidence": ["E34"], "votes": 2, "confidence": "majority"},
+        {"from": "P36", "to": "P38", "evidence": ["E35"], "votes": 1, "confidence": "single_run"},
+        {"from": "P37", "to": "P39", "evidence": ["E36"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P39", "to": "P40", "evidence": ["E37"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P40", "evidence": ["E37"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C8"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C10",
+      "description": "Gram matrix alignment intervention: distilling pairwise similarity structure into supervised models improves all three metrics.",
+      "nodes": [
+        {"id": "P41", "name": "The Gram matrix captures pairwise patch similarity structure, revealing object-block patterns", "description": "The Gram matrix is the full (h×w)×(h×w) pairwise cosine-similarity matrix across patch tokens; in models with strong object-centric representations, same-object patches show higher mutual similarity, producing block-like structure reflecting object boundaries."},
+        {"id": "P42", "name": "Four supervised models are fine-tuned to distill DINOv3's Gram matrix structure while retaining classification training", "description": "IN21k ViT B, IN1K ViT B, IN21k ConvNext B, and IN1K ConvNext B are fine-tuned on ImageNet classification while simultaneously distilling the Gram matrix structure from DINOv3 ViT B."},
+        {"id": "P43", "name": "Gram alignment improves grouping accuracy by 8-18 percentage points across all four models", "description": "Gram alignment consistently improves grouping accuracy across all four fine-tuned models, with gains ranging from approximately 8 to 18 percentage points."},
+        {"id": "P44", "name": "Gram alignment raises object-centric AUC close to self-supervised DINO levels", "description": "Object-centric AUC improves substantially and consistently after Gram alignment for all four models, approaching the AUC values of self-supervised DINO models."},
+        {"id": "P45", "name": "Gram alignment improves behavioral alignment, with larger gains for Transformers than ConvNext", "description": "Behavioral alignment with human RTs improves across all four Gram-aligned models, though the two Transformer models show larger gains than the ConvNext models across all three metrics."},
+        {"id": "P46", "name": "Transformer architecture is more responsive to Gram alignment, plausibly due to self-attention already encoding pairwise relations", "description": "The Transformer architecture's greater responsiveness to Gram matrix alignment suggests the self-attention mechanism provides a particularly natural substrate for encoding pairwise patch relationships, unlike convolutional architectures."},
+        {"id": "P47", "name": "Gram alignment gains hold even without large-scale pretraining", "description": "The gains from Gram alignment are substantial even for models without large-scale pretraining, suggesting Gram alignment can partially compensate for the absence of large dataset training, particularly in Transformer models."},
+        {"id": "P48", "name": "Finding converges with DINOv3's own use of Gram anchoring to improve dense feature quality", "description": "The improvement from matching Gram matrix structure converges with the independent prior finding that Gram anchoring improves DINOv3's own dense feature quality, pointing to feature correlation structure across patches as a key mechanism underlying human-like object representations."}
+      ],
+      "edges": [
+        {"from": "P40", "to": "P41", "evidence": ["E38"], "votes": 2, "confidence": "majority", "note": "cross-component link from C9"},
+        {"from": "P41", "to": "P42", "evidence": ["E39"], "votes": 2, "confidence": "majority"},
+        {"from": "P42", "to": "P43", "evidence": ["E40"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P42", "to": "P44", "evidence": ["E41"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P42", "to": "P45", "evidence": ["E42"], "votes": 2, "confidence": "majority"},
+        {"from": "P45", "to": "P46", "evidence": ["E43"], "votes": 2, "confidence": "majority"},
+        {"from": "P43", "to": "P47", "evidence": ["E44"], "votes": 1, "confidence": "single_run"},
+        {"from": "P46", "to": "P47", "evidence": ["E44"], "votes": 1, "confidence": "single_run"},
+        {"from": "P43", "to": "P48", "evidence": ["E45"], "votes": 2, "confidence": "majority"},
+        {"from": "P44", "to": "P48", "evidence": ["E45"], "votes": 2, "confidence": "majority"},
+        {"from": "P45", "to": "P48", "evidence": ["E45"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C11",
+      "description": "Conclusion synthesis: theoretical implications, model-design guidance, and the remaining gap to human performance.",
+      "nodes": [
+        {"id": "P49", "name": "Self-supervised transformers implicitly instantiate classical feature-similarity binding principles", "description": "Classical perceptual-grouping theories emphasize feature similarity in binding image regions into objects (Gestalt principles, association fields, lateral connectivity); the results show self-supervised transformers implement a similar computational principle where same-object patches develop highly similar representations."},
+        {"id": "P50", "name": "Emergent alignment supports self-supervised objectives as better approximations of perceptual organization than supervised classification", "description": "The emergent alignment between self-supervised training objectives and human object perception supports the view that these objectives better approximate the organizational principles of perception than supervised classification."},
+        {"id": "P51", "name": "A gap remains between best models and the human noise ceiling", "description": "Despite strong alignment, a gap nonetheless remains between the best-performing model and the human noise ceiling, leaving room for future models to close this distance."},
+        {"id": "P52", "name": "Training objective is a major factor beyond architecture for object-centric representations", "description": "The consistent advantage of DINO-trained models over supervised counterparts with identical architectures demonstrates that training objective is a major factor beyond architecture alone, though DINOv3 ConvNext B's strong performance shows convolutional architectures can also instantiate such representations."},
+        {"id": "P53", "name": "Perfect object-centricity is not the goal; behaviorally aligned models likely balance object organization and fine-grained feature sensitivity", "description": "Representations entirely organized around object boundaries would resemble semantic segmentation maps, losing fine-grained feature structure useful for other visual tasks; the most behaviorally aligned models may strike an optimal balance between object-level organization and feature sensitivity."},
+        {"id": "P54", "name": "Path to more perceptually aligned models lies in shaping representational similarity structure, not scaling classification objectives", "description": "The Gram alignment finding suggests the path toward more perceptually aligned vision models lies not in scaling classification objectives but in explicitly shaping the similarity structure of learned representations to reflect object-level organization of natural scenes."}
+      ],
+      "edges": [
+        {"from": "P48", "to": "P49", "evidence": ["E46"], "votes": 2, "confidence": "majority", "note": "cross-component link from C10"},
+        {"from": "P34", "to": "P49", "evidence": ["E46"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C8"},
+        {"from": "P49", "to": "P50", "evidence": ["E47"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P51", "evidence": ["E48"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C8"},
+        {"from": "P28", "to": "P52", "evidence": ["E49"], "votes": 2, "confidence": "majority", "note": "cross-component link from C7"},
+        {"from": "P30", "to": "P52", "evidence": ["E49"], "votes": 1, "confidence": "single_run", "note": "cross-component link from C7"},
+        {"from": "P51", "to": "P53", "evidence": ["E50"], "votes": 1, "confidence": "single_run"},
+        {"from": "P46", "to": "P54", "evidence": ["E51"], "votes": 2, "confidence": "majority", "note": "cross-component link from C10"},
+        {"from": "P50", "to": "P54", "evidence": ["E51"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P55", "name": "RT patterns hold whether or not incorrect trials are included", "description": "Analyses were reported only for correct trials, but the same behavioral patterns were largely observed when both correct and incorrect trials were included."},
+    {"id": "P56", "name": "A CLS-token distillation baseline is used to isolate Gram structure as the active ingredient", "description": "A separate CLS token distillation baseline, isolating Gram structure specifically as the active ingredient behind the observed improvements, is reported in the supplementary results section."}
+  ]
+}

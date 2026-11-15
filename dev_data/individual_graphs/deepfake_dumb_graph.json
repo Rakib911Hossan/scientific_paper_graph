@@ -1,0 +1,161 @@
+{
+  "arxiv_id": "unspecified",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/equations/tables rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: adversarial training's real-world value for deepfake detection is underexplored",
+      "nodes": [
+        {"id": "P1", "name": "Adversarial examples transfer across models, enabling black-box attacks", "description": "Adversarial examples are inputs perturbed by small, carefully crafted noise, and their transferability across models enables black-box attacks, making defenses challenging in practice."},
+        {"id": "P2", "name": "Adversarial training is widely adopted but mostly studied under white-box assumptions", "description": "While adversarial training is widely adopted to improve robustness, it is studied under white-box assumptions that ignore realistic conditions where attackers operate with different architectures or datasets."},
+        {"id": "P3", "name": "This leaves a gap in understanding AT's practical, real-world value", "description": "Because AT is predominantly evaluated under unrealistic white-box, matched-distribution assumptions, this gap limits understanding of AT's practical value in deployment conditions where attacker and defender differ."},
+        {"id": "P4", "name": "Deepfake detection is especially vulnerable, relying on subtle spatial/frequency artifacts that perturbations disrupt", "description": "Deepfake detection is particularly vulnerable to adversarial perturbation because it relies on subtle spatial and frequency artifacts, which adversarial perturbations can easily disrupt."},
+        {"id": "P5", "name": "This combination motivates systematically evaluating AT for deepfake detectors under realistic mismatch", "description": "The general gap in understanding AT's real-world value, combined with deepfake detection's specific reliance on fragile spatial/frequency artifacts, motivates a systematic evaluation of adversarial training for deepfake detectors under realistic attacker-defender mismatch scenarios."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P5", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Positioning: extending DUMB/DUMBer to an unexplored domain",
+      "nodes": [
+        {"id": "P6", "name": "DUMB formalized attacker-defender mismatch scenarios along dataset, model, and balance axes", "description": "The DUMB framework formalized attacker-defender mismatch scenarios along dataset source, model architecture, and class balance axes."},
+        {"id": "P7", "name": "DUMBer extended DUMB to adversarially trained models, revealing robustness gaps under transfer attacks", "description": "DUMBer extended the DUMB framework to adversarially trained models, revealing significant gaps in robustness under transfer-based attacks."},
+        {"id": "P8", "name": "DUMB/DUMBer have not yet been applied to deepfake detection", "description": "The DUMB and DUMBer frameworks offer systematic evaluation protocols for transferability but have not yet been applied to deepfake detection."},
+        {"id": "P9", "name": "Limited research has assessed AT for deepfake detectors under transfer attacks and dataset shift", "description": "Beyond the DUMB/DUMBer gap specifically, limited research more broadly has assessed adversarial training for deepfake detectors under transfer-based attacks and dataset shifts."},
+        {"id": "P10", "name": "This motivates extending DUMB/DUMBer methodology specifically to deepfake detection", "description": "Because DUMB/DUMBer's systematic mismatch-evaluation methodology exists but is unapplied to deepfakes, and because deepfake-specific AT robustness under transfer/shift is otherwise underexplored, this work extends the DUMB/DUMBer methodology to the deepfake detection domain."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["S1", "S2.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P8", "evidence": ["S1", "S2.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P10", "evidence": ["S1", "S2.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S2.3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Method: adapting the DUMB taxonomy into four mismatch cases and an evaluation protocol",
+      "nodes": [
+        {"id": "P11", "name": "The full DUMB taxonomy varies dataset, model, and class balance jointly", "description": "The DUMB taxonomy formalizes attacker-defender mismatch scenarios along three axes: Dataset soUrce, Model architecture, and class Balance."},
+        {"id": "P12", "name": "This work fixes class balance to focus on the most interpretable dataset/model mismatch subset", "description": "The paper adopts a balanced class configuration throughout, simplifying the DUMB notation to the most practically relevant and interpretable four cases varying only dataset and model architecture: C1 (white-box), C3 (cross-model), C5 (cross-dataset), C7 (cross-dataset & cross-model)."},
+        {"id": "P13", "name": "Transfer-based attacks are chosen as the focus since they best reflect realistic no-access threat scenarios", "description": "Transfer-based attacks require no access to target parameters and only a single application, closely reflecting realistic threat scenarios, unlike query-heavy decision-based or score-based black-box attacks; this is the focus of the study's attack setting."},
+        {"id": "P14", "name": "ASR and AMR are defined to quantify attack success and the robustness gain from adversarial training", "description": "Attack Success Rate (ASR) measures the fraction of attacked samples misclassified after attack, and Attack Mitigation Rate (AMR, Eq. 1) measures the relative reduction in ASR after adversarial training, together quantifying both raw attack effectiveness and AT's protective benefit."},
+        {"id": "P15", "name": "Together these choices define a 1920-evaluation protocol spanning models, attacks, datasets, and AT strategies", "description": "Combining the four mismatch cases, transfer-based attack focus, and the ASR/AMR metrics yields the full evaluation protocol: 5 detectors × 3 attacks × 2 datasets × 12 training strategies × multiple surrogate/test-set combinations, totaling 1920 evaluations (Section 3.5)."}
+      ],
+      "edges": [
+        {"from": "P11", "to": "P12", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P12", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P15", "evidence": ["S3.5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P15", "evidence": ["S2.2", "S3.5"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P15", "evidence": ["S3.5", "Eq1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Motivating diverse adversarial training strategies from AT's known limitations",
+      "nodes": [
+        {"id": "P16", "name": "AT's main challenge is balancing robustness against clean accuracy", "description": "The main challenge of adversarial training lies in enhancing robustness to adversarial examples without significantly compromising accuracy on clean data, a trade-off highlighted in prior work and addressed by regularization approaches like TRADES."},
+        {"id": "P17", "name": "Standard AT relies on a single attack and is evaluated mainly in white-box settings", "description": "Standard adversarial training typically relies on a single attack such as FGSM, PGD, or a variant, with evaluations usually restricted to white-box settings."},
+        {"id": "P18", "name": "Single-attack AT is susceptible to catastrophic overfitting, reducing resilience to unseen attacks", "description": "Relying on a single attack during AT provides robustness against that specific attack but is susceptible to catastrophic overfitting, which reduces the resilience of retrained models to unseen attacks."},
+        {"id": "P19", "name": "Prior work proposed adaptive, curriculum, and ensemble strategies to counter single-attack overfitting", "description": "To address single-attack overfitting, prior methods vary the perturbation budget adaptively or via curriculum, or use ensemble strategies combining multiple attacks such as PGD and FGSM in training."},
+        {"id": "P20", "name": "This motivates testing eleven AT strategies varying attack and surrogate diversity under the DUMB mismatch cases", "description": "Building on the known limitation of single-attack AT and prior diversity-based mitigations, this paper defines and tests eleven adversarial training strategies (single, dual, triple/ensemble, and surrogate-diversified) to assess whether increased diversity improves robustness specifically under the DUMB mismatch scenarios."}
+      ],
+      "edges": [
+        {"from": "P17", "to": "P18", "evidence": ["S2.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["S2.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P20", "evidence": ["S2.3", "S3.4"], "votes": 2, "confidence": "majority"},
+        {"from": "P19", "to": "P20", "evidence": ["S3.4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Results: transfer-based attacks remain a credible threat even under severe mismatch",
+      "nodes": [
+        {"id": "P21", "name": "PGD achieves the highest ASR across all DUMB cases, including strong cross-dataset transfer", "description": "PGD consistently achieved the highest ASR in all settings, with near-perfect success in white-box (C1: 99.6%) and substantial transferability in cross-model (C3: 89.8%) and cross-dataset (C5: 65.1%; C7: 66.7%) cases (Table 1)."},
+        {"id": "P22", "name": "FGSM and FPBA also show significant transferability despite lower overall potency than PGD", "description": "FGSM, while less effective than PGD, still showed significant transferability especially in white-box and cross-model settings, and FPBA, though especially effective against frequency-based detectors, had lower overall transferability than PGD (Table 1)."},
+        {"id": "P23", "name": "ASR remains non-negligible (~50%) even under severe cross-dataset and cross-model mismatch", "description": "The ASR remains non-negligible, around 50%, in cross-dataset scenarios (C5, C7), indicating attackers do not require access to the defender's data distribution to significantly degrade detection performance."},
+        {"id": "P24", "name": "This confirms transfer-based attacks are a credible real-world threat, exposing limits of white-box-only defenses", "description": "Because attack success persists substantially even under severe architecture and dataset mismatch, transfer-based adversarial attacks are confirmed as a credible threat under realistic conditions, and PGD's especially high transferability highlights the limitations of defenses that focus solely on white-box robustness."}
+      ],
+      "edges": [
+        {"from": "P21", "to": "P23", "evidence": ["S4.1", "Table1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["S4.1", "Table1"], "votes": 2, "confidence": "majority"},
+        {"from": "P23", "to": "P24", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P24", "evidence": ["S4.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Results: adversarial training preserves nominal (clean) performance",
+      "nodes": [
+        {"id": "P25", "name": "All eleven AT strategies maintain high clean AUC on both FF++ and Celeb-DF-V2", "description": "All AT strategies maintained high clean performance, with AUC exceeding 94% on FF++ and robust performance on Celeb-DF-V2, ranging from 81.9% to 82.9% (Table 2)."},
+        {"id": "P26", "name": "No catastrophic overfitting was observed even with multi-attack or multi-surrogate training", "description": "No catastrophic overfitting was observed in nominal performance, even when employing multi-attack or multi-surrogate training strategies, unlike the failure mode associated with single-attack AT described in Section 2.3."},
+        {"id": "P27", "name": "Ensemble and surrogate-based strategies preserve nominal performance with only limited fluctuation from baseline", "description": "The ensemble and surrogate-based AT strategies preserved nominal performance, with limited fluctuations compared to the Base (no-AT) baseline."},
+        {"id": "P28", "name": "This supports the practical deployability of AT, since it does not trade away clean accuracy", "description": "Because high AUC is preserved across all AT strategies and both datasets, this supports the practical deployment of adversarial training in real-world systems, satisfying the basic requirement that a defense not sacrifice nominal performance."}
+      ],
+      "edges": [
+        {"from": "P16", "to": "P28", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P25", "to": "P28", "evidence": ["S4.2", "Table2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P28", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["S4.2", "Table2"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Results: AT diversity helps in-distribution robustness but degrades under cross-dataset mismatch",
+      "nodes": [
+        {"id": "P29", "name": "Single-attack AT (e.g. PGD) already yields substantial in-distribution ASR reduction", "description": "AT with a single strong attack such as PGD yields substantial ASR reductions in-distribution, e.g. reducing C1 ASR from 99.6% to 20.2% (Table 3)."},
+        {"id": "P30", "name": "Ensemble and surrogate-diversified AT achieve further, larger ASR reductions in-distribution", "description": "Increasing diversity of adversarial examples brings further gains: Ensemble AT achieves the lowest C1 ASR (1.1%) and strong C3 reduction, and surrogate-based AT (PGD_surr, Ens_surr) generally outperforms single-attack counterparts, with an exception for FPBA in C1/C5."},
+        {"id": "P31", "name": "This confirms diversity in AT improves in-distribution and cross-model generalization to unseen attacks", "description": "Because broader exposure to adversarial perturbations during training reduces ASR further than single-attack AT, particularly and most pronouncedly in cross-model configuration C3, this confirms that diversity in AT enhances the model's ability to generalize to unseen attacks and transfer scenarios in-distribution."},
+        {"id": "P32", "name": "Under cross-dataset conditions (C5, C7), diversity's benefits diminish and ASR often stays above 50%", "description": "The benefits of AT diversity diminish under cross-dataset (C5) and cross-dataset & cross-model (C7) conditions; even Ens_Surr, the most diverse strategy, yields only modest ASR reductions and remains above 50% ASR in some cases."},
+        {"id": "P33", "name": "Some AT strategies show negative AMR under high mismatch, meaning AT increases vulnerability", "description": "In certain cross-dataset configurations such as FGSM, FPBA, Ens, and Surr, negative AMR values are observed, indicating that adversarial training can inadvertently increase vulnerability rather than reduce it."},
+        {"id": "P34", "name": "Negative AMR is hypothesized to stem from overfitting to the adversarial artifact distribution seen in training", "description": "The authors hypothesize the observed negative AMR values can be attributed to models overfitting on the adversarial artifacts distribution seen during training, leading them to be less accurate on perturbations from other (unseen dataset) distributions."},
+        {"id": "P35", "name": "Together this shows AT robustness is highly sensitive to alignment between training and evaluation distributions", "description": "The combination of diminished gains, near-50%+ residual ASR, and outright negative AMR under cross-dataset mismatch shows that the robustness conferred by adversarial training is highly sensitive to the alignment between training and evaluation distributions, revealing a critical limitation of AT alone."},
+        {"id": "P36", "name": "Leave-one-out analysis confirms full attack coverage matters, with FPBA omission especially costly cross-dataset", "description": "Leave-one-out ensemble AT shows that omitting any single attack consistently increases ASR across all DUMB cases, with omitting FPBA (leaving PGD_FGSM) causing especially higher cross-dataset ASR (C5: 64.1%, C7: 66.2%), highlighting the unique value of frequency-domain-specific attacks in training coverage."},
+        {"id": "P37", "name": "Surrogate diversity helps mitigate single-model overfitting but cannot fully compensate for distribution shift", "description": "Surrogate-based AT strategies demonstrate that leveraging adversarial examples from multiple model architectures further enhances robustness versus single-surrogate counterparts, particularly cross-model and cross-dataset, but surrogate diversity alone cannot fully compensate for distributional shift between training and evaluation data."}
+      ],
+      "edges": [
+        {"from": "P20", "to": "P29", "evidence": ["S4.3", "Table3"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P30", "evidence": ["S4.3", "Table3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P31", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P32", "evidence": ["S4.3", "Table3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["S4.3", "Table3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P34", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P35", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P35", "evidence": ["S4.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P35", "to": "P36", "evidence": ["S4.3", "Table4"], "votes": 2, "confidence": "majority"},
+        {"from": "P35", "to": "P37", "evidence": ["S4.3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 6,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P38", "name": "DeepfakeBench's three-way detector taxonomy: naive, spatial, frequential", "description": "DeepfakeBench introduced a classification of deepfake detectors into three categories according to the information leveraged: naive, spatial, and frequential."},
+    {"id": "P39", "name": "Deepfake generation categories: face swapping, editing, synthesis, reenactment", "description": "Deepfakes are commonly classified into four generation categories: face swapping, face editing, entire face synthesis, and face reenactment, using GAN- and diffusion-based generative techniques."},
+    {"id": "P40", "name": "Black-box attack taxonomy: decision-based, score-based, transfer-based", "description": "Black-box attacks assuming limited/no target-model knowledge are typically divided into decision-based and score-based (both requiring extensive queries) and transfer-based attacks (crafted on surrogates, applied without queries)."},
+    {"id": "P41", "name": "Five detector architectures selected for the study", "description": "Five state-of-the-art detectors are used: Xception (baseline CNN), UCF (feature disentanglement), RECCE (reconstruction+classification dual-task), SPSL (phase-spectrum analysis), and SRM (learnable high-frequency noise filters), chosen for benchmark performance, code availability, and coverage of spatial/frequency methods."},
+    {"id": "P42", "name": "Three attacks selected: FGSM, PGD, FPBA", "description": "FGSM (single-step gradient-sign), PGD (iterative FGSM variant), and FPBA (a deepfake-specific attack combining spatial and frequency artifacts) are used to cover both gradient-based literature-standard attacks and a domain-specific attack."},
+    {"id": "P43", "name": "Formal ASR definitions for white-box (C1) and cross-model (C3) cases", "description": "ASR for the white-box case (C1) is defined as the average fraction of successful attacks per model/attack pair (Eq. 2), and for the cross-model case (C3) as the average over all surrogate/target model pairs with differing architecture (Eq. 3); cross-dataset analogues (C5, C7) follow the same form on Celeb-DF-V2 and are given in the Appendix."},
+    {"id": "P44", "name": "Dataset and preprocessing details: FF++ and Celeb-DF-V2", "description": "FaceForensics++ (four forgery methods, 70/10/20 video-level split to avoid identity leakage) is used for training and in-distribution evaluation, while Celeb-DF-V2 (a single distinct face-swapping method, DeepfakeBench's preprocessed version) is used for out-of-distribution evaluation."},
+    {"id": "P45", "name": "Attack implementation and perturbation budget details", "description": "All attacks are constrained to an ℓ∞ perturbation budget of 9/255 determined via a qualitative imperceptibility study; PGD uses alpha=4/255 with 4 steps and random start via TorchAttacks, and FPBA uses K=3 appended models, learning rate 0.001, N=5 spectrum transformations per step, and 4 iterations."},
+    {"id": "P46", "name": "Adversarial training data composition: 80% clean / 20% adversarial", "description": "Following the DUMB/DUMBer configuration, all AT strategies are trained from scratch (not fine-tuned) using training sets composed of 80% clean and 20% adversarial samples, with the adversarial subset split equally among attacks/surrogates when multiple are used."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph mirrors the paper's applied-benchmark structure: motivate an underexplored gap, adapt an existing framework (DUMB/DUMBer) to fill it, then report layered empirical findings that answer the three stated research questions. C1 and C2 separate the general AT-realism gap from the specific DUMB/DUMBer-to-deepfake extension gap, since the Introduction and Related Work advance these as two linked but distinct motivating claims. C3 reconstructs the Method section's taxonomy adaptation and evaluation-protocol construction (the four DUMB cases, ASR/AMR metrics, 1920-evaluation design). C4 isolates the AT-diversity rationale (single-attack overfitting, prior mitigations) as its own chain, since it specifically motivates the eleven-strategy ablation studied in C7, distinct from the taxonomy-adaptation reasoning in C3. C5-C7 mirror the paper's three experimental subsections (attack effectiveness, defense validation, diversity ablation) and are explicitly aligned with the paper's own three stated research questions from the Introduction/Conclusion, each culminating in the paper's own interpretive claim (transferability persists; AT preserves clean accuracy; diversity helps in-distribution but can backfire cross-dataset). Isolated nodes are limited to background taxonomies (detector types, deepfake generation categories, black-box attack taxonomy), model/attack/dataset selection descriptions, formal ASR equations, and implementation details that support but are not premises within the central argument chains."
+}

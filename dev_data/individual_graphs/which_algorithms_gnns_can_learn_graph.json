@@ -1,0 +1,154 @@
+{
+  "arxiv_id": "2602.13106v1",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/theorems/definitions rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: gap between expressivity and learnability in neural algorithmic reasoning",
+      "nodes": [
+        {"id": "P1", "name": "MPNNs are a natural NAR backbone", "description": "MPNNs' close correspondence with iterative, local graph computation makes them a natural architectural backbone for learning graph algorithms such as shortest paths, minimum spanning trees, and dynamic programming."},
+        {"id": "P2", "name": "Prior NAR theory is either empirical or purely expressivity-focused", "description": "Existing theoretical work on neural algorithmic reasoning is either purely empirical, lacking formal guarantees, or focuses on existential expressivity questions (which algorithms can in principle be represented), abstracting away the learning process."},
+        {"id": "P3", "name": "Expressivity analyses give little insight into generalization", "description": "Expressivity-focused analyses provide little insight into sample efficiency or generalization beyond the training distribution, so they do not explain when learned models provably generalize to larger or structurally different graphs."},
+        {"id": "P4", "name": "Nerem et al. [2025] is a notable exception but limited", "description": "Nerem et al. [2025] provides theoretical learning guarantees for MPNNs, but is restricted to a single algorithm (Bellman-Ford) and enforces correctness via a non-differentiable regularization term, limiting applicability to broader algorithm classes and standard gradient-based training."},
+        {"id": "P5", "name": "Need for a general, differentiable learning framework", "description": "These limitations motivate developing a general theoretical framework for learning algorithms with MPNNs that covers a broad class of algorithms while remaining compatible with fully differentiable training objectives."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Regularization-induced extrapolation framework (finite Lipschitz classes, Theorem 3)",
+      "nodes": [
+        {"id": "P6", "name": "Finite Lipschitz class defined", "description": "A hypothesis class is a finite Lipschitz class if there exists a pseudo-metric on the input space such that every hypothesis is Lipschitz with a finite (certifiable) constant, and the space has finite covering number for every epsilon > 0."},
+        {"id": "P7", "name": "Lipschitz certificate concept", "description": "A Lipschitz certificate is a computable upper bound on a hypothesis's true (possibly intractable) Lipschitz constant, derivable directly from the hypothesis's parameters (e.g., via operator-norm bounds)."},
+        {"id": "P8", "name": "Regularization term defined via certificate gap", "description": "The regularization term is defined as a scaled ReLU of the gap between the hypothesis's Lipschitz certificate and the target function's Lipschitz certificate."},
+        {"id": "P9", "name": "Theorem 3: regularized empirical loss implies uniform approximation", "description": "For a finite Lipschitz class with certificates and a Lipschitz target approximable with a certificate, there exists a dataset of bounded, computable size such that sufficiently small regularized loss on that dataset implies the learned hypothesis approximates the target uniformly over the entire input space, including larger instances than seen in training."},
+        {"id": "P10", "name": "Certificate control, not true Lipschitz constant, is the key requirement", "description": "The key assumption in Theorem 3 is that the computable Lipschitz certificate of the learned hypothesis stays controlled, not that its true (possibly intractable) Lipschitz constant does, making the regularizer practically usable even when the true constant is unknown."},
+        {"id": "P11", "name": "Distinguishability is a necessary condition for learnability under Theorem 3", "description": "If Theorem 3's conclusion holds, then whenever the hypothesis class cannot distinguish two inputs, the target function must also assign them the same value, restricting uniform learnability to targets whose distinguishing power does not exceed the model class's."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["S3.1", "Definition2"], "votes": 2, "confidence": "majority"},
+        {"from": "P7", "to": "P8", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P9", "evidence": ["S3.1", "Theorem3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["S3.1", "Theorem3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P10", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P11", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "MPNN aggregation satisfies finite Lipschitzness, enabling learnability of specific algorithms",
+      "nodes": [
+        {"id": "P12", "name": "Theorem 4: normalized-sum, mean, and max/min aggregation MPNNs satisfy finite Lipschitzness", "description": "The hypothesis class induced by MPNNs using normalized sum aggregation, mean aggregation, or max/min aggregation satisfies the finite Lipschitz class definition, with max/min aggregation being the first architectures given explicit Lipschitzness guarantees despite widespread use of related stability arguments."},
+        {"id": "P13", "name": "Finite Lipschitzness plus Theorem 3 yields learnability for expressible algorithms", "description": "Given Theorem 4 (finite Lipschitzness of these MPNN classes) and Theorem 3 (regularized loss implies uniform approximation), any graph algorithm expressible by one of these MPNN architectures is learnable from finite data with extrapolation to arbitrary graph size."},
+        {"id": "P14", "name": "Truncated PageRank exactly representable by mean-aggregation MPNN", "description": "The K-truncated weighted PageRank recurrence is represented exactly by a K-layer mean-aggregation MPNN, with the update function matching the PageRank recursion term for term."},
+        {"id": "P15", "name": "PageRank truncation depth is size-independent", "description": "Because PageRank is a contraction with factor equal to the damping factor, the truncation depth K needed for a given error epsilon depends only on epsilon and the damping factor, not on the number of vertices in the graph."},
+        {"id": "P16", "name": "Truncated PageRank is learnable and extrapolates to arbitrary graph size", "description": "Because truncated PageRank is representable by a mean-aggregation MPNN (finite Lipschitz class) with size-independent truncation depth, Theorem 3 implies a finite training set with regularization suffices to learn it and extrapolate to graphs of arbitrary size with error independent of graph size."},
+        {"id": "P17", "name": "Bellman-Ford exactly representable by min-aggregation MPNN", "description": "The K-step Bellman-Ford recurrence for single-source shortest paths is represented exactly by a K-layer min-aggregation MPNN, with the update function implementing the identity and the aggregation function implementing the Bellman-Ford relaxation step."},
+        {"id": "P18", "name": "Required Bellman-Ford iteration count is diameter-bounded", "description": "The number of iterations K needed to compute shortest paths is at most the graph diameter, which is independent of graph size for bounded-diameter graph families."},
+        {"id": "P19", "name": "Bellman-Ford is learnable and extrapolates to arbitrary graph size", "description": "Because Bellman-Ford is representable by a min-aggregation MPNN (finite Lipschitz class) with diameter-bounded iteration count, Theorem 3 implies a finite training set with regularization can train an MPNN to learn Bellman-Ford and extrapolate to graphs of arbitrary size."},
+        {"id": "P20", "name": "Generalized Bellman-Ford invariants also fall in finite Lipschitz classes", "description": "A generalized Bellman-Ford algorithm based on path formulations captures invariants such as the Katz index, widest path, and most reliable path, which can likewise be represented by mean/max-aggregation MPNNs and thus fall into a finite Lipschitz hypothesis class."},
+        {"id": "P21", "name": "Dynamic programs reducible to shortest-path problems on transformed graphs", "description": "Many dynamic programming problems, including the 0-1 knapsack problem, can be cast as a shortest-path problem on a suitably constructed (transformed) directed acyclic graph."},
+        {"id": "P22", "name": "Knapsack recurrence exactly representable by min-aggregation MPNN with layers = number of items", "description": "The standard knapsack recurrence is exactly the shortest-path relaxation on the transformed graph, representable by a min-aggregation MPNN with K equal to the number of items n, using the same identity/relaxation update as Bellman-Ford."},
+        {"id": "P23", "name": "Bounded-stage dynamic programs are learnable and extrapolate to arbitrary problem size", "description": "For families where the number of dynamic-programming stages n is bounded (so K is independent of the transformed graph's size, which grows with capacity), the finite Lipschitzness result implies learnability from a finite training set with extrapolation to arbitrarily large problem instances (e.g., knapsack capacities), and the same reasoning extends to other DP problems like longest increasing subsequence or edit distance."}
+      ],
+      "edges": [
+        {"from": "P12", "to": "P13", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S3.2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P15", "evidence": ["S3.2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P16", "evidence": ["S3.2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P17", "evidence": ["S3.2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P18", "evidence": ["S3.2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P19", "evidence": ["S3.2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["S3.2.1"], "votes": 1, "confidence": "single_run"},
+        {"from": "P21", "to": "P22", "evidence": ["S3.2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P23", "evidence": ["S3.2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P22", "evidence": ["S3.2.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Improved, explicit training-set guarantee for Bellman-Ford (Theorem 5)",
+      "nodes": [
+        {"id": "P24", "name": "General framework does not give explicit training set construction", "description": "The general finite-Lipschitz-class results demonstrate existence of a finite training set for learning various algorithms, but do not explicitly show how to construct this training set or bound its size."},
+        {"id": "P25", "name": "Explicit constant-size training set derived for Bellman-Ford", "description": "For a K-layer min-aggregation MPNN learning K-step Bellman-Ford with m-layer feed-forward networks, an explicit training set of size K+1 can be constructed together with a differentiable weighted ell-1 regularization term."},
+        {"id": "P26", "name": "Theorem 5: small regularized loss implies bounded approximation error", "description": "If the K-layer min-aggregation MPNN achieves a loss within epsilon < 1/2 of its global minimum on the constructed size-(K+1) training set, then for any SSSP instance, the MPNN approximates every K-step shortest path distance within additive error epsilon*(x^(K)+1)."},
+        {"id": "P27", "name": "Result uses smaller training set and differentiable regularizer than Nerem et al.", "description": "Compared to Nerem et al. [2025], this result uses a smaller training set (K+1 path instances) and replaces their non-differentiable ell-0 penalty with a differentiable ell-1 regularizer with layer-specific weights, allowing direct gradient-based optimization of the loss."},
+        {"id": "P28", "name": "Trade-off: more restricted model assumptions", "description": "In exchange for the smaller training set and differentiability, the analysis assumes a more restricted model: depth fixed to exactly K layers matching K Bellman-Ford steps, and aggregation dimension assumed to be 1."}
+      ],
+      "edges": [
+        {"from": "P24", "to": "P25", "evidence": ["S3.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P26", "evidence": ["S3.3", "Theorem5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P27", "evidence": ["S3.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P28", "evidence": ["S3.3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Impossibility results: expressivity and covering-number limitations",
+      "nodes": [
+        {"id": "P29", "name": "Standard MPNNs cannot approximate SSSP or MST cost", "description": "No standard MPNN architecture (Equation 1) can approximate the SSSP cost invariant or the MST cost invariant arbitrarily well."},
+        {"id": "P30", "name": "More expressive (1-iWL/(1,1)-WL) MPNNs overcome this for SSSP/MST", "description": "There exist 1-iWL-expressive and (1,1)-WL-expressive MPNN architectures that can approximate the SSSP and MST invariants respectively, overcoming the expressivity limitation of standard MPNNs; the MST limitation persists even for 1-iWL-simulating MPNNs specifically."},
+        {"id": "P31", "name": "Some expressible invariants still lack a finite-covering-number metric", "description": "Beyond expressivity limits, there exist invariants representable by MPNNs for which the sufficient learnability conditions do not apply, because the obstruction is the absence of a metric structure yielding finite covering numbers, not a lack of expressive power."},
+        {"id": "P32", "name": "Unnormalized-sum MPNN can express the degree invariant", "description": "A one-layer MPNN variant with unnormalized-sum aggregation (on graphs without vertex/edge features) exactly computes the vertex degree invariant."},
+        {"id": "P33", "name": "Unbounded-degree families make the degree invariant's covering number infinite", "description": "If the graph space is not restricted to bounded maximum degree, any pseudo-metric under which the degree invariant is Lipschitz with a finite constant necessarily has infinite covering number for sufficiently small radius (Lemma 7), so no hypothesis class containing the degree invariant can satisfy the finite Lipschitz class definition on such a space."},
+        {"id": "P34", "name": "Same covering-number pathology extends to all 1-WL-equivalent invariants", "description": "Because the first iteration of 1-WL already captures the degree invariant, any hypothesis class expressive enough to represent all 1-WL invariants inherits the same covering-number pathology on graph spaces with unbounded degrees."}
+      ],
+      "edges": [
+        {"from": "P29", "to": "P30", "evidence": ["S4.1", "Proposition6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P31", "to": "P32", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P33", "evidence": ["S4.2", "Lemma7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P34", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Experimental validation of the theoretical framework",
+      "nodes": [
+        {"id": "P35", "name": "Experiments target the explicit SSSP construction from Theorem 5", "description": "Because Theorem 5 gives an explicit training set construction, experiments are conducted on the SSSP problem outlined in Section 3.3, training a two-layer MPNN to predict two steps of Bellman-Ford on synthetic Erdos-Renyi and path-graph datasets."},
+        {"id": "P36", "name": "Size generalization holds empirically (Q1)", "description": "Test error does not increase with vertex count across test sets of 64, 256, and 1024 vertices, and average vertex degree (bounded vs. unbounded) does not affect test set performance, supporting the theoretical size-generalization guarantee."},
+        {"id": "P37", "name": "More expressive (1-iWL) MPNNs greatly outperform standard MPNNs in practice (Q2)", "description": "A standard MPNN is unable to generalize to unseen test graphs at all, whereas a 1-iWL-equivalent MPNN achieves much lower test error and significantly lower training loss, empirically corroborating the expressivity limitation shown in Proposition 6/C5."},
+        {"id": "P38", "name": "Proposed differentiable regularizer matches or improves on p-norm regularization (Q3)", "description": "Replacing the proposed differentiable ell-1-based regularization term with standard ell_1 gives similar results, but size generalization improves with the proposed regularizer across graph sizes, while ell_2 regularization is noticeably less stable and yields slightly worse test performance."}
+      ],
+      "edges": [
+        {"from": "P35", "to": "P36", "evidence": ["S6", "Figure2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P37", "evidence": ["S6", "Table1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P38", "evidence": ["S6", "Table2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P37", "evidence": ["S6", "Table1"], "votes": 1, "confidence": "single_run"},
+        {"from": "P26", "to": "P38", "evidence": ["S6", "Table2"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P39", "name": "MPNN formal definition via UPDATE/AGGREGATE", "description": "An L-layer MPNN computes, at each layer, a vertex feature via an UPDATE function applied to the previous feature and an AGGREGATE function applied to the multiset of neighbor features and incident edge weights."},
+    {"id": "P40", "name": "1-WL graph-distinguishing power upper bounds MPNNs", "description": "Prior work (Morris et al. 2019, Xu et al. 2019) established that the graph-distinguishing power of any MPNN architecture is upper bounded by the 1-dimensional Weisfeiler-Leman algorithm, and sum-aggregation MPNNs can match 1-WL's expressivity on any finite graph set."},
+    {"id": "P41", "name": "1-iWL and (1,1)-WL defined as more expressive variants", "description": "The 1-iWL individualizes a root vertex before running 1-WL, and the (1,1)-WL extends this by trying every possible individualization placement, yielding strictly more expressive graph-distinguishing variants than plain 1-WL."},
+    {"id": "P42", "name": "Proposition 1: separation entails approximation under mild conditions", "description": "Under mild regularity assumptions and for graphs of fixed order with attributes in a compact domain, if an algorithm's induced equivalence relation is coarser than that of a simulating class (1-WL/1-iWL/(1,1)-WL), an MPNN in that class can approximate the algorithm arbitrarily well -- but this notion of approximation is non-uniform across graph sizes."},
+    {"id": "P43", "name": "Non-uniform approximation does not imply learnability across sizes", "description": "Proposition 1's approximation results do not explain how to choose a function in the hypothesis class that approximates a given algorithm, and apply only to graphs of fixed size, so they do not by themselves imply learnability, particularly for larger instances -- motivating the paper's own framework in Section 3."},
+    {"id": "P44", "name": "Formal definitions of SSSP, MST, and knapsack problems", "description": "The paper formally defines the single-source shortest path problem, minimum spanning tree problem, and 0-1 knapsack problem as the graph/combinatorial problems studied throughout."},
+    {"id": "P45", "name": "Related work: PAC-style sample complexity for algorithm learning (Xu et al. 2020)", "description": "Xu et al. [2020] proposed PAC-style sample-complexity bounds for learning common graph algorithms with MPNNs, showing architectural alignment with the target algorithm can improve sample efficiency."},
+    {"id": "P46", "name": "Related work: VC dimension and generalization bounds for MPNNs", "description": "A body of prior work (Scarselli et al., Garg et al., Morris et al. 2023, and others) studies MPNN generalization via VC dimension, Rademacher complexity, and PAC-Bayesian analyses, primarily in the classical uniform-convergence regime, in contrast to this paper's focus on generalizing a single learned function to larger graphs than seen in training."},
+    {"id": "P47", "name": "Related work: negative/necessary generalization results for larger graphs", "description": "Yehudai et al. [2021] derived negative generalization results for larger graphs than seen in training, while Levin et al. [2025] derived necessary conditions for generalization to larger graphs."},
+    {"id": "P48", "name": "Limitation: reliance on carefully constructed covering datasets", "description": "The framework assumes access to carefully constructed training datasets forming suitable covers of the underlying graph space, which may not arise naturally in practice, motivating future work on high-probability sampling-based dataset construction."},
+    {"id": "P49", "name": "Limitation: no guarantee that gradient descent finds the required parameters", "description": "The framework's guarantees are stated in terms of achieving sufficiently small regularized training loss, but do not guarantee that standard gradient-based optimization will reliably converge to parameters achieving that loss."},
+    {"id": "P50", "name": "Limitation: restricted to polynomial-time algorithms", "description": "The current analysis is restricted to polynomial-time algorithms; extending the framework to approximation algorithms for computationally hard problems is left as future work."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph closely tracks the paper's own logical progression. C1 establishes the expressivity-vs-learnability gap that motivates the whole paper. C2 captures the core theoretical machinery (finite Lipschitz classes, certificates, the regularizer, and Theorem 3) as a tight derivation chain. C3 is the largest and most interconnected component, since Theorem 4 (aggregation types satisfy finite Lipschitzness) is the shared premise that, combined with Theorem 3 from C2, unlocks learnability for three distinct algorithm families (PageRank, Bellman-Ford, and dynamic programming/knapsack) -- each traced as its own sub-chain of exact-representation -> size-independent iteration bound -> learnability conclusion. C4 documents the refined, explicit Bellman-Ford construction (Theorem 5) as an improvement over the general existence result of C3/Nerem et al., correctly capturing both its advantages (smaller set, differentiable regularizer) and its cost (more restrictive model assumptions) as one causal chain. C5 mirrors the paper's impossibility results, distinguishing two independent obstructions (expressivity limits in Proposition 6, and covering-number pathology in Lemma 7) that are structurally analogous but not causally linked to each other, hence kept as parallel sub-chains within one component. C6 ties the empirical section back to the theoretical claims from C2-C5 via a few cross-component edges (e.g., the expressivity limitation of C5 explaining the Q2 experimental gap). Isolated nodes are limited to genuine background/definitional material (MPNN formalism, 1-WL variants, Proposition 1, problem definitions, related work, and stated limitations) that does not function as an argumentative premise elsewhere in the paper's own chain of reasoning."
+}

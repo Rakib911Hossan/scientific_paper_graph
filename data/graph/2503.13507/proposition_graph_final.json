@@ -1,0 +1,580 @@
+{
+  "arxiv_id": "2503.13507",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P6",
+          "name": "Winners used open-source libraries",
+          "description": "The winning contestants relied on well-established open-source libraries."
+        },
+        {
+          "id": "P7",
+          "name": "Winners adjusted configurations",
+          "description": "The winning submissions focused on adjusting the configurations within the standard open-source libraries they used."
+        }
+      ],
+      "edges": [
+        {
+          "from": "P6",
+          "to": "P7",
+          "evidence": [
+            "S4"
+          ],
+          "votes": 1,
+          "confidence": "single_run"
+        }
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": 0.0,
+        "flagged_edges": [
+          {
+            "from": "P6",
+            "to": "P7",
+            "reasoning": "The cited evidence does not support Proposition P7, as it states the submissions focused primarily on data curation rather than adjusting configurations, and thus it fails to establish any dependency between P6 and P7."
+          }
+        ]
+      }
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P11",
+          "name": "Dockerfile build failures",
+          "description": "More than half of the competition's submitted Dockerfiles failed to build."
+        },
+        {
+          "id": "P12",
+          "name": "PEFT library build failures",
+          "description": "Breaking changes in HuggingFace's PEFT library caused build failures for the competition's submitted Dockerfiles."
+        },
+        {
+          "id": "P13",
+          "name": "Transformers library build failures",
+          "description": "Breaking changes in HuggingFace's Transformers library caused build failures for the competition's submitted Dockerfiles."
+        }
+      ],
+      "edges": [
+        {
+          "from": "P11",
+          "to": "P12",
+          "evidence": [
+            "S129",
+            "S64"
+          ],
+          "votes": 3,
+          "confidence": "unanimous"
+        },
+        {
+          "from": "P11",
+          "to": "P13",
+          "evidence": [
+            "S129",
+            "S64"
+          ],
+          "votes": 3,
+          "confidence": "unanimous"
+        }
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": null,
+        "flagged_edges": []
+      }
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P14",
+          "name": "Untested Dockerfiles",
+          "description": "Some of the competition's submitted Dockerfiles were untested."
+        },
+        {
+          "id": "P37",
+          "name": "Untested Dockerfiles numerics issues",
+          "description": "The untested Dockerfiles of participants introduced numerics issues."
+        },
+        {
+          "id": "P38",
+          "name": "Untested Dockerfiles unhosted references",
+          "description": "The untested Dockerfiles of participants introduced references pointing to artifacts, such as metadata files, weights, and datasets, that were only present on the submitter machines and not hosted."
+        }
+      ],
+      "edges": [
+        {
+          "from": "P14",
+          "to": "P37",
+          "evidence": [
+            "S132"
+          ],
+          "votes": 2,
+          "confidence": "majority"
+        },
+        {
+          "from": "P14",
+          "to": "P38",
+          "evidence": [
+            "S132"
+          ],
+          "votes": 2,
+          "confidence": "majority"
+        }
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": 0.0,
+        "flagged_edges": [
+          {
+            "from": "P14",
+            "to": "P37",
+            "reasoning": "The evidence presents untested Dockerfiles and those introducing numerics issues as disjoint categories in a list ('Some... others...'), establishing no dependency between the two propositions."
+          },
+          {
+            "from": "P14",
+            "to": "P38",
+            "reasoning": "The evidence presents untested Dockerfiles and those pointing to unhosted artifacts as separate, disjoint categories in a list ('some... others... and others...'), establishing no dependency between them."
+          }
+        ]
+      }
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P15",
+          "name": "Inference OOM failures",
+          "description": "Approximately 10% of submissions ran out of memory during the inference phase."
+        },
+        {
+          "id": "P16",
+          "name": "Incomplete evaluations due to time",
+          "description": "Approximately 30% of submissions were unable to complete all evaluation questions within the allowed time limit."
+        },
+        {
+          "id": "P20",
+          "name": "Pruning alleviates bottlenecks",
+          "description": "Pruning of the model after fine-tuning can alleviate memory and runtime bottlenecks."
+        },
+        {
+          "id": "P21",
+          "name": "Quantization alleviates bottlenecks",
+          "description": "Further quantization of the model after fine-tuning can alleviate memory and runtime bottlenecks."
+        },
+        {
+          "id": "P22",
+          "name": "CUDA management alleviates bottlenecks",
+          "description": "Generic memory efficiency techniques, such as better CUDA memory management, can alleviate memory and runtime bottlenecks."
+        },
+        {
+          "id": "P23",
+          "name": "CPU offloading alleviates bottlenecks",
+          "description": "Generic memory efficiency techniques, such as CPU offloading, can alleviate memory and runtime bottlenecks."
+        }
+      ],
+      "edges": [
+        {
+          "from": "P15",
+          "to": "P20",
+          "evidence": [
+            "S84",
+            "S85"
+          ],
+          "votes": 3,
+          "confidence": "unanimous"
+        },
+        {
+          "from": "P15",
+          "to": "P21",
+          "evidence": [
+            "S84",
+            "S85"
+          ],
+          "votes": 3,
+          "confidence": "unanimous"
+        },
+        {
+          "from": "P15",
+          "to": "P22",
+          "evidence": [
+            "S84",
+            "S85"
+          ],
+          "votes": 3,
+          "confidence": "unanimous"
+        },
+        {
+          "from": "P15",
+          "to": "P23",
+          "evidence": [
+            "S84",
+            "S85"
+          ],
+          "votes": 3,
+          "confidence": "unanimous"
+        },
+        {
+          "from": "P16",
+          "to": "P20",
+          "evidence": [
+            "S85"
+          ],
+          "votes": 1,
+          "confidence": "single_run"
+        },
+        {
+          "from": "P16",
+          "to": "P21",
+          "evidence": [
+            "S85"
+          ],
+          "votes": 1,
+          "confidence": "single_run"
+        },
+        {
+          "from": "P16",
+          "to": "P22",
+          "evidence": [
+            "S85"
+          ],
+          "votes": 1,
+          "confidence": "single_run"
+        },
+        {
+          "from": "P16",
+          "to": "P23",
+          "evidence": [
+            "S85"
+          ],
+          "votes": 1,
+          "confidence": "single_run"
+        }
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": 10.0,
+        "flagged_edges": []
+      }
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P24",
+          "name": "Figure 7 low agreement",
+          "description": "Figure 7 in the paper shows that the Hidden and Open evaluation sets have low agreement."
+        },
+        {
+          "id": "P27",
+          "name": "4090 track decent agreement",
+          "description": "There was decent agreement between the Hidden and Full evaluation sets for the 4090 track."
+        },
+        {
+          "id": "P28",
+          "name": "A100 track low agreement",
+          "description": "There was low agreement between the Hidden and Full evaluation sets for the A100 track."
+        },
+        {
+          "id": "P35",
+          "name": "Figure 9 cohesive agreements",
+          "description": "Figure 9 in the paper demonstrates that aggregating scores from all tasks in comprehensive benchmarks helps achieve more cohesive agreements."
+        }
+      ],
+      "edges": [
+        {
+          "from": "P24",
+          "to": "P35",
+          "evidence": [
+            "S104"
+          ],
+          "votes": 1,
+          "confidence": "single_run"
+        },
+        {
+          "from": "P27",
+          "to": "P35",
+          "evidence": [
+            "S104"
+          ],
+          "votes": 1,
+          "confidence": "single_run"
+        },
+        {
+          "from": "P28",
+          "to": "P35",
+          "evidence": [
+            "S104"
+          ],
+          "votes": 1,
+          "confidence": "single_run"
+        }
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": 10.0,
+        "flagged_edges": []
+      }
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {
+          "id": "P29",
+          "name": "Different scenarios necessary",
+          "description": "The authors conclude that different scenarios are necessary to reach a consensus on the best model."
+        },
+        {
+          "id": "P30",
+          "name": "Figure 10 rank variation",
+          "description": "Figure 10 in the paper displays the rank per scenario for each model in the final set to illustrate how rankings vary across scenarios."
+        }
+      ],
+      "edges": [
+        {
+          "from": "P30",
+          "to": "P29",
+          "evidence": [
+            "S109",
+            "S110"
+          ],
+          "votes": 3,
+          "confidence": "unanimous"
+        }
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": null,
+        "flagged_edges": []
+      }
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {
+          "id": "P32",
+          "name": "Competition time constraint",
+          "description": "The NeurIPS 2023 LLM fine-tuning competition set a time constraint of 24 hours."
+        },
+        {
+          "id": "P33",
+          "name": "Competition hardware constraint",
+          "description": "The NeurIPS 2023 LLM fine-tuning competition set a hardware constraint of a single GPU."
+        },
+        {
+          "id": "P34",
+          "name": "Top solutions met constraints",
+          "description": "The top 10 solutions in both the A100 and 4090 tracks successfully completed their fine-tuning under the competition's constraints."
+        }
+      ],
+      "edges": [
+        {
+          "from": "P32",
+          "to": "P34",
+          "evidence": [
+            "S154",
+            "S45",
+            "S6"
+          ],
+          "votes": 3,
+          "confidence": "unanimous"
+        },
+        {
+          "from": "P33",
+          "to": "P34",
+          "evidence": [
+            "S154",
+            "S45",
+            "S6"
+          ],
+          "votes": 3,
+          "confidence": "unanimous"
+        }
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {
+        "node_score": 10.0,
+        "edge_score": null,
+        "flagged_edges": []
+      }
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P1",
+      "name": "Closed set publication timing",
+      "description": "The closed evaluation set of the LLM fine-tuning competition was not published until after submissions to the competition were closed."
+    },
+    {
+      "id": "P2",
+      "name": "Open set publication timing",
+      "description": "The open evaluation datasets of the LLM fine-tuning competition were published at the start of the competition."
+    },
+    {
+      "id": "P3",
+      "name": "Open evaluation stage design",
+      "description": "An open evaluation stage was designed into the LLM fine-tuning competition to assess the generalizability of the fine-tuned models."
+    },
+    {
+      "id": "P4",
+      "name": "Closed evaluation stage design",
+      "description": "A closed evaluation stage was designed into the LLM fine-tuning competition to assess the generalizability of the fine-tuned models."
+    },
+    {
+      "id": "P5",
+      "name": "No custom code by winners",
+      "description": "The winning contestants did not write custom code for fine-tuning."
+    },
+    {
+      "id": "P8",
+      "name": "Top solutions used QLoRA",
+      "description": "The top-performing solutions in the competition leveraged the QLoRA (Dettmers et al., 2023) quantization method."
+    },
+    {
+      "id": "P9",
+      "name": "ChatGPT data prohibited",
+      "description": "Data generated by OpenAI's ChatGPT was prohibited for curating fine-tuning datasets."
+    },
+    {
+      "id": "P10",
+      "name": "GPT-4 data prohibited",
+      "description": "Data generated by OpenAI's GPT-4 was prohibited for curating fine-tuning datasets."
+    },
+    {
+      "id": "P17",
+      "name": "Open stage runtime limit",
+      "description": "The open stage of the evaluation established a runtime limit of 300 minutes to generate results for 600 questions."
+    },
+    {
+      "id": "P18",
+      "name": "Closed stage runtime limit",
+      "description": "The closed stage of the evaluation established a runtime limit of 600 minutes to generate results for 5,000 questions."
+    },
+    {
+      "id": "P19",
+      "name": "Zero score for slow generation",
+      "description": "Models received a score of 0 for tasks that remained unevaluated due to slow generation speeds."
+    },
+    {
+      "id": "P25",
+      "name": "Overfitting performance drop",
+      "description": "Submissions that overfitted to the open evaluation tasks performed quite poorly, at about chance level, on some of the closed evaluation tasks."
+    },
+    {
+      "id": "P26",
+      "name": "Winners open set scores",
+      "description": "The winning entries did not achieve the highest scores on the open evaluation tasks."
+    },
+    {
+      "id": "P31",
+      "name": "Secrets scrubbed from artifacts",
+      "description": "Multiple secrets were inadvertently provided to the organizers during the submission process and had to be scrubbed from released artifacts."
+    },
+    {
+      "id": "P36",
+      "name": "Docker not used from outset",
+      "description": "Many participants failed to develop their training workflows using Docker from the outset."
+    },
+    {
+      "id": "P39",
+      "name": "Accuracy measured by exact match",
+      "description": "Accuracy is typically measured by exact match in LLM evaluations."
+    },
+    {
+      "id": "P40",
+      "name": "Benchmarks assess truthfulness",
+      "description": "The evaluation tasks from popular NLP benchmarks were designed to assess factual truthfulness in LLMs."
+    },
+    {
+      "id": "P41",
+      "name": "Benchmarks assess ethics",
+      "description": "The evaluation tasks from popular NLP benchmarks were designed to assess ethics in LLMs."
+    },
+    {
+      "id": "P42",
+      "name": "Benchmarks assess bias",
+      "description": "The evaluation tasks from popular NLP benchmarks were designed to assess bias in LLMs."
+    },
+    {
+      "id": "P43",
+      "name": "Foundational models strong capabilities",
+      "description": "Most foundational models already possess strong capabilities in the competencies evaluated on standard benchmarks."
+    },
+    {
+      "id": "P44",
+      "name": "RAG combined with fine-tuning",
+      "description": "Retrieval-augmented generation (RAG) can be combined with fine-tuning to evaluate specific AI tasks."
+    },
+    {
+      "id": "P45",
+      "name": "MoE combined with fine-tuning",
+      "description": "Mixture of Experts (MoE) can be combined with fine-tuning to evaluate specific AI tasks."
+    },
+    {
+      "id": "P46",
+      "name": "Model merging combined with fine-tuning",
+      "description": "Model merging can be combined with fine-tuning to evaluate specific AI tasks."
+    },
+    {
+      "id": "P47",
+      "name": "Swarming combined with fine-tuning",
+      "description": "Swarming intelligences can be combined with fine-tuning to evaluate specific AI tasks."
+    },
+    {
+      "id": "P48",
+      "name": "QLoRA used with fine-tuning",
+      "description": "Quantization methods like QLoRA can be used in conjunction with fine-tuning."
+    },
+    {
+      "id": "P49",
+      "name": "Pruning used with fine-tuning",
+      "description": "Pruning can be used in conjunction with fine-tuning."
+    },
+    {
+      "id": "P50",
+      "name": "Further quantization used with fine-tuning",
+      "description": "Further quantization can be used in conjunction with fine-tuning."
+    },
+    {
+      "id": "P51",
+      "name": "CUDA management used with fine-tuning",
+      "description": "Better CUDA memory management can be used in conjunction with fine-tuning."
+    },
+    {
+      "id": "P52",
+      "name": "CPU offloading used with fine-tuning",
+      "description": "CPU offloading can be used in conjunction with fine-tuning."
+    }
+  ],
+  "structural_score": 5,
+  "structural_reasoning": "The graph exhibits some plausible structure among its valid edges, such as linking general build failures to specific library changes (P11 -> P12, P11 -> P13), connecting hardware/time constraints to successful fine-tuning (P32/P33 -> P34), and relating evaluation set agreement to score aggregation (P24/P27/P28 -> P35). However, there are significant gaps and limitations. Several key themes from the summary—such as the winning submissions' reliance on meticulous data curation and the specific dynamics of overfitting on open benchmarks leading to poor generalization—are either completely disconnected or rely on rejected edges (such as P6 -> P7 for the winning strategies, and P14 -> P37/P38 for the Dockerfile issues). Because these rejected edges are load-bearing for major parts of the paper's narrative, and because of the missing high-level connections regarding overfitting and data curation, the graph's overall shape is only partially coherent."
+}

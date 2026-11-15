@@ -1,0 +1,162 @@
+{
+ "arxiv_id": "2606.22565",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Selective CoT value and visual bottleneck -> shallow visual reflection -> attention bias",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "CoT is not a free lunch",
+     "description": "Multimodal CoT should be applied selectively: it is generally effective on reasoning tasks but can introduce side effects on perception tasks such as visual grounding, knowledge VQA and object counting."
+    },
+    {
+     "id": "P2",
+     "name": "CoT gains on math, science, multi-image",
+     "description": "CoT improves performance by 6.1%, 2.9% and 4.9% on mathematical, scientific and multi-image reasoning respectively, consistently across almost all models."
+    },
+    {
+     "id": "P3",
+     "name": "Logical and algorithmic CoT gains depend on scale",
+     "description": "For logical and algorithmic reasoning, which rely more on visual information, larger models benefit from CoT while smaller models often show limited or negative gains."
+    },
+    {
+     "id": "P4",
+     "name": "Open-source reasoning models gain little",
+     "description": "Existing open-source multimodal reasoning models show only limited gains over their base models across diverse tasks, possibly because RLVR training concentrates on math at the expense of broader reasoning."
+    },
+    {
+     "id": "P5",
+     "name": "Commercial reasoning model gains",
+     "description": "Gemini-2.0-Flash-Thinking shows substantial and consistent gains across reasoning tasks, with a 24.7% improvement in algorithmic reasoning."
+    },
+    {
+     "id": "P6",
+     "name": "Visual reasoning errors dominate",
+     "description": "A large proportion of CoT errors come from visual reasoning failures, with over 80% in logical reasoning tasks due to incorrect reasoning over visual information."
+    },
+    {
+     "id": "P7",
+     "name": "Visual probes are harder than textual probes",
+     "description": "On probes (math probes 93.0% and logical probes 88.5% verified accurate), models score about 20% lower on visual than textual reasoning probes."
+    },
+    {
+     "id": "P8",
+     "name": "Visual probe accuracy correlates more with task performance",
+     "description": "Original task performance correlates more strongly (higher Pearson r) with visual probe accuracy than textual probe accuracy, so visual reasoning is the key bottleneck of current MLLMs."
+    },
+    {
+     "id": "P9",
+     "name": "Visual vs verbal reflection",
+     "description": "Reflection in multimodal CoT splits into visual reflection (reconsidering the visual input) and verbal reflection (reconsidering its own reasoning)."
+    },
+    {
+     "id": "P10",
+     "name": "Look Light, Think Heavy pattern",
+     "description": "Verbal reflection rises and peaks mid-way through the CoT, while visual reflection steadily declines over time."
+    },
+    {
+     "id": "P11",
+     "name": "Models fail to abstain when visual info is missing",
+     "description": "Despite visual reflection, models show limited ability to abstain from answering when critical visual information is missing, indicating shallow visual reflection."
+    },
+    {
+     "id": "P12",
+     "name": "Attention bias toward reasoning tokens",
+     "description": "During long CoT, models (e.g. Kimi-VL-A3B-Thinking) allocate disproportionate attention to reasoning tokens while progressively neglecting visual tokens, which may constrain visual reflection."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Fig 5-6"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Fig 6"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.1, Sec 4.2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Fig 7-8"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.3, Fig 9"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Task taxonomy and scale",
+   "description": "The study covers 12 multimodal tasks split into perception (comprehensive evaluation, OCR, visual grounding, hallucination, knowledge, counting) and reasoning (math, science, logic, algorithmic, spatial, multi-image), tested on 14 non-reasoning and 8 reasoning models."
+  },
+  {
+   "id": "P14",
+   "name": "Multi-image CoT mechanism",
+   "description": "For multi-image reasoning, MLLMs describe each image in CoT and then reason over the aggregated textual descriptions."
+  },
+  {
+   "id": "P15",
+   "name": "Future directions",
+   "description": "Models need visual introspection capability and mechanisms to leverage external tools such as the think-with-image paradigm to address visual bottlenecks."
+  }
+ ],
+ "structural_reasoning": "Task-level CoT effects and model comparisons are descriptive; the visual-bottleneck chain leads to reflection and attention-bias findings. (Edge P12->P11 is a mechanistic explanation; P10->P12 introduces the attention analysis.)"
+}

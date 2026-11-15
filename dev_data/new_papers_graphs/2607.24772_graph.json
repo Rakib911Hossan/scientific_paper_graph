@@ -1,0 +1,188 @@
+{
+ "arxiv_id": "2607.24772",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "RSMeM design: domain knowledge plus failure-aware experience yields accuracy gains",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "RS agents are domain-agnostic",
+     "description": "Remote-sensing agents built on general-purpose LLMs are domain-agnostic, so they struggle with concepts like NDVI, BSI or land-surface temperature, producing brittle tool-use trajectories with cascading errors such as premature termination or wrong tool invocation."
+    },
+    {
+     "id": "P2",
+     "name": "Workflow templates are costly and static",
+     "description": "Expert-authored workflow templates are labor-intensive to build and maintain and act as external references rather than letting agents internalize corrections from execution failures."
+    },
+    {
+     "id": "P3",
+     "name": "Reflection alone is limited in geoscience",
+     "description": "Without domain knowledge, reflecting agents often misdiagnose failures and fail to turn errors into reusable experience."
+    },
+    {
+     "id": "P4",
+     "name": "Hierarchical knowledge base",
+     "description": "The expert-curated knowledge base has a three-level hierarchy of 3 geoscience domains, 12 sub-domains and 64 atomic analytical tasks, each encoded as a Task Card (title, definition, suggestion)."
+    },
+    {
+     "id": "P5",
+     "name": "Hierarchical Knowledge Grounding",
+     "description": "Stream A retrieves the top-1 Task Card by combining sentence-embedding cosine similarity with lexical bonuses for task title, domain keywords and card content (alpha=0.2, beta=0.08, gamma=0.1, threshold 0.2), compensating for geoscience terms underrepresented in embeddings."
+    },
+    {
+     "id": "P6",
+     "name": "Symbolic failure critic",
+     "description": "A label-free symbolic critic flags failed trajectories using heuristic rules: missing or malformed answer tags, empty responses, invalid option letters, refusal or incompleteness signals, and hedging language indicating guessing."
+    },
+    {
+     "id": "P7",
+     "name": "Failure-Aware Memory retrieval",
+     "description": "Reflections distilled from failed tool-use traces are stored per instance and the most recent one is retrieved by instance-indexed lookup in the next round, giving precise negative constraints and historical fixes."
+    },
+    {
+     "id": "P8",
+     "name": "RSMeM improves tool use",
+     "description": "On EarthBench, RSMeM consistently improves Any-Order, In-Order, Exact-Match and Wise-Score tool-use metrics across backbones, including DeepSeek-V3.2, Kimi-K2 and Qwen3-8B."
+    },
+    {
+     "id": "P9",
+     "name": "Accuracy gain with tiny token cost",
+     "description": "RSMeM raises DeepSeek-V3.2 accuracy by 6.07 points (to 57.89%) while token overhead rises only from 6.23% to 6.97%."
+    },
+    {
+     "id": "P10",
+     "name": "HKG and FAR are complementary",
+     "description": "HKG mainly improves planning (on DeepSeek-V3.2, AO 77.27%->79.50%, IO 55.02%->56.51%), while FAR mainly improves trajectory robustness (Wise-Score 0.0408->0.0763 on Qwen3-8B); the full system peaks at 42.11% on Qwen3-8B and 57.89% on DeepSeek-V3.2."
+    },
+    {
+     "id": "P11",
+     "name": "Memory evolution raises density",
+     "description": "Across evolution stages on DeepSeek-V3.2, EM rises from 25.85% to 27.01% and Experience Density from 55.72 to 57.69, indicating distillation into more concentrated corrective knowledge."
+    },
+    {
+     "id": "P12",
+     "name": "Structured grounding beats generic retrieval",
+     "description": "RSMeM outperforms flat embedding retrieval (+16.33 pp accuracy over Simple RAG) and the Reflexion reflection-only baseline across four backbones."
+    },
+    {
+     "id": "P13",
+     "name": "Cascading semantic error case",
+     "description": "In a Landsat thermal case, treating brightness temperature BT10 as land-surface temperature derailed downstream steps; refinement distilled a semantic constraint (LST must be emissivity-aware) and a procedural constraint requiring a complete consistent pipeline."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2 Stream A"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P7",
+     "evidence": [
+      "Sec 1, Sec 3.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.3 Failure Critique"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.1.1, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.1.1, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.1.1, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.1.2, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.1.2, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.1.3, Table 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.1.3, App A.11"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.2, Fig 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Stronger backbones benefit more",
+   "description": "Stronger backbones benefit more from RSMeM because they better summarize domain knowledge and diagnose execution errors."
+  },
+  {
+   "id": "P15",
+   "name": "Gains vary by domain",
+   "description": "RSMeM benefits most in domains with standardized multi-step workflows, e.g. Disaster Management (+10.25 pp), with smaller gains where residual errors stem from other sources."
+  },
+  {
+   "id": "P16",
+   "name": "Trajectories stay efficient",
+   "description": "Trajectory Redundancy Index values remain close to 1.0, so gains come from refined planning rather than longer trajectories."
+  }
+ ],
+ "structural_reasoning": "Motivating limitations feed the knowledge base and failure-memory design; the two streams jointly explain the measured tool-use, accuracy, efficiency, and ablation results."
+}

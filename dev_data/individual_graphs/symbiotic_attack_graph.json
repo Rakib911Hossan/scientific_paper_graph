@@ -1,0 +1,154 @@
+{
+  "arxiv_id": "unspecified",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/equations/tables rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: the unexplored symbiotic poisoning+evasion threat model",
+      "nodes": [
+        {"id": "P1", "name": "GNNs are increasingly used in high-stakes domains", "description": "GNNs are increasingly used in different domains such as product recommendations and drug discovery."},
+        {"id": "P2", "name": "GNNs are known to be vulnerable to adversarial attacks across many tasks", "description": "GNNs are vulnerable to adversarial attacks across many tasks such as node classification, graph classification, link prediction, and node embeddings."},
+        {"id": "P3", "name": "Attacks can scale to very large graphs", "description": "With attacks being able to scale to very large graphs, studying the adversarial robustness of GNNs is of growing importance."},
+        {"id": "P4", "name": "GNNs can be attacked at test time (evasion) or train time (poisoning), but never both together", "description": "GNNs can be attacked during test time (evasion) or train time (poisoning); yet a threat model combining evasion and poisoning has not been considered in the literature."},
+        {"id": "P5", "name": "Combined train+test access is a realistic scenario for public or scraped graphs", "description": "A combined evasion-and-poisoning threat model is nevertheless reasonable given real-world scenarios such as publicly available graphs or graphs extracted from sources like social media sites, where an adversary could plausibly have both train- and test-time access."},
+        {"id": "P6", "name": "This motivates studying a novel 'symbiotic' threat model combining poisoning and evasion", "description": "Because GNNs are known to be vulnerable individually to poisoning and evasion, and combined access is realistic, this motivates initiating study of a novel 'symbiotic' threat model combining both attack types under a single global budget."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P6", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P6", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Background: evasion vs. poisoning objectives, and the PR-BCD attack foundation",
+      "nodes": [
+        {"id": "P7", "name": "Evasion attacks perturb a fixed, already-trained model's input graph", "description": "An evasion attack targets a fixed GNN with parameters θ obtained on a clean graph, solving maxĜ Latk(fθ(Ĝ)) (Eq. 1)."},
+        {"id": "P8", "name": "Poisoning attacks perturb the graph before training to degrade the trained model", "description": "A poisoning attack is performed before training but aims to degrade post-training performance, solving the bi-level problem maxĜ Latk(fθ*(Ĝ)) where θ* minimizes the training loss on the perturbed graph (Eq. 2)."},
+        {"id": "P9", "name": "Poisoning is inherently more challenging because it requires solving a bi-level optimization", "description": "Poisoning is admittedly more challenging than evasion since it requires optimizing over the outcome of a nested training procedure, motivating prior approximations such as reusing evasion perturbations or unrolling training to compute meta-gradients."},
+        {"id": "P10", "name": "Standard PGD relaxes the adjacency matrix to continuous probabilities but scales quadratically", "description": "The PGD attack relaxes the discrete adjacency matrix to continuous probabilities P∈[0,1]^(n×n) for gradient-based updates, but since the adjacency matrix grows quadratically with the number of nodes, plain PGD faces scalability challenges on larger graphs."},
+        {"id": "P11", "name": "PR-BCD addresses this by updating only a randomized block of entries per iteration", "description": "PR-BCD applies Randomized Block Coordinate Descent, updating only a block of size b of P per iteration, keeping promising entries and resampling the rest in a survival-of-the-fittest manner, with the budget enforced in expectation via a projection step, making it scale better to larger graphs."},
+        {"id": "P12", "name": "PR-BCD's scalability makes it the natural building block for a symbiotic attack that must run many nested evaluations", "description": "Because PR-BCD is specifically designed to scale efficiently to large graphs, and because a combined symbiotic attack (especially its joint variant) requires many nested evasion evaluations within poisoning, PR-BCD is chosen as the base attack to adapt to the symbiotic threat model."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P9", "evidence": ["S2.1", "Eq1", "Eq2"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P9", "evidence": ["S2.1", "Eq2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["S2.1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P12", "evidence": ["S2.1.1", "S3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P12", "evidence": ["S3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Formulating the symbiotic objective and threat model",
+      "nodes": [
+        {"id": "P13", "name": "The symbiotic objective extends poisoning's bi-level form with an additional evasion stage", "description": "The symbiotic attack objective conditions the poisoning loss on an evasion graph G*, itself obtained by maximizing an evasion loss on the already-poisoned model (Eq. 3), extending the bi-level structure of plain poisoning (Eq. 2) with a nested evasion optimization."},
+        {"id": "P14", "name": "The threat model grants the attacker full graph access at both train and test time but black-box model access", "description": "The symbiotic threat model assumes an attacker with full access to the graph at both train and test times, knowledge of the model architecture (enabling a surrogate), but only black-box access to the trained model itself, limited by a single global edge-perturbation budget."},
+        {"id": "P15", "name": "This combined objective and threat model together define the design space for approximate symbiotic attacks", "description": "Together, the symbiotic objective (Eq. 3) and the specified threat model define the design space within which the paper proposes approximate attacks to the intractable exact bi-level-plus-nested-maximization problem."}
+      ],
+      "edges": [
+        {"from": "P6", "to": "P13", "evidence": ["S3"], "votes": 2, "confidence": "majority"},
+        {"from": "P8", "to": "P13", "evidence": ["S3", "Eq3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P15", "evidence": ["S3"], "votes": 2, "confidence": "majority"},
+        {"from": "P14", "to": "P15", "evidence": ["S3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Two approximate symbiotic attacks: sequential and joint",
+      "nodes": [
+        {"id": "P16", "name": "The sequential attack splits the budget and applies poisoning then evasion in sequence", "description": "The sequential attack splits the total budget in two, launching an evasion attack with the second half after poisoning the model with the first half, with no knowledge of the future evasion during poisoning."},
+        {"id": "P17", "name": "Poisoning still helps the later evasion step by reducing classification margins", "description": "Even without foresight of the future evasion, the poisoning attack can still help by causing some nodes to be misclassified and reducing the classification margin of other nodes, making them easier to misclassify during the subsequent evasion attack."},
+        {"id": "P18", "name": "The joint attack instead includes an inner evasion attack within each poisoning iteration", "description": "The joint attack launches an evasion attack within each poisoning-attack iteration and computes the poisoning loss on the poisoned model evaluated over the resulting evasion graph, so poisoning is optimized to directly increase vulnerability to evasion."},
+        {"id": "P19", "name": "The joint attack more directly approximates the symbiotic objective than the sequential attack", "description": "Because the joint attack explicitly conditions the poisoning loss on a nested evasion step at every iteration, it more directly targets the symbiotic objective (Eq. 3) than the sequential attack, which only benefits from evasion indirectly via reduced margins."},
+        {"id": "P20", "name": "The sequential attack is mathematically a special case of the joint attack with zero inner-evasion iterations", "description": "The sequential attack is in fact a special case of the joint attack in which the inner evasion attack is run with zero iterations per poisoning step, unifying the two proposed methods as points on a single spectrum."}
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["S3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["S3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P18", "evidence": ["S3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["S3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P19", "evidence": ["S3"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P20", "evidence": ["S3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P20", "evidence": ["S3"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Main results: symbiotic attacks outperform plain poisoning and evasion",
+      "nodes": [
+        {"id": "P21", "name": "Symbiotic attacks are stronger than poisoning across all tested tasks", "description": "Across all benchmark model/dataset combinations, the symbiotic attacks achieve lower (i.e. stronger) perturbed accuracy than the poisoning attack alone (Table 2)."},
+        {"id": "P22", "name": "Symbiotic attacks are also stronger than plain evasion, especially against GCN and GPRGNN", "description": "The symbiotic attacks are stronger than plain evasion attacks especially against GCN and GPRGNN models, per the perturbed accuracy comparisons in Table 2."},
+        {"id": "P23", "name": "This confirms it is beneficial to reallocate part of the poisoning budget toward an evasion objective", "description": "Because symbiotic attacks consistently beat poisoning alone across tasks, this indicates it is beneficial to allocate part of the resources of the poisoning attack for the evasion objective, rather than spending the entire budget on poisoning."},
+        {"id": "P24", "name": "The symbiotic effect is most pronounced on the larger PubMed graph", "description": "The effect of the symbiotic threat model is most evident on the larger PubMed graph, with accuracy dropping to almost zero, e.g. against a GCN."}
+      ],
+      "edges": [
+        {"from": "P19", "to": "P21", "evidence": ["S4.2", "Table2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P23", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P24", "evidence": ["S4.2", "Table2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Effect of test set size: symbiotic robustness to larger test sets via train-time manipulation",
+      "nodes": [
+        {"id": "P25", "name": "Attacking very few test nodes is easy for all attack types", "description": "Attacking a very small number of nodes is easy, as all attacks can obtain zero accuracy since a few edge perturbations should be enough to manipulate a small number of nodes."},
+        {"id": "P26", "name": "Evasion becomes considerably harder as the number of test nodes grows", "description": "As the number of test nodes grows, evasion becomes considerably more difficult across all datasets, since the same budget must now affect more target nodes at test time only."},
+        {"id": "P27", "name": "Poisoning and symbiotic attacks degrade far less with larger test sets, especially on PubMed", "description": "Although poisoning and symbiotic attacks also become somewhat more difficult with more test nodes, they are much more robust to test-set size than evasion, especially on PubMed."},
+        {"id": "P28", "name": "This robustness stems from poisoning's ability to manipulate information flow during training, not just budget-per-node", "description": "Because the degrading performance with test-set size cannot be explained only by attacks having to spread the same budget over more nodes, the poisoning component's ability to manipulate the flow of information across the graph during training (particularly effective when labeled training nodes are scarce, as on PubMed) explains its added robustness to test-set size."},
+        {"id": "P29", "name": "Symbiotic attacks inherit this training-time robustness while also benefiting from evasion's targeted refinement", "description": "Because the symbiotic attack's poisoning component reduces baseline accuracy and manipulates label-information flow while its evasion component further targets misclassification, symbiotic attacks end up both more robust to larger test sets than plain evasion and stronger overall than poisoning alone."}
+      ],
+      "edges": [
+        {"from": "P25", "to": "P26", "evidence": ["S4.3", "Figure2"], "votes": 2, "confidence": "majority"},
+        {"from": "P26", "to": "P27", "evidence": ["S4.3", "Figure2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P29", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P29", "evidence": ["S4.3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Hyperparameter sensitivity: block size and budget",
+      "nodes": [
+        {"id": "P30", "name": "Very small PR-BCD block sizes reduce attack effectiveness", "description": "For very small block sizes, all four attacks are less effective since the PR-BCD optimization can cover only a small part of the adjacency matrix per iteration (Figure 3)."},
+        {"id": "P31", "name": "Marginal benefit of larger block sizes diminishes once most of the adjacency matrix is covered", "description": "The marginal benefit of increasing block size decreases once a large part of the adjacency matrix can already be covered by the block."},
+        {"id": "P32", "name": "All four attacks follow a similar trend as the global budget increases", "description": "Across varying global budget fractions, all four attacks (evasion, poisoning, symbiotic, and the baseline) follow a similar increasing-effectiveness trend (Figure 4)."},
+        {"id": "P33", "name": "On PubMed's low-label regime, a 5% budget under the symbiotic attack drives accuracy near zero", "description": "On PubMed, where the share of labeled train nodes is lowest, changing just 5% of edges is enough to achieve close to zero accuracy under the symbiotic threat model, highlighting the attack's potentially devastating effect in large graphs with few labeled nodes."}
+      ],
+      "edges": [
+        {"from": "P30", "to": "P31", "evidence": ["S4.4", "Figure3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["S4.4", "Figure4"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P33", "evidence": ["S4.4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P34", "name": "Definition of the admissible perturbation set Φ(G)", "description": "Φ(G) is defined as the set of graphs reachable from G after at most ∆ edge perturbations (e.g. for undirected G, graphs within Hamming distance 2∆ that remain symmetric), though other structural metrics like degree distribution or diameter could alternatively define admissibility."},
+    {"id": "P35", "name": "Prior poisoning approximations: reused evasion perturbations and meta-gradients", "description": "Prior work has approximated poisoning attacks by reusing evasion perturbations directly, or by unrolling the training procedure to compute meta-gradients of the attack loss with respect to the adjacency matrix."},
+    {"id": "P36", "name": "Meta-PGD extends PGD to the poisoning setting", "description": "PGD can also be applied to poisoning as the Meta-PGD attack, which the current work's PR-BCD-based poisoning component follows the same underlying principle of."},
+    {"id": "P37", "name": "Single global budget is a simplification; more sophisticated constraints are possible", "description": "The paper considers only a single global perturbation budget ∆ for simplicity, noting it is straightforward to incorporate more sophisticated constraints (e.g. per-node local budgets) when beneficial for a given application."},
+    {"id": "P38", "name": "Experimental setup: datasets, models, and defenses considered", "description": "Experiments use Cora, CiteSeer, and PubMed with GCN, GAT, APPNP, and GPRGNN victim models, plus R-GCN and Jaccard purification as candidate defenses, with 20 labeled nodes per class for training and 10% of nodes as the test set."},
+    {"id": "P39", "name": "Future work: alternative inner evasion attacks for the joint method", "description": "The joint attack is not limited to PR-BCD as its inner evasion step and could instead use other evasion attacks, or attacks designed specifically for the symbiotic setting."},
+    {"id": "P40", "name": "Future work: inductive tasks, local budgets, and targeted attacks", "description": "The symbiotic threat model could be extended to inductive tasks (poisoning validation nodes, evading on a new test graph), per-node local budgets, or targeted attacks on specific nodes, planned as next steps."},
+    {"id": "P41", "name": "Future work: novel evasion-aware poisoning attacks", "description": "Further novel poisoning attacks could be developed that utilize knowledge of a future evasion step in different ways beyond the sequential and joint formulations presented."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph traces the paper's compact workshop-length argument from motivation through method to results. C1 captures the Introduction's case that a combined poisoning-plus-evasion threat model is realistic and unexplored. C2 reconstructs the necessary background (Section 2) establishing why poisoning is harder than evasion and why PR-BCD is the natural scalable base attack, which C3 then extends into the formal symbiotic objective and threat model (Section 3, Eq. 3). C4 captures the two concrete attack instantiations (sequential and joint) as a derivation chain culminating in the observation that sequential is a special case of joint, mirroring the paper's own framing. C5-C7 mirror the three empirical subsections of Section 4 (main comparison, test-set-size effect, hyperparameter sensitivity), each concluding with the paper's own interpretive claim linking the observed pattern back to the poisoning component's train-time information-flow manipulation. Isolated nodes are limited to formal definitions (admissible perturbation set), prior-work approximations, experimental setup details, and the paper's own explicitly stated future-work directions, which support the narrative without being premises in the central derivation chains."
+}

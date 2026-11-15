@@ -1,0 +1,203 @@
+{
+ "arxiv_id": "2609.04971",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "KV cache growth in LRMs and the failure of recent-query scoring, via the TRT observation and clustered global queries, motivate BeaconKV and its results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "KV cache bottleneck in LRMs",
+     "description": "Long CoT reasoning makes the KV cache grow linearly with sequence length; e.g. Qwen3-4B generating 32K tokens at batch size 16 needs over 77GB of KV cache, near the limit of an 80GB GPU."
+    },
+    {
+     "id": "P2",
+     "name": "Recent-query scoring assumption",
+     "description": "Existing KV compression methods (e.g. RPC, R-KV) score KV importance with attention from recent queries, assuming they are reliable proxies for future attention."
+    },
+    {
+     "id": "P3",
+     "name": "Thought Revisiting Tokens exist",
+     "description": "In LRM decoding, global queries attend to distant keys (e.g. early task-solving plans and problem constraints) rather than nearby ones; the corresponding tokens are called Thought Revisiting Tokens (TRT), and their attention distances are clearly separated from those of local queries."
+    },
+    {
+     "id": "P4",
+     "name": "TRT occur sporadically across heads",
+     "description": "Global queries appear with varying frequency across many layers and heads and occur sporadically and unpredictably in the reasoning trace."
+    },
+    {
+     "id": "P5",
+     "name": "Recent queries miss TRT",
+     "description": "Because TRT are sporadic, recent-query-based methods cannot anticipate which distant KV pairs future TRT will revisit, causing premature eviction of essential KV pairs and degraded reasoning under tight budgets."
+    },
+    {
+     "id": "P6",
+     "name": "Global queries cluster",
+     "description": "Global queries have low similarity to neighbouring local queries but high mutual similarity, and cluster into a small number of similarity groups in the query embedding space (PCA, Fig 4)."
+    },
+    {
+     "id": "P7",
+     "name": "Beacon queries represent clusters",
+     "description": "A compact set of beacon queries, one representative per global query cluster, can anticipate which KV pairs future global queries will revisit without storing the entire query history."
+    },
+    {
+     "id": "P8",
+     "name": "BeaconKV observation set",
+     "description": "BeaconKV, a training-free method, scores KV pairs using observation queries made of recent queries plus beacon queries selected by Continual Farthest Point Sampling (FPS), a bounded-buffer online algorithm."
+    },
+    {
+     "id": "P9",
+     "name": "Max-aggregation scoring",
+     "description": "BeaconKV aggregates attention over observation queries by max-pooling rather than mean-pooling, since TRT signals are high-magnitude but rare and mean-pooling would dilute them."
+    },
+    {
+     "id": "P10",
+     "name": "Higher accuracy than RPC and R-KV",
+     "description": "On R1-Distill-Qwen-7B, R1-Distill-Llama-8B, Qwen3-4B and Qwen3-14B across AIME24, MATH-500, LiveCodeBench and GPQA-Diamond, BeaconKV generally outperforms RPC and R-KV, with gains up to 31.7 points (Qwen3-14B, AIME24, budget 1024)."
+    },
+    {
+     "id": "P11",
+     "name": "Memory and throughput gains",
+     "description": "On Qwen3-4B with 32K generation on an A100 80GB, BeaconKV with a 2K budget cuts peak memory from 77.0GB to 13.3GB (5.8x) and raises throughput from 82.3 to 356.4 tokens/s (over 4.3x)."
+    },
+    {
+     "id": "P12",
+     "name": "Same efficiency as RPC, better accuracy",
+     "description": "At matched 2K and 1K budgets BeaconKV matches RPC's throughput and memory while improving LiveCodeBench accuracy by +6.3 and +12.3 points."
+    },
+    {
+     "id": "P13",
+     "name": "Balanced query split is best",
+     "description": "A balanced (16 recent, 16 beacon) observation set gives 64.6% accuracy at 4355.7s latency, while over-allocating to beacons (1,31) gives 63.5% at 10871.3s."
+    },
+    {
+     "id": "P14",
+     "name": "Max beats mean aggregation",
+     "description": "Max aggregation generally outperforms mean aggregation, e.g. 23.3 vs 18.8 at a 256-token budget (Table 2)."
+    },
+    {
+     "id": "P15",
+     "name": "Gains not from initial queries alone",
+     "description": "BeaconKV consistently outperforms an Initial+Recent baseline, indicating gains come from Continual FPS dynamically capturing evolving global query patterns, not merely preserving early context."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 2.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.1, Implications paragraph"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2, Fig 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.2, Fig 8"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.4, Table 4"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.4, Table 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.3, Table 1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.3, Table 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P15",
+     "evidence": [
+      "Sec 5.3, Table 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [],
+ "structural_reasoning": "Problem (KV memory), diagnosis (recent queries miss TRT; global queries cluster), method (beacon queries, Continual FPS, max pooling), then results and ablations."
+}

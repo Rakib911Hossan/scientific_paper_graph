@@ -1,0 +1,181 @@
+{
+ "arxiv_id": "2608.20988",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Softmax Jacobian sensitivity to Jacobian-guided noise injection and its results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Attention is sensitive to quantization",
+     "description": "The self-attention mechanism is particularly sensitive to quantization errors, and error propagation is highly pronounced in attention layers of quantized models."
+    },
+    {
+     "id": "P2",
+     "name": "Softmax Jacobian is dense and state-dependent",
+     "description": "Unlike a linear layer whose Jacobian is a fixed weight matrix, the softmax Jacobian J_S(z) is dense and strictly state-dependent, so error amplification varies with the input."
+    },
+    {
+     "id": "P3",
+     "name": "Spread attention is sensitive, concentrated is saturated",
+     "description": "When attention concentrates on a single token the Jacobian norm approaches zero (saturated, safe), while attention spread over two or more tokens lies in sensitive regions where quantization errors are amplified."
+    },
+    {
+     "id": "P4",
+     "name": "Bounding quantization error needs Jacobian norm",
+     "description": "The quantization-induced error in attention probabilities can be bounded by constraining the spectral norm of the softmax Jacobian."
+    },
+    {
+     "id": "P5",
+     "name": "Spectral norm bounded by logit Hessian trace",
+     "description": "Near a local optimum, ||J_S||_2 <= sqrt(Tr(logit Hessian)/lambda_min), so regularizing the trace of the logit Hessian bounds the Jacobian and quantization error."
+    },
+    {
+     "id": "P6",
+     "name": "Gaussian logit noise implicitly regularizes Hessian",
+     "description": "Minimizing expected loss under zero-mean isotropic Gaussian logit perturbation N(0, sigma^2 I) matches Hessian-trace regularization with strength lambda = sigma^2/2."
+    },
+    {
+     "id": "P7",
+     "name": "Jacobian Frobenius norm has closed form",
+     "description": "For p = softmax(z), ||J_S||_F^2 = ||p||_2^2 - 2||p||_3^3 + ||p||_2^4, computable with element-wise operations and negligible forward overhead."
+    },
+    {
+     "id": "P8",
+     "name": "Noise variance derived from Jacobian norm",
+     "description": "Jacobian-guided noise injection sets row-wise noise std sigma_i = alpha * sqrt(E[||J_S||_F^2]), concentrating regularization on sensitive positions, updated every T steps, clamped, and disabled at inference."
+    },
+    {
+     "id": "P9",
+     "name": "Method gives PTQ gains across families",
+     "description": "Jacobian-guided noise injection improves quantized performance consistently for Llama-3.2-3B and Qwen2.5-3B under AWQ, GPTQ and SpinQuant, without significantly degrading full-precision accuracy."
+    },
+    {
+     "id": "P10",
+     "name": "Large gains on SigLIP at W4A4",
+     "description": "On SigLIP at W4A4, noise injection recovers up to +9% accuracy with ERQ and up to +37% with RepQViT, with gains growing as bit-width decreases."
+    },
+    {
+     "id": "P11",
+     "name": "Method also helps QAT",
+     "description": "Noise injection improves over the QAT baseline for SigLIP, so it is usable with existing QAT pipelines."
+    },
+    {
+     "id": "P12",
+     "name": "Moderate alpha is best",
+     "description": "In SigLIP W4A4 QAT, alpha in [0.5, 1.0] works best (alpha = 0.5 gives 31.37% vs 30.31% baseline) and performance drops to 27.69% at alpha = 50."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Fig 2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 2.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 2.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 2.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 2.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 2.4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 2.4, Eq 12"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P8",
+     "evidence": [
+      "Sec 2.4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.2, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.3, Fig 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 3.3, Fig 3b"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 3.3, Fig 3b"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "No inference overhead",
+   "description": "The method adds no inference-time overhead and matches baseline performance at fp16."
+  },
+  {
+   "id": "P14",
+   "name": "Perplexity gain up to 40%",
+   "description": "The method gives up to +37% relative accuracy gains and improves relative WikiText perplexity by up to 40% in low-bit settings."
+  },
+  {
+   "id": "P15",
+   "name": "Zero Jacobian norm is problematic",
+   "description": "A zero Jacobian norm from single-token concentration degenerates to near-constant outputs and large logit magnitudes amplify quantization errors exponentially; noise injection discourages this collapse."
+  },
+  {
+   "id": "P16",
+   "name": "Low bits and outliers worsen degradation",
+   "description": "Quantization degradation is more severe at 4-bit or below due to reduced capacity and activation outliers."
+  }
+ ],
+ "structural_reasoning": "Theoretical chain from softmax sensitivity through Hessian regularization to the noise design, followed by empirical results."
+}

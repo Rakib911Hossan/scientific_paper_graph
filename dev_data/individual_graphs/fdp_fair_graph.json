@@ -1,0 +1,440 @@
+{
+  "arxiv_id": "2603.24392v1",
+  "components": [
+    {
+      "component_id": "C1",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "DP and fairness under-explored jointly",
+          "description": "Although privacy and algorithmic fairness are each rapidly growing research areas, their joint effect remains comparatively under-explored."
+        },
+        {
+          "id": "P2",
+          "name": "DP can deteriorate fairness",
+          "description": "Prior empirical work indicates that differential privacy can deteriorate fairness in various settings."
+        },
+        {
+          "id": "P3",
+          "name": "Prior work lacks joint theory in distributed setting",
+          "description": "Most prior works on joint DP-fairness lack rigorous theoretical guarantees on both fairness and excess risk control, and are typically developed under a single-server centrally-stored data setting."
+        },
+        {
+          "id": "P4",
+          "name": "Paper proposes FDP-Fair",
+          "description": "The paper proposes a two-step algorithm, FDP-Fair, targeting demographic disparity constrained classification under federated differential privacy in a multi-server distributed setting."
+        },
+        {
+          "id": "P5",
+          "name": "CDP-Fair as single-server alternative",
+          "description": "In the special case where there is only one server, the paper further proposes CDP-Fair, a simple yet computationally-lightweight alternative to FDP-Fair."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P3", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P3", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["S1", "S1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S1.1", "S3.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C2",
+      "nodes": [
+        {
+          "id": "P6",
+          "name": "Central DP definition",
+          "description": "Central DP (CDP) requires that the privacy mechanism's output distribution changes by at most a multiplicative eps and additive delta factor between neighboring datasets differing in one entry."
+        },
+        {
+          "id": "P7",
+          "name": "Federated DP definition",
+          "description": "Federated DP (FDP) requires that, in the non-interactive setting, each server's transcript shared to the central server individually satisfies an (eps_s, delta_s)-CDP constraint."
+        },
+        {
+          "id": "P8",
+          "name": "FDP built on per-server CDP",
+          "description": "Federated DP is defined by requiring the privatized transcript output by each individual server to satisfy central DP, extending CDP to the non-interactive distributed setting."
+        }
+      ],
+      "edges": [
+        {"from": "P6", "to": "P8", "evidence": ["S2.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P7", "evidence": ["S2.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 10.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C3",
+      "nodes": [
+        {
+          "id": "P9",
+          "name": "Demographic disparity definition",
+          "description": "Demographic disparity (DD) of a classifier is defined as the difference in probability of predicting the positive label between the two sensitive groups."
+        },
+        {
+          "id": "P10",
+          "name": "Alpha-fair Bayes optimal classifier",
+          "description": "The alpha-fair Bayes optimal classifier minimizes misclassification error subject to the constraint that the absolute demographic disparity is at most alpha."
+        },
+        {
+          "id": "P11",
+          "name": "Optimal classifier via adjusted threshold",
+          "description": "The alpha-fair Bayes optimal classifier can be obtained by shifting the unconstrained Bayes decision rule through an adjusted threshold determined by a fairness parameter."
+        },
+        {
+          "id": "P12",
+          "name": "Goal: estimate fair classifier under FDP",
+          "description": "The paper's goal is to construct an estimator for the alpha-fair Bayes optimal classifier under federated differential privacy constraints."
+        }
+      ],
+      "edges": [
+        {"from": "P9", "to": "P10", "evidence": ["S2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["S2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P12", "evidence": ["S2.2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C4",
+      "nodes": [
+        {
+          "id": "P13",
+          "name": "Gaussian mechanisms for scalars and functions",
+          "description": "Step S1 of Algorithm 1 uses Gaussian mechanisms (univariate noise for scalars, Gaussian processes for functional outputs) to privately estimate class probabilities and regression functions."
+        },
+        {
+          "id": "P14",
+          "name": "Site-wise privatized estimators aggregated",
+          "description": "Site-wise privatized estimators of class probabilities and regression functions are aggregated at the central server through weighted sums, yielding global estimators while maintaining FDP."
+        },
+        {
+          "id": "P15",
+          "name": "Discretisation of threshold search",
+          "description": "To estimate the private fairness threshold, the continuous optimization problem is approximated by discretising the search interval into a fine evaluation grid."
+        },
+        {
+          "id": "P16",
+          "name": "Binary tree tail-count structure",
+          "description": "Each discretised candidate is reduced to evaluating tail counts via binary trees, where counts in dyadic intervals are organized hierarchically to enable efficient privacy budget allocation."
+        },
+        {
+          "id": "P17",
+          "name": "Constant per-level sensitivity",
+          "description": "In the binary tree construction, changing a single data point affects at most one node per tree level, resulting in constant-order L2-sensitivity for the Gaussian mechanism."
+        },
+        {
+          "id": "P18",
+          "name": "Logarithmic tree depth limits composition",
+          "description": "Because the tree depth is selected to be logarithmic, only a logarithmic number of privacy compositions is required, unlike the polynomial compositions needed in standard discretisation approaches."
+        },
+        {
+          "id": "P19",
+          "name": "Improved accuracy from log composition",
+          "description": "The combination of constant per-level sensitivity and logarithmic-depth composition leads to substantial accuracy improvement compared to standard private nonparametric discretisation approaches."
+        },
+        {
+          "id": "P20",
+          "name": "Site-wise trees aggregated by variance-weighting",
+          "description": "The resulting site-wise binary trees are aggregated at the central server via weighted averaging, with weights chosen according to the variances of the corresponding site-level estimators."
+        },
+        {
+          "id": "P21",
+          "name": "Noise breaks DD monotonicity",
+          "description": "Aggregating Gaussian noise across different leaves of the binary tree means the evaluated empirical DD across grids is no longer guaranteed to be monotonically non-increasing, unlike the true DD function."
+        },
+        {
+          "id": "P22",
+          "name": "Monotonicity correction algorithm",
+          "description": "Algorithm 4 is introduced to fit, with high probability, a non-increasing sequence to the noisy DD evaluations while controlling the induced bias, restoring the structure needed for threshold search."
+        }
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["S3.est"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P16", "evidence": ["S3.tree"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["S3.rem2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S3.rem2"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P19", "evidence": ["S3.rem2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P20", "evidence": ["S3.tree"], "votes": 2, "confidence": "majority"},
+        {"from": "P20", "to": "P21", "evidence": ["S3.mono"], "votes": 2, "confidence": "majority"},
+        {"from": "P21", "to": "P22", "evidence": ["S3.mono"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C5",
+      "nodes": [
+        {
+          "id": "P23",
+          "name": "Single-server DD is monotone (Thm 12)",
+          "description": "In the single-server case, the empirical demographic disparity function is monotonically non-increasing, as shown in Theorem 12."
+        },
+        {
+          "id": "P24",
+          "name": "Monotonicity enables vertical noise shift",
+          "description": "Because the single-server empirical DD is monotone, the threshold optimization is equivalent to finding where DD first crosses the fairness level, allowing the DD curve itself (rather than the cutoff point directly) to be perturbed vertically with noise."
+        },
+        {
+          "id": "P25",
+          "name": "CDP-Fair simplified threshold estimation",
+          "description": "Algorithm 5 (CDP-Fair) estimates the adjusted threshold by adding one correctly calibrated Gaussian noise term directly to the empirical DD function, avoiding the more complex noisy binary tree procedure."
+        },
+        {
+          "id": "P26",
+          "name": "Pointwise CDP implies cutoff-point CDP",
+          "description": "By ensuring each pointwise release of the DD function at a given threshold satisfies CDP, the induced release of the resulting cutoff point also satisfies CDP."
+        }
+      ],
+      "edges": [
+        {"from": "P23", "to": "P24", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P25", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P26", "evidence": ["S3.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 9.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C6",
+      "nodes": [
+        {
+          "id": "P27",
+          "name": "Theorem 1: FDP-Fair and CDP-Fair satisfy privacy",
+          "description": "Under the stated assumptions, Algorithm 1 (FDP-Fair) is (eps,delta)-FDP and Algorithm 5 (CDP-Fair) is (eps,delta)-CDP."
+        },
+        {
+          "id": "P28",
+          "name": "CDP-Fair disparity inflation bound",
+          "description": "The population demographic disparity of the CDP-Fair output exceeds alpha by an offset of order N^{-1/2} plus (N*eps)^{-1}."
+        },
+        {
+          "id": "P29",
+          "name": "FDP-Fair disparity inflation bound (order rho)",
+          "description": "Under additional conditions on server sample sizes and bandwidth, the population demographic disparity of the FDP-Fair output exceeds alpha by an offset of order rho, as defined via a combination of privacy and sample-size terms across servers."
+        },
+        {
+          "id": "P30",
+          "name": "CDP offset driven by empirical deviation and noise",
+          "description": "The CDP-Fair offset term is determined by the high-probability bound on the deviation between the empirical and estimated DD at the threshold, capturing both sampling deviation and Gaussian noise variance."
+        },
+        {
+          "id": "P31",
+          "name": "Parametric plus private rate decomposition",
+          "description": "The CDP-Fair offset combines the standard parametric rate N^{-1/2} for plug-in fairness estimators with an additional private parametric rate of order (N*eps)^{-1}."
+        },
+        {
+          "id": "P32",
+          "name": "FDP inflation larger due to composition limits",
+          "description": "The FDP-Fair disparity inflation of order rho is larger than the CDP-Fair inflation in (5), because privacy compositions across server communications preclude direct infinite pointwise evaluation of DD, unlike in the single-server CDP case."
+        },
+        {
+          "id": "P33",
+          "name": "Higher inflation driven by binary tree discretisation error",
+          "description": "The larger FDP-Fair inflation term is primarily driven by the discretisation error introduced by the noisy binary tree construction, corresponding to the estimation error of DD per evaluation grid point."
+        }
+      ],
+      "edges": [
+        {"from": "P27", "to": "P28", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P29", "evidence": ["S4.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P30", "to": "P28", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P30", "to": "P31", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P29", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P32", "evidence": ["S4.2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.5, "flagged_edges": []}
+    },
+    {
+      "component_id": "C7",
+      "nodes": [
+        {
+          "id": "P34",
+          "name": "Fairness-aware excess risk decomposition",
+          "description": "The absolute excess risk relative to the optimal fair classifier is bounded by the fairness-aware excess risk plus a disparity cost term."
+        },
+        {
+          "id": "P35",
+          "name": "Theorem 2 excess risk bound for FDP-Fair",
+          "description": "Theorem 2 provides finite-sample fairness-aware excess risk bounds for Algorithm 1 under a chosen bandwidth and server weighting scheme, the first such guarantees for fairness-aware classification under FDP."
+        },
+        {
+          "id": "P36",
+          "name": "Excess risk decouples into four cost sources",
+          "description": "The excess risk upper bound decomposes into the intrinsic cost of classification, the cost of privacy in classification, the non-private cost of fairness, and the private cost of fairness."
+        },
+        {
+          "id": "P37",
+          "name": "Automatically fair regime recovers non-fair minimax rate",
+          "description": "When the fairness threshold parameter is zero (automatically fair regime), the excess risk bound recovers the minimax optimal rate for FDP non-parametric classification without fairness constraints."
+        },
+        {
+          "id": "P38",
+          "name": "Privacy cost reduces effective sample size",
+          "description": "The cost of privacy in the excess risk bound manifests as a reduction of the effective sample size from SN to SN^2*eps^2, along with a loss in exponent due to added dimension dependence."
+        },
+        {
+          "id": "P39",
+          "name": "Fairness cost from threshold estimation",
+          "description": "When fairness constraints are active, additional terms quantifying the cost of fairness arise from the estimation error of the adjusted threshold, split into non-private and FDP-induced components."
+        },
+        {
+          "id": "P40",
+          "name": "Binary tree construction necessary for fairness cost rate",
+          "description": "The parametric rate inside the fairness-cost term highlights the importance of the binary-tree-based threshold construction, since a naive smoothing-based plug-in alternative would introduce non-parametric rates and yield strictly weaker guarantees."
+        }
+      ],
+      "edges": [
+        {"from": "P34", "to": "P35", "evidence": ["S4.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P35", "to": "P36", "evidence": ["S4.3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P36", "to": "P37", "evidence": ["S4.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P38", "evidence": ["S4.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P36", "to": "P39", "evidence": ["S4.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P40", "evidence": ["S4.3"], "votes": 1, "confidence": "single_run"},
+        {"from": "P39", "to": "P40", "evidence": ["S4.3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 8.0, "flagged_edges": []}
+    },
+    {
+      "component_id": "C8",
+      "nodes": [
+        {
+          "id": "P41",
+          "name": "Increasing alpha reduces misclassification error",
+          "description": "Relaxing the fairness constraint (increasing alpha) yields a noticeable reduction in misclassification error while the fairness constraint remains active, until it becomes inactive and the error curve flattens."
+        },
+        {
+          "id": "P42",
+          "name": "Larger epsilon reduces excess risk",
+          "description": "Weakening the privacy constraint (increasing epsilon) reduces the excess risk for each fixed alpha, with performance converging toward the oracle benchmark as epsilon grows."
+        },
+        {
+          "id": "P43",
+          "name": "Larger sample size reduces error",
+          "description": "Under fixed privacy and fairness parameters, increasing the sample size N leads to uniformly smaller misclassification error."
+        },
+        {
+          "id": "P44",
+          "name": "More servers with fixed total data worsens FDP-Fair accuracy",
+          "description": "When a fixed total sample size is distributed across more servers, the misclassification error of FDP-Fair deteriorates, since local per-server sample size decreases and cross-server aggregation introduces additional privacy-preserving noise."
+        },
+        {
+          "id": "P45",
+          "name": "S=1 FDP-Fair matches CDP-Fair",
+          "description": "When there is only one server, FDP-Fair performs comparably to CDP-Fair, yielding nearly identical misclassification errors and empirical disparities."
+        },
+        {
+          "id": "P46",
+          "name": "Real-data results confirm privacy-fairness trade-off",
+          "description": "On the AdultCensus and Law School datasets, CDP-Fair and FDP-Fair successfully control empirical disparity below the target level while incurring higher misclassification error than non-private classifiers, with the gap narrowing as epsilon increases."
+        }
+      ],
+      "edges": [
+        {"from": "P44", "to": "P45", "evidence": ["S5.1.3"], "votes": 2, "confidence": "majority"},
+        {"from": "P42", "to": "P46", "evidence": ["S5.2.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true,
+      "removed_cycle_edges": 0,
+      "ambiguous_direction_excluded": 0,
+      "fidelity": {"node_score": 10.0, "edge_score": 7.0, "flagged_edges": []}
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P47",
+      "name": "DP has wide industry applications",
+      "description": "Differential privacy has wide applications at Google, Meta, and the US Census Bureau, among others."
+    },
+    {
+      "id": "P48",
+      "name": "Fairness mitigation categorization",
+      "description": "Existing approaches to algorithmic fairness are broadly categorised into pre-processing, in-processing, and post-processing strategies depending on the stage at which fairness constraints are incorporated."
+    },
+    {
+      "id": "P49",
+      "name": "Randomised classifier definition",
+      "description": "A randomised classifier is a measurable function giving the probability of predicting the positive label given the feature and sensitive attribute, with the predicted label drawn Bernoulli accordingly."
+    },
+    {
+      "id": "P50",
+      "name": "Assumption 1: class and feature probability",
+      "description": "Class probabilities are bounded away from 0 and 1, and the per-sensitive-class feature density is Holder smooth and bounded below."
+    },
+    {
+      "id": "P51",
+      "name": "Assumption 2: kernel function conditions",
+      "description": "The kernel function is bounded, Lipschitz, and adaptive to the Holder smoothness class used for the regression functions."
+    },
+    {
+      "id": "P52",
+      "name": "Assumption 3: regression function margin conditions",
+      "description": "The class-wise regression functions are Holder continuous and satisfy margin conditions controlling the behavior of the regression function and DD near the optimal threshold."
+    },
+    {
+      "id": "P53",
+      "name": "Homogeneous setting corollary",
+      "description": "Corollary 3 specializes the excess risk bound of Theorem 2 to the homogeneous setting where all servers have equal sample size and privacy parameters."
+    },
+    {
+      "id": "P54",
+      "name": "Bandwidth choice balances bias and variance",
+      "description": "The bandwidth h is chosen to balance the bias-variance trade-off across privacy and fairness-induced variance terms, and server weights are chosen proportional to effective sample size."
+    },
+    {
+      "id": "P55",
+      "name": "Bin width balances discretisation bias and estimation error",
+      "description": "The bin width theta in the binary tree construction is chosen to balance the discretisation bias in approximating the optimal threshold against the estimation error of the noisy DD estimate."
+    },
+    {
+      "id": "P56",
+      "name": "Simulated data generation setup",
+      "description": "Simulated experiments generate sensitive features, standard features via Beta and Uniform distributions, and labels via an arctan-based regression function, across varying training sizes and privacy budgets."
+    },
+    {
+      "id": "P57",
+      "name": "Cross-fitting classifier construction",
+      "description": "To mitigate randomness from data splitting between estimation and threshold calibration, a cross-fitting approach averages two classifiers with the roles of the two data splits reversed."
+    },
+    {
+      "id": "P58",
+      "name": "Real datasets used",
+      "description": "The paper evaluates CDP-Fair and FDP-Fair on the AdultCensus dataset (income classification, gender as protected attribute) and the Law School entrance dataset (admission classification, race as protected attribute)."
+    },
+    {
+      "id": "P59",
+      "name": "Future extension: unavailable sensitive features",
+      "description": "The paper notes that when sensitive features are unavailable at test time, one could predict them from standard features, or apply a label local DP framework when sensitive features require additional privacy protection."
+    },
+    {
+      "id": "P60",
+      "name": "Future extension: data heterogeneity",
+      "description": "The paper suggests investigating the effect of data heterogeneity across servers under fairness constraints as a direction for future work, connecting to differentially private transfer learning literature."
+    }
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph is coherent across its major thematic clusters: the motivation for jointly studying DP and fairness in a distributed setting (C1), the formal definitions of central and federated DP (C2), the demographic-disparity fairness formulation (C3), the mechanics of the FDP-Fair algorithm's two-step estimation-and-binary-tree procedure (C4), the simplified single-server CDP-Fair shortcut enabled by monotonicity (C5), the formal privacy and disparity-inflation theorem (C6), the excess-risk decomposition theorem (C7), and the numerical validation of the theoretical trade-offs (C8). Edge confidence is generally strong within the algorithmic and theoretical clusters (C1-C6), since these follow direct expository chains in the paper's methods and theorem statements. Confidence is somewhat lower in C7 and C8, where some connections (e.g., linking the binary-tree construction to the fairness-cost rate, or linking server-count effects to real-data results) are supported by the surrounding narrative and multiple experimental panels rather than a single explicit sentence. No cycles were found. A relatively large isolated-node set reflects background assumptions, definitions, and experimental/future-work details that motivate or contextualize but are not tightly chained into the paper's central derivations."
+}

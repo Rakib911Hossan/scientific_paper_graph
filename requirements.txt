@@ -1,0 +1,8 @@
+pymupdf  # plain PDF text extraction (ingest/pdf_to_markdown.py) -- replaced marker-pdf, whose surya-ocr dependency has legacy transformers APIs (transformers.onnx, transformers.pytorch_utils internals) that keep breaking against the transformers>=5.5.3 that vllm requires; no ML model here at all avoids that whole conflict class.
+requests
+nltk
+rank_bm25
+google-genai
+python-dotenv
+pyyaml
+flask

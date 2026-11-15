@@ -1,0 +1,183 @@
+{
+ "arxiv_id": "2606.07936",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Human evaluation matters, criteria were defined and applied, revealing under-reporting and shifting use that motivate recommendations",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Human evaluation is the gold standard",
+     "description": "Human evaluation is still considered the gold standard for long-form generation where automated metrics work poorly, and increasingly also meta-evaluates LLM-judges."
+    },
+    {
+     "id": "P2",
+     "name": "Procedures lack standardization",
+     "description": "Current human evaluation procedures lack standardization and operationalization, limiting validity, robustness, comparability and reproducibility."
+    },
+    {
+     "id": "P3",
+     "name": "20 reportable criteria defined",
+     "description": "The authors define 20 binary reportable criteria covering task definition, annotation operationalization, annotator information, and data analysis and interpretation, developed over four iterative codebook rounds."
+    },
+    {
+     "id": "P4",
+     "name": "Large-scale annotation of *CL papers",
+     "description": "From 9.1k+ *CL papers (2023-2025), over 1,800 study long-form generation with human evaluation; 356 were sampled and 284 manually annotated in full."
+    },
+    {
+     "id": "P5",
+     "name": "Pervasive under-reporting",
+     "description": "Most papers report evaluated dimensions (98%), number of annotators (77%) and number of samples (85%), but other criteria are reported far less often (Fig 1)."
+    },
+    {
+     "id": "P6",
+     "name": "Guidelines and justification only about half",
+     "description": "Only about 50% of papers give justification for the evaluation dimensions or the task guidelines shown to annotators."
+    },
+    {
+     "id": "P7",
+     "name": "Payment, IRB, statistics rarely reported",
+     "description": "Payment information is reported in 29% of papers, IRB determination in 11%, statistical metrics in 9%, and none use power analysis for sample size."
+    },
+    {
+     "id": "P8",
+     "name": "IAA reporting is incomplete",
+     "description": "Among papers with more than one annotator only 51% report inter-annotator agreement (46% overall)."
+    },
+    {
+     "id": "P9",
+     "name": "Human evaluation proportion declining",
+     "description": "Long-form generation papers rose from around 30% to 50% in 2025, but the proportion of all papers with human evaluation stayed around 20%."
+    },
+    {
+     "id": "P10",
+     "name": "LLM-judges widely adopted",
+     "description": "Half of manually annotated papers use LLM-judges, and 20% of these use them for other dimensions without human evaluation."
+    },
+    {
+     "id": "P11",
+     "name": "Human meta-evaluation of LLM-judges rising",
+     "description": "Papers using both LLM-judges and human evaluation for the same dimensions rose from 4% in EMNLP'23 to 30% in EMNLP'24 and 12% in EMNLP'25, without evident reporting improvement."
+    },
+    {
+     "id": "P12",
+     "name": "R1: Report core criteria succinctly",
+     "description": "Authors should report the core reportable criteria for reproducibility, which can be done succinctly in a short passage."
+    },
+    {
+     "id": "P13",
+     "name": "R3: Hold human evaluation to higher standard",
+     "description": "Because human evaluation increasingly serves as the standard for assessing LLM-judges, weak protocols introduce error downstream, demanding greater rigor and documentation."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 4"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 5.1, Fig 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.2, Table 1, Fig 4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P12",
+     "evidence": [
+      "Sec 6, R1"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P13",
+     "evidence": [
+      "Sec 6, R3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P13",
+     "evidence": [
+      "Sec 6, R3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Binary criteria annotated reliably",
+   "description": "Binary questions yield the most reliable annotator judgments (81% agreement), versus 69% and 53% for other question types (Sec 4)."
+  },
+  {
+   "id": "P15",
+   "name": "Heterogeneous demographics reporting",
+   "description": "29% of papers report no annotator demographics and 65% report no recruitment platform; among those that do, 50% recruit domain experts and 31% students (Sec 5)."
+  }
+ ],
+ "structural_reasoning": "Study design leads to findings of under-reporting and shifting practice, from which recommendations follow."
+}

@@ -1,0 +1,619 @@
+{
+  "arxiv_id": "2605.18128v1",
+  "note": "Single-pass extraction (no sentence-level indexing available for this document). Evidence fields reference sections/equations/tables/figures instead of indexed sentences (S#). Votes/confidence/fidelity fields from the reference schema are omitted since no multi-run validation was performed.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: spatial over-generalization gap in MTSAD",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "GNN+sequence models capture spatio-temporal dependencies",
+          "description": "Existing MTSAD frameworks increasingly rely on integrating GNNs with sequence models to capture complex spatio-temporal dependencies."
+        },
+        {
+          "id": "P2",
+          "name": "Spatial over-generalization problem neglected",
+          "description": "Less attention is paid to the spatial over-generalization problem, where unconstrained structural modeling indiscriminately reconstructs anomalies, degrading detection recall."
+        },
+        {
+          "id": "P3",
+          "name": "GNNs lack explicit constraint against spatial over-generalization",
+          "description": "Although GNNs are widely adopted to capture inter-channel relationships, they still lack an explicit mechanism to constrain the side effects of over-generalization in the spatial domain."
+        },
+        {
+          "id": "P4",
+          "name": "Spatial anomaly perception rarely used in final scoring",
+          "description": "The perception of spatial anomalies is rarely incorporated into the final anomaly scoring, partly due to the absence of a dedicated benchmark to evaluate channel-level localization."
+        },
+        {
+          "id": "P5",
+          "name": "Existing datasets lack channel-wise labels",
+          "description": "Existing MTSAD datasets typically provide only time-wise binary labels, omitting the spatial footprint of faults, even though channel-wise anomaly localization holds substantial significance for interpretability and root-cause attribution."
+        },
+        {
+          "id": "P6",
+          "name": "POST proposed to unify spatial+temporal adversarial learning",
+          "description": "These gaps motivate POST, a framework unifying spatio-temporal modeling through a joint prior-observation adversarial learning paradigm."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["Abstract", "Sec I"]},
+        {"from": "P2", "to": "P3", "evidence": ["Sec I"]},
+        {"from": "P4", "to": "P5", "evidence": ["Sec I"]},
+        {"from": "P3", "to": "P6", "evidence": ["Sec I Contributions"]},
+        {"from": "P5", "to": "P6", "evidence": ["Sec I Contributions"]}
+      ]
+    },
+    {
+      "component_id": "C2",
+      "description": "Two essential limitations of prior spatial-topology MTSAD methods",
+      "nodes": [
+        {
+          "id": "P7",
+          "name": "Spatio-temporal entanglement via global positional encoding",
+          "description": "Conventional methods adopt standard Transformer global Positional Encoding across the input representation, so temporal positional cues inevitably contaminate spatial graph learning, causing severe information entanglement."
+        },
+        {
+          "id": "P8",
+          "name": "Unconstrained spatial reconstruction",
+          "description": "Most existing works rely on static, statistically derived adjacency matrices or unconstrained dynamic graphs; without structural constraints, spatial models can over-generalize and reconstruct anomalies too, degrading recall."
+        },
+        {
+          "id": "P9",
+          "name": "These two limitations motivate dedicated mechanisms",
+          "description": "These two limitations (entanglement, unconstrained reconstruction) motivate the paper's proposal of dedicated mechanisms for more robust spatio-temporal modeling of latent associations."
+        }
+      ],
+      "edges": [
+        {"from": "P7", "to": "P9", "evidence": ["Sec I"]},
+        {"from": "P8", "to": "P9", "evidence": ["Sec I"]},
+        {"from": "P7", "to": "P6", "evidence": ["Sec I"]},
+        {"from": "P8", "to": "P6", "evidence": ["Sec I"]}
+      ]
+    },
+    {
+      "component_id": "C3",
+      "description": "Anomaly Transformer (AT) baseline mechanism",
+      "nodes": [
+        {
+          "id": "P10",
+          "name": "Trivial self-correlation risk in unconstrained reconstruction",
+          "description": "Without additional constraints, training on only normal samples risks the attention mechanism degenerating into trivial self-correlation, where each time step reconstructs from itself, allowing reconstruction of both normal and abnormal inputs."
+        },
+        {
+          "id": "P11",
+          "name": "AT introduces prior-observation adversarial association",
+          "description": "The Anomaly Transformer (AT) introduces an explicit adversarial mechanism between a Gaussian-kernel prior distribution and the attention-derived observation distribution of the temporal association, quantified as association discrepancy (Eq. 6-7)."
+        },
+        {
+          "id": "P12",
+          "name": "Adversarial training alternates prior and observation updates",
+          "description": "AT's training alternates between updating the prior P to minimize association discrepancy (adapting to diverse patterns) and updating attention S to maximize it (preventing trivial self-correlation, enforcing non-local associations)."
+        },
+        {
+          "id": "P13",
+          "name": "AT combines reconstruction error and association discrepancy into anomaly score",
+          "description": "AT's final anomaly score combines the reconstruction error with the averaged, inversely-weighted association discrepancy (Eq. 8), so anomalies are flagged when reconstruction error increases or discrepancy decreases."
+        },
+        {
+          "id": "P14",
+          "name": "AT prevents trivial solutions and improves interpretability",
+          "description": "By introducing the prior association, AT prevents the trivial self-correlation solution, compels the model to exploit meaningful cross-time associations, and provides a direct metric of temporal signal integrity."
+        }
+      ],
+      "edges": [
+        {"from": "P10", "to": "P11", "evidence": ["Sec III"]},
+        {"from": "P11", "to": "P12", "evidence": ["Sec III"]},
+        {"from": "P12", "to": "P13", "evidence": ["Sec III", "Eq. 8"]},
+        {"from": "P12", "to": "P14", "evidence": ["Sec III"]}
+      ]
+    },
+    {
+      "component_id": "C4",
+      "description": "Temporal Anomaly Self-Attention (TASA): disentangled positional encoding",
+      "nodes": [
+        {
+          "id": "P15",
+          "name": "APE noise problem for spatial modeling",
+          "description": "Directly adding positional information (APE) to raw inputs introduces noise into representations, particularly degrading reconstruction quality for spatial modeling modules where temporal positional encoding is irrelevant."
+        },
+        {
+          "id": "P16",
+          "name": "Disentangled Positional Encoding (DPE) proposed",
+          "description": "DPE confines the effect of positional encoding within the TASA module at each layer, injecting it only into the Q and K branches used to compute the attention association S, leaving the final reweighted features clean (Eq. 9-10)."
+        },
+        {
+          "id": "P17",
+          "name": "DPE retains absolute position unlike RoPE",
+          "description": "Unlike RoPE, which encodes only relative position and removes absolute position information, DPE retains absolute positional information by directly adding it, which is preferred because MTSAD sequences are fixed-length and relatively short, so RoPE's relative-position advantage doesn't apply and its loss of absolute position hinders accurate reconstruction."
+        },
+        {
+          "id": "P18",
+          "name": "Regularization term (Ltr) added to prevent trivial fixed-peak solutions",
+          "description": "Because the model can learn S distributions with peaks fixed at certain positions regardless of input (a trivial solution insensitive to anomalies), a symmetric-KL-divergence-based triplet loss Ltr is introduced enforcing intra-sample similarity across heads to exceed inter-sample similarity (Eqs. 11-12)."
+        }
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["Sec IV-A"]},
+        {"from": "P16", "to": "P17", "evidence": ["Sec IV-A"]},
+        {"from": "P16", "to": "P18", "evidence": ["Sec IV-A", "Eq. 11-12"]}
+      ]
+    },
+    {
+      "component_id": "C5",
+      "description": "Spatial Anomaly Graph Attention (SAGA): learnable adjacency prior and adversarial spatial learning",
+      "nodes": [
+        {
+          "id": "P19",
+          "name": "No inherent prior for sensor relationships",
+          "description": "Unlike temporal dependencies where a Gaussian prior naturally captures local Markovian structure, relationships between different sensors generally lack an inherent prior."
+        },
+        {
+          "id": "P20",
+          "name": "Layer-wise learnable adjacency matrix as structural prior",
+          "description": "SAGA employs a layer-wise learnable adjacency matrix G^l to represent prior structural knowledge of sensor associations, with a learnable temperature parameter τ^l controlling the sharpness of the prior distribution."
+        },
+        {
+          "id": "P21",
+          "name": "Observation attention computed via GAT-style mechanism",
+          "description": "SAGA projects the input into raw channel space and computes an observation attention distribution A^l over channels using a GAT-style LeakyReLU attention mechanism (Eqs. 13-14)."
+        },
+        {
+          "id": "P22",
+          "name": "Posterior combines prior and observation for reconstruction",
+          "description": "The observation attention A^l is combined with the Bernoulli-form prior G̃^l to obtain a posterior distribution Ã^l used to reweight features for reconstruction (Eq. 15), which both grounds reconstruction in statistical priors and allows the prior to be dynamically learned rather than fixed."
+        },
+        {
+          "id": "P23",
+          "name": "Explicit spatial association discrepancy AssDiss",
+          "description": "SAGA explicitly optimizes a spatial association discrepancy AssDiss between the temperature-scaled prior Ĝ and observation attention A, jointly learning the adjacency graph, temperature, and observation attention (Eq. 16)."
+        },
+        {
+          "id": "P24",
+          "name": "Minimax adversarial optimization of AssDiss",
+          "description": "AssDiss is optimized via minimax adversarial alternation: minimizing over G^l and τ^l with detached A^l (prior aligns with correlated sensors), then maximizing over A^l with detached Ĝ^l (encouraging broader, non-trivial associations)."
+        },
+        {
+          "id": "P25",
+          "name": "Discrepancy AssDiss collapses under anomaly, enabling detection",
+          "description": "Under normal conditions, τ^l stays smooth and Ĝ aligns with observed attention A; under anomaly, perturbed τ^l collapses the prior toward a self-loop peak while A also collapses toward triviality, causing AssDiss to decrease and serve as a discriminative structural-deviation criterion."
+        },
+        {
+          "id": "P26",
+          "name": "No positional encoding used in SAGA",
+          "description": "SAGA deliberately omits positional encoding since relative index positions between sensor channels lack meaningful distance semantics, unlike temporal signals."
+        }
+      ],
+      "edges": [
+        {"from": "P19", "to": "P20", "evidence": ["Sec IV-B"]},
+        {"from": "P20", "to": "P21", "evidence": ["Sec IV-B", "Eqs. 13-14"]},
+        {"from": "P21", "to": "P22", "evidence": ["Sec IV-B", "Eq. 15"]},
+        {"from": "P20", "to": "P23", "evidence": ["Sec IV-B", "Eq. 16"]},
+        {"from": "P23", "to": "P24", "evidence": ["Sec IV-B"]},
+        {"from": "P24", "to": "P25", "evidence": ["Sec IV-B"]},
+        {"from": "P19", "to": "P26", "evidence": ["Sec IV-B"]}
+      ]
+    },
+    {
+      "component_id": "C6",
+      "description": "Structural regularization of the adjacency graph",
+      "nodes": [
+        {
+          "id": "P27",
+          "name": "Smoothness constraint Ls",
+          "description": "A Laplacian-based smoothness constraint Ls compresses weights in G̃^l toward the diagonal, ensuring self-loops dominate the prior graph structure (Eq. 17-18)."
+        },
+        {
+          "id": "P28",
+          "name": "ℓ1 sparsity constraint via proximal fixed-point iteration",
+          "description": "An ℓ1 sparsity constraint on G̃^l is implemented via a hybrid proximal gradient scheme (fixed-point iteration) rather than direct backpropagation, since the sigmoid-composed ℓ1 penalty lacks a closed-form proximal solution (Eqs. 19-20)."
+        },
+        {
+          "id": "P29",
+          "name": "Regularization decouples G optimization from observation attention",
+          "description": "The combination of smoothness and sparsity regularization explicitly decouples the optimization of G^l from the observation attention A, ensuring the adversarial learning within SAGA remains robust and avoids trivial solutions."
+        }
+      ],
+      "edges": [
+        {"from": "P27", "to": "P29", "evidence": ["Sec IV-B"]},
+        {"from": "P28", "to": "P29", "evidence": ["Sec IV-B", "Eq. 19-20"]},
+        {"from": "P29", "to": "P24", "evidence": ["Sec IV-B"]}
+      ]
+    },
+    {
+      "component_id": "C7",
+      "description": "Training procedure (alternating optimization)",
+      "nodes": [
+        {
+          "id": "P30",
+          "name": "Reconstruction loss as primary data-fidelity objective",
+          "description": "A reconstruction loss Lrec (squared Frobenius norm between reconstruction and input) serves as the primary data-fidelity objective, balanced against spatial and temporal adversarial objectives (Eq. 21)."
+        },
+        {
+          "id": "P31",
+          "name": "kNN initialization of adjacency matrices",
+          "description": "Every G^l is initialized with a shared channel-wise kNN graph constructed from the training set, providing a statistically grounded starting point before adversarial optimization."
+        },
+        {
+          "id": "P32",
+          "name": "Inner-loop / outer-loop alternating schedule",
+          "description": "General network parameters W are optimized in an inner loop (5 iterations per epoch) including the AssDist minimax process, while the spatial adjacency prior G^l is updated in the outer loop subject to smoothness/sparsity constraints, with projection weights Wτ optimized in the inner loop alongside Wσ."
+        }
+      ],
+      "edges": [
+        {"from": "P31", "to": "P32", "evidence": ["Sec IV-C", "Algorithm 2"]},
+        {"from": "P30", "to": "P32", "evidence": ["Sec IV-C", "Algorithm 2"]}
+      ]
+    },
+    {
+      "component_id": "C8",
+      "description": "Spatial-temporal anomaly criterion and SMD+ benchmark",
+      "nodes": [
+        {
+          "id": "P33",
+          "name": "AssDiss as implicit structural regularizer for standard benchmarks",
+          "description": "For datasets with only timestamp-level labels, POST uses only the temporal discrepancy AssDist in the final score, with AssDiss functioning as an implicit structural regularizer that improves reconstruction fidelity and temporal discriminative capacity indirectly."
+        },
+        {
+          "id": "P34",
+          "name": "AssDiss can explicitly improve localization when channel labels exist",
+          "description": "The spatial association discrepancy AssDiss can explicitly improve final anomaly-detection performance in tasks where accurate channel-level localization matters, motivating construction of a dedicated benchmark to evaluate this."
+        },
+        {
+          "id": "P35",
+          "name": "SMD+ constructed with precise channel-wise labels",
+          "description": "SMD+ is a synthetic benchmark built on SMD's test set with strictly contiguous normal segments, tail-end anomaly injection windows, and additive perturbations deeply convolved with system dynamics, providing exact channel-wise ground truth while sharing SMD's uncontaminated training set for zero-retraining evaluation."
+        },
+        {
+          "id": "P36",
+          "name": "Sparse channel-wise anomaly ratio simulates needle-in-haystack faults",
+          "description": "SMD+ confines perturbations to 1-3 of 38 channels, yielding a channel-wise anomaly ratio of only 0.18% despite a time-wise ratio comparable to typical SMD faults, quantifying the difficulty of the localization benchmark."
+        },
+        {
+          "id": "P37",
+          "name": "Joint spatial-temporal anomaly score ASts",
+          "description": "The complete spatial-temporal anomaly criterion ASts combines the temporal discrepancy softmax, the spatial discrepancy sigmoid, and squared reconstruction error via an outer product, yielding a joint N×D0 anomaly score matrix (Eq. 22)."
+        },
+        {
+          "id": "P38",
+          "name": "Sigmoid (not softmax) used for spatial discrepancy",
+          "description": "Sigmoid rather than softmax/competitive normalization is used for the spatial discrepancy because evaluating each channel's anomaly score independently prevents the masking effect that would otherwise suppress sparse, spatially discrete collective anomalies."
+        }
+      ],
+      "edges": [
+        {"from": "P33", "to": "P34", "evidence": ["Sec IV-D"]},
+        {"from": "P34", "to": "P35", "evidence": ["Sec IV-D", "Sec V-A"]},
+        {"from": "P35", "to": "P36", "evidence": ["Sec V-A", "Table I"]},
+        {"from": "P34", "to": "P37", "evidence": ["Sec IV-D", "Eq. 22"]},
+        {"from": "P37", "to": "P38", "evidence": ["Sec IV-D"]}
+      ]
+    },
+    {
+      "component_id": "C9",
+      "description": "Main standard-benchmark detection results",
+      "nodes": [
+        {
+          "id": "P39",
+          "name": "POST achieves best average F1 across five benchmarks",
+          "description": "POST achieves an average F1-score of 97.52% across SMD, MSL, SMAP, SWaT, and PSM, a 2.61-point absolute improvement over the second-best method AT (94.91%) (Table II)."
+        },
+        {
+          "id": "P40",
+          "name": "POST mitigates the Precision-Recall trade-off",
+          "description": "Unlike conventional GNN-based spatial models that trade off Precision against Recall due to over-generalization, POST achieves balanced excellence, e.g. 100% Recall with 96.08% Precision on SWaT."
+        },
+        {
+          "id": "P41",
+          "name": "Gains attributed to explicit spatial modeling, not scale",
+          "description": "Because POST retains the same attention depth as AT and adds only a marginal number of extra parameters via SAGA, its superior performance is attributed to explicit spatial-relationship modeling and adversarial optimization rather than brute-force scaling."
+        }
+      ],
+      "edges": [
+        {"from": "P39", "to": "P40", "evidence": ["Sec V-C", "Table II"]},
+        {"from": "P40", "to": "P41", "evidence": ["Sec V-C"]},
+        {"from": "P8", "to": "P41", "evidence": ["Sec V-C"]}
+      ]
+    },
+    {
+      "component_id": "C10",
+      "description": "Spatial anomaly localization results on SMD+",
+      "nodes": [
+        {
+          "id": "P42",
+          "name": "Conventional methods under-report on SMD+",
+          "description": "Conventional methods (VAR, MMPCACD, LSTM) adopt a highly conservative strategy on SMD+, achieving high Precision but abysmal Recall, indicating severe under-reporting (Table III)."
+        },
+        {
+          "id": "P43",
+          "name": "1D-optimized SOTA models fail at channel-wise localization",
+          "description": "Models like AT and ImDiffusion, whose outputs are dedicated 1D time-wise scores, suffer catastrophic Precision drops when broadcast to all channels (e.g., 28.62% for AT), yielding channel-wise F1 indistinguishable from conventional methods; simple LSTM with native channel-wise reconstruction error even slightly outperforms them at localization."
+        },
+        {
+          "id": "P44",
+          "name": "Native channel-wise methods (TranAD, TopoGDN) achieve competitive results in both tasks",
+          "description": "TranAD and TopoGDN, using discriminative architectures with native channel-wise reconstruction error, achieve competitive results in both time-wise detection and spatial localization, unlike the 1D-only models."
+        },
+        {
+          "id": "P45",
+          "name": "POST outperforms native channel-wise methods by >4% F1",
+          "description": "POST maintains a notable advantage over TranAD and TopoGDN across both evaluation tasks, outperforming them by over 4% in F1-score, verifying the efficacy of incorporating spatio-temporal association discrepancy into the anomaly score."
+        },
+        {
+          "id": "P46",
+          "name": "POST leads spatial localization by 4.01% F1 margin",
+          "description": "By explicitly introducing the spatial discrepancy in Eq. 22, POST leads the spatial anomaly localization task by 4.01% F1 over the second-best model (TopoGDN)."
+        },
+        {
+          "id": "P47",
+          "name": "Eq. 22 retained only for spatial task, not standard benchmarks",
+          "description": "Because no clear improvement is observed from adopting the joint spatio-temporal score (Eq. 22) on standard time-wise benchmarks, POST retains the simpler Eq. 8 temporal-only score for those comparisons."
+        }
+      ],
+      "edges": [
+        {"from": "P42", "to": "P44", "evidence": ["Sec V-D", "Table III"]},
+        {"from": "P43", "to": "P44", "evidence": ["Sec V-D", "Table III"]},
+        {"from": "P44", "to": "P45", "evidence": ["Sec V-D", "Table III"]},
+        {"from": "P37", "to": "P46", "evidence": ["Sec V-D"]},
+        {"from": "P45", "to": "P46", "evidence": ["Sec V-D"]},
+        {"from": "P46", "to": "P47", "evidence": ["Sec V-D"]}
+      ]
+    },
+    {
+      "component_id": "C11",
+      "description": "Component ablation: temporal (AT→TASA) group",
+      "nodes": [
+        {
+          "id": "P48",
+          "name": "Removing APE severely degrades Recall",
+          "description": "AT−APE (removing absolute positional encoding from AT) causes severe Recall degradation (>6 points), because the adversarial process around AssDist relies on positional information to guide S away from the Gaussian prior peak, and its absence yields unreliable discrepancies (Table IV)."
+        },
+        {
+          "id": "P49",
+          "name": "Plugging SAGA into entangled-PE AT is catastrophic",
+          "description": "AT+SAGA (directly plugging SAGA into standard AT with entangled positional encoding) yields the worst F1-score among all variants, since PE noise in the input degrades SAGA's spatial reconstruction."
+        },
+        {
+          "id": "P50",
+          "name": "SAGA without PE gives only marginal gains",
+          "description": "AT−APE+SAGA (integrating SAGA without any positional encoding) provides marginal gains but is insufficient to compensate for the lost temporal awareness from removing APE entirely."
+        },
+        {
+          "id": "P51",
+          "name": "DPE (w/o SAGA) restores comparable performance to AT",
+          "description": "By implementing the proposed DPE, the model decouples temporal position from spatial topology and achieves a foundational model (w/o SAGA) with performance comparable to the original AT, providing a valid base for subsequent spatial augmentation."
+        },
+        {
+          "id": "P52",
+          "name": "RoPE variant underperforms for MTSAD",
+          "description": "AT−APE+RoPE underperforms because RoPE's relative-position modeling advantage doesn't help with MTSAD's fixed, short sliding windows, and its loss of absolute position hinders reconstruction, consistent with the design rationale for choosing DPE over RoPE."
+        },
+        {
+          "id": "P53",
+          "name": "MLP-based DPE variant gives no improvement",
+          "description": "AT−APE+MLP-DPE (replacing the analytical distance matrix with a learnable MLP) yields no clear performance improvement, justifying omission of these extra parameters from the final design."
+        }
+      ],
+      "edges": [
+        {"from": "P16", "to": "P48", "evidence": ["Sec V-E", "Table IV"]},
+        {"from": "P7", "to": "P49", "evidence": ["Sec V-E", "Table IV"]},
+        {"from": "P48", "to": "P50", "evidence": ["Sec V-E", "Table IV"]},
+        {"from": "P16", "to": "P51", "evidence": ["Sec V-E", "Table IV"]},
+        {"from": "P17", "to": "P52", "evidence": ["Sec V-E", "Table IV"]},
+        {"from": "P16", "to": "P53", "evidence": ["Sec V-E", "Table IV"]}
+      ]
+    },
+    {
+      "component_id": "C12",
+      "description": "Component ablation: SAGA module group",
+      "nodes": [
+        {
+          "id": "P54",
+          "name": "SAGA primarily improves Precision",
+          "description": "Building on TASA, introducing SAGA primarily contributes to continuous enhancement of Precision across variants (Table IV)."
+        },
+        {
+          "id": "P55",
+          "name": "Fixed G underperforms w/o AssDiss",
+          "description": "Comparing Fixed G^l (frozen adjacency after init) against w/o AssDiss (learnable G but no adversarial optimization) shows optimizing G^l on reconstruction alone yields insufficient Precision (below 92%)."
+        },
+        {
+          "id": "P56",
+          "name": "Adversarial AssDiss optimization boosts Precision above 94%",
+          "description": "Activating minimax adversarial learning for AssDiss forces the model to a Precision over 94%, since it helps G^l better track the statistical characteristics of the observed data, yielding a more reasonable posterior Ã^l."
+        },
+        {
+          "id": "P57",
+          "name": "kNN initialization yields stable improvements",
+          "description": "kNN-based initialization of G^l, leveraging statistical features of the raw training data, provides an ideal optimization starting point and yields stable performance improvements over identity initialization."
+        },
+        {
+          "id": "P58",
+          "name": "Full POST achieves best Precision-Recall balance",
+          "description": "As the comprehensive integration of all components, POST achieves 94.48% Precision and 97.23% Recall, validating the efficacy of minimax-optimized association modeling in both temporal and spatial dimensions."
+        }
+      ],
+      "edges": [
+        {"from": "P55", "to": "P56", "evidence": ["Sec V-E", "Table IV"]},
+        {"from": "P56", "to": "P54", "evidence": ["Sec V-E", "Table IV"]},
+        {"from": "P57", "to": "P54", "evidence": ["Sec V-E", "Table IV"]},
+        {"from": "P54", "to": "P58", "evidence": ["Sec V-E", "Table IV"]},
+        {"from": "P51", "to": "P58", "evidence": ["Sec V-E"]}
+      ]
+    },
+    {
+      "component_id": "C13",
+      "description": "PR-curve and decision-boundary analysis",
+      "nodes": [
+        {
+          "id": "P59",
+          "name": "Full POST has highest average precision across all recall levels",
+          "description": "Across six datasets, full POST consistently achieves the largest average precision (AP) among configurations, maintaining high precision across varying recall levels (Fig. 2)."
+        },
+        {
+          "id": "P60",
+          "name": "w/o SAGA shows premature precision decline and long-tail effect",
+          "description": "When spatial modeling is entirely discarded (w/o SAGA), PR curves show premature steep declines (false positives surge with slight threshold relaxation) and a long-tail effect where many anomalies get extremely low scores."
+        },
+        {
+          "id": "P61",
+          "name": "w/o AssDiss mitigates severe false negatives but has early-stage precision gap",
+          "description": "Incorporating SAGA without adversarial optimization (w/o AssDiss) mitigates the severe false negatives seen without SAGA, but still shows a precision gap relative to full POST in the early stages of the PR curve."
+        },
+        {
+          "id": "P62",
+          "name": "w/o SAGA causes large AP drop on channel-wise SMD+ task",
+          "description": "On the channel-wise SMD+ protocol, w/o SAGA (lacking native channel-wise scores, using broadcast) shows a massive 16.56-point AP drop versus full POST and catastrophic early-recall precision degradation."
+        }
+      ],
+      "edges": [
+        {"from": "P58", "to": "P59", "evidence": ["Sec V-E", "Fig. 2"]},
+        {"from": "P60", "to": "P59", "evidence": ["Sec V-E", "Fig. 2"]},
+        {"from": "P61", "to": "P59", "evidence": ["Sec V-E", "Fig. 2"]},
+        {"from": "P60", "to": "P62", "evidence": ["Sec V-E", "Fig. 2(f)"]}
+      ]
+    },
+    {
+      "component_id": "C14",
+      "description": "Hyperparameter sensitivity analysis",
+      "nodes": [
+        {
+          "id": "P63",
+          "name": "AssDist weight (α) is core driving force",
+          "description": "Temporal association modeling centered around AssDist (weight α) remains the core driving force of the entire model; its absence causes severe degradation, though performance stabilizes once α>0.8 (Fig. 3)."
+        },
+        {
+          "id": "P64",
+          "name": "Spatial constraint weights (β, γ) show higher sensitivity",
+          "description": "The weights of the spatial constraints β (AssDiss) and γ (smoothness Ls) show higher sensitivity, with too-large or too-small values degrading performance, indicating a required balance between spatial association learning and regularization."
+        },
+        {
+          "id": "P65",
+          "name": "Triplet-loss weight (ξ) shows robustness",
+          "description": "ξ (weight of the temporal triplet regularization Ltr) demonstrates strong robustness over a wide range, providing a stable constraint for S."
+        },
+        {
+          "id": "P66",
+          "name": "Proximal step size λ provides final performance boost",
+          "description": "After identifying the optimal weight configuration, searching the proximal step size λ separately provides a final performance boost, elevating F1 to the global optimum (Fig. 3(e))."
+        }
+      ],
+      "edges": [
+        {"from": "P63", "to": "P64", "evidence": ["Sec V-F", "Fig. 3"]},
+        {"from": "P64", "to": "P66", "evidence": ["Sec V-F", "Fig. 3(e)"]}
+      ]
+    },
+    {
+      "component_id": "C15",
+      "description": "Visualization-based mechanism validation",
+      "nodes": [
+        {
+          "id": "P67",
+          "name": "Without Ltr, S peaks anchor to static positions (trivial solution)",
+          "description": "Optimizing the S-vs-P divergence objective without the triplet regularization Ltr leads the model to permanently anchor attention peaks to static temporal positions regardless of input, losing discriminative capacity for anomalies (Fig. 4, top row)."
+        },
+        {
+          "id": "P68",
+          "name": "With Ltr, S peaks dynamically track input features",
+          "description": "Under the Ltr constraint, the model dynamically links S's peaks to actual input features, striking at the collapsed moments of P and better aligning with AssDist's theoretical premise (Fig. 4, bottom row)."
+        },
+        {
+          "id": "P69",
+          "name": "Learned G graphs show layer-wise evolving structure",
+          "description": "Visualized adjacency matrices G^l show, compared to static kNN initialization, more targeted spatial priors reflecting each layer's intrinsic data features, with early layers inducing sparsity/filtering noise and later layers enhancing reliable spatial dependencies (Fig. 5)."
+        },
+        {
+          "id": "P70",
+          "name": "Proximal scheme yields sparser G and higher AssDiss plateau than plain ℓ1",
+          "description": "Compared to a standard gradient-descent ℓ1 baseline, the proximal fixed-point scheme more effectively ensures sparsity of G^l and enlarges AssDiss on normal signals to a substantially higher plateau, improving discriminative capability and overall performance (Fig. 6)."
+        }
+      ],
+      "edges": [
+        {"from": "P18", "to": "P67", "evidence": ["Sec V-G", "Fig. 4"]},
+        {"from": "P18", "to": "P68", "evidence": ["Sec V-G", "Fig. 4"]},
+        {"from": "P27", "to": "P69", "evidence": ["Sec V-G", "Fig. 5"]},
+        {"from": "P28", "to": "P70", "evidence": ["Sec V-H", "Fig. 6"]}
+      ]
+    },
+    {
+      "component_id": "C16",
+      "description": "Case study of spatio-temporal score design",
+      "nodes": [
+        {
+          "id": "P71",
+          "name": "Pure reconstruction error introduces severe noise in sparse anomaly case",
+          "description": "In a case with sparse channel-wise anomalies, relying solely on reconstruction error introduces severe noise, with some incorrect temporal/spatial positions scoring higher than true anomalous locations (Fig. 7a-b)."
+        },
+        {
+          "id": "P72",
+          "name": "Combined score (reconstruction + AssDist + AssDiss) suppresses noise",
+          "description": "Integrating reconstruction error with both AssDist and AssDiss into the final score (Eq. 22) effectively suppresses this noise (Fig. 7c)."
+        },
+        {
+          "id": "P73",
+          "name": "Softmax activation for AssDiss causes masking effect",
+          "description": "Replacing the Sigmoid activation for AssDiss with Softmax (matching AssDist's design) causes a severe masking effect, since competitive normalization compresses score magnitude so anomalous points become nearly indistinguishable when mapped to a unified range (Fig. 7d)."
+        },
+        {
+          "id": "P74",
+          "name": "Sigmoid asymmetric activation is more appropriate for discrete spatial anomalies",
+          "description": "Because channel-wise anomalies are spatially discrete and sparse (unlike temporally continuous anomalies, which benefit from post-processing/point-adjustment), independently evaluating each channel with Sigmoid activation ensures more precise and robust capture of spatio-temporal anomalies."
+        }
+      ],
+      "edges": [
+        {"from": "P71", "to": "P72", "evidence": ["Sec V-I", "Fig. 7"]},
+        {"from": "P37", "to": "P72", "evidence": ["Sec V-I"]},
+        {"from": "P73", "to": "P74", "evidence": ["Sec V-I", "Fig. 7d"]},
+        {"from": "P38", "to": "P74", "evidence": ["Sec V-I"]}
+      ]
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P75",
+      "name": "MTSAD problem formulation",
+      "description": "The multivariate time series anomaly detection problem is formalized with windowed input segments, an unsupervised (normal-only) training setting, and point-wise anomaly scores thresholded to make final decisions."
+    },
+    {
+      "id": "P76",
+      "name": "Channel-attention modules are implicit, lack formal topology",
+      "description": "Channel-attention modules like SENet, CBAM, and ECA-Net adaptively re-weight channel responses but are inherently implicit, adjusting feature magnitudes without establishing a formal topology among variables — a drawback for MTSAD where anomalies often manifest as structural deviations."
+    },
+    {
+      "id": "P77",
+      "name": "Standard GNNs rely on predefined static adjacency, hard to obtain accurately",
+      "description": "Standard GNNs heavily rely on predefined, static adjacency matrices, but an accurate physical prior of spatial structure is difficult to obtain in most practical scenarios, motivating statistically-derived (and potentially unreliable) adjacency estimation."
+    },
+    {
+      "id": "P78",
+      "name": "Graph Structure Learning (GSL) precedents",
+      "description": "LDS formulates joint inference of discrete graph structure and GNN parameters as bilevel optimization; Pro-GNN learns a robust data-driven topology by enforcing sparsity and low rank; POST integrates this GSL mechanism into SAGA but substantially redesigns the algorithm for prior-observation adversarial learning."
+    },
+    {
+      "id": "P79",
+      "name": "AT capacity does not guarantee better detection",
+      "description": "The capacity of AT does not necessarily increase detection performance: deeper layers may yield near-perfect P/S separation even for anomalies, showing that anomaly detection benefits more from carefully designed constraints (AssDis) than from arbitrarily increasing model complexity."
+    },
+    {
+      "id": "P80",
+      "name": "Datasets used for standard evaluation",
+      "description": "Five public benchmarks are used: SWaT (51 dims, water treatment), MSL (55 dims, Mars rover), SMAP (25 dims, spacecraft/soil), PSM (25 dims, eBay servers), and SMD (38 dims, compute clusters), detailed in Table I."
+    },
+    {
+      "id": "P81",
+      "name": "Evaluation protocol details",
+      "description": "Evaluation uses an 80/20 train/validation split, dynamically calibrated thresholds targeting a predefined anomalous proportion r%, and the standard point-adjustment strategy where any single detected point within a continuous anomalous segment marks the whole segment as detected."
+    },
+    {
+      "id": "P82",
+      "name": "Implementation and hyperparameter details",
+      "description": "POST stacks 3 TASA/SAGA layers, hidden dim 512, 8 attention heads, window sizes 200/150/100 depending on dataset, trained for 10 epochs with Adam (lr=1e-5, batch 64), and hyperparameters α=0.8, β=0.02, γ=0.002, ξ=1.0, λ=0.7 selected via grid search."
+    },
+    {
+      "id": "P83",
+      "name": "Future work: dynamic spatio-temporal fault evolution",
+      "description": "Future work will explore the dynamic spatio-temporal evolution of real-world faults to further enhance root-cause attribution capabilities of models."
+    }
+  ],
+  "structural_reasoning": "The graph follows a single dominant design-and-validation arc. The motivation (C1: spatial over-generalization neglected, no channel-wise benchmark) and the more specific two-limitation critique of prior spatial methods (C2: entanglement + unconstrained reconstruction) jointly motivate extending the AT baseline mechanism (C3) with two new modules: TASA's disentangled positional encoding (C4) and SAGA's learnable, adversarially-optimized spatial prior (C5), the latter stabilized by structural regularization (C6) and trained via an alternating inner/outer-loop schedule (C7). These architectural pieces feed the spatial-temporal anomaly criterion and the newly constructed SMD+ benchmark (C8), which together enable the two main empirical evaluations: standard time-wise detection (C9) and channel-wise localization on SMD+ (C10). Every architectural design choice is then validated by a specific ablation: the TASA/DPE design by the AT→TASA ablation group (C11), the SAGA/AssDiss design by the SAGA ablation group (C12), both further supported by PR-curve analysis (C13) and hyperparameter sensitivity (C14). Two visualization studies (C15) and a final case study (C16) provide qualitative/mechanistic confirmation of the same design choices (Ltr's role, G's evolution, the sigmoid-vs-softmax choice for AssDiss), closing the loop back to the architecture components in C4-C8. Background related-work limitations, dataset/implementation details, and future work are treated as isolated nodes since they are contextual rather than part of this specific design-validation chain."
+}

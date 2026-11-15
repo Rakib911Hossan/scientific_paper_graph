@@ -1,0 +1,234 @@
+{
+ "arxiv_id": "2609.38925",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Prototype misalignment under model heterogeneity motivates bilateral (feature + logit) alignment, validated empirically",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Homogeneity assumption unrealistic",
+     "description": "Most multimodal federated learning methods assume all clients deploy an identical architecture, but real clients are heterogeneous in hardware resources and multimodal data distributions."
+    },
+    {
+     "id": "P2",
+     "name": "Heterogeneous encoders give incompatible feature spaces",
+     "description": "Heterogeneous encoders map multimodal data into disparate embedding spaces, so prototypes of the same class from different clients reside in incompatible feature spaces."
+    },
+    {
+     "id": "P3",
+     "name": "Direct prototype aggregation contaminates knowledge",
+     "description": "Direct server aggregation of misaligned prototypes pulls the global prototype toward class decision boundaries and can make performance fall below purely local training."
+    },
+    {
+     "id": "P4",
+     "name": "Logit prototypes are naturally aligned",
+     "description": "Logits reside in a shared semantic space across heterogeneous models because each dimension corresponds to a specific class, so logit prototypes need no extra alignment."
+    },
+    {
+     "id": "P5",
+     "name": "Entropy-weighted logit aggregation",
+     "description": "MFedPBA aggregates logit prototypes with weights proportional to inverse entropy (plus epsilon), giving lower-uncertainty clients higher weight to form a more reliable global logit prototype."
+    },
+    {
+     "id": "P6",
+     "name": "Server autoencoder aligns feature prototypes",
+     "description": "The server uses modality-specific encoders and a shared decoder to project feature prototypes of different modalities and dimensionalities into a unified space, trained with reconstruction, inter-modal contrastive and Gromov-Wasserstein alignment losses."
+    },
+    {
+     "id": "P7",
+     "name": "GW distance fits heterogeneous spaces",
+     "description": "The Gromov-Wasserstein distance compares intra-space pairwise distance structures, so it needs no direct correspondence between feature dimensions and suits heterogeneous settings."
+    },
+    {
+     "id": "P8",
+     "name": "GW alignment of feature and logit spaces",
+     "description": "The intra-modal alignment loss computes entropy-regularized GW distance (Sinkhorn) between each modality's class-relation cost matrix and that of the global logit prototype, preserving topological consistency."
+    },
+    {
+     "id": "P9",
+     "name": "Client local update",
+     "description": "Clients distill the global feature prototypes (MSE alignment) and global logit prototypes (KL divergence) into local training together with cross-entropy, with total loss L_ce + lambda1 L_fea + lambda2 L_logit."
+    },
+    {
+     "id": "P10",
+     "name": "Non-convex convergence",
+     "description": "Under stated assumptions, each client's local model converges at a non-convex rate O(1/T)."
+    },
+    {
+     "id": "P11",
+     "name": "Consistent accuracy gains",
+     "description": "MFedPBA achieves the best test accuracy on Caltech101, Reuters, NUS-WIDE and Youtube under M2, M1+ and M1 partitions, e.g. 49.04 vs 45.29 for the best baseline on Caltech101 M2 and 47.92 vs 45.53 on Youtube M2."
+    },
+    {
+     "id": "P12",
+     "name": "Scales to more clients",
+     "description": "MFedPBA maintains superior performance with larger client numbers (e.g. Reuters K100: 57.83 vs 56.64 for the best baseline)."
+    },
+    {
+     "id": "P13",
+     "name": "FedProto sometimes below local training",
+     "description": "In several settings FedProto underperforms Local training, confirming that naive aggregation of misaligned prototypes causes knowledge contamination."
+    },
+    {
+     "id": "P14",
+     "name": "Ablation: server modules needed",
+     "description": "Removing any server-side module significantly lowers accuracy on Caltech101 M2, and removing the reconstruction loss causes the most severe drop through representation collapse in the latent space."
+    },
+    {
+     "id": "P15",
+     "name": "Low communication overhead",
+     "description": "MFedPBA's bidirectional cost is K^2 C (M_k d_D + d_C), only a negligible increase over FedProto since the number of classes is far smaller than model parameter counts."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Fig 1(b)"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2, Sec 4.1.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 4.1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.1.1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.3, Sec 4.1.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 5, Thm 5.3-5.4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.2, Table 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.2, Table 2"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 6.2, Table 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P13",
+     "evidence": [
+      "Sec 6.2, Table 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P14",
+     "evidence": [
+      "Sec 6.2, Fig 7"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P15",
+     "evidence": [
+      "Sec 6.2 Communication Efficiency"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P16",
+   "name": "Modality imbalance gap",
+   "description": "Existing MFL methods assume balanced modality distributions or restrict to bimodal/identical-modality settings, failing to capture imbalance in modality availability across clients."
+  },
+  {
+   "id": "P17",
+   "name": "FedMBridge overhead",
+   "description": "FedMBridge's topology-aware hypernetwork incurs prohibitive communication overhead that scales poorly with model complexity and modality count."
+  },
+  {
+   "id": "P18",
+   "name": "Prototype instability of FedTGP",
+   "description": "Prototype-based baselines, particularly FedTGP, fluctuate during training because of erratic server prototype updates in multimodal scenarios."
+  },
+  {
+   "id": "P19",
+   "name": "Feature dimension trade-off",
+   "description": "Small feature dimensions cause underfitting while excessively large ones add redundant noise; on Youtube most methods perform best at d_D=48."
+  },
+  {
+   "id": "P20",
+   "name": "Hyperparameter robustness",
+   "description": "MFedPBA stays above accuracy 46 and outperforms all baselines across most lambda1/lambda2 values on Youtube, while excessively large loss weights degrade performance."
+  },
+  {
+   "id": "P21",
+   "name": "Server-side computation",
+   "description": "The framework offloads the main computational burden to the resource-rich server, with only O(C^2) extra client overhead for the KL divergence."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the heterogeneity/misalignment problem, to logit-prototype and GW feature alignment design, to client update, convergence and experiments."
+}

@@ -1,0 +1,240 @@
+{
+ "arxiv_id": "2606.13288",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "MACCO's cross-modal masked concept modeling plus MCA/MIR losses improve CLIP compositionality, supported by benchmarks and analyses",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "CLIP shows bag-of-words behavior",
+     "description": "Contrastive VLMs like CLIP struggle with compositional understanding (object relations, attribute-object binding, word order), partly due to single global-vector optimization and not exploiting compositional information in image-text pairs."
+    },
+    {
+     "id": "P2",
+     "name": "Hard negatives have drawbacks",
+     "description": "Hard-negative approaches are costly, noisy, bias models toward superficial patterns, and can induce oversensitivity, ranking semantically equivalent captions incorrectly."
+    },
+    {
+     "id": "P3",
+     "name": "MACCO masked cross-modal reconstruction",
+     "description": "MACCO masks compositional concepts in one modality and reconstructs them using the full features of the other (masked text plus full image predicts concept words; masked image plus full text predicts patch pixels), without constructing hard negatives."
+    },
+    {
+     "id": "P4",
+     "name": "Global-to-local semantic injection",
+     "description": "A parameter-free global-to-local injection averages each local token with the global CLS feature, compensating for the causal text encoder's lack of future context and CLIP's weak local patch supervision."
+    },
+    {
+     "id": "P5",
+     "name": "MCA loss",
+     "description": "The Masked-augmented Cross-Modal Alignment loss adds masked texts or images as soft negatives in the cross-modal contrastive objective."
+    },
+    {
+     "id": "P6",
+     "name": "MIR loss",
+     "description": "The Masked-augmented Intra-Modal Regularization loss contrasts masked features with their full counterparts within each modality to prevent masked-feature collapse and stabilize training."
+    },
+    {
+     "id": "P7",
+     "name": "Total objective",
+     "description": "MACCO's total loss is L_MCA + l1*L_MIR + l2*L_MLM + l3*L_MIM, fine-tuned from CLIP ViT-B/32 on about 110k MSCOCO pairs, with predictors discarded at inference so the CLIP architecture is unchanged."
+    },
+    {
+     "id": "P8",
+     "name": "State of the art on compositional benchmarks",
+     "description": "MACCO-CLIP achieves state-of-the-art results across ARO, SugarCrepe, VL-Checklist, VALSE and What's-up, gaining over CLIP 14.4% (ARO-Relation), 5.8% (ARO-Attribute), 21.9% (ARO-Order) and 8.3% average on SugarCrepe."
+    },
+    {
+     "id": "P9",
+     "name": "Beats CLIP-FT and CLIP-CAE",
+     "description": "MACCO-CLIP beats CLIP-FT (+8.8% ARO-Relation, +26.9% ARO-Order) and CLIP-CAE (+4.1% SugarCrepe Relation, +4.8% VL-Checklist Relation), attributed to explicit modeling of entity-relation/attribute dependencies."
+    },
+    {
+     "id": "P10",
+     "name": "Complementary to hard negatives",
+     "description": "Adding MACCO to NegCLIP and CE-CLIP yields further gains, e.g., +3.1% and +1.9% on VL-Checklist Relation."
+    },
+    {
+     "id": "P11",
+     "name": "General performance mostly preserved",
+     "description": "MACCO-CLIP loses only 1.5% zero-shot and 0.4% linear-probe average accuracy versus CLIP on 11 classification datasets while raising compositional average from 61.2 to 67.7."
+    },
+    {
+     "id": "P12",
+     "name": "Better syntactic and linguistic encoding",
+     "description": "In SentEval probing, CLIP-FT degrades on three tasks while MACCO-CLIP improves on all four, and it improves SICK-R over CLIP-FT and CLIP-CAE (+4.8% Pearson)."
+    },
+    {
+     "id": "P13",
+     "name": "Concept-aware embeddings",
+     "description": "MACCO-CLIP caption embeddings are significantly more similar to relation and attribute phrase embeddings than those of CLIP and CLIP-FT."
+    },
+    {
+     "id": "P14",
+     "name": "Robust to hard positives",
+     "description": "On the Hard Positive benchmark MACCO-CLIP beats CLIP-FT on all subsets, with a 4.6% gain on the SWAP augmented accuracy."
+    },
+    {
+     "id": "P15",
+     "name": "Ablations support each component",
+     "description": "Ablations show both text and image reconstruction losses help, each auxiliary loss helps alone, MCA and MIR combine best with masked modeling, and global-to-local injection improves results."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2, Eq 15"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2, Eq 15"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2, Eq 15"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.1, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.1, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.4, Tables 4-5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.4, Fig 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.5, Table 6"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.5, Tables 9-12"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.5, Tables 9-12"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.5, Tables 9-12"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P16",
+   "name": "Attribute binding remains harder",
+   "description": "Both MACCO-CLIP and CLIP-CAE gain less on attribute tasks than relation tasks, consistent with prior findings that attribute binding is harder."
+  },
+  {
+   "id": "P17",
+   "name": "Detector need not be strong",
+   "description": "A highly proficient off-the-shelf visual grounding model is not required, and MACCO is resilient to noisy detection results."
+  },
+  {
+   "id": "P18",
+   "name": "Consistent across backbones",
+   "description": "Improvements are consistent across ViT-B/16, ViT-L/14 and SigLIP backbones."
+  }
+ ],
+ "structural_reasoning": "Problem and method design lead to the training objective, whose effects are verified through benchmarks, hard-negative combination, downstream, linguistic probes, robustness and ablations."
+}

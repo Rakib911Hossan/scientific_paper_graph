@@ -1,0 +1,210 @@
+{
+ "arxiv_id": "2508.00350",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "BOOD pipeline: motivation, boundary-feature identification, perturbation, generation, and resulting gains",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Manual OOD data is costly",
+     "description": "Manually preparing OOD training data incurs substantial human and time costs, and some OOD data distributed outside the ID boundary cannot be collected in the real world."
+    },
+    {
+     "id": "P2",
+     "name": "Automated OOD generation is needed",
+     "description": "Automated pipelines that generate OOD data are therefore needed to reduce labor when creating auxiliary outlier datasets."
+    },
+    {
+     "id": "P3",
+     "name": "DreamOOD lacks boundary guarantee",
+     "description": "DreamOOD samples from low-likelihood regions of a text-conditioned latent space, but with no explicit relation between low-likelihood regions and decision boundaries it cannot guarantee generated images lie on decision boundaries."
+    },
+    {
+     "id": "P4",
+     "name": "Boundary images are informative",
+     "description": "Outliers generated near ID decision boundaries are informative and help the classifier refine its boundary between ID and OOD data."
+    },
+    {
+     "id": "P5",
+     "name": "Text-conditioned latent space",
+     "description": "BOOD trains an image encoder with a class-embedding alignment loss against CLIP text embeddings of class names, producing a text-conditioned latent space compatible with the diffusion model input space."
+    },
+    {
+     "id": "P6",
+     "name": "Boundary distance via perturbation steps",
+     "description": "The minimum number k of gradient-ascent (sign-gradient, step size alpha) perturbation steps needed to change the classifier's prediction serves as a proxy for an ID feature's distance to the decision boundary, d(z,y)=k bounded by K."
+    },
+    {
+     "id": "P7",
+     "name": "Select ID boundary features",
+     "description": "BOOD selects as ID boundary features those whose distances lie in the smallest r% of the distance set."
+    },
+    {
+     "id": "P8",
+     "name": "Synthesize OOD features",
+     "description": "Selected boundary features are perturbed along the gradient ascent direction until the prediction switches, then for c additional steps, to yield OOD features around the decision boundary."
+    },
+    {
+     "id": "P9",
+     "name": "Diffusion decodes OOD features to images",
+     "description": "The synthesized OOD embedding replaces the class token embedding in the text prompt of a diffusion model to generate pixel-space OOD images."
+    },
+    {
+     "id": "P10",
+     "name": "OOD regularization loss",
+     "description": "The OOD detector is regularized with a binary logistic loss that treats ID samples as positive and synthesized OOD images as negative."
+    },
+    {
+     "id": "P11",
+     "name": "State-of-the-art on CIFAR-100",
+     "description": "On CIFAR-100, BOOD lowers average FPR95 from 40.31% to 10.67% (29.64% decrease) and raises average AUROC from 90.15% to 97.42% (7.27% improvement) over DreamOOD."
+    },
+    {
+     "id": "P12",
+     "name": "State-of-the-art on ImageNet-100",
+     "description": "BOOD also surpasses prior state-of-the-art methods on the ImageNet-100 benchmark."
+    },
+    {
+     "id": "P13",
+     "name": "Both modules are necessary",
+     "description": "Ablation shows both boundary-feature identification and OOD feature perturbation are essential: decoding selected ID features directly, or perturbing randomly chosen features, performs worse than full BOOD."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3, 3.2.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.1, 3.2.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2.1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.1, 3.2.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.2.3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.2, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.3.1, Table 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.3.1, Table 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Dataset setup",
+   "description": "Following DreamOOD, CIFAR-100 and ImageNet-100 are the ID datasets, with SVHN, Places365, Textures, LSUN and iSUN as OOD test sets for CIFAR-100."
+  },
+  {
+   "id": "P15",
+   "name": "Best c is 2",
+   "description": "Varying post-crossing steps c in {0..5}, c=2 performs best; large c pushes features back into the ID region and small c leaves them too close to the ID boundary."
+  },
+  {
+   "id": "P16",
+   "name": "Moderate pruning rate r best",
+   "description": "Varying r in {2.5,5,10,20}, a moderate r performs best: small r limits diversity, large r selects features far from the boundary."
+  },
+  {
+   "id": "P17",
+   "name": "Step size alpha 0.015",
+   "description": "Smaller step size alpha allows finer differentiation of boundary distances; alpha=0.015 is used."
+  },
+  {
+   "id": "P18",
+   "name": "Comparable compute to DreamOOD",
+   "description": "BOOD's total cost is about 16.72h versus about 16.66h for DreamOOD, dominated by image generation (7.5h) and detector regularization (8.5h)."
+  },
+  {
+   "id": "P19",
+   "name": "Limitations",
+   "description": "BOOD depends on the diffusion model's capability on datasets with large domain discrepancy, classification errors on unseen outlier features can misjudge boundary crossing, and hyperparameters are hard to tune."
+  }
+ ],
+ "structural_reasoning": "Argument flows from the cost of OOD data and DreamOOD's weakness to the boundary-based pipeline, then to benchmark gains and ablations. Hyperparameter and cost analyses are isolated."
+}

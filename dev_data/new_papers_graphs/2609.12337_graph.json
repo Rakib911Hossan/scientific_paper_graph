@@ -1,0 +1,178 @@
+{
+ "arxiv_id": "2609.12337",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Static pruning concentration lifted to deep networks and early-exit compute-accuracy tradeoffs",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Conditional computation as full plus partial computation",
+     "description": "Conditional computation is modeled as the coexistence of a full and a partial computation: in the static setting the partial computation is used for every input (magnitude pruning), and in the adaptive setting it forms a confidence score and the full computation is invoked only when needed (early exit)."
+    },
+    {
+     "id": "P2",
+     "name": "Cosine similarity concentrates under one-shot pruning",
+     "description": "In high dimensions, for IID Gamma-type weights, the cosine similarity between a weight vector and its one-shot magnitude-pruned (and renormalized) version concentrates to a pruning-rate-dependent deterministic constant tau_q, with explicit rates including an O(n^-1/2) Berry-Esseen term and an exp(-C n eps^2) term (Theorem 2.1)."
+    },
+    {
+     "id": "P3",
+     "name": "Pruning preserves similarity for uniform weights",
+     "description": "For w uniform on the sphere, the inner product of w with its renormalized pruned version converges to sqrt(tau_q), a nonlinear function of q that stays close to one under aggressive pruning (Corollary 2.2)."
+    },
+    {
+     "id": "P4",
+     "name": "Example at q=0.4",
+     "description": "Keeping 60% of the coordinates (q=0.4) gives w^T w_p of about 0.982, an angle of about 10.8 degrees."
+    },
+    {
+     "id": "P5",
+     "name": "Pruning distortion accumulates through depth",
+     "description": "In an infinite-width Gaussian limit, empirical kernels and cross-kernels of pruned and unpruned networks converge to deterministic limits, with the only change in the cross-kernel recursion being a factor sqrt(tau_q) on cross terms, so pruning misalignment propagates through depth by a recursion that depends on the activation (Theorem 4.1)."
+    },
+    {
+     "id": "P6",
+     "name": "Simulations confirm concentration",
+     "description": "Simulated distributions of the normalized inner product at q=0.9 and d in {10,100,1000,10000} concentrate around the theoretical limit as d increases."
+    },
+    {
+     "id": "P7",
+     "name": "Conditional perceptron model",
+     "description": "The conditional perceptron is an analytically tractable student-teacher model of early exit where a partial computation forms a confidence score and the full computation runs only when needed."
+    },
+    {
+     "id": "P8",
+     "name": "Excess error is a power of the compute gap",
+     "description": "For the conditional perceptron, given computation constraint mu_c <= 1-eps, generalization error eps_c <= eps_uc + (2 eps/q) A is achievable, with A = 0.5/(1-rho^2) and rho = cos(arccos tau_q + pi eps_uc), so excess error decays polynomially, O(eps^A), as normalized FLOPs approach 1 (Theorem 3.1)."
+    },
+    {
+     "id": "P9",
+     "name": "Exponent diverges as alignment tends to one",
+     "description": "The power-law exponent grows to infinity as the alignment between partial and full computations tends to one."
+    },
+    {
+     "id": "P10",
+     "name": "Deep early exit under Gaussian coupling",
+     "description": "For frozen backbones with distilled intermediate exits under a Gaussian coupling of exit and final scores, excess error obeys a power of the compute gap with exponent A' = 0.5/(1-rho_l^2), set by the exit-to-final correlation rho_l (Theorem 5.2)."
+    },
+    {
+     "id": "P11",
+     "name": "DistilBERT SST-2 test",
+     "description": "On a frozen 6-block DistilBERT fine-tuned on SST-2 with linear distilled exit heads, excess error versus compute gap is approximately linear on log-log axes over a visible range, and exit-to-final correlation rises with depth: (0.446, 0.553, 0.669, 0.736, 0.977) for exits 1-5."
+    },
+    {
+     "id": "P12",
+     "name": "ViT-Base CIFAR-100 test",
+     "description": "On ViT-Base (12 layers) fine-tuned on CIFAR-100 with exits at layers 3,6,9,11, excess error scales approximately as a power of the compute gap and deeper exits show sharper decay; measured correlations (0.246, 0.412, 0.589, 0.773) give analytical exponents (0.53, 0.60, 0.77, 1.24)."
+    },
+    {
+     "id": "P13",
+     "name": "Multiclass theory-experiment gap",
+     "description": "For ViT-Base, local log-log slopes near the smallest gaps (about 1.56, 3.16, 8.78 for layers 3, 6, 9) are larger than the analytical exponents, suggesting a multiclass correction is needed since the exit rule uses max softmax over 100 classes."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 2, Cor 2.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 2, Cor 2.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 4"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P6",
+     "evidence": [
+      "Sec 6, App F"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P7",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P8",
+     "evidence": [
+      "Sec 3, Thm 3.1 uses tau_q"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3, Thm 3.1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 3, Thm 3.1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 5, Thm 5.2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 6, Fig 4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P12",
+     "evidence": [
+      "Sec 6, Fig 5"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P13",
+     "evidence": [
+      "Sec 6, Fig 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Assumptions are idealized references",
+   "description": "IID weights, infinite width and the Gaussian-type score coupling (Assumption 5.1) are idealized reference models isolating mechanisms rather than literal models of trained finite networks."
+  }
+ ],
+ "structural_reasoning": "Single-neuron pruning concentration underlies depth-wise distortion and the early-exit compute-accuracy power law, checked by simulations and pretrained-model experiments."
+}

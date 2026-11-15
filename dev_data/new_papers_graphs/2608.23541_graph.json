@@ -1,0 +1,167 @@
+{
+ "arxiv_id": "2608.23541",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Diversity creates coverage but full-solution interaction erases it (interaction tax); independent generation and repair-focused critique are alternatives",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Mixed evidence on interaction",
+     "description": "Prior work shows mixed evidence: debate, critique loops and mixture-of-agents report gains, while other work finds multi-agent systems add cost or that independent sampling already captures the benefit."
+    },
+    {
+     "id": "P2",
+     "name": "Model families find different solutions",
+     "description": "Different model families (Claude, GPT-4o, Gemini) each achieve the best score on at least one of 11 verifier-scored optimization tasks, so they find structurally different solutions."
+    },
+    {
+     "id": "P3",
+     "name": "Same-model teams have zero-score tasks",
+     "description": "Every same-model team scores Q=0 on at least one task, whereas a diverse team (Claude+GPT-4o+Gemini) never scores zero on any task, with aggregate Q comparable to the best same-model team."
+    },
+    {
+     "id": "P4",
+     "name": "Diversity coefficient is positive",
+     "description": "In a 2x2 factorial (N=120, three tasks), the model-diversity coefficient is +0.188 (CI [+0.073, +0.299], p<0.001) while the synthesis coefficient is near zero."
+    },
+    {
+     "id": "P5",
+     "name": "Full-solution interaction collapses diversity",
+     "description": "When agents read each other's complete outputs, their proposals converge within one round: mean pairwise distance between solution representations falls from 0.315 to 0.229."
+    },
+    {
+     "id": "P6",
+     "name": "Interaction tax: same-model gains, diverse-model losses",
+     "description": "Chain, MAgICoRe and Debate have positive same-model MIG (+0.051, +0.044, +0.012) but negative diverse-model MIG (-0.024, -0.035, -0.078), with bootstrap P(same>div) of at least 88%."
+    },
+    {
+     "id": "P7",
+     "name": "No configuration beats single-agent baselines",
+     "description": "No configuration achieves positive aggregate MEG over single-agent baselines; MoA is the only one whose 95% CI includes zero."
+    },
+    {
+     "id": "P8",
+     "name": "MoA avoids the collapse",
+     "description": "MoA, whose proposers never read each other's outputs, keeps positive MIG for same-model and diverse teams (+0.012 to +0.016)."
+    },
+    {
+     "id": "P9",
+     "name": "Synthesis copies rather than recombines",
+     "description": "On five of seven tasks, synthesis copies the best proposer's output at least 80% of the time instead of combining parts, and on Erdos GPT-4o outputs the identical constant on 100% of seeds (Q=0.710), so interaction converges to that point."
+    },
+    {
+     "id": "P10",
+     "name": "Critique helps only for locatable faults",
+     "description": "Critique with diverse models helps when the violated rule is easy to find and fix (Knapsack-50 Debate 2/10 to 10/10 feasibility) but hurts when it is hard to locate (3AP-Free-100: MAgICoRe 6/10 to 3/10, Debate 6/10 to 0/10)."
+    },
+    {
+     "id": "P11",
+     "name": "Interaction bandwidth matters more than agent count",
+     "description": "Multi-agent performance depends less on the number of agents than on what information they exchange and when; lower-bandwidth signals such as scores, method descriptions or failure causes may preserve independent exploration."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 4, Table 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3/4 factorial"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P5",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4, Table 2, Fig 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4, Fig 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 4/5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 5"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 5, Table 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P12",
+   "name": "Diversity theory explains the tax",
+   "description": "Ensemble diversity decomposition says ensemble error equals mean member error minus a diversity term, so when members communicate and converge, diversity shrinks toward zero; the interaction tax is a structural instance."
+  },
+  {
+   "id": "P13",
+   "name": "Debate regresses once agents read full solutions",
+   "description": "On Erdos, diverse Debate achieves a strong intermediate score at round 2 but regresses at round 3 once agents read each other's full solutions."
+  },
+  {
+   "id": "P14",
+   "name": "Coverage finding is task-dependent",
+   "description": "Removing Erdos drops the diversity coefficient to +0.014 with a CI crossing zero; the main benchmark uses only five seeds per condition."
+  },
+  {
+   "id": "P15",
+   "name": "Benchmark design",
+   "description": "Ten configurations (four single-agent baselines and multi-agent workflows) built from Claude Sonnet 4, GPT-4o and Gemini 2.5 Flash are tested on 11 verifier-scored optimization tasks with a hidden evaluator for the final artifact."
+  },
+  {
+   "id": "P16",
+   "name": "Evolutionary methods preserve diversity differently",
+   "description": "FunSearch and AlphaEvolve preserve population diversity through selection pressure rather than agent interaction."
+  }
+ ],
+ "structural_reasoning": "Core chain: model diversity gives coverage; full-solution exchange collapses it (interaction tax), MoA-style independence avoids it, and critique effects depend on fault locatability. Supporting setup and caveats isolated."
+}

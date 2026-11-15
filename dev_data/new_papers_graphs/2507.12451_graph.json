@@ -1,0 +1,193 @@
+{
+ "arxiv_id": "2507.12451",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "S2WTM design and evaluation rationale: spherical latent space and SSW distance avoid posterior collapse",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Gaussian priors suffer soap bubble effect",
+     "description": "In high dimensions Gaussian latent priors concentrate mass near a hypersphere surface (soap bubble effect), making Euclidean distances uniform and uninformative, whereas cosine similarity stays robust."
+    },
+    {
+     "id": "P2",
+     "name": "Spherical latent space motivated",
+     "description": "These observations motivate embedding data on a hypersphere and measuring similarity by angles, as done with the von Mises-Fisher (vMF) distribution."
+    },
+    {
+     "id": "P3",
+     "name": "Posterior collapse in VAE-NTMs",
+     "description": "VAE-based neural topic models often suffer posterior collapse, where the KL term approaches zero and the posterior converges to the uninformative prior, producing uninformative latent representations."
+    },
+    {
+     "id": "P4",
+     "name": "KL term reduces mutual information",
+     "description": "The ELBO decomposes into a mutual-information term between input and latent representation and a KL term, and minimizing the KL term reduces mutual information, leading to posterior collapse."
+    },
+    {
+     "id": "P5",
+     "name": "SSW replaces KL",
+     "description": "S2WTM replaces KL regularization with the Spherical Sliced-Wasserstein (SSW) distance to align the aggregated posterior with a hyperspherical prior, preserving spherical geometry and mitigating posterior collapse."
+    },
+    {
+     "id": "P6",
+     "name": "SW unsuitable for spherical data",
+     "description": "Sliced Wasserstein reduces Wasserstein computation to 1D problems but needs many projections and is not well suited to spherical data, which SSW addresses via the spherical Radon transform."
+    },
+    {
+     "id": "P7",
+     "name": "Prior as hyperparameter",
+     "description": "S2WTM treats the prior as a hyperparameter with three choices on the unit hypersphere: vMF, a mixture of vMF, and the uniform distribution."
+    },
+    {
+     "id": "P8",
+     "name": "S2WTM highest coherence",
+     "description": "S2WTM achieves the highest NPMI and CV coherence on nearly all of seven datasets, with exceptions on M10 (CV) and 20NG (third in CV), while still having highest NPMI on both."
+    },
+    {
+     "id": "P9",
+     "name": "S2WTM diversity",
+     "description": "S2WTM achieves the highest wI-C diversity on all datasets and comparable IRBO to ECRTM on 20NG, M10, Pascal and Bio, outperforming ECRTM on the rest."
+    },
+    {
+     "id": "P10",
+     "name": "Best classification accuracy",
+     "description": "S2WTM obtains the highest document classification accuracy across all datasets, with higher NMI and Purity, indicating more discriminative document-topic representations."
+    },
+    {
+     "id": "P11",
+     "name": "LLM rating favors S2WTM",
+     "description": "In an LLM-based rating task on 20NG, S2WTM gets the highest mean topic rating of 2.7 and median of 3.0."
+    },
+    {
+     "id": "P12",
+     "name": "Intruder detection favors S2WTM",
+     "description": "In an LLM intruder-detection task on 20NG over three test series, S2WTM-generated topics show high detection accuracy compared to existing models."
+    },
+    {
+     "id": "P13",
+     "name": "Hypersphere beats Euclidean ablation",
+     "description": "Replacing SSW with standard Sliced-Wasserstein and the hyperspherical prior with a Dirichlet lowers scores: S2WTM's NPMI is 54.6% higher on 20NG and over 100% higher on other datasets, CV 15.9-51.2% higher except M10."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3, Appendix A"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P5",
+     "evidence": [
+      "Sec 2, Sec 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 5, Table 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 5, Table 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 6.3, Fig 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.4, Fig 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 6.4, Fig 4"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P13",
+     "evidence": [
+      "Sec 7, Table 6"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P13",
+     "evidence": [
+      "Sec 7, Table 6"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Seven datasets",
+   "description": "Evaluation uses seven public datasets (20NG, BBC, M10, SearchSnippets, PascalFlickr, Biomedicine, and others) with topic count K equal to the number of ground-truth labels."
+  },
+  {
+   "id": "P15",
+   "name": "Hyperparameters tuned for NPMI",
+   "description": "Hyperparameters are tuned per dataset by Bayesian optimization in OCTIS, maximizing NPMI."
+  },
+  {
+   "id": "P16",
+   "name": "Prior work on spherical topic models",
+   "description": "Prior spherical topic models (SAM, vONT, vONTSS) use vMF latent structure, and vONTSS still relies on KL and can suffer posterior collapse."
+  },
+  {
+   "id": "P17",
+   "name": "Wasserstein cost",
+   "description": "The p-Wasserstein distance scales as O(n^3 log n) for discrete measures with n samples."
+  }
+ ],
+ "structural_reasoning": "Motivation chain (soap-bubble effect, posterior collapse) leads to the SSW design, whose empirical benefits are shown across coherence, diversity, classification, LLM evaluations and an ablation."
+}

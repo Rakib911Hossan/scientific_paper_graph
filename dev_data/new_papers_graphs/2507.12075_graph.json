@@ -1,0 +1,200 @@
+{
+ "arxiv_id": "2507.12075",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Book-scale coreference gap -> annotation pipeline -> BookCoref resources -> benchmark findings",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Annotating long texts is costly",
+     "description": "Manually annotating coreference gets harder with document length because annotators resolve mentions incrementally using prior context, so existing benchmarks use short or truncated documents (OntoNotes averages 467 tokens; LitBank truncates to 2,000 tokens)."
+    },
+    {
+     "id": "P2",
+     "name": "No book-scale CR benchmark",
+     "description": "Existing long-document resources (LongtoNotes under 700 tokens/doc, MovieCoref 9 screenplays, Animal Farm) do not provide a book-scale coreference benchmark with training data."
+    },
+    {
+     "id": "P3",
+     "name": "Generative/encoder CR don't scale to books",
+     "description": "Seq2seq generative CR doubles context length, and encoder-only models such as Maverick (DeBERTa-v3, up to 25,000 tokens) have quadratic cost, making whole-book processing impractical."
+    },
+    {
+     "id": "P4",
+     "name": "Character-only annotation",
+     "description": "BookCoref annotates only characters, the main agents of fictional stories, following MovieCoref and Animal Farm guidelines."
+    },
+    {
+     "id": "P5",
+     "name": "Character Linking init",
+     "description": "Character clusters are initialized by Character Linking, a ReLiK entity-linking model fine-tuned on a manually amended LitBank, linking explicit mentions to character names; it gets 44.5 F1 vs 29.2 for pattern matching."
+    },
+    {
+     "id": "P6",
+     "name": "LLM cluster refinement",
+     "description": "Qwen2 7B Instruct verifies each linked mention with a Yes/No prompt and filters negatives, raising character-linking precision by an average +5.2 points."
+    },
+    {
+     "id": "P7",
+     "name": "Windowed cluster expansion",
+     "description": "Maverick is applied to non-overlapping 1,500-word windows to expand character clusters to pronouns and noun phrases, but fails when a window lacks an explicit mention of a character."
+    },
+    {
+     "id": "P8",
+     "name": "Grouping step with Maverick-xl",
+     "description": "Merging G=10 consecutive windows and running a second expansion with Maverick-xl on the grouped windows recovers missed mentions and raises CoNLL-F1 to 80.5 on BookCoref-gold."
+    },
+    {
+     "id": "P9",
+     "name": "Pipeline matches human agreement",
+     "description": "The silver pipeline achieves MUC 93.3, comparable to inter-annotator MUC of 96.1 on BookCoref-gold, LitBank 95.5 and OntoNotes 83.0."
+    },
+    {
+     "id": "P10",
+     "name": "BookCoref-gold test set",
+     "description": "BookCoref-gold has three fully manually annotated books (Animal Farm, Siddhartha, Pride and Prejudice; 229k tokens), annotated by three expert annotators over about 120 hours."
+    },
+    {
+     "id": "P11",
+     "name": "BookCoref-silver scale",
+     "description": "BookCoref-silver has 50 books, 10.8M tokens and 968k mentions (avg 216,626 tokens per document), with 6.75x the tokens and 5x the mentions of OntoNotes, and mention-pair distance averaging 73,432 tokens."
+    },
+    {
+     "id": "P12",
+     "name": "Training on silver boosts models",
+     "description": "Training on BookCoref-silver improves every system on book-scale gold; Longdoc rises from 46.6 to 67.0 CoNLL-F1 (+20.4) and is best on full books."
+    },
+    {
+     "id": "P13",
+     "name": "Book-scale much harder than windows",
+     "description": "Systems score far higher on 1,500-token windows (Maverick-xl 82.2 CoNLL-F1) than on full books (Maverick-xl 61.0), showing the gap reflects open book-scale challenges, not just missing training data."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 2.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P7",
+     "evidence": [
+      "Sec 2.2, Sec 3.2.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2.2, Table 2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.2.3, Fig 2, Table 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.5, Table 2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3, 3.5"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P11",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Table 3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.1, Table 3"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P13",
+     "evidence": [
+      "Sec 5, Table 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Longdoc most efficient",
+   "description": "Longdoc has the lowest inference time and memory on BookCoref-gold (26 s and 5.8 GB after training on silver), vs Dual cache 473 s and 11.8 GB."
+  },
+  {
+   "id": "P15",
+   "name": "Metrics diverge at book scale",
+   "description": "MUC often exceeds 80 F1 on both windows and full books, while B3 and especially CEAF-phi4 drop sharply on full books, showing the need for more robust CR metrics at book scale."
+  },
+  {
+   "id": "P16",
+   "name": "Dual cache underperforms after fine-tuning",
+   "description": "Dual cache, previously considered best for long-document CR, scores lower after fine-tuning than Maverick-xl on full books."
+  },
+  {
+   "id": "P17",
+   "name": "Prior best on Animal Farm was 36%",
+   "description": "Dual cache reached only 36% CoNLL-F1 on Animal Farm, far below averages on medium-sized datasets, while Longdoc trained on silver gets 67.5 there (+31.2)."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the lack of annotated long-document data, through the three-step annotation pipeline, to the resulting gold/silver datasets and benchmark findings."
+}

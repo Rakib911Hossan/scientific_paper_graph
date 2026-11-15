@@ -1,0 +1,171 @@
+{
+ "arxiv_id": "2605.24530",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Text-based vs visual-based retrieval gaps -> Unveil's visual-textual teacher and distilled visual-only student",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "OCR pipelines are costly and lossy",
+     "description": "Traditional OCR-then-text retrieval (BM25, DPR) adds computational overhead, introduces recognition errors, and misses crucial visual context."
+    },
+    {
+     "id": "P2",
+     "name": "Visual methods weak on text-rich content",
+     "description": "Parsing-free visual retrievers (e.g. DSE, VisRAG) outperform text-based methods in visual-rich scenarios but struggle with semantic details in text-rich scenarios such as web-page retrieval."
+    },
+    {
+     "id": "P3",
+     "name": "Complementary strengths",
+     "description": "Text-based methods model linguistic semantics but overlook layout and graphics, while purely visual methods preserve visual context but struggle with fine-grained language understanding."
+    },
+    {
+     "id": "P4",
+     "name": "Visual-textual teacher model",
+     "description": "Unveil's visual-textual dual-encoder model feeds the VLM the document image plus its OCR text (prompt '<s><img> <description> What is shown in this image?</s>') and uses the end-of-sequence token embedding as representation."
+    },
+    {
+     "id": "P5",
+     "name": "Hybrid score merging is not enough",
+     "description": "Hybrid models combining text-based and visual-based scores give intermediate results, can fall below text-based models alone in web-page retrieval, and cost inference from both models."
+    },
+    {
+     "id": "P6",
+     "name": "Teacher beats all baselines",
+     "description": "The Unveil visual-textual model consistently achieves the highest performance across all retrieval scenarios, surpassing text-based, visual-based and hybrid methods."
+    },
+    {
+     "id": "P7",
+     "name": "Distillation design",
+     "description": "The visual-only student is trained with representation alignment, soft label distillation from the teacher's score distribution, and adaptive re-weighting that upweights documents with high teacher-student KL divergence, under Ltotal = sum w_i (L_align + L_soft)."
+    },
+    {
+     "id": "P8",
+     "name": "Distilled student rivals teacher without OCR",
+     "description": "The distilled visual-only Unveil exceeds text-based and visual-based baselines and approaches the teacher's performance while requiring no text input at inference."
+    },
+    {
+     "id": "P9",
+     "name": "Every distillation component helps",
+     "description": "Ablation shows removing adaptive re-weighting, representation alignment or soft-label distillation each degrades performance, with removing representation alignment causing significant degradation."
+    },
+    {
+     "id": "P10",
+     "name": "Distillation aligns embeddings",
+     "description": "t-SNE of 200 ChartQA documents shows student representations become much more aligned with the teacher's after distillation and cosine similarity between them increases."
+    },
+    {
+     "id": "P11",
+     "name": "Text length helps then saturates",
+     "description": "Teacher performance improves as input OCR text length grows from 0 to 3096, with a large jump from 0 to 512 and diminishing gains from 2048 to 3096, but longer text raises inference cost."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Fig 2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 4, Tables 1-2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 4, Tables 1-2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P7",
+     "evidence": [
+      "Sec 5 Analysis, Table 4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3, Sec 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4, Tables 1-2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 4 Ablation, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 5 Visualization, Fig 4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P11",
+     "evidence": [
+      "Sec 5 Impact of Text Length, Table 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P12",
+   "name": "BM25 beats BGE-Large on visual docs",
+   "description": "BM25 outperforms the dense BGE-Large retriever on visual documents because their text is fragmented and semantically incoherent, favoring string matching."
+  },
+  {
+   "id": "P13",
+   "name": "Experimental setup",
+   "description": "Both teacher and student are initialized from MiniCPM-V 2.0 and fine-tuned with in-batch negatives for two epochs (batch size 16, lr 2e-5, 8 A100 80GB GPUs), evaluated on 12 datasets with Recall@10 and MRR@10."
+  },
+  {
+   "id": "P14",
+   "name": "Two inference modes",
+   "description": "Unveil offers a Visual-Textual mode with OCR plus images for best precision and a Visual-Only mode without OCR that significantly reduces computational overhead."
+  }
+ ],
+ "structural_reasoning": "Argument runs from complementary weaknesses of text-based and visual-based retrieval to the visual-textual teacher, the distillation scheme, and supporting empirical analyses."
+}

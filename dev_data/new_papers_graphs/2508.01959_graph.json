@@ -1,0 +1,231 @@
+{
+ "arxiv_id": "2508.01959",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Situated embedding: motivation, design, and evidence",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Chunk meaning depends on context",
+     "description": "Documents have narrative or logical flow, so the meaning of each chunk depends heavily on its surrounding context, creating a need for context-aware embeddings."
+    },
+    {
+     "id": "P2",
+     "name": "Embedding capacity limits long chunks",
+     "description": "Embedding models must compress a chunk into one vector, so longer chunks raise the chance of critical information loss; applications built on long-chunk embeddings often underperform those using short chunks."
+    },
+    {
+     "id": "P3",
+     "name": "Recall drops with longer chunks",
+     "description": "On the book plot retrieval task, with the same total returned text (5k/10k/25k tokens) and the same embedding model (Jina or NV-Embed), recall consistently decreases as documents are segmented into longer chunks."
+    },
+    {
+     "id": "P4",
+     "name": "Situated embedding approach",
+     "description": "Situated embedding conditions a short chunk's embedding on its broader context, so the model only needs to integrate context relevant to the target chunk, easing the capacity limit."
+    },
+    {
+     "id": "P5",
+     "name": "Existing models lack zero-shot situated embedding",
+     "description": "Adding situated context to chunks significantly degrades the recall of all tested existing embedding models (M3, Jina-v3, E5-Mistral, GTE-Qwen2, NV-Embed-v2, Qwen3-Embedding) on NDP-v1, even though the context is within their claimed context windows (e.g. Jina-v3 Recall@10 53.33 chunk-only vs 15.68 with context)."
+    },
+    {
+     "id": "P6",
+     "name": "Failure partly from long-input weakness",
+     "description": "Replacing situated context with GPT-4o-generated situated summaries yields much smaller degradation or slight gains for M3, Jina, E5 and Qwen3, indicating the baselines partly fail to situate a chunk within long contexts."
+    },
+    {
+     "id": "P7",
+     "name": "Book-note training data",
+     "description": "Training data is built from ~1.6M (1,614,007) query-chunk pairs of user book notes (Douban, ~100 popular books), treating the note as query and its anchored text as the chunk, since notes reflect contextual understanding."
+    },
+    {
+     "id": "P8",
+     "name": "Residual learning architecture",
+     "description": "The situated model learns the residual over a baseline chunk-only embedding model (query q~ = qb + qs, chunk c~ = cb + cs), with a margin loss over 10 negatives, to prevent shortcut use of ambiguous chunk-only clues and encourage context use."
+    },
+    {
+     "id": "P9",
+     "name": "SitEmb-v1 outperforms larger models",
+     "description": "SitEmb-v1-M3 (1B) with situated context reaches Recall@10 of 50.85 on NDP-v1, exceeding chunk-only M3 (42.55) and outperforming models up to 7B parameters."
+    },
+    {
+     "id": "P10",
+     "name": "SitEmb-v1.5 further gains",
+     "description": "SitEmb-v1.5-Qwen3 (8B) with book-note data reaches Recall@10 of 68.98 on NDP-v1, above voyage-context-3 (60.46) and Qwen3-Embedding chunk-only (51.58)."
+    },
+    {
+     "id": "P11",
+     "name": "No training-test overlap effect",
+     "description": "Including NDP books in NarrativeQA-based training gives no measurable gain on NDP-v1 (Recall@10 68.98 w/ vs 69.60 w/o), so book overlap does not drive results."
+    },
+    {
+     "id": "P12",
+     "name": "Robust to context length",
+     "description": "SitEmb performance on NDP-v1 is stable across situated context lengths from 512-800 to 8192-12800 tokens."
+    },
+    {
+     "id": "P13",
+     "name": "Full plot retrieval improvement",
+     "description": "On the full book plot retrieval task (7 books, 1,394 queries), SitEmb-v1.5-Qwen3 improves by over 10% when trained on QA data and over 15% on QA+SA data, and both exceed voyage-context-3 (Recall@10 63.03 for QA+SA vs 51.39)."
+    },
+    {
+     "id": "P14",
+     "name": "Residual architecture is not capacity gain",
+     "description": "Training the same residual architecture on chunk-only M3 (Res-M3) does not improve over M3 (SA), and removing residual learning degrades SitEmb-v1-M3, indicating gains come from using contextual information."
+    },
+    {
+     "id": "P15",
+     "name": "Recap identification generalization",
+     "description": "On Recap Snippet Identification, SitEmb-v1.5 (QA+SA) is best (F1@5 38.9 vs 37.9 for Qwen3), while models trained without context usage drop slightly."
+    },
+    {
+     "id": "P16",
+     "name": "Story QA downstream gains",
+     "description": "SitEmb-v1.5 (QA) outperforms its no-context counterpart on story understanding tasks (NarrativeQA, InfBench MC, DetectiveQA, NoCha) except on LongStoryQA, and substantially beats out-of-box Qwen3 especially at top-3 and top-5."
+    },
+    {
+     "id": "P17",
+     "name": "QA vs SA complementary strengths",
+     "description": "On DetectiveQA, SitEmb (QA) has the highest answer-evidence recall (top-3 42.5) and SitEmb (QA+SA) the highest clue-evidence recall (top-3 26.9), reflecting semantic association ability."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4 Study I"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 4, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 1, Sec 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 4, Table 1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4, Table 1"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 5, Table 2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P12",
+     "evidence": [
+      "Sec 5, Table 3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P13",
+     "evidence": [
+      "Sec 6, Table 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P14",
+     "evidence": [
+      "Sec 6, Table 4"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P15",
+     "evidence": [
+      "Sec 7, Table 5"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P16",
+     "evidence": [
+      "Sec 8, Table 6"
+     ]
+    },
+    {
+     "from": "P16",
+     "to": "P17",
+     "evidence": [
+      "Sec 8, Table 7"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P18",
+   "name": "Evaluation dataset",
+   "description": "The Book Plot Retrieval task repurposes PlotRetrieval into chunk-level retrieval over 7 books (each >100,000 tokens) with 1,394 queries, reporting Recall@10/20/50."
+  },
+  {
+   "id": "P19",
+   "name": "Plot retrieval needs localized results",
+   "description": "Users recalling a plot need localized short evidence (each segment about 2-3 pages), so returning long chunks is not an option."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the context-dependence and capacity problem, through situated embedding and residual-training design, to evidence that existing models fail and SitEmb succeeds, with robustness and downstream results."
+}

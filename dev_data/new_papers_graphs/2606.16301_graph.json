@@ -1,0 +1,195 @@
+{
+ "arxiv_id": "2606.16301",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "GENIE: parameter-imbalance motivation, OSGR-based optimizer design, theory and empirical results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Dominant gradient direction reinforces spurious features",
+     "description": "Gradient-alignment DG methods push gradients toward a dominant direction that is itself often driven by spurious features, inadvertently reinforcing undesired correlations."
+    },
+    {
+     "id": "P2",
+     "name": "Parameter imbalance overlooked",
+     "description": "Most DG studies overlook imbalanced parameter updates caused by differing convergence speed or generalization capacity, so a small subset of parameters dominates optimization (Fig 1 for SGD, Adam, SAM)."
+    },
+    {
+     "id": "P3",
+     "name": "GSNR dropout lacks contribution-based scaling",
+     "description": "Dropout based on Gradient Signal-to-Noise Ratio suppresses overly predictive parameters but does not adjust update magnitudes by each parameter's contribution to generalization."
+    },
+    {
+     "id": "P4",
+     "name": "OSGR definition",
+     "description": "The One-Step Generalization Ratio R(Z,n) measures the ratio of test-loss to training-loss reduction from one update; it depends on each parameter's gradient magnitude and gradient alignment across the data distribution, and higher OSGR indicates better generalization."
+    },
+    {
+     "id": "P5",
+     "name": "OSGR under preconditioning",
+     "description": "If each parameter j applies a preconditioner p_j, the OSGR can be rewritten accordingly (Corollary 3.2), making OSGR adjustable through preconditioning."
+    },
+    {
+     "id": "P6",
+     "name": "Conjecture of uniform OSGR",
+     "description": "GENIE rests on the conjecture that uniformly distributed OSGR across parameters indicates better generalization."
+    },
+    {
+     "id": "P7",
+     "name": "GENIE optimizer",
+     "description": "GENIE preconditions gradients with a factor p_j based on GSNR (variance clipped by tanh), adds noise scaled by 1-tanh(1/sigma^2) to the gradient, and applies a Bernoulli random dropout mask after preconditioning."
+    },
+    {
+     "id": "P8",
+     "name": "PAC-Bayes interpretation",
+     "description": "A one-step PAC-Bayes analysis shows balanced OSGR from preconditioning corresponds to a tighter generalization bound (Theorem 3.6)."
+    },
+    {
+     "id": "P9",
+     "name": "Convergence matches SGD",
+     "description": "Under Theorems 3.8-3.10, GENIE's average gradient norm converges at O(T^-1/2), the standard non-convex SGD rate (Theorem 3.11, Remark 3.12)."
+    },
+    {
+     "id": "P10",
+     "name": "Outperforms optimizers on DG",
+     "description": "On five DG datasets GENIE outperforms Adam by 5.69%, SGD by 6.36% and SAM by 4.37%, with notable gains on VLCS and TerraIncognita (Table 2)."
+    },
+    {
+     "id": "P11",
+     "name": "Faster and consistent over iterations",
+     "description": "GENIE outperforms other optimizers even at 5,000 iterations, with lower overhead than SGD and Adam and on average 1.3x faster training than SAM, which needs two sequential gradient computations per step (Table 3)."
+    },
+    {
+     "id": "P12",
+     "name": "Ablation shows each component helps",
+     "description": "On PACS, full GENIE improves accuracy 4.9% over ERM with Adam, and preconditioning alone improves it 3.8% (Table 6)."
+    },
+    {
+     "id": "P13",
+     "name": "Higher OSGR empirically",
+     "description": "On VLCS, GENIE achieves an average OSGR closer to 1 than prior optimizers during training (Fig 4), consistent with the generalization analysis."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.1-3.2.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.3.2, Thm 3.6"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3.3, Thm 3.11"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.1, Table 2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.1, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.4, Table 6"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P13",
+     "evidence": [
+      "Sec 3.3.1, Sec 4.4, Fig 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.4, Fig 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Integrates with DG and SDG methods",
+   "description": "Using GENIE as the optimizer inside existing DG and single-domain-generalization algorithms improves them, whereas conventional optimizers reduce their performance (Table 4)."
+  },
+  {
+   "id": "P15",
+   "name": "Flatter minima",
+   "description": "In a FashionMNIST loss-landscape simulation, SGD and Adam converge quickly along steep directions and overfit source domains, while GENIE moves toward flatter minima (Fig 5)."
+  },
+  {
+   "id": "P16",
+   "name": "Clear class separation in features",
+   "description": "UMAP on PACS with Sketch held out shows GENIE gives clearer class separation across domains (Fig 3)."
+  }
+ ],
+ "structural_reasoning": "The imbalance problem and OSGR theory motivate the GENIE design, which supports theoretical guarantees and empirical gains. Qualitative and integration results are isolated."
+}

@@ -1,0 +1,383 @@
+{
+  "arxiv_id": "2606.25488v1",
+  "note": "Single-pass extraction (no sentence-level indexing available for this document). Evidence fields reference sections/tables/figures/equations instead of indexed sentences (S#). Votes/confidence/fidelity fields from the reference schema are omitted since no multi-run validation was performed.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: KD training cost and the two obstacles to data pruning for KD",
+      "nodes": [
+        {
+          "id": "P1",
+          "name": "KD achieves efficient inference but not efficient training",
+          "description": "Knowledge Distillation lets compact students inherit teacher knowledge for efficient inference, but does not alleviate training burden since students are usually distilled on the entire dataset under teacher guidance, incurring significant training cost."
+        },
+        {
+          "id": "P2",
+          "name": "Data pruning proposed to reduce KD training cost",
+          "description": "An emerging line of research points to reducing the number of samples participating in distillation (data pruning) as a way to retain competitive performance while cutting training cost, with Baruch et al. re-evaluating classical pruning methods and Chen et al. introducing a KD-specific pruning method using teacher cross-entropy loss within a medium-difficulty window."
+        },
+        {
+          "id": "P3",
+          "name": "Obstacle 1: Efficiency-Effectiveness trade-off in score estimation",
+          "description": "High-fidelity trajectory-based difficulty metrics (EL2N, Forgetting, AUM) are computationally prohibitive for KD because they need training-time statistics not available from pretrained teachers, while cheap CE-loss scoring is an unreliable difficulty indicator since over-parameterized networks can overfit even hard/mislabeled samples, producing weakly discriminative losses."
+        },
+        {
+          "id": "P4",
+          "name": "Obstacle 2: Rigid and suboptimal sampling heuristics",
+          "description": "Even with reliable scores, conventional sampling strategies (top-k, fixed-cutoff stratified sampling, window-based selection) impose a fixed selection region that cannot adapt to varying data distributions and teacher-student dynamics across KD settings, limiting performance."
+        },
+        {
+          "id": "P5",
+          "name": "IF-Beta proposed to unify IF scoring with a learnable Beta sampling policy",
+          "description": "To overcome both obstacles, the paper proposes IF-Beta (Influence Function based Beta Policy), which unifies influence-function scoring with a learnable probabilistic pruning policy parameterized by a Beta distribution."
+        }
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["Sec 1"]},
+        {"from": "P2", "to": "P3", "evidence": ["Sec 1"]},
+        {"from": "P2", "to": "P4", "evidence": ["Sec 1"]},
+        {"from": "P3", "to": "P5", "evidence": ["Sec 1"]},
+        {"from": "P4", "to": "P5", "evidence": ["Sec 1"]}
+      ]
+    },
+    {
+      "component_id": "C2",
+      "description": "Preliminaries: KD loss and influence function formulation",
+      "nodes": [
+        {
+          "id": "P6",
+          "name": "Standard KD loss combines CE and KL terms",
+          "description": "The student is trained by minimizing a weighted combination of standard cross-entropy loss and a KL-divergence distillation term between teacher and student predictive distributions (Eq. 3)."
+        },
+        {
+          "id": "P7",
+          "name": "Data pruning is a two-stage pipeline: score then select",
+          "description": "Most existing pruning methods follow a two-stage pipeline of estimating a per-sample score (difficulty or uncertainty, typically requiring training dynamics) and then selecting a subset via heuristic rules (top-k, stratified cutoff, sliding window) under a given pruning ratio."
+        },
+        {
+          "id": "P8",
+          "name": "Classical influence functions quantify per-sample impact",
+          "description": "Influence functions estimate how a model's predictions would change if a training point were removed, expressed via the gradient and inverse Hessian of the loss at the optimal parameters (Eqs. 4-6), but were historically considered impractical due to high computational cost and unreliable estimation quality in deep networks."
+        }
+      ],
+      "edges": [
+        {"from": "P6", "to": "P7", "evidence": ["Sec 2"]},
+        {"from": "P7", "to": "P8", "evidence": ["Sec 2"]}
+      ]
+    },
+    {
+      "component_id": "C3",
+      "description": "Finding/Method 1: IF-FVM as an efficient, reliable score estimator",
+      "nodes": [
+        {
+          "id": "P9",
+          "name": "SAM-based fine-tuning toward a flat validation minimum (FVM) stabilizes IF",
+          "description": "Building on recent advances showing that optimizing toward a flat validation minimum stabilizes influence estimation, the teacher model is fine-tuned on the validation set using Sharpness-Aware Minimization (Eq. 8), enforcing local flatness of the loss landscape."
+        },
+        {
+          "id": "P10",
+          "name": "IF-FVM score derived from the SAM-tuned teacher",
+          "description": "Under the FVM condition, the influence of a training sample on the validation set is computed using gradients and the Hessian of the SAM-tuned teacher (Eq. 9), approximated via a diagonal Fisher Information matrix in place of the full inverse Hessian for practicality at scale."
+        },
+        {
+          "id": "P11",
+          "name": "IF-FVM correlates strongly with trajectory-based difficulty metrics",
+          "description": "Spearman rank correlation experiments (Fig. 1) show IF-FVM consistently aligns more strongly with established difficulty metrics (EL2N, AUM) than CE-loss or IF-LiSSA baselines, validating it as a computationally efficient yet robust score estimator for KD pruning."
+        }
+      ],
+      "edges": [
+        {"from": "P8", "to": "P9", "evidence": ["Sec 3.1"]},
+        {"from": "P9", "to": "P10", "evidence": ["Sec 3.1", "Eq. 9"]},
+        {"from": "P3", "to": "P9", "evidence": ["Sec 3.1"]},
+        {"from": "P10", "to": "P11", "evidence": ["Sec 3.1", "Fig. 1"]}
+      ]
+    },
+    {
+      "component_id": "C4",
+      "description": "Finding/Method 2: limitations of existing sampling strategies motivate the Beta Policy",
+      "nodes": [
+        {
+          "id": "P12",
+          "name": "CCS exhibits a threshold shift between KD and non-KD settings",
+          "description": "CCS's optimal cutoff ratio varies significantly between KD and non-KD settings, making pre-defined hyperparameters non-transferable (Figs. 2a-2b)."
+        },
+        {
+          "id": "P13",
+          "name": "BWS is hindered by a suboptimal fixed-window design",
+          "description": "Replacement experiments show that introducing randomness into BWS's selection window actually improves performance, revealing that its fixed-window design is suboptimal (Fig. 2c)."
+        },
+        {
+          "id": "P14",
+          "name": "These findings motivate an adaptive, learnable sampling strategy",
+          "description": "The threshold-shift and fixed-window limitations of CCS and BWS underscore the need for an adaptive, learnable sampling strategy beyond rigid heuristic-based selection."
+        }
+      ],
+      "edges": [
+        {"from": "P4", "to": "P12", "evidence": ["Sec 3.2", "Fig. 2a-2b"]},
+        {"from": "P4", "to": "P13", "evidence": ["Sec 3.2", "Fig. 2c"]},
+        {"from": "P12", "to": "P14", "evidence": ["Sec 3.2"]},
+        {"from": "P13", "to": "P14", "evidence": ["Sec 3.2"]}
+      ]
+    },
+    {
+      "component_id": "C5",
+      "description": "Method: Beta Policy formulation for adaptive sampling",
+      "nodes": [
+        {
+          "id": "P15",
+          "name": "Scores normalized to percentiles for Beta parameterization",
+          "description": "Precomputed IF-FVM difficulty scores are mapped via rank-to-percentile normalization onto [0,1], with smaller normalized values corresponding to more difficult samples."
+        },
+        {
+          "id": "P16",
+          "name": "Selection probability parameterized by a Beta distribution",
+          "description": "Each sample's selection probability is parameterized using a Beta distribution over the normalized score (Eq. 10), with learnable parameters ϕ jointly controlling the shape parameters α and β."
+        },
+        {
+          "id": "P17",
+          "name": "Beta Policy defines a fixed-ratio sampling distribution over masks",
+          "description": "The Beta Policy is a Beta-distribution-based categorical distribution over binary mask vectors conditioned on ϕ and pruning ratio r, constrained to a fixed number of selected samples (Eqs. 11-12), yielding the pruned subset."
+        },
+        {
+          "id": "P18",
+          "name": "Beta Policy is more flexible than CCS/BWS's fixed supports",
+          "description": "The continuous, flexible Beta density over the sample space (Fig. 3) contrasts with the rigid, uniform sampling over predefined support sets used by CCS and BWS, enabling more adaptive selection."
+        }
+      ],
+      "edges": [
+        {"from": "P14", "to": "P15", "evidence": ["Sec 3.2"]},
+        {"from": "P11", "to": "P15", "evidence": ["Sec 3.2"]},
+        {"from": "P15", "to": "P16", "evidence": ["Sec 3.2", "Eq. 10"]},
+        {"from": "P16", "to": "P17", "evidence": ["Sec 3.2", "Eqs. 11-12"]},
+        {"from": "P17", "to": "P18", "evidence": ["Sec 3.2", "Fig. 3"]}
+      ]
+    },
+    {
+      "component_id": "C6",
+      "description": "Method: bilevel optimization of the Beta Policy via policy gradients",
+      "nodes": [
+        {
+          "id": "P19",
+          "name": "Beta Policy search posed as bilevel optimization",
+          "description": "Finding the optimal Beta Policy is formulated as a bilevel problem: the outer objective minimizes expected validation loss over policy-sampled masks, while the inner objective trains the student on the sampled subset via the KD loss (Eqs. 13-15)."
+        },
+        {
+          "id": "P20",
+          "name": "Direct bilevel gradient requires costly implicit differentiation",
+          "description": "Naively differentiating the bilevel objective yields a gradient requiring implicit differentiation through the inner optimum, which is computationally prohibitive for deep networks."
+        },
+        {
+          "id": "P21",
+          "name": "Policy gradient estimator avoids implicit differentiation",
+          "description": "By exploiting the Beta Policy's probabilistic formulation, an unbiased policy-gradient estimator (Theorem 1, Eqs. 17-18) is used instead, eliminating the need for implicit differentiation and enabling SGD updates of ϕ (Eq. 19)."
+        }
+      ],
+      "edges": [
+        {"from": "P17", "to": "P19", "evidence": ["Sec 3.3"]},
+        {"from": "P19", "to": "P20", "evidence": ["Sec 3.3"]},
+        {"from": "P20", "to": "P21", "evidence": ["Sec 3.3", "Theorem 1"]}
+      ]
+    },
+    {
+      "component_id": "C7",
+      "description": "Method: efficient inner-loop optimization via frozen teacher feature space",
+      "nodes": [
+        {
+          "id": "P22",
+          "name": "Inner-loop retraining to convergence per policy update is expensive",
+          "description": "Although the outer loop is efficiently optimized via policy gradients, the inner-loop optimization remains costly since it would require retraining the full student network to convergence for every policy update."
+        },
+        {
+          "id": "P23",
+          "name": "Surrogate student: linear classifier on frozen teacher features",
+          "description": "The KD structure is leveraged by replacing the full student with a surrogate: a trainable linear classification head attached to frozen teacher features, reformulating the student model as a linear map over frozen features (Eq. 20)."
+        },
+        {
+          "id": "P24",
+          "name": "Inner objective reduces to a fast single-linear-layer optimization",
+          "description": "The inner-loop objective becomes optimizing only a single linear classifier on the subset (Eq. 21), which is efficient and keeps overall bilevel optimization computationally negligible in overhead."
+        },
+        {
+          "id": "P25",
+          "name": "Formulation generalizes to standard supervised pruning",
+          "description": "The general bilevel formulation applies to both KD and standard supervised classification by swapping the inner KD loss for a standard CE loss, enabling IF-Beta to serve as a general-purpose data pruning framework."
+        }
+      ],
+      "edges": [
+        {"from": "P21", "to": "P22", "evidence": ["Sec 3.4"]},
+        {"from": "P22", "to": "P23", "evidence": ["Sec 3.4"]},
+        {"from": "P23", "to": "P24", "evidence": ["Sec 3.4", "Eq. 21"]},
+        {"from": "P24", "to": "P25", "evidence": ["Sec 3.4"]}
+      ]
+    },
+    {
+      "component_id": "C8",
+      "description": "Finding: IF-Beta outperforms baselines across datasets/pruning ratios and surpasses full-data distillation",
+      "nodes": [
+        {
+          "id": "P26",
+          "name": "IF-Beta consistently outperforms retraining and retraining-free baselines",
+          "description": "Across CIFAR-10/100 and ImageNet under KD, IF-Beta consistently outperforms all baselines including DUAL (which needs partial retraining) and Medium-Difficulty (retraining-free) across all pruning ratios (Fig. 4)."
+        },
+        {
+          "id": "P27",
+          "name": "IF-Beta surpasses full-data distillation with less data",
+          "description": "IF-Beta enables students trained on a pruned subset to surpass full-data distillation performance, e.g., 70% retained on CIFAR-10 (95.69% vs 95.50%), 90% on CIFAR-100 (79.53% vs 79.38%), and 50% on ImageNet (74.02% vs 73.54%)."
+        },
+        {
+          "id": "P28",
+          "name": "Not all training samples are equally beneficial for KD",
+          "description": "The ability to surpass full-data performance with fewer samples suggests some samples actively impede student generalization, and pruning them yields a cleaner, more informative training signal."
+        },
+        {
+          "id": "P29",
+          "name": "IF-Beta generalizes across heterogeneous teacher architectures",
+          "description": "IF-Beta is further validated with ResNet-50/101, WideResNet, and ViT-Base teachers, consistently outperforming all retraining-free baselines across settings."
+        }
+      ],
+      "edges": [
+        {"from": "P5", "to": "P26", "evidence": ["Sec 4.1", "Fig. 4"]},
+        {"from": "P26", "to": "P27", "evidence": ["Sec 4.1"]},
+        {"from": "P27", "to": "P28", "evidence": ["Sec 4.1"]},
+        {"from": "P26", "to": "P29", "evidence": ["Sec 4.1"]}
+      ]
+    },
+    {
+      "component_id": "C9",
+      "description": "Finding: sample efficiency under constrained training budgets",
+      "nodes": [
+        {
+          "id": "P30",
+          "name": "IF-Beta outperforms full-data and random pruning under tight budgets",
+          "description": "Under severely constrained iteration budgets, IF-Beta with 50% data pruned achieves 90.80% (CIFAR-10), 67.31% (CIFAR-100), and 60.70% (ImageNet), all exceeding full-data baselines and consistently beating random pruning (Table 1)."
+        },
+        {
+          "id": "P31",
+          "name": "Gains stem from selection quality, not just fewer samples",
+          "description": "The consistent margin over random pruning demonstrates that IF-Beta's gains are not solely from a favorable training regime induced by fewer samples but stem from effective sample selection itself."
+        }
+      ],
+      "edges": [
+        {"from": "P26", "to": "P30", "evidence": ["Sec 4.2", "Table 1"]},
+        {"from": "P30", "to": "P31", "evidence": ["Sec 4.2"]}
+      ]
+    },
+    {
+      "component_id": "C10",
+      "description": "Finding: end-to-end compute savings and comparison with efficient KD methods",
+      "nodes": [
+        {
+          "id": "P32",
+          "name": "IF-Beta surpasses full-data performance faster and cheaper",
+          "description": "Including the pruning process cost, IF-Beta reaches or surpasses full-data students' final performance using less time across CIFAR-10/100 and ImageNet (relative costs 0.806x-0.915x) (Table 2)."
+        },
+        {
+          "id": "P33",
+          "name": "IF-Beta beats prior efficient KD methods in accuracy and training time",
+          "description": "Distilling ResNet-34 into MobileNet on ImageNet, IF-Beta achieves the best accuracy (71.20%) while requiring only 19.24 hours, less than half the cost of the full-data Baseline (39.86h) and Medium-Difficulty* (36.98h) (Table 3)."
+        },
+        {
+          "id": "P34",
+          "name": "Efficiency gains stem from reduced data, fewer teacher queries, and subset quality",
+          "description": "The efficiency gains stem from three factors: reduced data volume (70% subset), no repeated teacher queries per epoch, and a higher-quality subset preserving distillation effectiveness even under one-shot teacher logits."
+        }
+      ],
+      "edges": [
+        {"from": "P27", "to": "P32", "evidence": ["Sec 4.2", "Table 2"]},
+        {"from": "P32", "to": "P33", "evidence": ["Sec 4.2", "Table 3"]},
+        {"from": "P33", "to": "P34", "evidence": ["Sec 4.2"]}
+      ]
+    },
+    {
+      "component_id": "C11",
+      "description": "Finding: generality across distillation objectives",
+      "nodes": [
+        {
+          "id": "P35",
+          "name": "IF-Beta is not tied to a specific KD loss",
+          "description": "Evaluated under Relational KD, FitNets, and Attention Transfer objectives on CIFAR-10/100, IF-Beta consistently outperforms both Random pruning and Medium-Difficulty across all losses, pruning ratios, and datasets (Table 4)."
+        },
+        {
+          "id": "P36",
+          "name": "Data quality may matter more than the distillation algorithm",
+          "description": "Consistent benefits across diverse training budgets, distillation objectives, and teacher-student pairs suggest that careful data curation is a universally effective and complementary strategy for improving efficiency and effectiveness of KD, potentially mattering more than algorithmic specifics."
+        }
+      ],
+      "edges": [
+        {"from": "P26", "to": "P35", "evidence": ["Sec 4.2", "Table 4"]},
+        {"from": "P35", "to": "P36", "evidence": ["Sec 4.2"]},
+        {"from": "P30", "to": "P36", "evidence": ["Sec 4.2"]},
+        {"from": "P33", "to": "P36", "evidence": ["Sec 4.2"]}
+      ]
+    },
+    {
+      "component_id": "C12",
+      "description": "Ablation: advantage of the learnable Beta Policy over IF-CCS/IF-BWS",
+      "nodes": [
+        {
+          "id": "P37",
+          "name": "IF-CCS and IF-BWS combine IF scores with fixed selection rules",
+          "description": "To isolate the contribution of the sampling policy, CCS and BWS are combined with the paper's IF-based scores (IF-CCS, IF-BWS), which do not require retraining."
+        },
+        {
+          "id": "P38",
+          "name": "IF-Beta outperforms IF-CCS and IF-BWS across ratios and datasets",
+          "description": "Across CIFAR-10/100 and ImageNet at multiple pruning ratios, IF-Beta consistently outperforms both IF-CCS and IF-BWS (Table 5), demonstrating that the learnable Beta Policy provides clear advantages over fixed-threshold and fixed-window selection even when using the same underlying scores."
+        }
+      ],
+      "edges": [
+        {"from": "P18", "to": "P37", "evidence": ["Sec 4.3"]},
+        {"from": "P37", "to": "P38", "evidence": ["Sec 4.3", "Table 5"]}
+      ]
+    },
+    {
+      "component_id": "C13",
+      "description": "Finding: generality to standard (non-KD) data pruning",
+      "nodes": [
+        {
+          "id": "P39",
+          "name": "IF-Beta remains competitive without KD by swapping in CE loss",
+          "description": "With the inner objective replaced by standard CE loss (per P25), IF-Beta remains competitive and consistently outperforms other baselines across all pruning ratios on CIFAR-10/100 in the standard supervised pruning setting (Fig. 5)."
+        },
+        {
+          "id": "P40",
+          "name": "Off-the-shelf pretrained models can replace in-domain models for IF scoring",
+          "description": "Thanks to the FVM property, a generic ImageNet-pretrained ResNet-18 can replace an in-domain pretrained model to compute IF scores when no in-domain pretrained model is available, avoiding retraining costs while still yielding competitive pruning performance (Table 6)."
+        },
+        {
+          "id": "P41",
+          "name": "IF-Beta can fully avoid retraining cost for standard data pruning",
+          "description": "Using a generic pretrained model for scoring means IF-Beta can completely avoid any retraining cost while still providing strong pruning quality in the standard (non-KD) data pruning setting."
+        }
+      ],
+      "edges": [
+        {"from": "P25", "to": "P39", "evidence": ["Sec 4.4", "Fig. 5"]},
+        {"from": "P39", "to": "P40", "evidence": ["Sec 4.4", "Table 6"]},
+        {"from": "P40", "to": "P41", "evidence": ["Sec 4.4"]}
+      ]
+    }
+  ],
+  "isolated_nodes": [
+    {
+      "id": "P42",
+      "name": "Prior KD acceleration methods trade off student performance",
+      "description": "Several prior methods explored accelerating KD training, but their speedups typically come at the cost of degrading student performance."
+    },
+    {
+      "id": "P43",
+      "name": "Formal KD notation and loss definitions",
+      "description": "Formal notation for the training dataset, teacher/student networks, and the weighted CE+KL loss combination underlying the KD framework (Eq. 3, Sec 2)."
+    },
+    {
+      "id": "P44",
+      "name": "Baseline method taxonomy",
+      "description": "Baselines are grouped into methods requiring partial/full retraining (EL2N, GraNd, Forgetting, DUAL) and retraining-free methods (Random, Medium-Difficulty), with CCS and BWS re-implemented using the paper's IF-based scores for fair comparison."
+    },
+    {
+      "id": "P45",
+      "name": "Training and dataset details",
+      "description": "CIFAR-10/100 models are trained with batch size 128 for 40K iterations (~200 epochs); ImageNet students are trained with batch size 128 for 300K iterations (~30 epochs); results are averaged over three random seeds (0,1,2)."
+    }
+  ],
+  "structural_reasoning": "The graph follows a linear methodological build-up typical of a proposed-method paper. C1 (motivation: KD training cost and the two pruning obstacles) and C2 (KD/IF preliminaries) establish the problem and formal background feeding into C3 (the IF-FVM score estimator, solving obstacle 1) and C4 (empirical critique of CCS/BWS, motivating obstacle 2's fix). C5 (Beta Policy formulation) builds directly on both C3's scores and C4's motivation, feeding into C6 (bilevel optimization via policy gradients) and C7 (efficient feature-space inner loop), which together constitute the full IF-Beta method and also enable generalization to non-KD pruning (P25). The experimental components C8-C13 form a fan-out from the completed method: C8 establishes the flagship result (outperforming baselines, surpassing full-data distillation), which C9 (constrained budgets), C10 (compute savings vs. efficient KD methods), and C11 (generality across KD losses) each extend along a different axis, converging on the paper's central takeaway (P36) that data quality may matter more than the distillation algorithm. C12 isolates the sampling-policy's own contribution via controlled ablation (IF-CCS/IF-BWS), while C13 closes the loop by showing the bilevel framework generalizes beyond KD to standard data pruning, even without any in-domain pretrained model. Baseline taxonomy, formal notation, and training/dataset configuration details are treated as isolated nodes since they provide supporting context rather than participating in the causal/argumentative chains."
+}

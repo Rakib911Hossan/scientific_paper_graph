@@ -1,0 +1,216 @@
+{
+ "arxiv_id": "2610.05800",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Shared low-rank subspace limits LoRA; U-LoRA's gating design and its empirical validation",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Vanilla LoRA shares one subspace",
+     "description": "In vanilla LoRA, parameter updates are constrained to a fixed-rank low-dimensional subspace shared across all input contexts, causing interference among updates for different semantic contexts."
+    },
+    {
+     "id": "P2",
+     "name": "Same token needs different directions",
+     "description": "The same token (e.g. 'book') can take different semantic roles across tasks, yet vanilla LoRA reuses highly similar low-rank update directions because of its shared bases."
+    },
+    {
+     "id": "P3",
+     "name": "Input-aware LoRA is uncoordinated",
+     "description": "Input-aware LoRA variants (LoRA-MoE, HydraLoRA, TopLoRA) select low-rank directions per token independently, producing dispersed, uncoordinated updates within the same sentence or task and weak task-level consistency."
+    },
+    {
+     "id": "P4",
+     "name": "U-LoRA token-wise gating",
+     "description": "U-LoRA replaces LoRA's constant down-projection A with A(x)=G(x)⊙A, where an input-conditioned gate modulates the shared low-rank bases element-wise per token; G(x)≡1 recovers vanilla LoRA and the update stays within the rank-r subspace."
+    },
+    {
+     "id": "P5",
+     "name": "Sequence-level aggregation",
+     "description": "U-LoRA aggregates token features into a softmax-weighted sequence-level directional summary (causally masked in decoder-only models) and adds it to the token-level signal, coordinating utilization within a sentence."
+    },
+    {
+     "id": "P6",
+     "name": "EMA historical prior",
+     "description": "U-LoRA calibrates the gate with a bias-corrected exponential moving average of batch-mean sequence summaries, reducing batch-to-batch gate noise; it is training-time only and frozen at inference."
+    },
+    {
+     "id": "P7",
+     "name": "U-LoRA wins on math reasoning",
+     "description": "On Gemma-7B, LLaMA-3-8B, Qwen3-8B and Qwen2.5-14B, U-LoRA achieves the best average accuracy on the math reasoning benchmark, e.g. 76.02% (r=8) on LLaMA-3-8B vs 71.67% for LoRA r=32."
+    },
+    {
+     "id": "P8",
+     "name": "U-LoRA wins on GLUE",
+     "description": "On GLUE, U-LoRA gets the best average: 84.88%/85.00% (r=8/16) on RoBERTa-Base and 88.13%/88.29% on RoBERTa-Large, above TopLoRA r=16 (84.48%) and LoRA r=32 (83.60%) on Base."
+    },
+    {
+     "id": "P9",
+     "name": "Gains come from utilization, not parameters",
+     "description": "Increasing LoRA rank from 16 to 32 gives only marginal gains (82.82 to 83.60 on RoBERTa-Base), while U-LoRA at r=8 matches higher-rank LoRA, so improvements stem from better use of a fixed rank budget."
+    },
+    {
+     "id": "P10",
+     "name": "All three components contribute",
+     "description": "Ablation on Qwen3-8B shows removing TOK, SEQ or EMA lowers average accuracy from 83.97 to 78.95, 79.16 and 79.66 respectively, and removing all three gives 78.52, equal to LoRA."
+    },
+    {
+     "id": "P11",
+     "name": "Consistent across ranks and modules",
+     "description": "U-LoRA outperforms LoRA at every tested rank in {2,4,8,16,32} and across target-module sets from Q to QKVOGUD on Qwen3-8B."
+    },
+    {
+     "id": "P12",
+     "name": "Task-structured update geometry",
+     "description": "PCA of RoBERTa-Large updates shows U-LoRA forms the most compact, well-structured task clusters in deeper layers, while TopLoRA updates are scattered without clear clustering."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Fig 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 1, Sec 3.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.4, Eq 8"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.3, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2, 4.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.1, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.3, Fig 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Larger gains on harder reasoning",
+   "description": "On Qwen3-8B, U-LoRA reaches 85.29 on GSM8K vs 75.21 for LoRA r=32 and 43.31 on AQuA vs 36.61."
+  },
+  {
+   "id": "P14",
+   "name": "CoLA gains",
+   "description": "On CoLA, U-LoRA scores 60.61 (Base) and 66.51 (Large) vs 58.58 and 60.90 for LoRA r=32."
+  },
+  {
+   "id": "P15",
+   "name": "Effective at 72B and on instruct models",
+   "description": "U-LoRA remains effective at 72B scale and on instruct-tuned models, e.g. +3.24 over TopLoRA on 14B-Instruct."
+  },
+  {
+   "id": "P16",
+   "name": "SEQ matters for AQuA",
+   "description": "Removing sequence-level aggregation causes particularly severe degradation on AQuA."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the shared-subspace limitation of LoRA, through U-LoRA's gating, aggregation and EMA design, to benchmark and ablation evidence."
+}

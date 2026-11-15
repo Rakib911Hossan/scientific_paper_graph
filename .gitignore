@@ -1,0 +1,22 @@
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+
+*.pdf
+*.egg-info/
+.venv/
+venv/
+.venv-costcalc/
+data/usage_log.jsonl
+
+# Docs, reports, and non-code project material
+docs/
+projectProrpsal/
+related_papers/
+*.docx
+*.doc
+*.pptx
+*.excalidraw
+exports/
+notebooks/

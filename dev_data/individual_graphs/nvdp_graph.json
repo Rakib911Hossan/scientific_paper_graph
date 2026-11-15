@@ -1,0 +1,172 @@
+{
+  "arxiv_id": "2510.19425v1",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/equations/tables rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: limitations of existing model-based Bayesian meta-learning posteriors",
+      "nodes": [
+        {"id": "P1", "name": "Amortized VI formulates meta-learning as posterior approximation", "description": "Bayesian meta-learning methods formulate the goal of meta-learning as amortized variational inference of the posterior distribution over task-specific parameters in a multi-task setting, maximizing an ELBO that balances likelihood fit against a KL regularization to a prior."},
+        {"id": "P2", "name": "VERSA directly models full NN weight posterior, limiting scalability", "description": "VERSA employs an NN-based meta-model to directly predict the Gaussian posterior of the agent NN's task-specific weights from a small context set, but this direct approximation of NN weights is limited in scalability due to the large dimensionality of the weights, so it only considers weights for the single softmax output layer."},
+        {"id": "P3", "name": "VERSA lacks a task-specific prior, risking posterior collapse", "description": "VERSA does not utilize any task-specific prior, so its conditional posterior could collapse into a deterministic one while training with Monte Carlo approximation."},
+        {"id": "P4", "name": "Neural Processes model a latent representation instead of weights", "description": "Neural Processes (NPs) instead model the conditional posterior via a latent representation used as a second input to the likelihood, offering an alternative efficient way to transfer conditional task information."},
+        {"id": "P5", "name": "NPs suffer from under-fitting and posterior collapsing", "description": "Follow-up studies indicate NPs often suffer from under-fitting and posterior-collapsing behavior, conjectured to be partially inherent to their original variational formulation since the posterior relies on the whole task data during training but generalizes poorly at test."},
+        {"id": "P6", "name": "Flexible NN-based likelihoods are known to neglect latent representations", "description": "It is well known in the broader VI literature that highly flexible NN-based likelihoods can neglect the latent representation during variational inference, contributing to the posterior-collapsing behavior also observed in this paper's own NP experiments."},
+        {"id": "P7", "name": "These limitations motivate a new conditional posterior design", "description": "The scalability limitation and prior-less collapse risk of VERSA, together with the under-fitting/collapsing behavior of NPs, motivate designing a new type of NN-based conditional posterior model that can bypass both failure modes."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P1", "to": "P4", "evidence": ["S2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["S2.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P5", "evidence": ["S2.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Conditional dropout posterior: low-rank product of Bernoulli experts",
+      "nodes": [
+        {"id": "P8", "name": "Variational Dropout provides a fully factorized posterior via dropout rates", "description": "Variational Dropout (VD) models the variational posterior via dropout regularization, using a Gaussian approximation of Bernoulli dropout that provides a fully factorized, tractable posterior over NN parameters and allows learning independent per-parameter dropout rates rather than one fixed global rate."},
+        {"id": "P9", "name": "Conventional VD's dropout posterior is fixed and task-agnostic once trained", "description": "The dropout posterior in conventional VD becomes fixed once trained and is unable to express a conditional posterior according to multiple different tasks."},
+        {"id": "P10", "name": "NVDPs propose a conditional dropout posterior parameterized by task-specific rates", "description": "NVDPs extend VD by defining a conditional dropout posterior over each layer's parameters where the task-specific dropout rate P^t_{k,d} (rather than a fixed rate) determines the mean and variance of each independent Gaussian, with the deterministic parameter theta shared across tasks as the common structure."},
+        {"id": "P11", "name": "Task-specific dropout rates are predicted from a permutation-invariant context set summary", "description": "The context set for a task is summarized via a permutation-invariant set representation (the mean of per-example features), which is fed into a meta-model that predicts the task-specific dropout rate."},
+        {"id": "P12", "name": "Dropout rate is factorized into row-wise, column-wise, and layer-wise components", "description": "The meta-model predicts logit vectors that, via a temperature-scaled sigmoid, yield low-rank components of the task-specific dropout rate: a row-wise, a column-wise, and a layer-wise term, whose product forms the full per-parameter dropout rate."},
+        {"id": "P13", "name": "This constitutes a low-rank product-of-Bernoulli-experts interpretation", "description": "Because the product of Bernoulli random variables is itself Bernoulli, the multiplicative combination of row/column/layer dropout components can be interpreted as a low-rank product of Bernoulli experts approximating the task-specific dropout rate."},
+        {"id": "P14", "name": "This yields substantially lower meta-model complexity than VERSA's direct weight modeling", "description": "Because the meta-model only needs to predict the low-rank row/column/layer components rather than the full weight posterior, its complexity is O(L(K+D+1)) compared to VERSA's O(LKD) for directly modeling the full NN weight posterior, greatly reducing the complexity of approximating high-dimensional task-specific weights from few context examples."}
+      ],
+      "edges": [
+        {"from": "P8", "to": "P9", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P10", "evidence": ["S3.1", "Eq2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["S3.1", "Eq3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P11", "to": "P12", "evidence": ["S3.1", "Eq3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P12", "to": "P13", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S3.1"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Task-specific variational prior: solving the improper-prior problem",
+      "nodes": [
+        {"id": "P15", "name": "The KL term's analytical tractability requires theta-independence", "description": "An important requirement in the conventional VD framework is that the analytical derivation of the KL term between posterior and prior should not depend on the deterministic NN parameter theta, allowing constant optimization of the ELBO with respect to all independent variational parameters."},
+        {"id": "P16", "name": "The conventional log-uniform prior is improper", "description": "The conventional VD approach of using a log-uniform prior is known to be an improper prior, since the KL divergence between the posterior and the log-uniform prior is infinite."},
+        {"id": "P17", "name": "This impropriety can degenerate the posterior to a deterministic one", "description": "The impropriety of the log-uniform prior can yield a degeneration of the dropout posterior model to a deterministic one, and additionally the conventional VD prior does not support task-dependent regularization."},
+        {"id": "P18", "name": "NVDPs instead use the same posterior form conditioned on the whole task as prior", "description": "NVDPs introduce a task-specific variational prior approximated using the same conditional dropout posterior form but conditioned on the whole task dataset rather than just the small context set, i.e., p(phi^t) is approximated as q(phi^t | D^t)."},
+        {"id": "P19", "name": "This choice is motivated by the known optimal-prior result in amortized VI", "description": "This choice is motivated by prior analytical results in amortized VI showing that the optimal prior maximizing the VI objective is the variational posterior aggregated over the whole dataset, so a posterior conditioned on the larger whole-task set is hypothesized to be much closer to this optimal prior than one conditioned on only a small context subset."},
+        {"id": "P20", "name": "The resulting KL term is analytically tractable and theta-independent", "description": "The KL divergence between the context-conditioned dropout posterior and the whole-task-conditioned variational prior is derived analytically and is independent of the shared parameter theta, satisfying the necessary condition to be usable as a prior in the VI optimization."},
+        {"id": "P21", "name": "This variational prior formulation is transferable beyond NVDPs", "description": "Although developed alongside NVDPs, this variational-prior formulation is general enough to be adopted by other latent-variable-based conditional posterior models such as NP variants."}
+      ],
+      "edges": [
+        {"from": "P15", "to": "P16", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P17", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S3.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P18", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P20", "evidence": ["S3.2", "Eq4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P15", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"},
+        {"from": "P18", "to": "P21", "evidence": ["S3.2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Stochastic variational inference objective and optimization",
+      "nodes": [
+        {"id": "P22", "name": "Combining posterior and prior yields the full NVDP ELBO", "description": "Combining the conditional dropout posterior (Eq. 2) and the task-specific variational prior's KL term (Eq. 4) yields the full ELBO objective for NVDPs over the multi-task dataset."},
+        {"id": "P23", "name": "SGVB reparameterization makes the sampled weights differentiable", "description": "Using the stochastic gradient variational Bayes (SGVB) reparameterization trick, the random task-specific weights are expressed as a deterministic differentiable transformation of i.i.d. noise, making them differentiable with respect to theta and the predicted dropout rates."},
+        {"id": "P24", "name": "This yields a differentiable Monte Carlo ELBO estimator optimizable via SGD", "description": "Because the transformed weights and the dropout rates (deterministically computed by the meta-model) are differentiable with respect to all variational parameters (theta, psi, omega, tau), the resulting minibatch Monte Carlo ELBO estimator can be optimized end-to-end via stochastic gradient descent."},
+        {"id": "P25", "name": "A local reparameterization trick further reduces gradient variance", "description": "In practice, a local reparameterization trick is further utilized to reduce the variance of the gradient estimators during training."}
+      ],
+      "edges": [
+        {"from": "P22", "to": "P23", "evidence": ["S3.3", "Eq5", "Eq6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P24", "evidence": ["S3.3", "Eq6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P25", "evidence": ["S3.3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Results: 1D regression on GP data resolves under-fitting vs. over-fitting trade-off",
+      "nodes": [
+        {"id": "P26", "name": "NVDP achieves the best log-likelihood across both variance settings", "description": "NVDP achieves the best LL scores compared with all baselines (NP, NP+VP, NP+CNP, NP+CNP+VP) in both the fixed-variance and learned-variance likelihood settings on the GP regression dataset."},
+        {"id": "P27", "name": "NVDP records high RLL and PLL simultaneously", "description": "NVDP records high reconstructive log-likelihood (RLL, indicating low under-fitting) on observed context points and excellent predictive log-likelihood (PLL, indicating low over-fitting) on the unseen target points."},
+        {"id": "P28", "name": "This indicates simultaneous mitigation of under-fitting and over-fitting", "description": "Because NVDP achieves both high RLL and high PLL simultaneously, this indicates the conditional dropout posterior approach can simultaneously mitigate under-fitting and over-fitting compared with the other baselines."},
+        {"id": "P29", "name": "Adding the variational prior improves PLL for NP variants", "description": "When the variational prior (VP) is applied to NP or NP+CNP, PLL scores increase by meaningful margins in all cases, demonstrating that the variational prior approach can independently reduce over-fitting of latent-representation-based conditional posterior models."},
+        {"id": "P30", "name": "Qualitative visualization confirms NVDP balances variability and context fit", "description": "Visualizing sampled functions shows NP has high variability but fits context data poorly, NP+CNP fits context data well but loses epistemic uncertainty (posterior collapse), while NVDP captures function variability well while also fitting observed context points better than NP."}
+      ],
+      "edges": [
+        {"from": "P26", "to": "P27", "evidence": ["S5", "Table1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P28", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P30", "evidence": ["S5", "Figure2"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P28", "evidence": ["S5", "Table1"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Results: active learning demonstrates accurate uncertainty estimation",
+      "nodes": [
+        {"id": "P31", "name": "Active learning selects points by maximal predictive variance", "description": "In the active learning experiment, each model sequentially selects additional context data points with maximal variance across sampled regressors, starting from one random point followed by 19 variance-guided selections."},
+        {"id": "P32", "name": "NVDP outperforms other models, especially with few additional points", "description": "NVDPs outperform the other models in log-likelihood improvement across selected points, especially with a small number of additional points, showing steady improvement with less over-fitting."},
+        {"id": "P33", "name": "This demonstrates accurate variance/uncertainty estimation drives efficient active learning", "description": "Because active learning selection quality depends directly on the accuracy of the model's variance estimates, NVDP's superior active-learning performance demonstrates that its dropout-based uncertainty estimation is more accurate than the baselines'."}
+      ],
+      "edges": [
+        {"from": "P31", "to": "P32", "evidence": ["S5", "Figure3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P32", "to": "P33", "evidence": ["S5"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Results: image completion and cross-dataset generalization",
+      "nodes": [
+        {"id": "P34", "name": "NVDP achieves the best LL across MNIST, CelebA, and cross-dataset transfer", "description": "NVDP achieves the outperforming log-likelihood scores compared with all other baselines on MNIST, CelebA, and the MNIST-trained-to-Omniglot-tested generalization setting."},
+        {"id": "P35", "name": "NVDP trained on MNIST generalizes best to unseen Omniglot", "description": "Interestingly, NVDP (trained only on MNIST) also achieves the best results when evaluated on the entirely unseen Omniglot dataset, among all compared models."},
+        {"id": "P36", "name": "Qualitative reconstructions show NVDP avoids both NP's and NP+CNP's failure modes", "description": "NP generates variable but poorly-fitting samples with few context points, NP+CNP achieves crisp reconstruction but with almost no sample variability due to posterior collapse, while NVDP achieves comparable reconstruction quality while retaining a reasonable amount of variability."},
+        {"id": "P37", "name": "This indicates NVDP captures more generalizable task knowledge, not just better fit", "description": "Because NVDP both fits the complex image function space well and generalizes strongly to the entirely unseen Omniglot dataset, this implies NVDP captures more general knowledge applicable to new unseen tasks, beyond simply fitting the training distribution better."}
+      ],
+      "edges": [
+        {"from": "P34", "to": "P35", "evidence": ["S5", "Table2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P35", "to": "P37", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P36", "to": "P37", "evidence": ["S5", "Figure4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "name": "Results: few-shot classification competitive with optimization-based SOTA",
+      "nodes": [
+        {"id": "P38", "name": "NVDP outperforms other model-based approaches (CNP, VERSA)", "description": "On Omniglot and MiniImageNet few-shot classification, NVDP achieves higher predictive accuracy than the other model-based meta-learning approaches CNP and VERSA."},
+        {"id": "P39", "name": "NVDP is comparable to state-of-the-art optimization-based methods", "description": "NVDP's classification accuracy on Omniglot is comparable with state-of-the-art optimization-based meta-learning approaches such as MAML and Meta-Dropout, despite NVDP being a model-based (instant-inference) rather than optimization-based approach."},
+        {"id": "P40", "name": "NVDP also records strong accuracy on MiniImageNet", "description": "NVDP also records good classification accuracy on the more complex MiniImageNet dataset, consistent with its strong Omniglot results."}
+      ],
+      "edges": [
+        {"from": "P38", "to": "P39", "evidence": ["S5", "Table3"], "votes": 2, "confidence": "majority"},
+        {"from": "P39", "to": "P40", "evidence": ["S5", "Table3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P41", "name": "Meta-learning defined as accumulating past experience into general knowledge", "description": "Meta-learning ability, as observed in humans, refers to accumulating past learning experiences into general knowledge that is later used for efficient learning of new tasks from few examples."},
+    {"id": "P42", "name": "Optimization-based Bayesian meta-learning methods incur expensive test-time adaptation", "description": "Optimization-based Bayesian meta-learning methods (e.g., LLAMA, PLATIPUS, BMAML, ABML) extend MAML-style adaptation with Gaussian posterior/prior models, but incur computationally expensive test-time adaptation costs due to Hessian or kernel matrix inversion, limiting suitability for resource-constrained test environments."},
+    {"id": "P43", "name": "MAML corresponds to a Dirac-delta variational posterior", "description": "Deterministic MAML can be viewed as learning a Dirac-delta variational posterior, where a shared global initialization is adapted via a few SGD steps on a small context subset to approximate task-specific weights."},
+    {"id": "P44", "name": "Exchangeability via permutation-invariant set representations is a stochastic-process requirement", "description": "Model-based Bayesian meta-learning methods commonly use permutation-invariant set representations as meta-model input, making the conditional posterior invariant to context-data ordering (exchangeability), a necessary condition for defining a stochastic process per Kolmogorov's Extension Theorem."},
+    {"id": "P45", "name": "Meta Dropout applies input-dependent Gaussian perturbation within an optimization-based framework", "description": "Meta Dropout, a related prior work, applies Gaussian-based stochastic perturbation to each preactivation feature but is constructed using optimization-based meta-learning methods rather than a set-representation-based conditional posterior."},
+    {"id": "P46", "name": "Gaussian Processes are a classical but less scalable Bayesian baseline", "description": "Gaussian Processes allow analytical posterior-predictive derivation given observed context and kernels, but require per-task kernel optimization and have quadratic time complexity in the number of context points, unlike NN-based model-based meta-learning approaches."},
+    {"id": "P47", "name": "Three regression evaluation metrics defined", "description": "The paper defines log-likelihood (LL, whole-dataset fit), reconstructive log-likelihood (RLL, context-set fit measuring under-fitting), and predictive log-likelihood (PLL, target-set fit measuring over-fitting) as the evaluation metrics for the regression experiments."},
+    {"id": "P48", "name": "Specific experimental architecture and optimization hyperparameters", "description": "Experiments use agent NNs with 4 hidden layers of 128 units and LeakyReLU/ReLU activations, meta-NNs with matching hidden-layer configurations, Adam optimizer with learning rates 4e-4 to 5e-4, 16 task-batches per iteration, and dataset-specific context/target split ranges for GP regression and image completion tasks."}
+  ],
+  "structural_score": 8,
+  "structural_reasoning": "The graph closely mirrors NVDP's own derivation-driven paper structure. C1 traces the paper's related-work critique of VERSA (scalability, collapse-without-prior) and Neural Processes (under-fitting, posterior collapse) as the explicit motivation for a new posterior design. C2 and C3 each follow a tight, mathematically grounded problem-to-solution chain matching the paper's own Sections 3.1 and 3.2: C2 traces VD's task-invariance limitation to the proposed task-specific low-rank Bernoulli-expert dropout-rate meta-model and its complexity advantage over VERSA; C3 traces the log-uniform prior's impropriety problem to the proposed whole-task-conditioned variational prior solution, including the paper's own theoretical justification (the known optimal-prior result) and the resulting tractability property. C4 captures the SGVB/local-reparameterization optimization chain that operationalizes the ELBO defined in C2/C3. C5 through C8 mirror the paper's four experimental subsections (1D GP regression, active learning, image completion, few-shot classification), with each results claim connected to the specific interpretive conclusion the paper draws from it (e.g., simultaneous high RLL and PLL indicating joint under/over-fitting mitigation; strong cross-dataset MNIST-to-Omniglot transfer indicating genuinely general knowledge rather than dataset-specific fit). Isolated nodes are appropriately limited to background definitions (meta-learning, exchangeability, GP baseline), related-work method descriptions (Meta Dropout, optimization-based methods), evaluation-metric definitions, and experimental hyperparameter specifications that support but are not premises within the paper's central derivation chain."
+}

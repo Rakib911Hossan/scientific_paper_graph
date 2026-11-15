@@ -1,0 +1,192 @@
+{
+ "arxiv_id": "2507.16488",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "ICR Score and ICR Probe: from dynamic hidden-state motivation to detection results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Static hidden states limit detection",
+     "description": "Existing hidden-state hallucination detectors focus on static, isolated, high-dimensional (~4000-d) representations, which limits feature extraction and fails to capture hidden-state updates and cross-layer residual stream evolution."
+    },
+    {
+     "id": "P2",
+     "name": "Module roles differ",
+     "description": "MHSA redistributes existing contextual information through query-key affinity, whereas FFNs act as key-value memories that retrieve and inject parametric knowledge; their contributions to hidden-state updates vary across layers."
+    },
+    {
+     "id": "P3",
+     "name": "Ratio of contributions unreliable",
+     "description": "Directly taking the ratio of the attention and FFN contributions to the residual update is unreliable, because the FFN output is computed from the attention output."
+    },
+    {
+     "id": "P4",
+     "name": "ICR Score definition",
+     "description": "The ICR Score is the Jensen-Shannon divergence between the softmax-normalized projection of the hidden-state update onto context token states and the head-averaged attention scores (top-k tokens by attention); small values mean attention-driven updates and large values mean FFN-dominated updates."
+    },
+    {
+     "id": "P5",
+     "name": "ICR layer-wise pattern",
+     "description": "Mean ICR scores follow a stable layer pattern: low in early layers (0-3, MHSA-driven), rising and peaking around layers 10-15 (FFN-driven parametric knowledge integration), then declining after layer 21; the pattern is consistent across four datasets with narrow variance bands."
+    },
+    {
+     "id": "P6",
+     "name": "ICR separates hallucinations",
+     "description": "Using the ICR score directly as a classification feature on HaluEval, AUROC exceeds 0.7 in ten layers and peaks at 0.7690 at layer 11, with clear density separation between hallucinated and non-hallucinated samples."
+    },
+    {
+     "id": "P7",
+     "name": "ICR Probe design",
+     "description": "Because one layer gives only a partial view, the ICR Probe is an MLP (L,128,64,32,1) trained with binary cross-entropy and Adam on the token-averaged 1xL ICR vector across all layers, outputting the probability of a non-hallucinated generation, with under 16K parameters for L<42."
+    },
+    {
+     "id": "P8",
+     "name": "ICR Probe outperforms baselines",
+     "description": "On Gemma-2, Qwen2.5 and Llama-3 across HaluEval, SQuAD, HotpotQA and TriviaQA, the ICR Probe outperforms training-free (PPL, LN-Entropy, LLM-check) and training-based (SAPLMA, SEP) baselines on most datasets (e.g. Gemma-2 HaluEval AUROC 0.8436 vs SAPLMA 0.8101)."
+    },
+    {
+     "id": "P9",
+     "name": "Efficient single-pass detection",
+     "description": "The ICR Probe uses only ~16K parameters versus 110K for SAPLMA, needs no layer or token selection, and detects hallucination from a single generation without multiple samples."
+    },
+    {
+     "id": "P10",
+     "name": "Better cross-dataset generalization",
+     "description": "Trained on one dataset and tested on another, the ICR Probe keeps AUROC >= 0.66 and outperforms SAPLMA and SEP, with an average in-domain to cross-domain AUROC drop of 8.61% versus 10.18% (SAPLMA) and 11.67% (SEP), attributed to modeling intrinsic residual-stream dynamics."
+    },
+    {
+     "id": "P11",
+     "name": "Both ICR components matter",
+     "description": "Ablation on Gemma-2: with neither hidden-state projection nor attention AUROC is 0.5; the projection alone gives AUROC 0.7723-0.7993; combining projection and attention gives the best results (e.g. HaluEval 0.8436), so the components are complementary."
+    },
+    {
+     "id": "P12",
+     "name": "Middle layers are critical",
+     "description": "Removing the middle layers (15-28) reduces AUROC more than removing early or deep layers on most datasets (e.g. HaluEval 0.7774 vs 0.8436 full), showing their critical role in detection."
+    },
+    {
+     "id": "P13",
+     "name": "Token-level detection works for key tokens",
+     "description": "Applied per token, the probe assigns low probabilities to key answer tokens in hallucinations (e.g. 'hectares' 0.04, ' Vietnam' 0.19) but unreliably handles frequent uninformative tokens like 'The' (0.98) and '.', so it mainly captures residual-stream patterns of key tokens."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 2-3"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 2, Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.1, Fig 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.1, Fig 3"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.2, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.4, Table 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.4, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.5, Table 4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Evaluation setup",
+   "description": "ICR Probe is evaluated on Llama-3-8B-Instruct, Qwen2.5-7B-Instruct and Gemma-2-9B-it using AUROC on HaluEval, SQuAD, TriviaQA and HotpotQA."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the limitation of static hidden-state detectors and module-role background, through the ICR Score and its empirical properties, to the ICR Probe, its results, generalization, and ablation/interpretability analyses."
+}

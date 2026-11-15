@@ -1,0 +1,190 @@
+{
+ "arxiv_id": "2609.05275",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Layer dropout configuration to training savings and inference elasticity",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Dropout abandoned in LLM pretraining",
+     "description": "As LLMs scaled to billions of parameters and trillions of tokens, dropout has largely disappeared from pretraining recipes, since single-epoch training on massive data leaves little room for classical overfitting and activation dropout is reported to degrade performance there."
+    },
+    {
+     "id": "P2",
+     "name": "Layer dropout gives structured sparsity",
+     "description": "Skipping entire transformer blocks (layer dropout / stochastic depth) yields structured sparsity that reduces active training FLOPs almost linearly with the dropout rate and encourages robustness to reduced-depth execution at inference."
+    },
+    {
+     "id": "P3",
+     "name": "Prior degradations may reflect poor configuration",
+     "description": "Reported accuracy degradation from layer dropout in decoder-only LLMs may come from suboptimal schedules or hyperparameters rather than fundamental limits, because no controlled large-scale study had varied these systematically."
+    },
+    {
+     "id": "P4",
+     "name": "Whole-block dropout beats sub-layer dropout",
+     "description": "Layer dropout that drops whole transformer blocks per sample yields higher accuracy than sub-layer dropout that drops attention and FFN sub-blocks separately (Finding 1, Table 1)."
+    },
+    {
+     "id": "P5",
+     "name": "Per-sequence beats per-batch dropout",
+     "description": "For any given layer dropout rate, dropping per sequence yields lower loss than dropping per batch (Finding 2)."
+    },
+    {
+     "id": "P6",
+     "name": "Non-uniform distribution across layers is better",
+     "description": "For the same training FLOPs, a non-uniform dropout distribution across layers beats uniform; the Increasing Layer Distribution (ILD, rate rising linearly from 0 at the first layer) is recommended as the model scales (Finding 3)."
+    },
+    {
+     "id": "P7",
+     "name": "Decaying time schedule is best",
+     "description": "For a fixed training FLOPs budget, a schedule decaying from a maximum rate to zero (DTS) achieves the highest accuracy, outperforming constant and increasing schedules at all scales (Finding 4)."
+    },
+    {
+     "id": "P8",
+     "name": "Recommended recipe",
+     "description": "The recommended layer dropout practice is increasing dropout across layers and decreasing dropout across time, which gives the best accuracy for a given training FLOPs budget (Key takeaway 1)."
+    },
+    {
+     "id": "P9",
+     "name": "Same-FLOPs loss improves, up to 25% FLOPs saved",
+     "description": "With optimal layer distribution, time schedule and optimizer hyperparameters, layer dropout gives lower loss at the same training FLOPs, or similar validation loss while saving up to 25% of training FLOPs."
+    },
+    {
+     "id": "P10",
+     "name": "Dropout improves early-exit loss",
+     "description": "Pretraining with layer dropout saves training FLOPs and always leads to better early-exit loss at inference; the decreasing schedule gives the lowest validation loss with competitive early-exit loss (Key takeaway 2, Finding 5)."
+    },
+    {
+     "id": "P11",
+     "name": "Average dropout rate predicts zero-shot robustness",
+     "description": "The average training dropout rate predicts zero-shot robustness to early exit and layer skipping without retraining, so a larger model degrades gracefully toward smaller-model performance when layers are skipped (Finding 6, Key takeaway 3)."
+    },
+    {
+     "id": "P12",
+     "name": "Hero runs: up to 1.55x speedup",
+     "description": "At 1.8B-8.2B scale, aggressive layer dropout (p_max=0.99) saves up to 25% of cumulative training FLOPs while largely preserving baseline generalization, enabling zero-shot inference speedups up to 1.55x (Key takeaway 4)."
+    },
+    {
+     "id": "P13",
+     "name": "Self-speculative decoding speedup",
+     "description": "Layer-dropout-trained models enable post-training optimizations such as self-speculative decoding, yielding up to 1.5x inference speedup with negligible accuracy loss."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 6, Table 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P5",
+     "evidence": [
+      "Sec 6"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 7.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 7.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 7, Key takeaway 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 7.2, Key takeaway 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 7, Abstract"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 8.1, Finding 5"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 8.1, Finding 6"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 9, Key takeaway 4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P12",
+     "evidence": [
+      "Sec 9, Key takeaway 4"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P13",
+     "evidence": [
+      "Sec 8.2"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Scope limited to structured depth-wise dropout",
+   "description": "The study covers only structured depth-wise dropout (stochastic removal of whole transformer blocks), not neuron-level or weight-level dropout."
+  },
+  {
+   "id": "P15",
+   "name": "Scale of experiments",
+   "description": "The study comprises more than 2400 pretraining experiments spanning 271M to 8.2B parameters and datasets up to 160B tokens, run on Cerebras CS-3 systems."
+  }
+ ],
+ "structural_reasoning": "Prior-art gap leads to systematic ablations over granularity, sampling unit, distribution and schedule, producing a recipe whose benefits extend to inference elasticity and speedups."
+}

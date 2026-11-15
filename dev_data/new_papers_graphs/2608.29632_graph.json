@@ -1,0 +1,181 @@
+{
+ "arxiv_id": "2608.29632",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "InteractBench: motivation, construction and validation, and evaluation findings",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Batch benchmarks miss unrevealed information",
+     "description": "Most competitive-programming benchmarks use a full-information (batch-style) protocol, so it is unclear how well model-generated programs solve interactive problems where key information is revealed only through queries."
+    },
+    {
+     "id": "P2",
+     "name": "Interactive problems need online querying",
+     "description": "In interactive problems key information is held by an interactor and revealed only in response to the solver's queries under a strict protocol and problem-specific query budget, so success requires an online querying strategy as well as a correct final answer."
+    },
+    {
+     "id": "P3",
+     "name": "Existing benchmarks have three gaps",
+     "description": "Existing benchmarks rarely cover interactive problems, some depend on remote submissions to external online judges blocking offline evaluation, and many report only an overall success metric with little diagnosis of failures."
+    },
+    {
+     "id": "P4",
+     "name": "InteractBench has 322 interactive tasks",
+     "description": "InteractBench comprises 322 interactive problems curated from Codeforces, AtCoder, IOI and ICPC, each with multi-round interaction, protocol constraints and a query budget, annotated with categories and difficulty tiers."
+    },
+    {
+     "id": "P5",
+     "name": "Propose-validate-adjudicate construction",
+     "description": "Offline evaluators (test generators and local interactors) are built by a propose-validate-adjudicate loop capped at three iterations, after which 31 tasks required human expert intervention."
+    },
+    {
+     "id": "P6",
+     "name": "Verification pool gates acceptance",
+     "description": "Each task has a verification pool of 15 accepted and 30 rejected submissions (15 human, 15 mutation-derived), and an evaluator is accepted only if the offline harness matches official outcomes on all human submissions and rejects all mutation probes."
+    },
+    {
+     "id": "P7",
+     "name": "Offline sandboxed harness with diagnostics",
+     "description": "The harness runs the solver and a local interactor as two sandboxed processes over standard streams, enforces protocol and budget via counters, and logs transcripts and termination reasons, enabling fully offline evaluation and a failure taxonomy."
+    },
+    {
+     "id": "P8",
+     "name": "Post-hoc online agreement audit",
+     "description": "A one-time audit submits 5 sampled model solutions per task to official interfaces where permitted and checks that Accepted/Rejected outcomes agree with the offline harness."
+    },
+    {
+     "id": "P9",
+     "name": "Interaction gap exists",
+     "description": "Even the most advanced reasoning models achieve limited success on interactive problems, a significant interaction gap versus standard full-information coding benchmarks."
+    },
+    {
+     "id": "P10",
+     "name": "Steep difficulty curve",
+     "description": "Performance degrades steeply with difficulty: Gemini-3-Pro-Preview reaches 0.961 pass@5 on Easy but the best model reaches only 0.597 on Hard pass@5, and only two configurations (Gemini-3-Pro-Preview, GPT-5.2) exceed 0.400 on Hard pass@5."
+    },
+    {
+     "id": "P11",
+     "name": "Reasoning helps but is insufficient",
+     "description": "Reasoning variants improve pass rates (DeepSeek-V3.2-Thinking 0.513 overall pass@5 vs 0.262 for DeepSeek-V3.2) but small models stay bottlenecked on Hard (Qwen3-14B 0.000 Hard pass@5)."
+    },
+    {
+     "id": "P12",
+     "name": "Graph is the dominant bottleneck category",
+     "description": "Graph is the hardest category, with even the best model below 0.500 pass@1, while the Bit category is comparatively easier (Gemini-3-Pro-Preview 0.613 pass@1)."
+    },
+    {
+     "id": "P13",
+     "name": "Algorithmic errors dominate failures",
+     "description": "Wrong answers from algorithmic logic errors are the most common failure for many configurations, while protocol violations and query-budget overruns remain frequent and runtime/resource failures (TLE, MLE, RE) are secondary."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P4",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.3, Fig 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.4, Fig 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.2, Sec 4.3 Exp 3, Table 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.3 Exp 1, Table 2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.3 Exp 2, Table 3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Pass@1 lags pass@5 partly from brittle execution",
+   "description": "Pass@1 lags pass@5 even on Easy, partly due to brittle execution details such as formatting, flushing and protocol adherence rather than missing high-level ideas."
+  },
+  {
+   "id": "P15",
+   "name": "Revealing hidden data helps",
+   "description": "Revealing the hidden test data (batch version) improves pass@1 and reduces protocol errors and query-budget overruns, while wrong answers remain the main residual failure (Appendix C.1)."
+  },
+  {
+   "id": "P16",
+   "name": "Few-shot ~ resampling; refinement capability-dependent",
+   "description": "Few-shot prompting and independent resampling perform similarly overall, whereas iterative refinement is more capability-dependent and mainly repairs execution-level failures (Appendix C.2)."
+  }
+ ],
+ "structural_reasoning": "Motivation leads to benchmark design, construction and validation; the validated harness underlies the evaluation findings (difficulty, category, failure taxonomy)."
+}

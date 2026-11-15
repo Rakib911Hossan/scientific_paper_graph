@@ -1,0 +1,216 @@
+{
+ "arxiv_id": "2603.02248",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Early/late fusion limitations motivate HELIOS's three-stage design and its empirical validation",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Early fusion is query-independent",
+     "description": "Early fusion builds retrieval units (fused blocks) independently of the query, often including query-irrelevant passages that distort similarity between fused blocks and queries."
+    },
+    {
+     "id": "P2",
+     "name": "Late fusion retrieves partial units",
+     "description": "Late fusion retrieves single table segments or passages that may be only partially relevant, risking retrieval of a wrong table with overlapping terms (e.g. Grammy award tables)."
+    },
+    {
+     "id": "P3",
+     "name": "Entity linking misses query-aware links",
+     "description": "Early fusion relies on predefined entity-linking relationships that fail to capture query-dependent links needed to answer the query."
+    },
+    {
+     "id": "P4",
+     "name": "Semantic similarity can't do logical inference",
+     "description": "Prior approaches rely on semantic similarity and so may fail to retrieve rows or passages requiring multi-hop or column-wise aggregation reasoning."
+    },
+    {
+     "id": "P5",
+     "name": "Bipartite graph formalization",
+     "description": "Table segments and passages are formalized as two node sets of a bipartite graph; an early-fusion fused block is a star centered on a table-segment node and a late-fusion evidence chain is an edge."
+    },
+    {
+     "id": "P6",
+     "name": "Edge-based subgraph retrieval",
+     "description": "HELIOS retrieves a bipartite subgraph by indexing offline-fused edges with ColBERTv2 multi-vector embeddings, using edges as a unit between star graphs and nodes to cut irrelevant context while avoiding partial information."
+    },
+    {
+     "id": "P7",
+     "name": "Query-relevant node expansion",
+     "description": "HELIOS expands the candidate graph at node level with beam search (b=10) to find query-relevant edges missed by offline entity linking."
+    },
+    {
+     "id": "P8",
+     "name": "Star-based LLM refinement",
+     "description": "HELIOS has an LLM reason over the expanded graph decomposed into smaller star graphs, enabling aggregation and multi-hop selection while reducing hallucination risk."
+    },
+    {
+     "id": "P9",
+     "name": "HELIOS leads OTT-QA retrieval",
+     "description": "On OTT-QA dev, HELIOS beats COS by 19.0% average answer recall (42.6% at k=2), 39.9% nDCG@50 and 12.2% Hits@4K."
+    },
+    {
+     "id": "P10",
+     "name": "HELIOS leads end-to-end QA",
+     "description": "On OTT-QA, HELIOS gets dev EM/F1 of 59.3/65.8 and test 57.0/64.3, above COS (56.9/63.2 dev, 54.9/61.5 test)."
+    },
+    {
+     "id": "P11",
+     "name": "Edge unit is best granularity",
+     "description": "Edge-based retrieval outperforms star-graph and node-based retrieval by 6.9% and 12.4% on average AR, and by 20% and 43.7% on nDCG@50."
+    },
+    {
+     "id": "P12",
+     "name": "QNE contributes",
+     "description": "Removing query-relevant node expansion lowers AR by 2.1% on average, nDCG@50 by 4.2%, EM by 4.2% and F1 by 4.1%."
+    },
+    {
+     "id": "P13",
+     "name": "SLR helps at small k",
+     "description": "Removing star-based LLM refinement drops AR@2 by 5.5% and nDCG@50 by 1.1%, with the effect mainly on small k and logical-inference queries."
+    },
+    {
+     "id": "P14",
+     "name": "Per-star prompts reduce hallucination",
+     "description": "Prompting the LLM with individual star graphs instead of the full graph improves nDCG@50 by 12.4% (41.8 for the full-graph setting)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P5",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P5",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 4.1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.2, Sec 4.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P7",
+     "evidence": [
+      "Sec 1, Sec 4.2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P7",
+     "evidence": [
+      "Sec 1, Sec 4.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P8",
+     "evidence": [
+      "Sec 1, Sec 4.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.1, Table 1"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.1, Table 1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.1, Table 1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.1, Table 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.3, Table 6"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.2, Table 5"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.2, Table 5"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P14",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Competitive with HOLMES",
+   "description": "In a distractor setting, HELIOS outperforms HOLMES by 88.4% EM and 58.1% F1, attributed to edge-level seed retrieval, question-conditioned LLM inference and preserving table structure."
+  },
+  {
+   "id": "P16",
+   "name": "Runtime trade-off",
+   "description": "HELIOS runs 1.37x the time of COS for 39.9% higher nDCG@50; removing SLR gives 0.57x COS runtime with 38.4% nDCG@50 gain."
+  }
+ ],
+ "structural_reasoning": "Argument runs from early/late fusion limitations through the graph formalization and three-stage HELIOS design to retrieval, QA, granularity and ablation results."
+}

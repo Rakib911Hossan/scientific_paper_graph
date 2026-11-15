@@ -1,0 +1,201 @@
+{
+  "arxiv_id": "2508.12524v1",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/tables rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Task-conditional learning setup via task embeddings",
+      "nodes": [
+        {"id": "P1", "name": "First task-conditional RL competition", "description": "To the organizers' knowledge, this is the first RL competition on task-conditional learning, where submitted agents are given the task to solve at inference time instead of a single fixed objective."},
+        {"id": "P2", "name": "Neural MMO 2.0 task system enables arbitrary conditions", "description": "Neural MMO 2.0's new task system allows checking nearly arbitrary conditions on the agent, environment, and other agents, which is what makes task-conditional learning possible for this competition."},
+        {"id": "P3", "name": "Tasks specified as predicate functions", "description": "Individual tasks are specified in plain code as predicate functions called with specific arguments."},
+        {"id": "P4", "name": "Tasks embeddable via language model", "description": "Because tasks are specified as code, it is possible to embed tasks into a fixed-length vector by feeding their implementation into a language model."},
+        {"id": "P5", "name": "Predicate-based embeddings cluster meaningfully", "description": "When encoded with an LLM, different predicates produce distant embeddings, while the same predicate with different arguments produces similar embeddings."},
+        {"id": "P6", "name": "Simple, cheap model input for task-conditional agents", "description": "Task embeddings give a simple model input for training task-conditional agents, without requiring a large model to be run during inference (unlike LLM agents); capable models are only millions to low tens of millions of parameters."},
+        {"id": "P7", "name": "Small but significant train/eval task embedding gap", "description": "There is a small but significant gap between most training and evaluation task embeddings, with a 22.3% overlap considering only predicates and 2.1% overlap considering both predicate and arguments."},
+        {"id": "P8", "name": "Curriculum needed for hard evaluation tasks", "description": "Some evaluation tasks are too hard to solve without a guiding curriculum; e.g., agents perform poorly on training tasks like equipping medium-level items, and training directly on hard evaluation tasks (e.g., equipping high-level items) would not help since prerequisites cannot be completed."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S3"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P3", "evidence": ["S3"], "votes": 2, "confidence": "majority"},
+        {"from": "P3", "to": "P4", "evidence": ["S3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["S3"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P6", "evidence": ["S3"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P7", "evidence": ["S3", "Figure1"], "votes": 2, "confidence": "majority"},
+        {"from": "P2", "to": "P8", "evidence": ["S3"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Baseline architecture and Clean PuffeRL modification",
+      "nodes": [
+        {"id": "P9", "name": "Neural MMO has variable agent count", "description": "Neural MMO has a variable number of agents, since agents can die during an episode."},
+        {"id": "P10", "name": "Most RL libraries expect fixed-size observations", "description": "Most learning libraries, including CleanRL, expect fixed-size observations, which is incompatible with a variable number of agents."},
+        {"id": "P11", "name": "Zero-padding used to reconcile the mismatch", "description": "It is common practice to zero-pad observations to reconcile variable agent counts with fixed-size observation requirements."},
+        {"id": "P12", "name": "Heavy padding occurs late in episodes", "description": "Because many agents die near the start of the game, it is common for the last quarter of the game to be 90% padding."},
+        {"id": "P13", "name": "Padding destabilizes learning", "description": "Heavy zero-padding destabilizes learning by lowering and randomizing the effective batch size."},
+        {"id": "P14", "name": "Clean PuffeRL introduced to omit padding", "description": "Clean PuffeRL, PufferLib's variant of CleanRL's PPO implementation, alters CleanRL's data structures to omit padding."},
+        {"id": "P15", "name": "Padding removal was key usability improvement", "description": "Omitting padding via Clean PuffeRL was the key modification that allowed the organizers to improve the usability of their baselines this year."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P10", "evidence": ["S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P10", "to": "P11", "evidence": ["S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P12", "evidence": ["S4"], "votes": 2, "confidence": "majority"},
+        {"from": "P12", "to": "P13", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P13", "to": "P14", "evidence": ["S4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["S4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 6,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Evaluation methodology",
+      "nodes": [
+        {"id": "P16", "name": "Two-stage evaluation design", "description": "Evaluation consisted of two stages: PvE (all agents controlled by the same submitted policy) and PvP (top policies loaded together into shared environments)."},
+        {"id": "P17", "name": "Strong opponents can suppress PvE-style scores", "description": "The PvE evaluation score can be underestimated for a strong policy because each agent is evaluated on its own without cooperative or competitive interaction with distinct opponents."},
+        {"id": "P18", "name": "PvP scores exceed PvE for top policy", "description": "The top score in PvE was 17.09%, but rose to 25.21% in PvP, consistent with PvE potentially underestimating strong policies."},
+        {"id": "P19", "name": "PvE used to select candidates for PvP", "description": "Based on PvE results, policies performing better than or comparable to the baseline (max 1 per participant) were selected for the PvP evaluation stage."},
+        {"id": "P20", "name": "Lifespan correlates with task completion rank", "description": "Across 86 submissions, a correlation of 0.91 (p<0.001) was found between rank by average agent lifespan and rank by tasks completed, used as a sanity check on the evaluation."}
+      ],
+      "edges": [
+        {"from": "P16", "to": "P19", "evidence": ["S5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P18", "evidence": ["S5"], "votes": 2, "confidence": "majority"},
+        {"from": "P16", "to": "P20", "evidence": ["S5"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Takeru (co-winner) approach",
+      "nodes": [
+        {"id": "P21", "name": "Baseline training instability observed", "description": "The Takeru team observed instability in baseline training, where value loss could become excessively large and policy entropy would collapse to 0 early."},
+        {"id": "P22", "name": "Unscaled continuous item features suspected cause", "description": "One possible reason for the observed instability is that the baseline model did not properly scale continuous features for items."},
+        {"id": "P23", "name": "Continuous features scaled to [0,1]", "description": "Takeru addressed the suspected scaling issue by scaling all continuous features to the [0,1] range."},
+        {"id": "P24", "name": "Modified baseline significantly outperforms original", "description": "The modified baseline model (with feature scaling and other simplifications) significantly outperforms the original baseline model under the same training configuration, and became the basis of Takeru's final solution."},
+        {"id": "P25", "name": "Difficult-task sparse rewards identified as bottleneck", "description": "Takeru analyzed that the bottleneck for further improvement lies in sparse rewards for difficult tasks, and therefore did not invest much time in trying alternative model structures (e.g., Transformer or ResNet encoders)."},
+        {"id": "P26", "name": "Early-stop agent threshold set to 0", "description": "Takeru set the early-stop agent number to 0 (vs. the baseline's 8) after finding the baseline setting caused loss of reward signal for difficult tasks late in the game, which hindered learning those tasks."},
+        {"id": "P27", "name": "Exploration reward found broadly beneficial", "description": "Takeru found that the exploration reward, which encourages generating more game events, had a noticeable positive effect on learning across various tasks, partly by assisting agents in acquiring general skills like using gold."}
+      ],
+      "edges": [
+        {"from": "P21", "to": "P22", "evidence": ["S6.1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P22", "to": "P23", "evidence": ["S6.1.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P24", "evidence": ["S6.1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P24", "to": "P25", "evidence": ["S6.1.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P25", "to": "P26", "evidence": ["S6.1.2"], "votes": 1, "confidence": "single_run"},
+        {"from": "P25", "to": "P27", "evidence": ["S6.1.3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Yao Feng (co-winner) approach",
+      "nodes": [
+        {"id": "P28", "name": "Goals: expressiveness, exploration ease, generalization", "description": "Given the complex environment and restricted training time, Yao Feng's goal was to increase policy expressiveness, decrease exploration difficulty, and help generalization."},
+        {"id": "P29", "name": "Encoder architecture modifications", "description": "Yao Feng modified encoders (adding ReLU activations, a ResNet block for tiles, normalized absolute position, removing unused player/item features, shared embeddings across attributes, added MLP and layer norm, LSTM cells for historical information, orthogonal initialization)."},
+        {"id": "P30", "name": "Historical information considered important", "description": "Because agents can only see a nearby area, taking historical information into account (via added LSTM cells) is considered important."},
+        {"id": "P31", "name": "Restricted action space to reduce exploration difficulty", "description": "Yao Feng restricted the action space (disabling giving items/gold and attacking neutral NPCs) specifically to reduce exploration difficulty and avoid agent deaths from attacking NPCs."},
+        {"id": "P32", "name": "Custom reward set replaces baseline's HP/meander/explore rewards", "description": "Yao Feng designed a custom reward set (HP, Experience, Defense, Attack, Gold) after finding the baseline's given HP restoration, meander, and explore rewards not very useful."}
+      ],
+      "edges": [
+        {"from": "P28", "to": "P29", "evidence": ["S6.2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P29", "to": "P30", "evidence": ["S6.2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P31", "evidence": ["S6.2.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P28", "to": "P32", "evidence": ["S6.2.3"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Saidinesh Pola approach",
+      "nodes": [
+        {"id": "P33", "name": "Baseline lacked LSTM and inter-agent coordination", "description": "Saidinesh Pola identified that the baseline model lacked LSTM layers (hindering use of sequential information) and lacked effective coordination among agents."},
+        {"id": "P34", "name": "Exploration of alternative architectures had stability issues", "description": "Experimentation with cross-attention networks, Transformer architectures, ResNet-18/34, and ViT-tiny encountered training stability challenges, such as zero entropy in early training steps."},
+        {"id": "P35", "name": "Final architecture adds multi-head attention, extra conv layer, and 5 LSTM layers", "description": "The final submission integrated PyTorch multi-head attention between agent tiles, an additional convolutional layer, five LSTM layers with SiLU activations for temporal dependencies."},
+        {"id": "P36", "name": "Multi-head attention used as inter-agent communication channel", "description": "Cross-attention mechanisms were used not only for action decoding but as a communication channel between agents, allowing exchange of task-relevant information for more coordinated decision-making."}
+      ],
+      "edges": [
+        {"from": "P33", "to": "P34", "evidence": ["S6.3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P34", "to": "P35", "evidence": ["S6.3.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P33", "to": "P36", "evidence": ["S6.3.1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "name": "Mori approach and post-hoc metric discovery",
+      "nodes": [
+        {"id": "P37", "name": "Mori optimized TotalScore instead of true metric", "description": "Mori initially aimed to optimize TotalScore, before belatedly discovering that CompletedTaskCount was the true evaluation metric."},
+        {"id": "P38", "name": "Late discovery limited impact of corrected design", "description": "Because the true-metric realization came near the contest's end, the second-stage reward design informed by it did not affect Mori's final competition results, though it showed promise for TotalScore performance."},
+        {"id": "P39", "name": "Reward mechanisms adapted from prior winner", "description": "Mori's Stage One reward mechanisms were adopted and empirically validated from a previous winner's ('realikun') reward design."},
+        {"id": "P40", "name": "Seed choice affects training outcomes", "description": "Mori observed that model training outcomes are highly dependent on seed choice, motivating treating seeds as a tunable variable searched via automatic algorithms to boost scores, though this does not enhance underlying model ability."}
+      ],
+      "edges": [
+        {"from": "P37", "to": "P38", "evidence": ["S6.4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P38", "to": "P39", "evidence": ["S6.4.2"], "votes": 1, "confidence": "single_run"},
+        {"from": "P37", "to": "P40", "evidence": ["S6.4.3"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "name": "Jimyhzhu approach",
+      "nodes": [
+        {"id": "P41", "name": "Baseline weaknesses identified", "description": "Jimyhzhu identified baseline weaknesses: lack of pre-processing for categorical data, a continuous-data scaling issue, and lack of global information about other agents."},
+        {"id": "P42", "name": "One-hot encoding used for categorical attributes", "description": "One-hot encoding was introduced for categorical attributes to avoid the model assuming a natural ordering between categories."},
+        {"id": "P43", "name": "Continuous data downscaled instead of upscaled", "description": "Jimyhzhu replaced the baseline's upscaling of continuous data ([0,100] to [0,10000]) with downscaling to [0,1] for more balanced feature representation."},
+        {"id": "P44", "name": "Average pooling used instead of MLP for market/item embeddings", "description": "Average pooling was applied to market and item embeddings instead of an MLP, since the strategic significance of items/players often does not depend on their order of appearance."},
+        {"id": "P45", "name": "Cross-attention in action decoder tested but not adopted", "description": "Cross-attention was tested in the action decoder (using the observation as query and specific embeddings as key/value) but showed no major improvement, possibly because the specific embeddings were not rich or diverse enough, so it was not used in the final design."}
+      ],
+      "edges": [
+        {"from": "P41", "to": "P42", "evidence": ["S6.5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P43", "evidence": ["S6.5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P44", "evidence": ["S6.5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P41", "to": "P45", "evidence": ["S6.5.1"], "votes": 1, "confidence": "single_run"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C9",
+      "name": "Fair evaluation and reproducibility verification",
+      "nodes": [
+        {"id": "P46", "name": "Top-5 submissions retrained from scratch for verification", "description": "Source code from the top 5 prize-eligible participants was collected, manually inspected, and retrained from scratch for 8 hours on organizer hardware."},
+        {"id": "P47", "name": "Retraining used more steps than original baseline", "description": "The retrained models were trained between 15M and 22M steps (depending on speed), more than the 10M steps used in the original baseline, because faster hardware was available."},
+        {"id": "P48", "name": "Four of five models reproduced original ranking", "description": "Four of the top 5 models matched their original ranks and matched or exceeded original training performance upon reproduction."},
+        {"id": "P49", "name": "Mori's model did not fully reproduce due to seed instability", "description": "One model (Mori's) did not quite reproduce original performance, but after investigation this was attributed to seed instability rather than manipulation, and the discrepancy was not substantial enough to affect prize awarding."},
+        {"id": "P50", "name": "No cheating found in post-competition investigation", "description": "Post-competition investigations, including this reproduction exercise, revealed no instances of cheating among winners."}
+      ],
+      "edges": [
+        {"from": "P46", "to": "P47", "evidence": ["S7"], "votes": 2, "confidence": "majority"},
+        {"from": "P46", "to": "P48", "evidence": ["S7"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P48", "to": "P49", "evidence": ["S7"], "votes": 2, "confidence": "majority"},
+        {"from": "P49", "to": "P50", "evidence": ["S7", "S4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P51", "name": "Competition attracted 200+ participants", "description": "The NeurIPS 2023 Neural MMO Competition attracted over 200 participants and submissions."},
+    {"id": "P52", "name": "Top solution scored 4x baseline in 8 hours on one GPU", "description": "The top solution achieved a score 4x higher than the baseline within 8 hours of training on a single 4090 GPU."},
+    {"id": "P53", "name": "Everything open-sourced under MIT license", "description": "The organizers open-source everything relating to Neural MMO and the competition under the MIT license, including policy weights and training code for the baseline and top submissions."},
+    {"id": "P54", "name": "Neural MMO 2.0 environment description", "description": "Neural MMO 2.0 simulates 128 agents on procedurally generated maps with terrain, resources, rock-paper-scissors-style combat types, foraging/combat skill leveling, items, and a global agent-to-agent market."},
+    {"id": "P55", "name": "1297 training tasks vs 63 evaluation tasks", "description": "The baseline training curriculum has 1297 tasks (including easy 'scaffolding' goals sampled more frequently), while there are only 63 evaluation tasks focused on measuring performance on hard goals."},
+    {"id": "P56", "name": "Compute and hyperparameter rules", "description": "Participants were capped to 8 A100-hours-equivalent of training compute and 12 CPU cores, with large hyperparameter sweeps disallowed and scrutiny applied to overly precisely tuned hyperparameters."},
+    {"id": "P57", "name": "Baseline model size and architecture components", "description": "The released baseline is a 3.9 million parameter model (1 million in the task embedding projection layer), using a small CNN subnetwork for terrain, linear layers for agent/item/market embeddings, and pointer networks for target/item selection."},
+    {"id": "P58", "name": "PvP evaluation protocol details", "description": "In PvP, 9 top policies were each placed in one of 9 groups of 14 agents within a shared 128-agent environment (with 2 agents controlled by an untrained baseline), using 256 held-out maps, 200 episodes per round, and 9 seed rounds (1800 episodes total) to determine winners."},
+    {"id": "P59", "name": "Top-2 policies tied as co-winners after extended evaluation", "description": "After participants were given a chance to challenge results and extended evaluation was performed, there was enough contention between the top 2 policies that they were declared co-winners."},
+    {"id": "P60", "name": "Competition preparation and scope reduction", "description": "After 6 months of preparation and 1000+ volunteer hours, 90% of promised compute and devops support was pulled, forcing elimination of the curriculum track and a live rewrite of the evaluation procedure."},
+    {"id": "P61", "name": "Manual evaluation offered as compensation", "description": "To compensate participants for difficulties from live changes to the evaluation procedure, the organizers manually evaluated checkpoints that failed in automatic evaluation."}
+  ],
+  "structural_score": 7,
+  "structural_reasoning": "The graph is coherent within each thematic component. C1 (task embeddings enabling task-conditional learning) and C2 (the padding problem motivating Clean PuffeRL) each form clean causal chains grounded in the paper's own stated reasoning. C3 (evaluation methodology) captures the PvE/PvP relationship and the lifespan sanity check as a small, well-supported set of edges. Components C4-C8, one per winning team, each independently trace that team's own stated diagnosis-to-modification reasoning (e.g., Takeru's training-instability diagnosis leading to feature scaling and reward choices; Yao Feng's stated goals driving architecture and reward changes), which is why they remain separate components rather than being merged: the five teams' design processes are largely independent narratives with no stated cross-team dependencies, aside from Mori explicitly building on a prior winner's reward design (captured within C7). C9 (reproducibility verification) forms a clear chain from retraining methodology to the ranking-reproduction and no-cheating findings. A substantial set of purely descriptive facts (competition scale, environment mechanics, task counts, compute rules, evaluation protocol parameters, and post-hoc organizational remarks) are left as isolated nodes since they are specifications rather than argumentative claims with premise-conclusion links elsewhere in the paper."
+}

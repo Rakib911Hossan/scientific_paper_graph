@@ -1,0 +1,176 @@
+{
+ "arxiv_id": "2606.11906",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Multilingual degradation, step-wise sensitivity analysis, step-wise alignment method and its results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "VLA language robustness unexplored",
+     "description": "VLA models are typically assumed to receive English instructions, and their robustness to multilingual instructions has been largely unexplored."
+    },
+    {
+     "id": "P2",
+     "name": "Multilingual LIBERO evaluation",
+     "description": "LIBERO is translated into ten languages (English plus Chinese, French, Japanese, Korean, Spanish, Portuguese, Arabic, Thai, Vietnamese) via Google Translate, checked by humans and back translation, and used to evaluate OpenVLA-OFT and pi0.5."
+    },
+    {
+     "id": "P3",
+     "name": "Non-English instructions cut success 30-50%",
+     "description": "Success rates of VLA models drop by 30-50% under non-English instructions compared with English."
+    },
+    {
+     "id": "P4",
+     "name": "Language influence is non-uniform across steps",
+     "description": "Language deviation from English representations varies strongly across execution steps; certain steps are strongly language-dependent and dominate task failure while others are largely language-agnostic."
+    },
+    {
+     "id": "P5",
+     "name": "Gradient ratio identifies language-sensitive steps",
+     "description": "Gradients of the predicted action with respect to language versus visual tokens on English executions give a ratio r_t that locates language-sensitive steps, and high-r_t steps coincide with larger non-English deviations."
+    },
+    {
+     "id": "P6",
+     "name": "Global alignment is flawed in VLA",
+     "description": "Averaging language shifts over all steps weakens correction where differences are largest, and indiscriminate alignment perturbs language-agnostic steps and propagates errors in closed-loop execution."
+    },
+    {
+     "id": "P7",
+     "name": "Step-wise alignment method",
+     "description": "The method retrieves K nearest English reference representations by cosine similarity, triggers alignment only if a fraction >= tau of neighbors lie in the top-p% language-critical steps, and aligns using a similarity-weighted reference."
+    },
+    {
+     "id": "P8",
+     "name": "Step-wise alignment improves robustness",
+     "description": "Gradient-guided step-wise alignment consistently improves multilingual success rates over the no-intervention baseline for both OpenVLA-OFT and pi0.5, without language-specific tuning, while EN-CoT gives limited and inconsistent gains."
+    },
+    {
+     "id": "P9",
+     "name": "Step selection matters",
+     "description": "Aligning only at language-critical steps outperforms aligning at random steps or at all steps under the same alignment mechanism."
+    },
+    {
+     "id": "P10",
+     "name": "Failures concentrate at Navigate",
+     "description": "Among 100 sampled multilingual failures, 53% first fail at the Navigate primitive and 18% at Grasp, indicating errors in instruction-to-visual grounding and target selection."
+    },
+    {
+     "id": "P11",
+     "name": "Critical-step fine-tuning is data-efficient",
+     "description": "Fine-tuning OpenVLA-OFT with Chinese instructions on language-critical steps (50% of steps) beats random 50% step selection and recovers a large fraction of full fine-tuning gains with fewer updates."
+    },
+    {
+     "id": "P12",
+     "name": "Negligible latency overhead",
+     "description": "Step-wise intervention introduces negligible additional inference latency."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3, Fig 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.2, Sec 3.3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 1, Sec 3.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.4, Table 2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.1, Table 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P10",
+     "evidence": [
+      "Sec 5.2, Table 5"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.4, Table 4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.1, App D.1"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P13",
+   "name": "Prior alignment is step-agnostic",
+   "description": "Prior inference-time alignment methods apply a global, representation-level correction toward English and do not transfer readily to VLA models' closed-loop action generation."
+  },
+  {
+   "id": "P14",
+   "name": "Real-world transfer is open",
+   "description": "It remains open whether step-wise language sensitivity and the interventions transfer to real robots with perception noise and actuation uncertainty."
+  },
+  {
+   "id": "P15",
+   "name": "Two VLA architectures evaluated",
+   "description": "OpenVLA-OFT and pi0.5 represent different VLA architectures and training setups, used to test step-wise interventions across model variants."
+  }
+ ],
+ "structural_reasoning": "Degradation finding motivates step-wise analysis, which yields the selective alignment method and downstream results (robustness, ablation, failure analysis, data-efficient training)."
+}

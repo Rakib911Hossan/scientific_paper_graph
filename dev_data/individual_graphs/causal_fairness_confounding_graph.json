@@ -1,0 +1,171 @@
+{
+  "arxiv_id": "2311.18460v3",
+  "notes": "Claim/reasoning graph constructed in the same schema as the DecomposeRL example graph. This source document was not pre-segmented with sentence IDs, so evidence tags (E1, E2, ...) are paraphrase-anchored references to specific statements in the provided text rather than exact sentence indices.",
+  "components": [
+    {
+      "component_id": "C1",
+      "description": "Motivation: legal mandate for fairness, causal fairness's advantages, and the unrealistic no-unobserved-confounding assumption.",
+      "nodes": [
+        {"id": "P1", "name": "Fairness legally mandated", "description": "Fairness of machine learning predictions is widely required by legal frameworks, notably in credit lending and law enforcement."},
+        {"id": "P2", "name": "Causal fairness relates directly to legal terminology", "description": "Causal fairness leverages causal theory to ensure a sensitive attribute does not affect prediction outcomes, directly relating to legal terminology requiring outcome independence from sensitive attributes."},
+        {"id": "P3", "name": "Existing causal fairness methods assume no unobserved confounding", "description": "Existing works on causally fair predictions commonly focus on settings with no unobserved confounding, assuming the causal structure is fully known."},
+        {"id": "P4", "name": "No-confounding assumption is unrealistic", "description": "The assumption of no unobserved confounding is fairly strong and unrealistic in practice."},
+        {"id": "P5", "name": "Unobserved confounding can violate causal fairness", "description": "Due to unobserved confounding, causal fairness may be violated, and predictions can cause harm as they may actually be unfair."},
+        {"id": "P6", "name": "Prison sentence example illustrates the problem", "description": "In predicting prison sentences, unobserved confounders such as housing situation, family background, and birthplace can bias predictions if not accounted for, even when race is excluded and offense/crime history are controlled."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["E1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["E2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P4", "to": "P5", "evidence": ["E3"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P5", "to": "P6", "evidence": ["E4"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "description": "Research gap and positioning relative to related literature streams.",
+      "nodes": [
+        {"id": "P7", "name": "Sensitivity models exist for interventional effects only", "description": "Sensitivity models are common tools for partial identification under unobserved confounding, but they perform partial identification on interventional effects (level 2 of Pearl's ladder)."},
+        {"id": "P8", "name": "Causal fairness involves nested counterfactuals", "description": "Causal fairness involves nested counterfactual effects (level 3 of Pearl's ladder), which differ from the interventional effects that sensitivity models directly handle."},
+        {"id": "P9", "name": "Sensitivity models not directly applicable", "description": "Because of the level mismatch between interventional effects and nested counterfactuals, it is not possible to directly apply existing sensitivity models to the causal fairness setting."},
+        {"id": "P10", "name": "Kilbertus et al. only prior sensitivity-fairness work, but limited", "description": "The only prior work analyzing sensitivity of fairness to unobserved confounding (Kilbertus et al. 2019) focuses on counterfactual fairness, allows confounding only between covariates, and relies on restrictive non-linear additive noise model assumptions."},
+        {"id": "P11", "name": "No work on causal fairness sensitivity to unobserved confounding", "description": "To the authors' knowledge, no work has analyzed the sensitivity of causal fairness specifically (as opposed to counterfactual fairness) to unobserved confounding."},
+        {"id": "P12", "name": "Research gap established", "description": "The combination of the level mismatch, the narrow scope of prior sensitivity-fairness work, and the absence of causal-fairness-specific sensitivity analysis establishes the paper's research gap."}
+      ],
+      "edges": [
+        {"from": "P7", "to": "P9", "evidence": ["E5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P8", "to": "P9", "evidence": ["E5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["E6"], "votes": 2, "confidence": "majority"},
+        {"from": "P9", "to": "P12", "evidence": ["E7"], "votes": 2, "confidence": "majority"},
+        {"from": "P11", "to": "P12", "evidence": ["E7"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "description": "Standard Fairness Model setup with three sources of unobserved confounding and path-specific fairness effects.",
+      "nodes": [
+        {"id": "P13", "name": "Standard Fairness Model adopted", "description": "The paper adopts the Standard Fairness Model with data V = {A, Z, M, Y}: sensitive attribute A, observed confounders Z, mediators M, and outcome Y."},
+        {"id": "P14", "name": "Three types of unobserved confounding modeled", "description": "The setup uniquely allows three types of unobserved confounding: direct (U_DE, between A and Y), indirect (U_IE, between A and M), and spurious (U_SE, between A and Z)."},
+        {"id": "P15", "name": "Path-specific effects defined", "description": "Path-specific causal fairness is defined via three effects: counterfactual direct effect (Ctf-DE) for A→Y, indirect effect (Ctf-IE) for A→M→Y, and spurious effect (Ctf-SE) for Z→A."},
+        {"id": "P16", "name": "DE measures direct discrimination", "description": "Ctf-DE measures direct discrimination based on the sensitive attribute."},
+        {"id": "P17", "name": "IE and SE measure indirect discrimination", "description": "Ctf-IE and Ctf-SE together measure indirect discrimination through factors related to the sensitive attribute, potentially acting as proxies."},
+        {"id": "P18", "name": "Causal fairness achieved when effects near zero", "description": "Causal fairness is achieved when DE, IE, and SE are zero or close to zero, operationalized via user-defined thresholds."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["E8"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["E9"], "votes": 2, "confidence": "majority"},
+        {"from": "P15", "to": "P16", "evidence": ["E10"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P17", "evidence": ["E10"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P18", "evidence": ["E11"], "votes": 2, "confidence": "majority"},
+        {"from": "P17", "to": "P18", "evidence": ["E11"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "description": "From non-identifiability under confounding to the two-step bound-derivation workflow.",
+      "nodes": [
+        {"id": "P19", "name": "CF effects unidentifiable under unobserved confounding", "description": "Under unobserved confounding, the path-specific causal fairness effects (DE, IE, SE) are not identifiable from observational data, so naive estimates are biased."},
+        {"id": "P20", "name": "Move from point to partial identification", "description": "As a remedy, the paper moves from point identification to partial identification, deriving upper and lower bounds for DE, IE, SE under a sensitivity model."},
+        {"id": "P21", "name": "Step 1: counterfactual unnesting", "description": "Each CF is decomposed into identifiable parts and unnested (single-intervention) interventional effects, since sensitivity analysis operates on interventional (level-2) effects while CF involves nested (level-3) counterfactuals."},
+        {"id": "P22", "name": "Step 2: sensitivity-model bounding", "description": "The unnested interventional effects are then bounded using the GMSM sensitivity model, yielding upper and lower bounds for each CF."},
+        {"id": "P23", "name": "GMSM chosen for generality", "description": "The generalized marginal sensitivity model (GMSM) is adopted because it handles discrete mediators and both discrete/continuous outcomes, and subsumes many existing sensitivity models (e.g., MSM) as special cases."}
+      ],
+      "edges": [
+        {"from": "P19", "to": "P20", "evidence": ["E12"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P20", "to": "P21", "evidence": ["E13"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P21", "to": "P22", "evidence": ["E14"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P21", "evidence": ["E13"], "votes": 2, "confidence": "majority", "note": "cross-component link from C2: level mismatch necessitates unnesting"},
+        {"from": "P22", "to": "P23", "evidence": ["E15"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "description": "Lemma 1 (unnesting) and the resulting sharp, general bounds of Theorem 1.",
+      "nodes": [
+        {"id": "P24", "name": "Lemma 1: CF as function of unidentifiable effects plus identifiable term", "description": "Lemma 1 shows each CF can be written as a monotonically increasing function of a sum of unidentifiable single-intervention effects plus an identifiable term q."},
+        {"id": "P25", "name": "Unidentifiable effects can be bounded by sensitivity analysis", "description": "The unidentifiable single-intervention effects in Lemma 1's decomposition are exactly the type of effect that causal sensitivity analysis can bound."},
+        {"id": "P26", "name": "Identifiable term estimable from data", "description": "The identifiable term q in the decomposition can be directly estimated from observational data."},
+        {"id": "P27", "name": "Theorem 1: explicit bounds derived", "description": "Using the unnested expressions, Theorem 1 derives explicit closed-form upper and lower bounds on DE, IE, and SE under the GMSM for binary sensitive attribute A and discrete Z."},
+        {"id": "P28", "name": "Bounds are distribution/SCM agnostic", "description": "Theorem 1's bounds are independent of the distribution and dimensionality of unobserved confounders and specific SCM formulations, applying to discrete, categorical, and continuous outcomes."},
+        {"id": "P29", "name": "Bounds are sharp (Remark 2)", "description": "The derived bounds are sharp/optimal, meaning the supremum/infimum equality in the bound definition holds exactly."},
+        {"id": "P30", "name": "Wider intervals indicate greater sensitivity", "description": "The wider the interval between CF+ and CF-, the more sensitive the path-specific effect is to unobserved confounding, giving less confidence in unconfounded estimates."}
+      ],
+      "edges": [
+        {"from": "P24", "to": "P25", "evidence": ["E16"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P26", "evidence": ["E16"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P27", "evidence": ["E17"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P27", "evidence": ["E17"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P27", "evidence": ["E18"], "votes": 2, "confidence": "majority", "note": "cross-component link from C4"},
+        {"from": "P27", "to": "P28", "evidence": ["E19"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P29", "evidence": ["E20"], "votes": 2, "confidence": "majority"},
+        {"from": "P27", "to": "P30", "evidence": ["E21"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "description": "From bounds to a robust fair-prediction training objective.",
+      "nodes": [
+        {"id": "P31", "name": "CF bounds used to limit worst-case unfairness", "description": "Since path-specific causal fairness is unidentifiable under confounding, the derived bounds CF+ and CF- are used to limit the worst-case (maximum deviation from zero) unfairness of the prediction model."},
+        {"id": "P32", "name": "Predicted outcome substituted into bound formulas", "description": "To train the model, P±(y|z,m,a) in the bounds is replaced by the non-random predicted outcome f_θ(a,z,m), requiring only estimation of P±(m|z,a) via pre-trained density estimators."},
+        {"id": "P33", "name": "Constrained optimization objective formulated", "description": "The training objective is formulated as minimizing prediction loss subject to worst-case fairness bound constraints |CF+_E|,|CF-_E| ≤ γ_CF for each CF in {DE, IE, SE}."},
+        {"id": "P34", "name": "Augmented Lagrangian used to solve constrained problem", "description": "To solve the constrained optimization with gradient-based solvers, augmented Lagrangian optimization is used to convert it into a single loss function with an estimated Lagrange multiplier."},
+        {"id": "P35", "name": "Algorithm 1 trains the robust fair predictor", "description": "Algorithm 1 iteratively computes upper/lower CF bounds via Theorem 1, updates the Lagrangian loss, and updates the predictor parameters, checking convergence on both prediction loss and fairness constraints."}
+      ],
+      "edges": [
+        {"from": "P27", "to": "P31", "evidence": ["E22"], "votes": 2, "confidence": "majority", "note": "cross-component link from C5"},
+        {"from": "P31", "to": "P32", "evidence": ["E23"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P33", "evidence": ["E24"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P34", "evidence": ["E25"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P34", "to": "P35", "evidence": ["E26"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C7",
+      "description": "Experimental design: absence of baselines and the three-model comparison used instead.",
+      "nodes": [
+        {"id": "P36", "name": "No existing baselines for this setting", "description": "Baselines for causal fairness under unobserved confounding are absent in prior literature."},
+        {"id": "P37", "name": "Three comparison models defined instead", "description": "Because no baselines exist, the paper compares three models with identical network architecture: Standard (no fairness constraint), Fair naive (fairness assuming no unobserved confounding), and Fair robust (the proposed framework)."},
+        {"id": "P38", "name": "Fair naive expected to be miscalibrated under confounding", "description": "Fair naive considers causal fairness only under the assumption of no unobserved confounding, so it is expected to underestimate true unfairness when confounding is present."},
+        {"id": "P39", "name": "Identical architecture isolates the learning objective", "description": "Because the three models share identical network architecture, any fairness improvement can be attributed specifically to the tailored learning objective rather than model capacity."}
+      ],
+      "edges": [
+        {"from": "P36", "to": "P37", "evidence": ["E27"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P37", "to": "P38", "evidence": ["E28"], "votes": 2, "confidence": "majority"},
+        {"from": "P37", "to": "P39", "evidence": ["E29"], "votes": 2, "confidence": "majority"},
+        {"from": "P35", "to": "P37", "evidence": ["E30"], "votes": 2, "confidence": "majority", "note": "cross-component link from C6: Fair robust is Algorithm 1"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C8",
+      "description": "Contribution summary chain.",
+      "nodes": [
+        {"id": "P40", "name": "Contribution 1: bounds for CF under unobserved confounding", "description": "Bounds are derived for causal fairness metrics under different sources of unobserved confounding, serving as a refutation strategy for practitioners."},
+        {"id": "P41", "name": "Contribution 2: robust neural fair-prediction framework", "description": "A novel neural framework is developed for learning fair predictions with worst-case guarantees on the extent of causal fairness violation due to unobserved confounding."},
+        {"id": "P42", "name": "Contribution 3: empirical demonstration including real-world case study", "description": "The framework's effectiveness is demonstrated in experiments on synthetic and real-world data, including a real-world case study predicting prison sentences."}
+      ],
+      "edges": [
+        {"from": "P40", "to": "P41", "evidence": ["E31"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P41", "to": "P42", "evidence": ["E32"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 2,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P43", "name": "Framework generalizes to other fairness notions", "description": "Although the paper focuses on DE, IE, SE, the bound-derivation framework can also be employed for other fairness notions."},
+    {"id": "P44", "name": "Framework valid for known and unknown Gamma_W", "description": "The framework applies not only when the sensitivity parameter is known but is also of practical value when it is unknown, via data-driven heuristics."}
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "arxiv_id": "2603.26140v1",
+  "note_on_evidence": "Evidence fields cite paper sections/subsections/theorems/lemmas rather than sentence indices, since a sentence-indexed source was not available for this document.",
+  "components": [
+    {
+      "component_id": "C1",
+      "name": "Motivation: the oversmoothing/oversquashing tension and open complexity question",
+      "nodes": [
+        {"id": "P1", "name": "Oversmoothing mechanism", "description": "Oversmoothing occurs because GNN layers act as low-pass filters, so after many layers node representations become dominated by the principal eigenvector of the propagation matrix, converging to a uniform vector."},
+        {"id": "P2", "name": "Oversmoothing rate governed by spectral gap", "description": "The rate of oversmoothing is governed by the spectral gap of the graph's propagation operator, and oversmoothing is inevitable for any fixed-spectrum graph as the number of layers grows."},
+        {"id": "P3", "name": "Oversquashing mechanism", "description": "Oversquashing describes information from distant nodes failing to reach a target node because messages must flow through a narrow cut/bottleneck, compressing exponentially many messages into fixed-size vectors."},
+        {"id": "P4", "name": "Oversquashing quantified by conductance/effective resistance", "description": "Oversquashing is a structural phenomenon quantified by the graph's conductance or effective resistance; a graph with a bottleneck forces information squashing regardless of layer count."},
+        {"id": "P5", "name": "High connectivity mitigates oversquashing but worsens oversmoothing", "description": "Graphs that mitigate oversquashing (expanders, dense graphs) tend to have high connectivity, which accelerates oversmoothing."},
+        {"id": "P6", "name": "Sparse/tree-like graphs resist oversmoothing but cause oversquashing", "description": "Sparse, tree-like graphs resist oversmoothing but create severe bottlenecks that cause oversquashing."},
+        {"id": "P7", "name": "Tension motivates the optimal-rewiring question", "description": "Because oversmoothing- and oversquashing-mitigating graph properties conflict, this raises the natural question of whether graph structure can be optimized to strike an optimal balance between the two."},
+        {"id": "P8", "name": "Complexity of graph rewiring optimization was previously unexplored", "description": "While heuristic rewiring methods (DIGL, SDRF) have shown empirical success, the fundamental computational complexity of the underlying graph optimization problems had remained unexplored prior to this paper."}
+      ],
+      "edges": [
+        {"from": "P1", "to": "P2", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P3", "to": "P4", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P2", "to": "P5", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P5", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P4", "to": "P6", "evidence": ["S1"], "votes": 2, "confidence": "majority"},
+        {"from": "P5", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P6", "to": "P7", "evidence": ["S1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P7", "to": "P8", "evidence": ["S1"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 4,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C2",
+      "name": "Expander embedding construction (shared reduction tool)",
+      "nodes": [
+        {"id": "P9", "name": "Need for a bisection-to-conductance mapping construction", "description": "A construction is needed that maps a graph H to a new graph G such that the conductance of G is small if and only if H has a small bisection, to enable reductions from Minimum Bisection."},
+        {"id": "P10", "name": "Expander Embedding lemma (Lemma 2)", "description": "There exists a polynomial-time algorithm that, given H with n vertices, outputs a 3-regular graph G with 2n vertices such that H is an induced subgraph of G, and cut conductance in G is tightly related to cut size in H in both directions (upper bound via part 2, and a converse via part 3 with a balancing procedure)."},
+        {"id": "P11", "name": "Embedding constants can be tuned via expander strength", "description": "The constants c1, c2, c3 in the Expander Embedding lemma can be made arbitrarily small or large by choosing a sufficiently strong or weak expander, allowing specific inequality conditions (e.g., c1 < 1/6, c2c3 < 1/2) to be satisfied."},
+        {"id": "P12", "name": "Instance Scaling lemma (Lemma 3)", "description": "Any Minimum Bisection instance (H, B) can be transformed in polynomial time into an equivalent instance with convenient bounds relating B to the number of vertices n (either B >= 2n and B = O(n), or n/2 <= B <= 2n), preserving the yes/no answer."}
+      ],
+      "edges": [
+        {"from": "P9", "to": "P10", "evidence": ["S3.2", "Lemma2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P10", "to": "P11", "evidence": ["S3.2", "Lemma2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P9", "to": "P12", "evidence": ["S3.3", "Lemma3"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C3",
+      "name": "Oversquashing mitigation formalized as conductance optimization (GROC) and its NP-completeness",
+      "nodes": [
+        {"id": "P13", "name": "Maximizing conductance minimizes oversquashing loss", "description": "The worst-case bottleneck is captured by conductance phi(G), and the oversquashing loss is defined as the negative conductance, so maximizing phi(G) minimizes oversquashing."},
+        {"id": "P14", "name": "GROC decision problem definition", "description": "GROC asks: given graph G, integer budget K, and threshold phi0, does there exist G' with symmetric-difference edge budget at most K such that the conductance of G' is at least phi0."},
+        {"id": "P15", "name": "GROC is in NP", "description": "Given a candidate graph G', its conductance can be computed exactly via a min-cut/max-flow computation in polynomial time, so GROC is in NP."},
+        {"id": "P16", "name": "Reduction from Minimum Bisection to GROC", "description": "Using the Expander Embedding and Instance Scaling lemmas, a Minimum Bisection instance (H,B) is transformed into a 3-regular graph G with K=0 and a threshold phi0 = 1 - c1(B+n)/n, chosen so that phi0 > 1/2 using the constant bound c1 < 1/6."},
+        {"id": "P17", "name": "Forward direction of the GROC reduction", "description": "If H has a bisection with at most B edges, Lemma 2(2) gives a cut in G with conductance at most 1-phi0, which is less than phi0, so (G,0,phi0) is a NO instance."},
+        {"id": "P18", "name": "Reverse direction of the GROC reduction", "description": "If H has no bisection with at most B edges, assuming phi(G) < phi0 leads via Lemma 2(3) and the balancing procedure to a bisection of H with fewer than B edges, a contradiction; hence phi(G) >= phi0 and (G,0,phi0) is a YES instance."},
+        {"id": "P19", "name": "GROC is NP-hard", "description": "Because Minimum Bisection reduces to GROC (with inverted YES/NO answers, invertible in polynomial time) and Minimum Bisection is NP-complete, GROC is NP-hard."},
+        {"id": "P20", "name": "GROC is NP-complete (Theorem 4)", "description": "Since GROC is both in NP and NP-hard, it is NP-complete."}
+      ],
+      "edges": [
+        {"from": "P13", "to": "P14", "evidence": ["S3.1", "Definition1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P15", "evidence": ["Theorem4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P14", "to": "P16", "evidence": ["Theorem4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P17", "evidence": ["Theorem4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P16", "to": "P18", "evidence": ["Theorem4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P17", "to": "P19", "evidence": ["Theorem4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P18", "to": "P19", "evidence": ["Theorem4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P15", "to": "P20", "evidence": ["Theorem4"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P19", "to": "P20", "evidence": ["Theorem4"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 5,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C4",
+      "name": "Oversmoothing mitigation formalized as spectral optimization (GROS) and its NP-completeness",
+      "nodes": [
+        {"id": "P21", "name": "Dirichlet energy decay bound", "description": "For a regular graph, the Dirichlet energy after L layers decays as E(X(L)) <= (mu2(P))^(2L) * E(X(0)), where mu2(P) is the second-largest eigenvalue of the propagation matrix."},
+        {"id": "P22", "name": "Preventing oversmoothing requires minimizing mu2(P)", "description": "Because the Dirichlet energy decay rate is governed by mu2(P), preventing oversmoothing requires minimizing mu2(P)."},
+        {"id": "P23", "name": "Minimizing mu2(P) equivalent to maximizing spectral gap", "description": "Since mu2(P) = 1 - lambda2(L), minimizing mu2(P) is equivalent to maximizing lambda2(L), the spectral gap of the normalized Laplacian."},
+        {"id": "P24", "name": "GROS decision problem definition", "description": "GROS asks: given graph G, integer budget K, and threshold tau, does there exist G' with symmetric-difference edge budget at most K such that mu2(P_G') <= tau."},
+        {"id": "P25", "name": "GROS is in NP", "description": "A certificate is the target graph G'; the edge-budget constraint is checked directly, and mu2(P_G') <= tau can be decided in polynomial time via root isolation (e.g., Sturm sequences) since the propagation matrix has rational entries and polynomial-bit-length algebraic eigenvalues."},
+        {"id": "P26", "name": "Reduction from Minimum Bisection to GROS", "description": "Using the same Expander Embedding (with constants satisfying c1 < 1/48, 2c2*sqrt(3c1) < 1/2) and Instance Scaling lemma (part 1), a Minimum Bisection instance is transformed into a 3-regular graph G with K=0 and threshold tau = 1 - 2c1(B+n)/n - epsilon for a suitably small rational epsilon."},
+        {"id": "P27", "name": "Forward direction of the GROS reduction", "description": "If H has a bisection with at most B edges, Lemma 2(2) and Cheeger's inequality give mu2(P_G) >= 1 - 2c1(B+n)/n > tau, so (G,0,tau) is a NO instance."},
+        {"id": "P28", "name": "Reverse direction of the GROS reduction", "description": "If H has no bisection with at most B edges, assuming mu2(P_G) > tau leads via Cheeger's inequality, Lemma 2(3), and the balancing procedure (using B >= 2n and c2*c3*sqrt(3c1) bounds) to a bisection of H with fewer than B edges, a contradiction; hence mu2(P_G) <= tau and (G,0,tau) is a YES instance."},
+        {"id": "P29", "name": "GROS is NP-hard", "description": "Because Minimum Bisection reduces to GROS and Minimum Bisection is NP-complete, a polynomial algorithm for GROS would solve Minimum Bisection, so GROS is NP-hard."},
+        {"id": "P30", "name": "GROS is NP-complete (Theorem 6)", "description": "Since GROS is both in NP and NP-hard, it is NP-complete."}
+      ],
+      "edges": [
+        {"from": "P21", "to": "P22", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P22", "to": "P23", "evidence": ["S4.1"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P23", "to": "P24", "evidence": ["S4.1", "Definition5"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P25", "evidence": ["Theorem6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P24", "to": "P26", "evidence": ["Theorem6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P27", "evidence": ["Theorem6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P26", "to": "P28", "evidence": ["Theorem6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P27", "to": "P29", "evidence": ["Theorem6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P28", "to": "P29", "evidence": ["Theorem6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P25", "to": "P30", "evidence": ["Theorem6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P29", "to": "P30", "evidence": ["Theorem6"], "votes": 3, "confidence": "unanimous"}
+      ],
+      "depth": 6,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C5",
+      "name": "Inapproximability and heuristic justification",
+      "nodes": [
+        {"id": "P31", "name": "Conductance is hard to approximate", "description": "Conductance phi(G) cannot be approximated within a factor of O(sqrt(log n)) unless P = NP."},
+        {"id": "P32", "name": "Spectral gap is hard to approximate", "description": "The spectral gap lambda2(L) cannot be approximated within any constant factor for regular graphs."},
+        {"id": "P33", "name": "Rewiring optimization likely also hard to approximate", "description": "These inapproximability results suggest that algorithms attempting to optimize graph structure for these measures under a limited edge-change budget will also be hard to approximate, though a formal proof for the rewiring problems themselves remains open."},
+        {"id": "P34", "name": "SDRF and DIGL run in polynomial time", "description": "SDRF (iteratively removing most-negative-curvature edges and adding highest-effective-resistance edges, total O~(n^3)) and DIGL (graph diffusion via personalized PageRank, O(n^2 log n)) are existing heuristic rewiring methods shown to run in polynomial time."},
+        {"id": "P35", "name": "NP-hardness justifies heuristic use", "description": "Because exact optimization of GROC and GROS is NP-hard/intractable while SDRF and DIGL run in polynomial time, the hardness results provide theoretical justification for using such heuristics rather than seeking exact solutions."}
+      ],
+      "edges": [
+        {"from": "P31", "to": "P33", "evidence": ["S5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P32", "to": "P33", "evidence": ["S5.1"], "votes": 2, "confidence": "majority"},
+        {"from": "P34", "to": "P35", "evidence": ["S5.2"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P33", "to": "P35", "evidence": ["S5.1", "S5.2"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    },
+    {
+      "component_id": "C6",
+      "name": "Discussion: duality between the two objectives",
+      "nodes": [
+        {"id": "P36", "name": "Cheeger's inequality links the two objectives for regular graphs", "description": "For regular graphs, mu2(P) = 1 - lambda2(L) and phi(G) lies between lambda2(L)/2 and sqrt(2*lambda2(L)), mathematically linking the oversmoothing objective (spectral gap) and the oversquashing objective (conductance)."},
+        {"id": "P37", "name": "High algebraic connectivity tends to raise conductance too", "description": "This mathematical relationship reflects a tangible tradeoff: a graph with high algebraic connectivity (good for oversmoothing) tends to have high conductance (good for oversquashing), but the exact relationship is constrained by the spectral gap."},
+        {"id": "P38", "name": "Both exact optimizations are intractable, reinforcing reliance on heuristics", "description": "The NP-hardness results for both GROC and GROS show that optimizing either objective exactly is intractable in general, reinforcing that practical approaches must rely on approximations or heuristics."},
+        {"id": "P39", "name": "Dense graphs mitigate both but are often impractical", "description": "A highly connected graph (e.g., complete graph) can simultaneously mitigate oversquashing (no bottlenecks) and oversmoothing (large spectral gap), but such graphs are often prohibitively dense for real-world applications."},
+        {"id": "P40", "name": "Finding an optimal sparse balancing graph is computationally challenging", "description": "Because dense graphs mitigate both issues but are often impractical, while sparse graphs may suffer from both, finding an optimal sparse graph that strikes the right balance is computationally challenging, justifying iterative heuristic rewiring methods like SDRF and DIGL."}
+      ],
+      "edges": [
+        {"from": "P36", "to": "P37", "evidence": ["S6"], "votes": 3, "confidence": "unanimous"},
+        {"from": "P37", "to": "P38", "evidence": ["S6"], "votes": 2, "confidence": "majority"},
+        {"from": "P39", "to": "P40", "evidence": ["S6"], "votes": 2, "confidence": "majority"},
+        {"from": "P38", "to": "P40", "evidence": ["S6"], "votes": 2, "confidence": "majority"}
+      ],
+      "depth": 3,
+      "validated_acyclic": true
+    }
+  ],
+  "isolated_nodes": [
+    {"id": "P41", "name": "Normalized Laplacian and Fiedler value defined", "description": "The normalized Laplacian is L = I - D^(-1/2) A D^(-1/2), with eigenvalues 0 = lambda1(L) <= ... <= lambda_n(L) <= 2, and lambda2(L) (the Fiedler value) measures algebraic connectivity."},
+    {"id": "P42", "name": "Symmetric normalized propagation matrix defined", "description": "For a GNN layer, the symmetric normalized propagation matrix is P = D-tilde^(-1/2) A-tilde D-tilde^(-1/2), where A-tilde = A + I and D-tilde = D + I, with eigenvalues in [-1, 1]."},
+    {"id": "P43", "name": "Conductance formally defined", "description": "For a subset S of vertices, conductance phi(S) = |boundary(S)| / min(vol(S), vol(V\\S)), and the conductance of the graph phi(G) is the minimum over all such subsets with volume at most half the total volume."},
+    {"id": "P44", "name": "Cheeger's inequality stated", "description": "Cheeger's inequality relates the spectral gap of the normalized Laplacian to conductance: phi(G)^2/2 <= lambda2(L) <= 2*phi(G)."},
+    {"id": "P45", "name": "Minimum Bisection is NP-complete", "description": "Minimum Bisection, the classical decision problem used as the basis for both reductions in this paper, is NP-complete (Garey, Johnson, and Stockmeyer)."},
+    {"id": "P46", "name": "Expander embeddings are a standard hardness-of-approximation tool", "description": "Expander embeddings, used to relate graph cuts between H and G in this paper's constructions, are a standard tool in hardness-of-approximation results."},
+    {"id": "P47", "name": "GNNs are the de facto standard for graph-structured learning", "description": "Graph Neural Networks have become the de facto standard for learning on graph-structured data, with applications including fake news detection, drug discovery, and recommendation systems."},
+    {"id": "P48", "name": "Message passing as GNNs' core operation", "description": "The core operation of GNNs, message passing, aggregates information from neighboring nodes, allowing the model to capture relational structure."},
+    {"id": "P49", "name": "Existing mitigation strategies for oversmoothing", "description": "Prior work proposed mitigation strategies for oversmoothing such as residual/skip connections, normalization layers, and adaptive propagation schemes, but the underlying graph structure remains a key determinant of the effect."},
+    {"id": "P50", "name": "SDRF algorithm description", "description": "SDRF (prior work) uses effective resistance to quantify oversquashing and adds edges with high effective resistance while removing edges with negative curvature."},
+    {"id": "P51", "name": "DIGL algorithm description", "description": "DIGL (prior work) uses graph diffusion to densify the graph, adding edges based on personalized PageRank."},
+    {"id": "P52", "name": "Bilevel graph structure learning as an alternative approach", "description": "Prior work introduced a bilevel optimization framework for learning the graph structure end-to-end, which is empirically effective but lacks theoretical hardness guarantees, unlike this paper's analysis."},
+    {"id": "P53", "name": "Future direction: directed and weighted graphs", "description": "Extending the complexity analysis to directed and weighted graphs would broaden applicability, since many real-world graphs possess these properties."},
+    {"id": "P54", "name": "Future direction: task-specific importance weights", "description": "Incorporating task-specific importance weights on node pairs could lead to more practical formulations aligning graph structure with the downstream learning objective."},
+    {"id": "P55", "name": "Future direction: other GNN architectures", "description": "Different GNN architectures (e.g., Graph Attention Networks, Gated Graph Neural Networks) employ distinct propagation mechanisms that may alter the oversmoothing/oversquashing relationship, motivating complexity analysis for those architectures."},
+    {"id": "P56", "name": "Future direction: empirical gap between worst case and heuristic practice", "description": "Empirical evaluation of the gap between theoretical worst-case complexity and actual heuristic rewiring performance would provide insight into how often hard instances occur in practice."}
+  ],
+  "structural_score": 9,
+  "structural_reasoning": "This graph is highly coherent, closely mirroring the paper's own logical structure. C1 establishes the motivating tension between oversmoothing and oversquashing mitigation as a clean causal chain leading to the open complexity question. C2 isolates the shared Expander Embedding and Instance Scaling machinery used by both subsequent reductions, avoiding duplication. C3 and C4 each trace a complete, tightly sequenced proof structure (formulation -> NP membership -> reduction construction -> forward direction -> reverse direction -> NP-hardness -> NP-completeness) that mirrors the paper's own Theorem 4 and Theorem 6 proofs almost line for line, with every edge corresponding to an explicit logical dependency in the proof. C5 (inapproximability/heuristics) and C6 (discussion of the duality) are compact but well-grounded in the paper's Sections 5 and 6. The isolated nodes are appropriately limited to genuine definitional/notational facts (Laplacian, propagation matrix, conductance, Cheeger's inequality), citations to external established results (Minimum Bisection's NP-completeness, expander embeddings as a general tool), background/related-work summaries, and forward-looking future-work suggestions -- none of which function as premises within the paper's own argumentative chain. This is a mathematically self-contained paper with an unusually explicit proof structure, which is why the graph achieves a higher structural score than the more narrative empirical papers analyzed previously."
+}

@@ -1,0 +1,253 @@
+{
+ "arxiv_id": "2602.00038",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "LSSF design: from safety fragility to low-rank safety subspace fusion and its validation",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Fine-tuning erodes safety",
+     "description": "Aligned LLMs exhibit safety vulnerabilities after fine-tuning, even on benign data or a small amount of malicious data."
+    },
+    {
+     "id": "P2",
+     "name": "In-training alignment is costly",
+     "description": "Methods that align safety during fine-tuning (e.g. VLGuard, Lisa) increase training complexity, need extra compute, and can inhibit general capabilities."
+    },
+    {
+     "id": "P3",
+     "name": "RESTA hurts general ability",
+     "description": "RESTA restores safety by adding the safety vector to a fine-tuned model, but the safety vector contains components that suppress general capabilities, so the merged model's general ability drops."
+    },
+    {
+     "id": "P4",
+     "name": "Safety vector definition",
+     "description": "The safety vector is delta_safe = theta_safe - theta_unsafe, obtained by harmfully fine-tuning a safety-aligned model to get an unsafe model and inverting the parameter delta."
+    },
+    {
+     "id": "P5",
+     "name": "Safety vector has two parts",
+     "description": "The inverse safety vector consists of a low-rank safety drift component opposite to the safety direction and a general suppression component that impairs general-task performance."
+    },
+    {
+     "id": "P6",
+     "name": "Safety regions are low-rank and isolated",
+     "description": "The safety regions of LLMs are sparse and low-rank and isolated from the directions of general capabilities, and safety drift directions of safety vectors share a common low-rank subspace."
+    },
+    {
+     "id": "P7",
+     "name": "Projection from activation SVD",
+     "description": "LSSF performs SVD on standardized linear-layer activations of the safety-aligned model on a harmful-query calibration set (128 PKU-SafeRLHF samples) and uses the left singular vectors to build an orthogonal low-rank projection matrix P(r)."
+    },
+    {
+     "id": "P8",
+     "name": "Safety singular value entropy sets rank",
+     "description": "The safety singular value entropy, based on squared singular values, determines the retained rank r as the smallest rank whose entropy ratio H_r/H_n exceeds threshold eta, adapting the rank to the safety information density of each layer."
+    },
+    {
+     "id": "P9",
+     "name": "Singular-vector weighting",
+     "description": "A scaling factor alpha_i, decreasing linearly from alpha_1 for the largest singular value, weights the singular vectors to strengthen drift along the main safety directions."
+    },
+    {
+     "id": "P10",
+     "name": "LSSF restoration by linear arithmetic",
+     "description": "LSSF restores safety by adding alpha*P'(r)*delta_safe to the downstream fine-tuned model's parameters, counteracting the safety-direction offset while minimally affecting task and other directions."
+    },
+    {
+     "id": "P11",
+     "name": "Low-rank components keep general ability",
+     "description": "Adding safety principal components to Llama3.1-8B-Instruct raises refusal on AdvBench/DoAnythingNow while MBPP, GSM8K, BBH, MMLU and IFEval stay close to the base (e.g. BBH 68.20 vs 68.29), whereas SFT on jailbreak data drops BBH to 31.42 and IFEval to 45.79 (LoRA setting)."
+    },
+    {
+     "id": "P12",
+     "name": "Beats DARE on retaining ability",
+     "description": "Compared with DARE, merging safety principal components causes less disruption to general ability (full fine-tuning BBH 68.52 vs 20.03; IFEval 81.88 vs 45.87)."
+    },
+    {
+     "id": "P13",
+     "name": "Downstream results LoRA",
+     "description": "In LoRA SFT on AG's News and Yahoo Answers, LSSF reaches near-perfect refusal rates (AdvBench 1.00 on Qwen2.5-7B for AG's News; 0.99-1.00 elsewhere) while keeping classification accuracy close to NA-SFT (e.g. 0.92 vs 0.91 on AG's News Qwen2.5)."
+    },
+    {
+     "id": "P14",
+     "name": "LSSF beats baselines in Full SFT",
+     "description": "In Medical QA full SFT, LSSF achieves refusal rates up to 0.99 while retaining BLEU/ROUGE-L (e.g. 0.42/0.50 on Qwen2.5-7B), whereas on Llama3.1-8B the baselines VLGuard, RESTA and Lisa lower BLEU/ROUGE-L by more than 0.2."
+    },
+    {
+     "id": "P15",
+     "name": "Baselines are unstable",
+     "description": "Baselines vary widely in safe refusal rate across harmful query datasets, especially in the LoRA scenario (e.g. NA-SFT refusal on AdvBench is 0.09 vs 1.00 for LSSF on Qwen2.5 AG's News), and RESTA lowers downstream accuracy (Yahoo Answers ACC 0.25 on Qwen2.5)."
+    },
+    {
+     "id": "P16",
+     "name": "Entropy controls component content",
+     "description": "Lowering the entropy ratio eta makes the low-rank principal-component matrix smoother with values toward zero; the method selects a structured subnetwork rather than suppressing individual delta parameters."
+    },
+    {
+     "id": "P17",
+     "name": "Higher eta raises safety",
+     "description": "Increasing eta gradually improves the safety of the merged model; for eta > 0.8 the refusal rate approaches 1.0 with BLEU only slightly affected."
+    },
+    {
+     "id": "P18",
+     "name": "Higher alpha raises safety",
+     "description": "Increasing the left-singular-vector weight alpha raises safety; for alpha > 2.5 safety is close to the safety model with BLEU only slightly affected (eta=0.5)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P1",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 3.1, Fig 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P3",
+     "evidence": [
+      "Sec 1, Sec 3.1"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P7",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 3.3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.3-3.4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.3-3.4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P10",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.1.2, Tables 4-5"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.1.1, Tables 1-2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.1.1, Table 3"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.1.2, Table 4"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.1.1, Tables 1-2"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P16",
+     "evidence": [
+      "Sec 4.1.3, Fig 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P17",
+     "evidence": [
+      "Sec 4.2.1, Fig 4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P18",
+     "evidence": [
+      "Sec 4.2.2, Fig 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P19",
+   "name": "Models tested",
+   "description": "Experiments use Qwen2.5-7B-Instruct and Llama3.1-8B-Instruct, with Qwen2.5-3B/14B in an appendix robustness check."
+  },
+  {
+   "id": "P20",
+   "name": "Safety measured by refusal",
+   "description": "Safety is measured as refusal rate of Llama-Guard3-8B-judged responses on AdvBench, HarmfulQA and CATQA."
+  },
+  {
+   "id": "P21",
+   "name": "Safety vector from 500 harmful samples",
+   "description": "The safety vector is computed by SFT for 3 epochs on 500 harmful query-response pairs from PKU-SafeRLHF."
+  },
+  {
+   "id": "P22",
+   "name": "Future work and limitation",
+   "description": "Larger models such as Llama-3.1-405B were not evaluated due to budget, and extension to multimodal and MoE models is planned."
+  }
+ ],
+ "structural_reasoning": "Argument runs from fragility and baseline weaknesses, through the safety-vector decomposition and low-rank projection design, to restoration and empirical results with ablations on eta and alpha."
+}

@@ -1,0 +1,202 @@
+{
+ "arxiv_id": "2610.04039",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Adaptive partitioning for optimistic optimization: motivation, algorithms, theory and benchmark results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Optimistic optimization needs a partition",
+     "description": "Optimistic Optimization algorithms (HOO, SOO, SequOOL) assume only local smoothness around the maximizer but require a hierarchical partitioning of the search space, and their performance depends heavily on that partitioning."
+    },
+    {
+     "id": "P2",
+     "name": "Default axis-aligned partition is limiting",
+     "description": "The default axis-aligned rectangle partitioning has a number of cells growing as k^(dn), limiting it to low-dimensional spaces, and may fail to exploit low-dimensional structure in high-dimensional spaces."
+    },
+    {
+     "id": "P3",
+     "name": "Multi-index function class",
+     "description": "The paper studies multi-index functions f(x)=g(Ax) with A an m x d matrix with orthonormal rows and m<d, whose variation lies in an m-dimensional subspace."
+    },
+    {
+     "id": "P4",
+     "name": "Optimizer lies in a bounded subspace region",
+     "description": "For a multi-index function on [-1,1]^d, some z* in R^m with ||z*||_inf at most alpha satisfies f(A^T z*)=f(x*), where alpha is chosen from the cube corners (Proposition 2.5)."
+    },
+    {
+     "id": "P5",
+     "name": "Adaptive partitioning scheme",
+     "description": "An adaptive partitioning scheme partitions the m-dimensional projection of the domain using learned directions A-hat, and a direction selection strategy can choose which direction to split at each depth."
+    },
+    {
+     "id": "P6",
+     "name": "Learning A by a one-hidden-layer network",
+     "description": "Algorithm 1 learns A-hat by fitting a single hidden-layer neural network to function evaluations at random locations and taking an SVD, with m chosen to explain a desired share (e.g. 95%) of variation."
+    },
+    {
+     "id": "P7",
+     "name": "Adaptive scheme can lower rho",
+     "description": "Adaptive partitions can have better parameters than the default: for f=1-|x1+x2| with A=[1,1], rho_A=1/3 versus rho=1/sqrt(3) for the default scheme (Example 2.9)."
+    },
+    {
+     "id": "P8",
+     "name": "Direction selection can lower eta",
+     "description": "A direction selection strategy that splits x1 twice as often as x2 yields a lower near-optimality dimension than the default equal-proportion splitting (Example 2.11)."
+    },
+    {
+     "id": "P9",
+     "name": "Two algorithms",
+     "description": "The paper proposes a two-stage algorithm (learn the partition, then run SequOOL on it) and an interleaved algorithm (Algorithm 2) where learning and optimization alternate."
+    },
+    {
+     "id": "P10",
+     "name": "Lower regret for multi-index functions",
+     "description": "For multi-index functions, SequOOL on the learned partition with alpha-hat=sqrt(dm)/sqrt(1-dist^2(A,A-hat)) has lower regret than on the default partition, with regret ~O(n^(-beta/d)) (Theorem 4.8)."
+    },
+    {
+     "id": "P11",
+     "name": "Synthetic benchmark gains",
+     "description": "On Rastrigin, Sphere and Styblinski-Tang, the approach reaches zero regret with fewer samples than other methods, e.g. Rastrigin regret 4.22e-5 for SequOOL vs zero for the method, and zero regret on Styblinski-Tang with about 900 evaluations versus 2000 for RESOO."
+    },
+    {
+     "id": "P12",
+     "name": "Joint LLM quantization objective",
+     "description": "Quantization scales alpha across all M layers of an LLM are jointly optimized to minimize perplexity as one 3M-dimensional black-box problem, instead of AWQ's 3M separate 1-D grid searches."
+    },
+    {
+     "id": "P13",
+     "name": "Improved OPT-1.3B perplexity",
+     "description": "On OPT-1.3B, SequOOL with Algorithm 2 over 72 dimensions reaches WikiText-2 perplexity 16.68 versus 16.92 for AWQ grid search, narrowing the gap to the unquantized 14.47 from 2.45 to 2.21 (about 10% relative)."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P5",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 2, Prop 2.5"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P7",
+     "evidence": [
+      "Sec 2, Example 2.9"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P8",
+     "evidence": [
+      "Sec 2, Example 2.11"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P6",
+     "evidence": [
+      "Sec 3, Algorithm 1"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 3"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P10",
+     "evidence": [
+      "Sec 4, Lemma 4.5"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P10",
+     "evidence": [
+      "Sec 4, Lemma 4.4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P10",
+     "evidence": [
+      "Sec 4, Thm 4.8"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 5, Fig 3"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.1, Table 2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.1, Table 2"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "Weaker on some functions",
+   "description": "On Ellipsoid, Sharp Ridge and (x1-1)^2+(x72-1)^4, the algorithm is slightly worse than RESOO, plausibly because 650 samples of a 2000 budget go to the first stage."
+  },
+  {
+   "id": "P15",
+   "name": "Limited benefit without multi-index structure",
+   "description": "When the multi-index assumption fails, as in the AWQ objective that varies in all directions, improvement over SequOOL is minimal."
+  },
+  {
+   "id": "P16",
+   "name": "Compute time",
+   "description": "Wall-clock times are about 9 hours for grid search, 10 for SequOOL and Algorithm 1, and 12 for Algorithm 2."
+  }
+ ],
+ "structural_reasoning": "Motivation about default partitions leads to adaptive partition definitions, algorithms and the regret theorem, then empirical results. The limitation and cost notes are isolated."
+}

@@ -1,0 +1,214 @@
+{
+ "arxiv_id": "2608.26676",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Pruning amplifies repetition; entry/persistence analysis motivates FOCUS and RePAIR, which are evaluated",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Pruning amplifies repetition",
+     "description": "Pruned LLMs show more repetition-loop degeneration than unpruned ones even when perplexity and task accuracy are largely unchanged; with top-p sampling the repetition rate is 5.9% unpruned, 12.4% width pruned and 15.4% depth pruned after Alpaca fine-tuning."
+    },
+    {
+     "id": "P2",
+     "name": "Degeneration is a sharp entry event",
+     "description": "Replacing only the first two onset tokens with a top-2 alternative reduces CREP of the unpruned model from 5.9% to 0.7% under sampling and from 26.6% to 10.8% under greedy decoding."
+    },
+    {
+     "id": "P3",
+     "name": "Entry risk vs persistence decomposition",
+     "description": "P(Coverage >= tau) <= R_T * rho_bar^l_tau: loop entry risk R_T enters linearly while persistence rho_bar is exponentiated by the required in-loop run length."
+    },
+    {
+     "id": "P4",
+     "name": "Persistence controlled by escape mass",
+     "description": "Under nucleus sampling, persistence rho(c) = a(c)/(a(c)+e(c)), so reducing persistence requires increasing escape mass e(c) inside the nucleus, not entropy over the full vocabulary."
+    },
+    {
+     "id": "P5",
+     "name": "Forward-KL distillation mode-averages",
+     "description": "Under capacity constraints from pruning, minimizing forward KL gives a single broadened student approximation that moves probability into intermediate and low-density regions of a multimodal teacher."
+    },
+    {
+     "id": "P6",
+     "name": "Tail leakage raises entry risk",
+     "description": "Forward KL gives little pressure against student mass on teacher-suppressed tokens; leakage tokens admitted into the nucleus become sampleable and increase entry risk R_T."
+    },
+    {
+     "id": "P7",
+     "name": "Alternative collapse raises persistence",
+     "description": "Pruning distorts near-tied teacher alternatives at loop-sensitive contexts into one dominant continuation, reducing escape mass and raising rho and its supremum."
+    },
+    {
+     "id": "P8",
+     "name": "Two supervision targets",
+     "description": "Training should suppress leakage toward teacher-suppressed tokens to reduce entry risk and preserve or promote plausible escape alternatives within the nucleus to reduce persistence."
+    },
+    {
+     "id": "P9",
+     "name": "FOCUS objective",
+     "description": "FOCUS reweights each token's distillation term by w = (q/beta + 1 - q)^gamma-style confidence weights emphasizing high-confidence teacher regions, equivalent to standard KD with a reweighted teacher distribution (gradient Z(p - q_tilde))."
+    },
+    {
+     "id": "P10",
+     "name": "RePAIR pairs and margin loss",
+     "description": "RePAIR builds negative samples from repetitive pruned-model outputs and positive samples regenerated from the unpruned model at the first repetition onset, trained with a token-level margin ranking loss; total loss is L_CE + 0.05 L_FOCUS + 1 L_RePAIR."
+    },
+    {
+     "id": "P11",
+     "name": "Open-ended results",
+     "description": "On WikiText-103 with Llama-3.1-8B, RePAIR alone reaches MAUVE 0.68 and CREP 2.23 (KD: 0.61 and 7.3), and FOCUS+RePAIR gives MAUVE 0.73 and CREP 0.57, with only a small perplexity increase."
+    },
+    {
+     "id": "P12",
+     "name": "Instruction-following results",
+     "description": "On Self-Instruct with Llama-3.1-8B-Instruct, RePAIR lowers CREP to 0.63 and raises EAD1 to 0.32 versus KD (1.97, 0.28); FOCUS combined with RePAIR gives the best results on most metrics."
+    },
+    {
+     "id": "P13",
+     "name": "FOCUS improves other objectives",
+     "description": "Adding FOCUS to UL, SG, DITTO and RePAIR improves generation quality (higher MAUVE, lower CREP) with only slightly higher perplexity."
+    },
+    {
+     "id": "P14",
+     "name": "FOCUS preserves teacher tail structure",
+     "description": "FOCUS keeps tail agreement stable while substantially raising tail correlation and head agreement, and expands the number of viable head candidates from 148.6 to 202.1."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 3.1, Table 1-2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P3",
+     "evidence": [
+      "Sec 3.2, Eq 6"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 3.3, Eq 8-9"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P6",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P7",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 3.4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.1"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P5",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.1, Fig 1"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.2, Table 3"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 5.2, Table 3"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.3, Table 4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P12",
+     "evidence": [
+      "Sec 5.3, Table 4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P13",
+     "evidence": [
+      "Sec 5.2-5.3, Tables 3-4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P14",
+     "evidence": [
+      "Sec 6, Fig 2"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P15",
+   "name": "Prior mitigation degrades perplexity",
+   "description": "Methods that lower probabilities of previously generated tokens reduce repetition but give no guidance on which tokens to generate, resulting in degraded perplexity."
+  },
+  {
+   "id": "P16",
+   "name": "Experimental setup",
+   "description": "Experiments prune 25% of Llama model width with LLM-Pruner, fine-tune on Alpaca with LoRA for two epochs with self-distillation, and evaluate with top-p 0.9 on 1,000 WikiText-103 and 1,000 Self-Instruct prompts."
+  },
+  {
+   "id": "P17",
+   "name": "Mean repeated-token probability rises",
+   "description": "The mean probability of repeated tokens shows an increasing and saturating trend, suggesting rising tendency toward persistence."
+  }
+ ],
+ "structural_reasoning": "Argument runs from the empirical observation of pruning-induced repetition, through the entry/persistence theory, to two objectives derived from it and their empirical evaluation."
+}

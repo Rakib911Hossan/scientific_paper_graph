@@ -1,0 +1,234 @@
+{
+ "arxiv_id": "2606.16817",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "RL query rewriting adapts to retrievers; retriever-specific dialects, guidance and scale shape what is learned",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Retrievers need different query styles",
+     "description": "Different retrievers require different optimal query formulation strategies, but most agentic RAG work assumes a uniform single search engine."
+    },
+    {
+     "id": "P2",
+     "name": "Retrievers' training and nature differ",
+     "description": "Contriever is trained on Wikipedia span pairs and prefers document-style queries, BM25 is sparse and prefers keyword queries, and Qwen3-Embedding performs better with question-like queries."
+    },
+    {
+     "id": "P3",
+     "name": "GRPO rewriter with nDCG@10 reward",
+     "description": "The query rewriter policy is trained with GRPO using nDCG@10 of the retrieved documents against the ground-truth passage as reward, chosen over recall to reward ranking the correct document highly."
+    },
+    {
+     "id": "P4",
+     "name": "RL improves in-distribution retrieval",
+     "description": "On RAGBench, RL-trained rewriters improve every tested retriever, e.g., Contriever average nDCG@10 from 45.5 to 56.3 (direct), BM25 from 45.0 to 56.9 (explore), Qwen3-Embedding-0.6B from 61.5 to 64.1."
+    },
+    {
+     "id": "P5",
+     "name": "Zero-shot BEIR transfer",
+     "description": "Zero-shot on BEIR, the learned rewriter raises Contriever's average from 28.84 to 34.98, whereas Gemini-2.5-Flash rewrites reduce performance even with a Contriever-specific prompt."
+    },
+    {
+     "id": "P6",
+     "name": "Domain transfer to finance",
+     "description": "On FinAgentBench, the rewriter improves Contriever (6.43 to 7.39), BM25 (8.17 to 9.02), all-MiniLM-L6-v2 (6.69 to 7.17) and Qwen3-Embedding (9.10 to 10.81)."
+    },
+    {
+     "id": "P7",
+     "name": "RE-MMD separates semantic and structural drift",
+     "description": "RE-MMD measures the distance between distributions of successful queries across retrievers, split into semantic (intent) drift and structural (formulation) drift."
+    },
+    {
+     "id": "P8",
+     "name": "Drift is structural, not semantic",
+     "description": "Semantic RE-MMD is typically below 2.0 while structural RE-MMD is often above 20.0, largest between sparse (BM25) and dense (Contriever) retrievers, so transfer failures are stylistic rather than about information need."
+    },
+    {
+     "id": "P9",
+     "name": "Strategies don't transfer across retrievers",
+     "description": "Query formulation policies optimized for one retriever generally do not transfer reliably to others."
+    },
+    {
+     "id": "P10",
+     "name": "Prompt guidance levels",
+     "description": "Three prompt levels were compared: general (five candidate strategies, retriever unknown), exploratory (retriever and its training described), and specific (human-prescribed strategy, e.g., hypothetical documents for Contriever, keywords for BM25)."
+    },
+    {
+     "id": "P11",
+     "name": "Contriever: specific prompt wins",
+     "description": "For Contriever, the exploratory prompt starts strongest but collapses early (around step 200) onto a keyword strategy, while the specific prompt enforcing hypothetical documents reaches the best final performance; the general prompt improves slowly."
+    },
+    {
+     "id": "P12",
+     "name": "BM25: exploratory beats specific",
+     "description": "For BM25, exploratory prompts outperform specific ones and both far exceed general prompts; the rewriter infers keyword queries early, plausibly because BM25 is well documented in LLM pretraining data."
+    },
+    {
+     "id": "P13",
+     "name": "Human guidance helps when priors are weak",
+     "description": "Explicit human expert guidance helps RL when the model lacks knowledge of a retriever's optimal strategy, whereas exploratory prompts suffice when pretraining already captures the retriever's behavior."
+    },
+    {
+     "id": "P14",
+     "name": "Scaling to 14B escapes plateaus",
+     "description": "Increasing the rewriter to 14B breaks the performance plateaus of the 4B and 8B models, with larger models exploring more diversely (lower initial reward, better final policies)."
+    },
+    {
+     "id": "P15",
+     "name": "14B discovers statement-style queries",
+     "description": "Under exploratory prompts the 14B model discovers statement-style rewrites: 'Being white and Latino' reaches nDCG@10 0.965 versus 0.542 for the question-style 'Can someone be both white and Latino?'."
+    },
+    {
+     "id": "P16",
+     "name": "Branching rollout",
+     "description": "A two-turn branching rollout samples M first-turn actions and N second-turn completions each (e.g., 4x4), estimating first-turn value by Monte Carlo averaging and isolating the second-turn learning signal because the shared first-round reward cancels in the advantage."
+    },
+    {
+     "id": "P17",
+     "name": "Branching stabilizes training",
+     "description": "The 4x4 branching strategy significantly outperforms independent 16x1 rollouts in training stability, preventing the collapse seen in the independent baseline."
+    },
+    {
+     "id": "P18",
+     "name": "More retrieval steps help",
+     "description": "Increasing the number of retrieval steps improves query formulation because the model can use documents from earlier steps to refine later queries."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P2",
+     "evidence": [
+      "Sec 1, Sec 3.2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 2.1, Sec 4.1, Table 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.1, Table 2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 4.1, Table 3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2, Fig 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P9",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P8",
+     "evidence": [
+      "Sec 4.2"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P11",
+     "evidence": [
+      "Sec 4.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P10",
+     "to": "P12",
+     "evidence": [
+      "Sec 4.3, Fig 4"
+     ]
+    },
+    {
+     "from": "P11",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P12",
+     "to": "P13",
+     "evidence": [
+      "Sec 4.3"
+     ]
+    },
+    {
+     "from": "P13",
+     "to": "P14",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    },
+    {
+     "from": "P14",
+     "to": "P15",
+     "evidence": [
+      "Sec 4.4, Fig 2"
+     ]
+    },
+    {
+     "from": "P16",
+     "to": "P17",
+     "evidence": [
+      "Sec 2.4, Sec 4.4, Fig 5"
+     ]
+    },
+    {
+     "from": "P17",
+     "to": "P18",
+     "evidence": [
+      "Sec 4.4"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P19",
+   "name": "Weighted turn rewards",
+   "description": "In multi-turn retrieval, trajectory reward is a weighted sum of per-turn nDCG, with weight 0.5 on the first retrieval and 1 on the second, and retrieved documents are masked from the loss."
+  },
+  {
+   "id": "P20",
+   "name": "Finance is a stress test",
+   "description": "Finance serves as a stress test for transfer due to domain-specific terminology, hybrid text-and-table documents and practical relevance."
+  },
+  {
+   "id": "P21",
+   "name": "Retrieval gains improve RAG",
+   "description": "Better retrieval translates into improved end-to-end RAG answer accuracy."
+  }
+ ],
+ "structural_reasoning": "Retriever differences motivate RL rewriting; results, drift analysis, prompt-guidance, scaling and branching analyses follow."
+}

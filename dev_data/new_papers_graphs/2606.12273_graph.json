@@ -1,0 +1,197 @@
+{
+ "arxiv_id": "2606.12273",
+ "note": "Single-pass extraction by Claude reading the paper text; evidence references sections/figures/tables. No multi-run validation.",
+ "components": [
+  {
+   "component_id": "C1",
+   "description": "Attention-derived dependencies motivate AGDO training and its results",
+   "nodes": [
+    {
+     "id": "P1",
+     "name": "Random masking mismatches inference",
+     "description": "Existing dLLM post-training randomly masks tokens and optimizes the masked positions, which does not match the actual inference dynamics of dLLMs and causes a training-inference mismatch."
+    },
+    {
+     "id": "P2",
+     "name": "Fixed orders ignore emergent dependencies",
+     "description": "Blockwise SFT and left-to-right masking impose externally defined decoding orders, although under bidirectional attention token dependencies emerge dynamically rather than following positional order."
+    },
+    {
+     "id": "P3",
+     "name": "Attention is sparse and temporally stable",
+     "description": "In dLLMs (Dream-v0-Instruct-7B, MATH-500 queries, final layer) attention is sparse, with diagonal self/neighbour patterns and a few hub columns, and each token attends to largely the same context tokens across denoising steps."
+    },
+    {
+     "id": "P4",
+     "name": "Valid attention predicts stability",
+     "description": "Tokens that allocate more attention to already-unmasked tokens (higher valid attention score S) show greater probability stability, i.e. smaller probability drops during later denoising, showing a positive S-vs-delta-P correlation."
+    },
+    {
+     "id": "P5",
+     "name": "Attention-aware selection improves accuracy",
+     "description": "Choosing among masked tokens with probability above 0.9 the one with highest S beats the max-probability baseline on MATH-500 at lengths 128/256/512 (21.2 vs 16.8, 16.2 vs 13.8, 15.2 vs 13.0)."
+    },
+    {
+     "id": "P6",
+     "name": "Attention-guided denoising order",
+     "description": "AGDO derives a denoising order by starting from prompt tokens as unmasked, repeatedly selecting the top-n tokens by valid attention score S and recomputing S, so tokens are denoised only after attention-supported context exists."
+    },
+    {
+     "id": "P7",
+     "name": "Hub-token influence score",
+     "description": "The influence score I_k of a token is the total final-layer attention it receives from other tokens, and high-I tokens act as attention hubs with disproportionate influence on generation."
+    },
+    {
+     "id": "P8",
+     "name": "AGDO-SFT",
+     "description": "AGDO-SFT masks only the tokens assigned to each denoising step along the attention-guided order and weights the cross-entropy loss by (1 + gamma*I_k)."
+    },
+    {
+     "id": "P9",
+     "name": "AGDO-RL",
+     "description": "AGDO-RL applies the attention-guided order within GRPO and adjusts the advantage as A' = A + sign(A)*delta*I, amplifying updates for attention-central tokens."
+    },
+    {
+     "id": "P10",
+     "name": "AGDO-SFT beats SFT baselines",
+     "description": "On Dream-v0-Instruct-7B, AGDO-SFT averages 36.0% versus 34.4% for blockwise SFT, with a 3.0% gain on Minerva."
+    },
+    {
+     "id": "P11",
+     "name": "AGDO-RL sets new state of the art",
+     "description": "AGDO-RL outperforms RL baselines, e.g. 18.3% on LiveBench versus 15.2% for diffu-GRPO, with more sustained and stable accuracy growth during training."
+    },
+    {
+     "id": "P12",
+     "name": "Order alone helps",
+     "description": "With gamma=0 (no influence weighting) AGDO-SFT still beats blockwise SFT by about 2% on MATH500, isolating the benefit of the attention-guided denoising order; gamma=100 gives the best result."
+    },
+    {
+     "id": "P13",
+     "name": "Generalizes to LLaDA",
+     "description": "On LLaDA-8B-Instruct (GSM8K, MATH500) AGDO outperforms d1-LLaDA, wd1 and LLaDA1.5 and improves faster than Diff-GRPO."
+    }
+   ],
+   "edges": [
+    {
+     "from": "P1",
+     "to": "P6",
+     "evidence": [
+      "Sec 1, Sec 5.1"
+     ]
+    },
+    {
+     "from": "P2",
+     "to": "P6",
+     "evidence": [
+      "Sec 1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P4",
+     "evidence": [
+      "Sec 4.1-4.2, Fig 1-2"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P5",
+     "evidence": [
+      "Sec 4.2, Table 1"
+     ]
+    },
+    {
+     "from": "P4",
+     "to": "P6",
+     "evidence": [
+      "Sec 5.1"
+     ]
+    },
+    {
+     "from": "P3",
+     "to": "P7",
+     "evidence": [
+      "Sec 4.1, Sec 5.2"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.2"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P8",
+     "evidence": [
+      "Sec 5.2, Eq 8-9"
+     ]
+    },
+    {
+     "from": "P6",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.3"
+     ]
+    },
+    {
+     "from": "P7",
+     "to": "P9",
+     "evidence": [
+      "Sec 5.3, Eq 11"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P10",
+     "evidence": [
+      "Sec 6.2, Table 2"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P11",
+     "evidence": [
+      "Sec 6.2, Table 2, Fig 3"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P12",
+     "evidence": [
+      "Sec 6.3.1, Fig 4"
+     ]
+    },
+    {
+     "from": "P8",
+     "to": "P13",
+     "evidence": [
+      "Sec 6.3.3, Table 4"
+     ]
+    },
+    {
+     "from": "P9",
+     "to": "P13",
+     "evidence": [
+      "Sec 6.3.3, Table 4, Fig 5"
+     ]
+    }
+   ]
+  }
+ ],
+ "isolated_nodes": [
+  {
+   "id": "P14",
+   "name": "RL on dLLMs lacks factorization",
+   "description": "dLLMs do not admit a sequential token factorization, complicating the likelihood ratios and KL terms needed for GRPO; prior work uses mean-field approximations."
+  },
+  {
+   "id": "P15",
+   "name": "AGDO-RL strong across block sizes",
+   "description": "AGDO-RL gets the highest average accuracy of 51.6% across block sizes, peaking at 53.7% with block size 64."
+  }
+ ],
+ "structural_reasoning": "Prior-method limitations and the attention analysis motivate the denoising order; the order plus influence scores define SFT and RL variants whose results and ablations follow."
+}
